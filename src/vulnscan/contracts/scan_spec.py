@@ -10,7 +10,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any
 
-from pydantic import Field
+from pydantic import Field, field_validator
 
 from ._base import VersionedModel
 from .enums import ToolName
@@ -52,6 +52,17 @@ class ScanSpecification(VersionedModel):
         ...,
         description="Pinned commit SHA (full or short, never 'HEAD').",
     )
+
+    @field_validator("target_commit_sha")
+    @classmethod
+    def _reject_moving_target(cls, v: str) -> str:
+        """A scan must be reproducible, so a moving ref is not a valid pin."""
+        if v.strip().upper() in {"HEAD", "MAIN", "MASTER", "TRUNK"}:
+            raise ValueError(
+                "target_commit_sha must be a pinned commit SHA, not a moving "
+                f"branch ref ({v!r})"
+            )
+        return v
     repository_checkout_path: str = Field(
         default=".",
         description="Relative or absolute path to an already-checked-out working copy.",
