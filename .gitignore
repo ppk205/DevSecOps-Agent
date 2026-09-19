@@ -1,0 +1,80 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# Virtual envs
+.venv/
+venv/
+env/
+
+# Testing / type-checking caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# SQLite local runtime data
+*.sqlite
+*.sqlite3
+*.db
+vulnscan.db
+
+# Artifact store (runtime)
+artifacts/
+storage/artifacts/
+
+# IDE / editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Target overlays / harness build output (never commit pristine target)
+harness/JVA-bookstore/target/
+harness/JVA-bookstore/.mvn/
+harness/*-overlay/
+harness/variants/
+target/
+**/target/
+
+# CodeQL databases
+*.codeql/
+codeql-db/
+
+# Dependency-Check data (NVD cache)
+dependency-check-data/
+odc/
+
+# Secrets / provider config — never commit keys
+.env
+.env.local
+*.key
+secrets.json
+
+# Reports generated at runtime (dev)
+reports/
+*.sarif
+!tests/fixtures/**/*.sarif
+
+# OS
+$RECYCLE.BIN/
+ehthumbs.db

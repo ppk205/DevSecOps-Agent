@@ -1,0 +1,293 @@
+# DevSecOps-Agent
+
+Automated vulnerability scanning and severity assessment for Java Servlet/JSP source code, powered by a multi-scanner pipeline with Agentic AI analysis and independent mechanical verification.
+
+## Overview
+
+DevSecOps-Agent is a local application that detects, classifies, and assesses vulnerabilities in Java Servlet/JSP projects. It combines conventional static analysis tools (Semgrep, SpotBugs/FindSecBugs, OWASP Dependency-Check, Gitleaks) with AI-assisted contextual analysis to produce CVSS v4.0 severity assessments. Every AI-generated conclusion is independently verified through mechanical checks.
+
+The experimental target is [JVA-bookstore](https://github.com/Moseyuh333/JVA-bookstore) (commit `dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5`): 97 Java source files, 38 JSP files, Java 11, Maven WAR packaging, PostgreSQL, `javax.servlet`.
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    CLI / Web Dashboard                   │
+│                  (Typer + FastAPI + Jinja)                │
+├─────────────────────────────────────────────────────────┤
+│                   Orchestration Layer                    │
+│            (scan lifecycle, queue, retry)                │
+├─────────┬──────────┬──────────┬──────────┬──────────────┤
+│ Semgrep │ SpotBugs │   ODG    │ Gitleaks │ CodeQL (exp) │
+│  (CE)   │+FindSec  │          │          │              │
+├─────────┴──────────┴──────────┴──────────┴──────────────┤
+│              Normalization & Deduplication               │
+├─────────────────────────────────────────────────────────┤
+│          Source Context & Java Security Models           │
+│   (call-graph, sanitizers, auth checks, sinks, routes)  │
+├─────────────────────────────────────────────────────────┤
+│            AI Assessment Agent (LLM-backed)              │
+│      (CVSS v4.0 estimation, contextual reasoning)       │
+├─────────────────────────────────────────────────────────┤
+│         Independent Verification Engine                 │
+│   (mechanical checks on AI claims before acceptance)     │
+├─────────────────────────────────────────────────────────┤
+│          Reporting & Experiment Comparison               │
+│       (HTML, CSV, JSON; per-scanner, per-CWE)           │
+├─────────────────────────────────────────────────────────┤
+│   Storage: SQLite (SQLAlchemy) + Artifact Files          │
+└─────────────────────────────────────────────────────────┘
+```
+
+## Supported Vulnerability Groups (CWE)
+
+| CWE ID | Description |
+|--------|-------------|
+| CWE-89 | SQL Injection |
+| CWE-78 | OS Command Injection |
+| CWE-79 | Cross-Site Scripting (XSS) |
+| CWE-22 | Path Traversal |
+| CWE-434 | Unrestricted File Upload |
+| CWE-918 | Server-Side Request Forgery (SSRF) |
+| CWE-611 | XML External Entity (XXE) |
+| CWE-502 | Deserialization of Untrusted Data |
+| CWE-798 | Hard-coded Credentials |
+| CWE-327 | Broken or Risky Cryptographic Algorithm |
+| CWE-330 | Use of Insufficiently Random Values |
+| CWE-862/639 | Missing Authorization / Insecure Direct Object Reference |
+
+Dependency vulnerabilities (OWASP Dependency-Check) are evaluated separately from source-code findings.
+
+## Tech Stack
+
+- **Language**: Python 3.11+
+- **Web Framework**: FastAPI + Uvicorn
+- **Templating**: Jinja2
+- **Database**: SQLite via SQLAlchemy (async with aiosqlite)
+- **CLI**: Typer
+- **HTTP Client**: httpx
+- **Scanners**: Semgrep CE, SpotBugs + FindSecBugs, OWASP Dependency-Check, Gitleaks, CodeQL (experimental)
+- **AI Provider**: Configurable LLM backend (OpenAI-compatible API)
+- **Build**: Hatchling
+
+## Project Structure
+
+```
+DevSecOps-Agent/
+├── src/vulnscan/           # Application source code
+│   ├── agent/              # AI assessment agent
+│   ├── assessment/         # CVSS v4.0 assessment logic
+│   ├── cli/                # CLI entry points (Typer)
+│   ├── context/            # Source context & call-graph analysis
+│   ├── core/               # Core domain models & configuration
+│   ├── normalization/      # Finding normalization & deduplication
+│   ├── providers/          # LLM provider abstraction
+│   ├── reporting/          # Report generation (HTML, CSV, JSON)
+│   ├── scanners/           # Scanner adapters (Semgrep, SpotBugs, ODG, etc.)
+│   ├── storage/            # Database models & repositories
+│   ├── verification/       # Independent verification engine
+│   └── web/                # FastAPI web dashboard & routes
+├── tests/                  # Test suite
+│   ├── ai/                 # AI agent tests
+│   ├── analysis/           # Analysis pipeline tests
+│   ├── evaluation/         # Evaluation & accuracy tests
+│   ├── platform/           # Platform integration tests
+│   ├── reporting/          # Report generation tests
+│   ├── sandbox/            # Sandbox execution tests
+│   ├── validation/         # Verification engine tests
+│   └── web/                # Web API tests
+├── docs/                   # Documentation
+├── rules/                  # Semgrep custom rules
+├── prompts/                # AI prompt templates
+├── evaluation/             # Evaluation datasets & benchmarks
+├── harness/                # Test harness & fixtures
+├── infra/                  # Infrastructure configuration
+├── pyproject.toml          # Project metadata & dependencies
+├── LICENSE                 # MIT License
+└── .planning/              # Project planning documents
+```
+
+## Installation
+
+### Prerequisites
+
+- Python 3.11 or later
+- Java 11+ (for Semgrep, SpotBugs, and target application analysis)
+- Maven 3.6+ (for target application builds)
+- Git
+
+### Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/ppk205/DevSecOps-Agent.git
+cd DevSecOps-Agent
+
+# Create and activate a virtual environment
+python -m venv .venv
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate   # Windows
+
+# Install the project in development mode
+pip install -e ".[dev,scanners]"
+
+# Install scanner binaries (if not already available)
+# Semgrep: pip install semgrep
+# SpotBugs: download from https://spotbugs.github.io/
+# FindSecBugs: download plugin from https://find-sec-bugs.github.io/
+# OWASP Dependency-Check: download from https://owasp.org/www-project-dependency-check/
+# Gitleaks: download from https://github.com/gitleaks/gitleaks
+```
+
+### Configuration
+
+Create a `.env` file in the project root:
+
+```env
+# AI Provider settings
+LLM_API_KEY=your-api-key-here
+LLM_BASE_URL=https://api.openai.com/v1
+LLM_MODEL=gpt-4o
+
+# Scanner paths (adjust to your installation)
+SEMGREP_PATH=semgrep
+SPOTBUGS_PATH=/path/to/spotbugs
+OWASP_DC_PATH=/path/to/dependency-check/bin/dependency-check
+GITLEAKS_PATH=gitleaks
+CODEQL_PATH=/path/to/codeql
+
+# Application
+DATABASE_URL=sqlite+aiosqlite:///data/vulnscan.db
+SECRET_KEY=change-this-to-a-random-string
+HOST=127.0.0.1
+PORT=8000
+```
+
+## Usage
+
+### CLI
+
+```bash
+# Register a target project
+devsecops-agent register --path /path/to/JVA-bookstore --name jva-bookstore
+
+# Run a full scan
+devsecops-agent scan --target jva-bookstore
+
+# Run only specific scanners
+devsecops-agent scan --target jva-bookstore --scanners semgrep,spotbugs
+
+# View scan results
+devsecops-agent results --scan-id 1
+
+# Generate a report
+devsecops-agent report --scan-id 1 --format html --output report.html
+
+# Compare experiments
+devsecops-agent compare --scan-ids 1,2 --output comparison.html
+```
+
+### Web Dashboard
+
+```bash
+# Start the web server
+devsecops-agent serve --host 127.0.0.1 --port 8000
+
+# Open http://127.0.0.1:8000 in your browser
+```
+
+The web dashboard provides four screens:
+
+1. **Target Registration & Scan Configuration** — register projects and configure scan parameters
+2. **Run Progress & Tool Status** — monitor active scans, view coverage limitations
+3. **Findings & Evidence** — browse findings with source evidence, CVSS assumptions, and verification results
+4. **Settings & Reports** — configure AI providers, view usage, export reports, compare experiments
+
+## How It Works
+
+### Scan Pipeline
+
+1. **Intake**: Register a Java Servlet/JSP project; the system catalogs all `.java` and `.jsp` files
+2. **Source Parsing**: Java and JSP files are parsed; AST and call-graph analysis extracts security-relevant context
+3. **Static Scanning**: Each enabled scanner analyzes the source and produces findings
+4. **Normalization**: Findings from all scanners are normalized into a common schema, deduplicated, and tagged with CWE IDs
+5. **Context Enrichment**: For each finding, the system assembles the finding-specific route, filter, callers, sanitizers, and sinks
+6. **AI Assessment**: The AI agent evaluates each normalized finding with contextual information and proposes a CVSS v4.0 assessment
+7. **Verification**: The independent verification engine mechanically checks every AI claim against source evidence before acceptance
+8. **Reporting**: Results are persisted in SQLite and available via CLI, web dashboard, or exported reports
+
+### Verification Philosophy
+
+AI is a **supporting tool**, not the final authority. Every AI-generated assessment is subject to mechanical verification:
+
+- **Sanitization claims** are checked against actual encoding/context
+- **Authorization assumptions** are verified against the declared policy
+- **CVSS vector components** are validated against source evidence
+- **Scope and impact estimates** are cross-referenced with application architecture
+
+Failed verifications are flagged and reported — findings with unverifiable AI conclusions remain in their scanner-original state.
+
+## Development
+
+### Running Tests
+
+```bash
+# Run the full test suite
+pytest
+
+# Run with coverage
+pytest --cov=vulnscan --cov-report=html
+
+# Run a specific test module
+pytest tests/analysis/
+```
+
+### Code Quality
+
+```bash
+# Lint
+ruff check src/ tests/
+
+# Format
+ruff format src/ tests/
+
+# Type check
+mypy src/
+```
+
+### Adding a New Scanner
+
+1. Create a new adapter in `src/vulnscan/scanners/`
+2. Implement the `ScannerAdapter` protocol
+3. Register the adapter in the scanner registry
+4. Add normalization rules for its output format
+5. Write tests in `tests/`
+
+### Custom Semgrep Rules
+
+Place custom Semgrep rules in the `rules/` directory. The scanner adapter loads rules from this path automatically.
+
+## Limitations
+
+- **No hosted deployment**: The application runs locally only
+- **No multi-user accounts**: Single-user local mode
+- **No DAST**: Only static analysis is supported
+- **No automatic remediation**: The system reports findings but does not fix them
+- **No notifications**: Results are viewed on-demand via CLI or web
+- **CodeQL is experimental**: Cross-function/cross-file analysis is evaluated but not guaranteed
+
+## Budget and Timeline
+
+- **Total budget**: USD 50 for AI usage
+- **Timeline**: 17 weeks (2 students)
+- **Target**: JVA-bookstore (97 Java files, 38 JSP files)
+
+## Team
+
+- **Tran Doan Hoa** (23162026) — Student
+- **Nguyen Minh Khoi** (23162046) — Student
+- **Supervisor**: Nguyen Thi Thanh Van
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
