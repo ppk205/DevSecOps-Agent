@@ -1,0 +1,18 @@
+{
+  "run_id": "test-run-1",
+  "results": [
+    {
+      "check_id": "java.lang.security.audit.sql-injection",
+      "path": "src/main/java/com/jva/bookstore/dao/UserDAO.java",
+      "start": {"line": 42, "col": 5, "offset": 0},
+      "end": {"line": 44, "col": 30, "offset": 0},
+      "extra": {
+        "message": "Unsafe string concatenation in SQL query",
+        "severity": "WARNING",
+        "metadata": {"tags": ["CWE-89"]}
+      }
+    }
+  ],
+  "errors": [],
+  "version": "1.70.0"
+}

@@ -44,6 +44,10 @@ class ScanSpecification(VersionedModel):
     with the :class:`RunManifest` so the exact input is recoverable.
     """
 
+    run_id: str | None = Field(
+        default=None,
+        description="RunManifest.run_id this spec belongs to; None until a run is created.",
+    )
     target_repository_url: str = Field(
         ...,
         description="Git clone URL of the target repository.",

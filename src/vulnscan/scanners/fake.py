@@ -18,42 +18,51 @@ from ..contracts import (
     Severity,
     SourceCoordinate,
     ToolName,
-    ToolVersionRecord,
 )
-from .base import ScannerAdapter
+from .base import AdapterCapability, ScannerAdapter
 
 
 class FakeScannerAdapter(ScannerAdapter):
     """Deterministic canned results."""
-    name = "fake"
 
-    def is_available(self) -> bool:
-        return True
+    tool = ToolName.SEMGREP
+    binary_name = "fake-scanner"
 
-    def version(self) -> str | None:
-        return "1.0.0-fake"
+    def capabilities(self) -> AdapterCapability:
+        return AdapterCapability(
+            tool=self.tool,
+            binary=self.binary_name,
+            version="1.0.0-fake",
+            available=True,
+        )
 
-    def run(self, spec: ScanSpecification, snapshot_path: Path) -> ScannerResult:
+    def run(self, spec: ScanSpecification, *, workdir: str) -> ScannerResult:
+        started = datetime.now(timezone.utc)
         obs = Observation(
+            observation_id="fake-obs-1",
+            detected_at=started,
+            run_id=spec.run_id or "fake-run",
+            tool=ToolName.SEMGREP,
+            tool_version="1.0.0-fake",
             rule_id="fake/sql-injection",
+            cwe_category=CWECategory.SQL_INJECTION,
             severity=Severity.HIGH,
-            cwe=CWECategory.SQL_INJECTION,
-            source=ToolName.SEMGREP,
+            message="Canned SQL-injection observation from the fake adapter.",
+            confidence=1.0,
             location=SourceCoordinate(
                 file_path="src/main/java/com/jva/bookstore/dao/UserDAO.java",
                 language=LanguageKind.JAVA,
                 line_start=42,
                 symbol="login",
             ),
-            message="Canned SQL-injection observation from the fake adapter.",
         )
         return ScannerResult(
+            run_id=spec.run_id or "fake-run",
             tool=ToolName.SEMGREP,
-            tool_version=ToolVersionRecord(tool=ToolName.SEMGREP, version="1.0.0-fake"),
-            started_at=datetime.now(timezone.utc),
+            tool_version="1.0.0-fake",
+            adapter_version=self.adapter_version,
+            status="completed",
+            started_at=started,
             finished_at=datetime.now(timezone.utc),
             observations=[obs],
-            raw_output_paths=[],
-            exit_code=0,
-            success=True,
         )

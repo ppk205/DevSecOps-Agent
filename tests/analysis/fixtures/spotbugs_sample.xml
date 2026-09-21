@@ -1,0 +1,16 @@
+"""Tiny hand-written spotbugs scan result fixture.
+
+One path-traversal finding in ProductServlet.java:87.
+"""
+SPOTBUGS_XML = """\
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+  <BugInstance type="PATH_TRAVERSAL_IN" priority="3" category="SECURITY">
+    <SourceLine classname="com.jva.bookstore.servlets.ProductServlet"
+                startLine="87" endLine="93"
+                sourceFile="ProductServlet.java"/>
+    <Method classname="com.jva.bookstore.servlets.ProductServlet"
+            name="downloadReport" signature="()V"/>
+  </BugInstance>
+</FindBugsFilter>
+"""

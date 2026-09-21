@@ -1,0 +1,16 @@
+[
+  {
+    "Description": "Hardcoded password",
+    "StartLine": 12,
+    "EndLine": 12,
+    "StartColumn": 1,
+    "EndColumn": 33,
+    "Match": "db.password=supersecret123",
+    "File": "src/main/resources/config.properties",
+    "RuleID": "generic-secret",
+    "Entropy": 4.1,
+    "Author": "dev",
+    "Commit": "abcd1234",
+    "Message": "init config"
+  }
+]
