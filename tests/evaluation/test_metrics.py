@@ -1,29 +1,25 @@
 """T07 gate: evaluation metrics — precision, recall, F1, verification coverage."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from vulnscan.contracts.enums import (
     CWECategory,
-    Severity,
+    EvidenceStrength,
     FindingStatus,
-    SplitMembership,
+    Severity,
     VariantRelationship,
+    VerificationOutcome,
 )
-from vulnscan.contracts.evaluation import EvaluationCase, MatchingCriteria
 from vulnscan.contracts.finding import Finding, Observation, SourceCoordinate
 from vulnscan.contracts.validation import ValidationDecision
-from vulnscan.contracts.enums import EvidenceStrength, VerificationOutcome
+from vulnscan.evaluation.cases import create_sample_cases
 from vulnscan.evaluation.metrics import (
     compute_metrics,
-    match_findings_to_cases,
-    AggregateResults,
-    CWEResults,
 )
-from vulnscan.evaluation.cases import create_sample_cases
 
 
 def _finding(fid: str, cwe: CWECategory, file_path: str = "src/LoginServlet.java") -> Finding:
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     return Finding(
         finding_id=fid,
         run_id="r1",
@@ -64,7 +60,7 @@ def _decision(fid: str, status: FindingStatus) -> ValidationDecision:
         evidence_strength=EvidenceStrength.STRONG,
         rationale="test",
         decided_by="test",
-        decided_at=datetime.now(timezone.utc),
+        decided_at=datetime.now(UTC),
     )
 
 
@@ -75,7 +71,7 @@ class TestMetrics:
         # Create one finding per vulnerable case
         from vulnscan.contracts.enums import ToolName
         findings = []
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         for c in cases:
             if c.variant_relationship == VariantRelationship.VULNERABLE and c.expected_cwe_category:
                 findings.append(Finding(
@@ -119,7 +115,7 @@ class TestMetrics:
         cases = create_sample_cases()
         # Only create one finding for one vulnerable case
         from vulnscan.contracts.enums import ToolName
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         vuln_cases = [c for c in cases if c.variant_relationship == VariantRelationship.VULNERABLE]
         first_case = vuln_cases[0]
         findings = [
@@ -134,7 +130,7 @@ class TestMetrics:
                 status=FindingStatus.CONFIRMED,
                 observations=[
                     Observation(
-                        observation_id=f"obs-partial",
+                        observation_id="obs-partial",
                         detected_at=now,
                         run_id="r1",
                         tool=ToolName.SEMGREP,

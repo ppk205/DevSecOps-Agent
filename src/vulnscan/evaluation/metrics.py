@@ -7,12 +7,12 @@ separate Java/JSP coverage, and a separate dependency track.
 from __future__ import annotations
 
 import json
-from collections import Counter, defaultdict
+from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from vulnscan.contracts.enums import CWECategory, FindingStatus, SplitMembership
+from vulnscan.contracts.enums import CWECategory, FindingStatus
 from vulnscan.contracts.evaluation import EvaluationCase
 from vulnscan.contracts.finding import Finding
 from vulnscan.contracts.validation import ValidationDecision

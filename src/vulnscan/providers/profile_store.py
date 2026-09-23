@@ -7,11 +7,14 @@ referenced by environment variable name, never stored in the profile file.
 
 from __future__ import annotations
 
-import json
+import logging
 from pathlib import Path
 
-from vulnscan.contracts.provider import ProviderProfile
+from pydantic import ValidationError
 
+from .contracts import ProviderProfile
+
+logger = logging.getLogger(__name__)
 
 _DEFAULT_DIR = Path(".providers")
 
@@ -46,8 +49,9 @@ def list_profiles(base: Path | None = None) -> list[ProviderProfile]:
     for p in sorted(d.glob("*.json")):
         try:
             profiles.append(ProviderProfile.model_validate_json(p.read_text(encoding="utf-8")))
-        except Exception:
-            continue  # skip malformed
+        except (OSError, ValidationError) as exc:
+            logger.warning("Skipping malformed provider profile %s: %s", p.name, exc)
+            continue
     return profiles
 
 

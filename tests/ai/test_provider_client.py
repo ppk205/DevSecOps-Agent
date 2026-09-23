@@ -1,28 +1,26 @@
 """T04 gate: provider client — mocked Chat Completions HTTP."""
 
-import json
-from datetime import datetime, timezone
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-from vulnscan.contracts.provider import ProviderProfile
 from vulnscan.contracts.enums import ProviderProtocol
-from vulnscan.providers.client import ProviderClient, ChatMessage, ProviderError
+from vulnscan.contracts.provider import ProviderProfile
 from vulnscan.providers.budget import BudgetManager
+from vulnscan.providers.client import ChatMessage, ProviderClient
 
 
 def _profile(**overrides) -> ProviderProfile:
-    defaults = dict(
-        id="test-prov",
-        label="Test Provider",
-        protocol=ProviderProtocol.OPENAI_CHAT_COMPLETIONS,
-        base_url="https://api.example.com/v1",
-        api_key_env="TEST_API_KEY",
-        models=["gpt-4o"],
-        default_model="gpt-4o",
-        timeout_seconds=30,
-    )
+    defaults = {
+        "id": "test-prov",
+        "label": "Test Provider",
+        "protocol": ProviderProtocol.OPENAI_CHAT_COMPLETIONS,
+        "base_url": "https://api.example.com/v1",
+        "api_key_env": "TEST_API_KEY",
+        "models": ["gpt-4o"],
+        "default_model": "gpt-4o",
+        "timeout_seconds": 30,
+    }
     defaults.update(overrides)
     return ProviderProfile(**defaults)
 

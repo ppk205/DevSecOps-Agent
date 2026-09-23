@@ -1,10 +1,9 @@
 """T04 gate: budget enforcement — USD 50 ceiling, per-provider tracking."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
-from vulnscan.contracts.enums import ToolName
 from vulnscan.contracts.provider import ProviderUsage
-from vulnscan.providers.budget import BudgetManager, BudgetExhausted
+from vulnscan.providers.budget import BudgetExhausted, BudgetManager
 
 
 class TestBudgetManager:
@@ -19,7 +18,7 @@ class TestBudgetManager:
         usage = ProviderUsage(
             provider_id="test-provider",
             model="gpt-4o",
-            timestamp=datetime.now(timezone.utc),
+            timestamp=datetime.now(UTC),
             prompt_tokens=1000,
             completion_tokens=500,
             total_tokens=1500,
@@ -44,7 +43,7 @@ class TestBudgetManager:
         usage = ProviderUsage(
             provider_id="p1",
             model="gpt-4o",
-            timestamp=datetime.now(timezone.utc),
+            timestamp=datetime.now(UTC),
             prompt_tokens=100,
             completion_tokens=50,
             total_tokens=150,
@@ -59,4 +58,4 @@ class TestBudgetManager:
         assert summary["spent_p1"] == 1.5
 
 
-import pytest  # noqa: E402
+import pytest

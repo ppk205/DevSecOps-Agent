@@ -11,7 +11,6 @@ qualitative severity, and checks that all required metrics are present.
 from __future__ import annotations
 
 import math
-import re
 from dataclasses import dataclass
 from enum import Enum
 
@@ -203,7 +202,6 @@ def validate(vector: str) -> list[str]:
     valid_pr = {"N", "L", "H"}
     valid_ui = {"N", "P"}
     valid_impact = {"N", "L", "H"}
-    valid_scope = {"U", "H"}
     valid_s = {"U", "H"}
 
     checks = [

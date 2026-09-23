@@ -143,8 +143,8 @@ def semgrep_exit_meaning(code: int) -> str:
 
 
 __all__ = [
-    "cwe_category",
     "confidence_value",
+    "cwe_category",
     "first_mapped_cwe",
     "map_severity",
     "map_spotbugs_priority",

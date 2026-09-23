@@ -138,6 +138,88 @@ class SarifReport(VersionedModel):
         description="Extra SARIF properties kept under properties.",
     )
 
+    def to_sarif_dict(self) -> dict[str, Any]:
+        """Return a SARIF 2.1.0 log object using standard wire-property names."""
+        levels = {
+            Severity.CRITICAL: "error",
+            Severity.HIGH: "error",
+            Severity.MEDIUM: "warning",
+            Severity.LOW: "note",
+            Severity.INFO: "note",
+            Severity.UNDETERMINED: "none",
+        }
+        results: list[dict[str, Any]] = []
+        for result in self.results:
+            physical_locations = [
+                {
+                    "physicalLocation": {
+                        "artifactLocation": {"uri": location.file_path},
+                        **(
+                            {
+                                "region": {
+                                    "startLine": location.line_start,
+                                    **(
+                                        {"endLine": location.line_end}
+                                        if location.line_end is not None
+                                        else {}
+                                    ),
+                                    **(
+                                        {"startColumn": location.column_start}
+                                        if location.column_start is not None
+                                        else {}
+                                    ),
+                                    **(
+                                        {"endColumn": location.column_end}
+                                        if location.column_end is not None
+                                        else {}
+                                    ),
+                                    **(
+                                        {"snippet": {"text": location.snippet}}
+                                        if location.snippet is not None
+                                        else {}
+                                    ),
+                                }
+                            }
+                            if location.line_start is not None
+                            else {}
+                        ),
+                    }
+                }
+                for location in result.locations
+            ]
+            results.append(
+                {
+                    "ruleId": result.rule_id,
+                    "ruleName": result.rule_name,
+                    "level": levels.get(result.severity, "none"),
+                    "message": {"text": result.message},
+                    "locations": physical_locations,
+                    "partialFingerprints": result.partial_fingerprints,
+                    "properties": {
+                        "findingId": result.finding_id,
+                        "cwe": result.cwe_category,
+                    },
+                }
+            )
+        return {
+            "$schema": self.schema_uri,
+            "version": self.version,
+            "runs": [
+                {
+                    "automationDetails": {"id": self.run_id},
+                    "tool": {
+                        "driver": {
+                            "name": self.tool_name,
+                            "version": self.tool_version,
+                        }
+                    },
+                    "results": results,
+                    "artifacts": [ref.model_dump(mode="json") for ref in self.artifact_refs],
+                    "properties": self.metadata,
+                }
+            ],
+        }
+
 
 __all__ = [
     "FindingCounts",

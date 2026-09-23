@@ -6,15 +6,14 @@ end-to-end without Semgrep/SpotBugs installed.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
-from pathlib import Path
+from datetime import UTC, datetime
 
 from ..contracts import (
     CWECategory,
     LanguageKind,
     Observation,
-    ScanSpecification,
     ScannerResult,
+    ScanSpecification,
     Severity,
     SourceCoordinate,
     ToolName,
@@ -37,7 +36,7 @@ class FakeScannerAdapter(ScannerAdapter):
         )
 
     def run(self, spec: ScanSpecification, *, workdir: str) -> ScannerResult:
-        started = datetime.now(timezone.utc)
+        started = datetime.now(UTC)
         obs = Observation(
             observation_id="fake-obs-1",
             detected_at=started,
@@ -63,6 +62,6 @@ class FakeScannerAdapter(ScannerAdapter):
             adapter_version=self.adapter_version,
             status="completed",
             started_at=started,
-            finished_at=datetime.now(timezone.utc),
+            finished_at=datetime.now(UTC),
             observations=[obs],
         )

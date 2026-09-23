@@ -10,31 +10,28 @@ shells out via ``_invoke``.
 
 from __future__ import annotations
 
-import json
 import xml.etree.ElementTree as ET
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 from vulnscan.contracts import (
-    ArtifactReference,
     CoverageRecord,
     CoverageUnitStatus,
     ExtractionMode,
     LanguageKind,
     Observation,
     RunStatus,
-    ScanSpecification,
     ScannerResult,
+    ScanSpecification,
     Severity,
     SourceCoordinate,
     ToolName,
 )
 
-from .base import ADAPTER_VERSION, AdapterCapability, ScannerAdapter
+from .base import AdapterCapability, ScannerAdapter
 from .platform import which
 from .tool_versions import probe_version
-
 
 # --- Severity map --------------------------------------------------------- #
 
@@ -98,7 +95,7 @@ def parse_spotbugs_xml(
     from lxml import etree as lxml_etree  # type: ignore[import-untyped]
     root = lxml_etree.fromstring(xml_text.encode())
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     observations: list[Observation] = []
     coverage: list[CoverageRecord] = []
 
@@ -114,7 +111,6 @@ def parse_spotbugs_xml(
         source_line_el = bug_instance.find("SourceLine")
         method_el = bug_instance.find("Method")
         class_el = bug_instance.find("Class")
-        package_el = bug_instance.find("Package")
 
         file_path = ""
         if source_line_el is not None:
@@ -209,8 +205,8 @@ class SpotBugsAdapter(ScannerAdapter):
         )
 
     def run(self, spec: ScanSpecification, *, workdir: str) -> ScannerResult:
-        from datetime import datetime, timezone
-        started = datetime.now(timezone.utc)
+        from datetime import datetime
+        started = datetime.now(UTC)
         tool_cfg = self._tool_config(spec)
 
         # Disabled in spec?
@@ -232,7 +228,7 @@ class SpotBugsAdapter(ScannerAdapter):
             return self._fatal(
                 spec,
                 started,
-                datetime.now(timezone.utc),
+                datetime.now(UTC),
                 type("FakeResult", (), {"timed_out": False, "returncode": 1, "stdout": "", "stderr": "", "duration_ms": 0})(),
                 note=f"classes directory not found: {classes_path} (run 'mvn compile' first)",
             )
@@ -253,7 +249,7 @@ class SpotBugsAdapter(ScannerAdapter):
             env["JAVA_HOME"] = os.environ["JAVA_HOME"]
 
         result = self._invoke(argv, cwd=workdir, env=env)
-        finished = datetime.now(timezone.utc)
+        finished = datetime.now(UTC)
 
         output_file = Path(workdir) / "target" / "spotbugs-report.xml"
         if not output_file.exists():
@@ -271,15 +267,17 @@ class SpotBugsAdapter(ScannerAdapter):
                 tool_version=cap.version or "unknown",
                 source_snapshot=spec.target_commit_sha,
             )
-        except Exception as exc:
-            return self._fatal(spec, started, finished, result, note=f"failed to parse SpotBugs XML: {exc}")
+        except (ET.ParseError, TypeError, ValueError) as exc:
+            return self._fatal(
+                spec, started, finished, result, note=f"failed to parse SpotBugs XML: {exc}"
+            )
 
         return ScannerResult(
             run_id=spec.run_id,
             tool=self.tool,
             tool_version=cap.version or "unknown",
             adapter_version=self.adapter_version,
-            status=RunStatus.COMPLETED if observations else RunStatus.COMPLETED,
+            status=RunStatus.COMPLETED,
             started_at=started,
             finished_at=finished,
             observations=observations,

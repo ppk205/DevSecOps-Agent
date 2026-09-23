@@ -9,13 +9,13 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from vulnscan.infra.container_backend import (  # noqa: E402
+from vulnscan.infra.container_backend import (
     BackendUnavailable,
     DockerBackend,
     LocalSubprocessBackend,
 )
-from vulnscan.infra.isolation import assert_no_credentials, scrub_env  # noqa: E402
-from vulnscan.infra.prepare import cache_key_for  # noqa: E402
+from vulnscan.infra.isolation import assert_no_credentials, scrub_env
+from vulnscan.infra.prepare import cache_key_for
 
 
 class TestResourceLimits:

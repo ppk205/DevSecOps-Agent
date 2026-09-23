@@ -6,7 +6,7 @@ but never reuses a failed run id. Only one run may be RUNNING at a time.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sqlalchemy.orm import Session
 
@@ -23,7 +23,7 @@ class RunNotFoundError(KeyError):
 
 
 def _utcnow() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 class JobManager:

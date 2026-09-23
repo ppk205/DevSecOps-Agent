@@ -2,11 +2,9 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-
 import typer
 
-from ..storage.database import init_db, get_engine, get_session
+from ..storage.database import get_session, init_db
 from ..storage.models import RunORM, TargetORM
 
 app = typer.Typer(help="DevSecOps-Agent: automated vulnerability scanning.")
@@ -39,7 +37,7 @@ def target_list(db_path: str = typer.Option("vulnscan.db", help="SQLite file pat
     """List registered targets."""
     init_db(db_path)
     with get_session(db_path) as session:
-        for t in session.query(TargetModel).order_by(TargetModel.id).all():
+        for t in session.query(TargetORM).order_by(TargetORM.id).all():
             typer.echo(f"{t.id}	{t.commit_sha[:8]}	{t.repository_url}")
 
 
@@ -66,7 +64,7 @@ def scan_list(db_path: str = typer.Option("vulnscan.db", help="SQLite file path.
     """List scan runs (newest first)."""
     init_db(db_path)
     with get_session(db_path) as session:
-        for r in session.query(RunModel).order_by(RunModel.id.desc()).all():
+        for r in session.query(RunORM).order_by(RunORM.id.desc()).all():
             typer.echo(f"{r.id}	attempt={r.attempt}	{r.status}")
 
 

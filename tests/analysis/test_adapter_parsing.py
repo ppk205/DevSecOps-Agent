@@ -4,10 +4,8 @@ from __future__ import annotations
 
 import json
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-
-import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
@@ -23,7 +21,7 @@ class TestSemgrepParsing:
     def test_parses_legacy_json(self) -> None:
         from vulnscan.scanners.semgrep_adapter import parse_json
 
-        obs, coverage = parse_json(
+        obs, _coverage = parse_json(
             _load("semgrep_sample.json"),
             run_id="test-run-1",
             tool_version="1.70.0",
@@ -57,7 +55,7 @@ class TestInvalidCweRejected:
         from vulnscan.contracts.finding import SourceCoordinate
         from vulnscan.normalization import normalize_result
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         good = Observation(
             observation_id="o1",
             detected_at=now,

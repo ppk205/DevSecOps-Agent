@@ -8,18 +8,16 @@ dependency.  Keys never leave the process; they are passed via
 
 from __future__ import annotations
 
-import json
-import os
-import time
 from dataclasses import dataclass, field
+from datetime import UTC, datetime
 from typing import Any
 
 import httpx
 
 from vulnscan.contracts.provider import ProviderProfile, ProviderUsage
-from vulnscan.contracts.enums import ToolName
-from .budget import BudgetManager, BudgetExhausted
-from .credentials import CredentialError, load_api_key
+
+from .budget import BudgetManager
+from .credentials import load_api_key
 
 
 @dataclass
@@ -110,7 +108,6 @@ class ProviderClient:
 
         url = f"{self.profile.base_url.rstrip('/')}/chat/completions"
 
-        t0 = time.monotonic()
         try:
             with httpx.Client(timeout=self.profile.timeout_seconds) as client:
                 resp = client.post(url, json=payload, headers=headers)
@@ -123,7 +120,6 @@ class ProviderClient:
         except httpx.RequestError as exc:
             raise ProviderError(f"Request failed for {self.profile.id}: {exc}") from exc
 
-        elapsed = time.monotonic() - t0
         data = resp.json()
 
         # Parse response
@@ -147,7 +143,7 @@ class ProviderClient:
             usage = ProviderUsage(
                 provider_id=self.profile.id,
                 model=use_model,
-                timestamp=datetime.now(timezone.utc),
+                timestamp=datetime.now(UTC),
                 prompt_tokens=input_tokens,
                 completion_tokens=output_tokens,
                 total_tokens=total_tokens,

@@ -15,7 +15,7 @@ import pytest
 # Make src importable when the package is not installed.
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from vulnscan.contracts import (  # noqa: E402
+from vulnscan.contracts import (
     ArtifactReference,
     Assessment,
     EvaluationCase,

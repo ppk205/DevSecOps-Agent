@@ -1,23 +1,26 @@
 """T04 gate: bounded agent loop — max followups, tool rejection, budget."""
 
 import json
-from datetime import datetime, timezone
-from unittest.mock import MagicMock, patch
+from datetime import UTC, datetime
+from unittest.mock import MagicMock
 
-import pytest
-
-from vulnscan.contracts.finding import Finding, Observation, SourceCoordinate
-from vulnscan.contracts.enums import CWECategory, Severity, FindingStatus, ToolName
-from vulnscan.contracts.assessment import Assessment
 from vulnscan.agent.loop import AgentLoop
-from vulnscan.providers.client import ChatMessage, ChatResponse, ProviderClient
-from vulnscan.providers.budget import BudgetManager, BudgetExhausted
+from vulnscan.contracts.assessment import Assessment
+from vulnscan.contracts.enums import (
+    CWECategory,
+    FindingStatus,
+    ProviderProtocol,
+    Severity,
+    ToolName,
+)
+from vulnscan.contracts.finding import Finding, Observation, SourceCoordinate
 from vulnscan.contracts.provider import ProviderProfile
-from vulnscan.contracts.enums import ProviderProtocol
+from vulnscan.providers.budget import BudgetExhausted
+from vulnscan.providers.client import ChatResponse, ProviderClient
 
 
 def _finding(fid: str = "f1") -> Finding:
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     return Finding(
         finding_id=fid,
         run_id="r1",

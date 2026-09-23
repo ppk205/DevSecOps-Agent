@@ -11,7 +11,6 @@ from __future__ import annotations
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
 
 class BackendUnavailable(RuntimeError):
@@ -104,17 +103,15 @@ class LocalSubprocessBackend(ContainerBackend):
         workdir = Path(workdir)
         workdir.mkdir(parents=True, exist_ok=True)
 
-        kwargs: dict[str, Any] = {
-            "cwd": str(workdir),
-            "timeout": timeout,
-            "stdout": subprocess.PIPE,
-            "stderr": subprocess.PIPE,
-        }
-        if env is not None:
-            kwargs["env"] = env
-
         try:
-            proc = subprocess.run(command, **kwargs)
+            proc = subprocess.run(
+                command,
+                check=False,
+                cwd=str(workdir),
+                timeout=timeout,
+                capture_output=True,
+                env=env,
+            )
             return ExecutionResult(
                 returncode=proc.returncode,
                 stdout=proc.stdout or b"",

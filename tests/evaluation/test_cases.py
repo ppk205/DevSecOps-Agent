@@ -3,17 +3,16 @@
 from pathlib import Path
 
 from vulnscan.contracts.enums import (
-    CWECategory,
     SplitMembership,
     VariantRelationship,
 )
 from vulnscan.evaluation.cases import (
-    create_sample_cases,
     case_families,
+    create_sample_cases,
+    load_cases,
+    save_cases,
     split_summary,
     validate_cases,
-    save_cases,
-    load_cases,
 )
 
 

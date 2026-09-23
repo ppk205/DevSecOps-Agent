@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 from collections import Counter, defaultdict
+from datetime import UTC
 from pathlib import Path
 from typing import Any
 
@@ -80,8 +81,8 @@ def create_sample_cases() -> list[EvaluationCase]:
     Three CWE groups with one dev + two held-out cases each.
     Covers CWE-89, CWE-79, CWE-862.
     """
-    from datetime import datetime, timezone
-    now = datetime(2026, 1, 1, tzinfo=timezone.utc)
+    from datetime import datetime
+    now = datetime(2026, 1, 1, tzinfo=UTC)
     cases: list[EvaluationCase] = []
 
     cwe_groups = [

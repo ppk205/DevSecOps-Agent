@@ -39,7 +39,7 @@ class SourceIndex:
     auth_helper_files: list[str] = field(default_factory=list)
 
 
-_ANNOT_BLOCK = re.compile(r"@(?:WebServlet|WebFilter)\s*\(([^\)]*)\)", re.S)
+_ANNOT_BLOCK = re.compile(r"@(?:WebServlet|WebFilter)\s*\(([^\)]*)\)", re.DOTALL)
 _QUOTED = re.compile(r"['\"]([^'\"]+)['\"]")
 _CLASS_NAME = re.compile(r"class\s+(\w+)")
 _AUTH_CALL = re.compile(r"\b(authenticate|authorize|login|logout|isAuthenticated|hasRole)\s*\(")

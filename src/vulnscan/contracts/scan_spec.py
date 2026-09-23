@@ -7,7 +7,7 @@ Changes to a scan spec after creation require a new run.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from pydantic import Field, field_validator
@@ -142,7 +142,7 @@ class ScanSpecification(VersionedModel):
         description="Docker image used for sandbox execution.",
     )
     created_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
+        default_factory=lambda: datetime.now(UTC),
         description="UTC timestamp when the specification was authored.",
     )
     created_by: str = Field(

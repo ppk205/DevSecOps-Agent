@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import hashlib
 from collections import defaultdict
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from vulnscan.contracts import (
     EvidenceStrength,
@@ -81,10 +81,9 @@ def group_findings(
     findings: list[Finding] = []
     for key, obs_list in groups.items():
         fp = _fingerprint(key, obs_list)
-        rep_loc = obs_list[0].location
         tools = sorted({o.tool for o in obs_list}, key=lambda t: t.value)
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         finding = Finding(
             finding_id=fp[:16],
             run_id=run_id,

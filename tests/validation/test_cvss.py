@@ -2,7 +2,7 @@
 
 import pytest
 
-from vulnscan.assessment.cvss import score, parse_vector, validate, Severity, CVSSResult
+from vulnscan.assessment.cvss import CVSSResult, Severity, parse_vector, score, validate
 
 
 class TestParseVector:

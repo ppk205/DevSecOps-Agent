@@ -6,7 +6,7 @@ COMPLETED is reported as PARTIAL (if it produced output) or FAILED.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sqlalchemy.orm import Session
 
@@ -14,7 +14,7 @@ from ..storage.models import StageORM
 
 
 def _utcnow() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 class StageTracker:

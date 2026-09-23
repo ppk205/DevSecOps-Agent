@@ -61,7 +61,7 @@ def repo_relative(path: str, root: str) -> str:
             return merged.relative_to(root_p.resolve(strict=False)).as_posix()
         except ValueError:
             return p.as_posix().lstrip("/")
-    except Exception:
+    except (OSError, RuntimeError, ValueError):
         return path.replace("\\", "/")
 
 
@@ -92,7 +92,7 @@ def read_text(path: str | os.PathLike[str], max_bytes: int = 1_000_000) -> str:
     try:
         data = Path(path).read_bytes()[:max_bytes]
         return data.decode("utf-8", errors="replace")
-    except Exception:
+    except (OSError, TypeError, ValueError):
         return ""
 
 

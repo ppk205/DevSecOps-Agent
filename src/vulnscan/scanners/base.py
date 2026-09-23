@@ -16,14 +16,14 @@ Design rules
 from __future__ import annotations
 
 import abc
+from collections.abc import Sequence
 from dataclasses import dataclass, field
-from typing import Any, Sequence
+from typing import Any
 
 from vulnscan.contracts import (
-    CoverageRecord,
     RunStatus,
-    ScanSpecification,
     ScannerResult,
+    ScanSpecification,
     ToolName,
 )
 
@@ -168,7 +168,7 @@ class AdapterRegistry:
     adapters: dict[str, ScannerAdapter] = field(default_factory=dict)
 
     @classmethod
-    def default(cls) -> "AdapterRegistry":
+    def default(cls) -> AdapterRegistry:
         """Build the registry with every adapter shipped in this package."""
         from .codeql_adapter import CodeQLAdapter
         from .dependency_check_adapter import DependencyCheckAdapter

@@ -1,0 +1,33 @@
+{% extends "base.html" %}{% block title %}{{ finding.title }} · DevSecOps Agent{% endblock %}
+{% block content %}
+<h1>Evidence detail</h1><p class="muted"><code>{{ finding.finding_id }}</code> · fingerprint <code>{{ finding.fingerprint }}</code></p><div class="rule"></div>
+<section class="panel">
+  <h2>{{ finding.title }}</h2>
+  <p>{{ finding.description }}</p>
+  <table><tbody>
+    <tr><th>Status</th><td><span class="status {{ finding.status.value }}">{{ finding.status.value }}</span></td></tr>
+    <tr><th>Severity</th><td>{{ finding.severity.value }}</td></tr>
+    <tr><th>CWE</th><td>{{ finding.cwe_category.value if finding.cwe_category else "Unclassified" }}</td></tr>
+  </tbody></table>
+</section>
+<section class="panel">
+  <h2>Review status</h2>
+  <form method="post" action="/findings/{{ finding.finding_id }}/status">
+    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+    <label for="status">Evidence decision</label>
+    <select id="status" name="status">
+      {% for value in ['confirmed', 'rejected', 'unresolved', 'unprocessed'] %}
+      <option value="{{ value }}"{% if finding.status.value == value %} selected{% endif %}>{{ value|capitalize }}</option>
+      {% endfor %}
+    </select>
+    <div class="actions"><button type="submit">Save decision</button></div>
+  </form>
+</section>
+<section class="panel">
+  <h2>Observations</h2>
+  {% if finding.observations %}<table><thead><tr><th>Tool</th><th>Rule</th><th>Message</th><th>Location</th><th>Confidence</th></tr></thead><tbody>
+  {% for observation in finding.observations %}<tr><td>{{ observation.tool.value }} {{ observation.tool_version }}</td><td><code>{{ observation.rule_id }}</code></td><td>{{ observation.message }}</td><td>{% if observation.location %}<code>{{ observation.location.file_path }}:{{ observation.location.line_start }}{% if observation.location.line_end %}-{{ observation.location.line_end }}{% endif %}</code>{% else %}—{% endif %}</td><td>{{ "%.0f"|format(observation.confidence * 100) }}%</td></tr>{% endfor %}
+  </tbody></table>{% else %}<p class="muted">No observations attached.</p>{% endif %}
+</section>
+<section class="panel"><h2>Source fingerprint</h2><pre>{{ finding.fingerprint }}</pre></section>
+{% endblock %}

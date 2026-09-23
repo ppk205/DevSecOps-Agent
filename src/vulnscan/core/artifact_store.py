@@ -91,9 +91,8 @@ class ArtifactStore:
         for att_dir in sorted(run_dir.iterdir(), key=lambda p: p.name):
             if not att_dir.is_dir():
                 continue
-            if attempt is not None:
-                if att_dir.name != f"attempt-{attempt}":
-                    continue
+            if attempt is not None and att_dir.name != f"attempt-{attempt}":
+                continue
             for cs_dir in sorted(att_dir.iterdir()):
                 if not cs_dir.is_dir():
                     continue

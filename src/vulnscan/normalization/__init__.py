@@ -1,7 +1,7 @@
 """Finding normalization: ScannerResult -> validated Observations -> grouped Findings."""
 
-from .normalizer import normalize_result
-from .grouping import group_findings
 from .dedup import deduplicate_findings
+from .grouping import group_findings
+from .normalizer import normalize_result
 
-__all__ = ["normalize_result", "group_findings", "deduplicate_findings"]
+__all__ = ["deduplicate_findings", "group_findings", "normalize_result"]

@@ -8,9 +8,7 @@ and produces an unresolved AI assessment.
 from __future__ import annotations
 
 import threading
-from datetime import datetime, timezone
 
-from vulnscan.contracts.enums import ToolName
 from vulnscan.contracts.provider import ProviderUsage
 
 

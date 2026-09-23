@@ -11,7 +11,7 @@ unless a rule's severity suggests otherwise.
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -22,18 +22,16 @@ from vulnscan.contracts import (
     LanguageKind,
     Observation,
     RunStatus,
-    ScanSpecification,
     ScannerResult,
+    ScanSpecification,
     Severity,
     SourceCoordinate,
     ToolName,
 )
-from vulnscan.contracts.enums import CWECategory
 
 from .base import AdapterCapability, ScannerAdapter
 from .platform import which
 from .tool_versions import probe_version
-
 
 # --- severity mapping ----------------------------------------------------- #
 
@@ -67,7 +65,7 @@ def parse_gitleaks_json(
         findings = report.get("results", [])
     else:
         findings = report
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     observations: list[Observation] = []
     coverage: list[CoverageRecord] = []
 
@@ -163,7 +161,7 @@ class GitleaksAdapter(ScannerAdapter):
         )
 
     def run(self, spec: ScanSpecification, *, workdir: str) -> ScannerResult:
-        started = datetime.now(timezone.utc)
+        started = datetime.now(UTC)
         tool_cfg = self._tool_config(spec)
 
         if tool_cfg and not tool_cfg.enabled:
@@ -173,7 +171,6 @@ class GitleaksAdapter(ScannerAdapter):
         if not cap.available:
             return self._skipped_result(spec, started, cap.unavailable_message())
 
-        import os
         report_path = Path(workdir) / "gitleaks-report.json"
         argv = [
             self.binary_name,
@@ -195,7 +192,7 @@ class GitleaksAdapter(ScannerAdapter):
                     argv += [f"--{key}", str(value)]
 
         result = self._invoke(argv, cwd=workdir)
-        finished = datetime.now(timezone.utc)
+        finished = datetime.now(UTC)
 
         if not report_path.exists():
             # Gitleaks exits 1 when no findings — that's not a failure

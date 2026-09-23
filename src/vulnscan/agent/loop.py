@@ -13,15 +13,16 @@ from __future__ import annotations
 import json
 import logging
 import re
-from datetime import datetime, timezone
-from typing import Any, Callable
+from collections.abc import Callable
+from datetime import UTC, datetime
+from typing import Any
 
 from vulnscan.contracts.assessment import Assessment, CVSSAssessment
-from vulnscan.contracts.enums import FindingStatus, Severity
 from vulnscan.contracts.finding import Finding
 from vulnscan.providers.budget import BudgetExhausted
 from vulnscan.providers.client import ChatMessage, ChatResponse, ProviderClient, ProviderError
-from .tools import TOOL_SCHEMAS, TOOL_NAME_SET
+
+from .tools import TOOL_NAME_SET, TOOL_SCHEMAS
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +69,7 @@ class AgentLoop:
             return self._run_loop(finding, context)
         except (ProviderError, BudgetExhausted) as exc:
             logger.warning("Agent loop failed for %s: %s", finding.finding_id, exc)
-            now = datetime.now(timezone.utc)
+            now = datetime.now(UTC)
             return Assessment(
                 assessment_id=f"assess-{finding.finding_id}-unresolved",
                 finding_id=finding.finding_id,
@@ -128,8 +129,9 @@ class AgentLoop:
                             tool_result = handler(args)
                         else:
                             tool_result = {"error": f"No handler for tool '{tool_name}'."}
-                    except Exception as e:
-                        tool_result = {"error": str(e)}
+                    except Exception as exc:  # noqa: BLE001 - arbitrary tool handler boundary
+                        logger.warning("Tool %s failed: %s", tool_name, exc)
+                        tool_result = {"error": str(exc)}
 
                 messages.append(ChatMessage(
                     role="tool",
@@ -139,7 +141,7 @@ class AgentLoop:
                 tool_calls_made += 1
 
         # Exhausted follow-ups
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         return Assessment(
             assessment_id=f"assess-{finding.finding_id}-partial",
             finding_id=finding.finding_id,
@@ -220,10 +222,10 @@ class AgentLoop:
         if cvss_vector:
             try:
                 cvss = CVSSAssessment(vector=str(cvss_vector), source="ai-proposal")
-            except Exception:
-                pass
+            except (TypeError, ValueError) as exc:
+                logger.debug("Ignoring invalid AI CVSS proposal %r: %s", cvss_vector, exc)
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         return Assessment(
             assessment_id=f"assess-{finding.finding_id}-ai",
             finding_id=finding.finding_id,

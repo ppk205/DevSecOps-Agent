@@ -3,15 +3,13 @@
 from __future__ import annotations
 
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-
-import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-_now = datetime.now(timezone.utc)
+_now = datetime.now(UTC)
 
 
 def _make_finding(
@@ -21,7 +19,7 @@ def _make_finding(
     line_start: int = 10,
     obs_ids: list[str] | None = None,
 ) -> dict:
-    from vulnscan.contracts import CWECategory, EvidenceStrength, Severity
+    from vulnscan.contracts import EvidenceStrength, Severity
 
     oid_list = obs_ids or [finding_id]
     observations_list = [

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from vulnscan.contracts import ScanSpecification
 
 from .platform import which
@@ -39,4 +41,4 @@ def classpath_from_options(tool_cfg: Any) -> str | None:
     return getattr(tool_cfg, "options", {}).get("classpath")
 
 
-__all__ = ["probe_version", "java_target_classpath", "classpath_from_options"]
+__all__ = ["classpath_from_options", "java_target_classpath", "probe_version"]

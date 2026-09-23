@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}DevSecOps Agent{% endblock %}</title>
+  <style>
+    :root{--ink:#17212b;--muted:#657382;--line:#d8dee5;--paper:#f6f8fa;--panel:#fff;--accent:#006d77;--warn:#9a6700;--danger:#b42318}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 system-ui,-apple-system,sans-serif}
+    header{background:#12232a;color:#f4fbfc;padding:18px max(24px,calc((100vw - 1120px)/2));display:flex;align-items:center;gap:30px}
+    header strong{font-size:19px;letter-spacing:.02em}nav{display:flex;gap:18px}nav a{color:#b9dadd;text-decoration:none}
+    main{max-width:1120px;margin:36px auto;padding:0 24px}h1{font-size:32px;margin:0 0 8px}h2{margin-top:0}.muted{color:var(--muted)}
+    .rule{height:3px;width:58px;background:var(--accent);margin:18px 0 28px}.panel{background:var(--panel);border-top:2px solid var(--ink);padding:24px;margin:20px 0}
+    label{display:block;font-weight:650;margin:14px 0 5px}input{width:100%;padding:10px 11px;border:1px solid #9ca8b3;border-radius:2px;font:inherit}
+    button,.button{display:inline-block;border:0;border-radius:2px;background:var(--accent);color:white;padding:9px 14px;font:inherit;font-weight:700;text-decoration:none;cursor:pointer}
+    table{width:100%;border-collapse:collapse;background:white}th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+    code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}pre{overflow:auto;background:#12232a;color:#e6f2f3;padding:18px;line-height:1.5}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);margin:24px 0}.stat{background:white;padding:18px}.stat b{display:block;font-size:30px;line-height:1.1}.confirmed{color:#067647}.rejected{color:var(--muted)}.unresolved{color:var(--warn)}.unprocessed{color:#344054}
+    .status{font-size:12px;font-weight:750;text-transform:uppercase;letter-spacing:.05em}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+    @media(max-width:700px){.stats{grid-template-columns:1fr 1fr}header{display:block}nav{margin-top:10px}h1{font-size:27px}}
+  </style>
+</head>
+<body>
+<header><strong>DEVSECOPS / CONTROL ROOM</strong><nav><a href="/">Targets</a>{% if run %}<a href="/runs/{{ run.id }}">Run {{ run.id }}</a><a href="/runs/{{ run.id }}/findings">Findings</a>{% endif %}</nav></header>
+<main>{% block content %}{% endblock %}</main>
+</body>
+</html>

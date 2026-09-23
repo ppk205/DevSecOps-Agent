@@ -1,7 +1,8 @@
 """Platform tests: content-addressed artifact store (T01 gate)."""
 
-from pathlib import Path
 import hashlib
+from pathlib import Path
+
 import pytest
 
 from vulnscan.core.artifact_store import ArtifactStore
@@ -19,8 +20,8 @@ def test_save_and_retrieve(tmp_path: Path):
 def test_artifacts_identifiable_by_run_and_attempt(tmp_path: Path):
     store = ArtifactStore(tmp_path / "artifacts")
     a1 = store.save_bytes(run_id=10, attempt=1, name="a.txt", data=b"run10-attempt1")
-    a2 = store.save_bytes(run_id=10, attempt=2, name="a.txt", data=b"run10-attempt2")
-    a3 = store.save_bytes(run_id=11, attempt=1, name="a.txt", data=b"run11-attempt1")
+    store.save_bytes(run_id=10, attempt=2, name="a.txt", data=b"run10-attempt2")
+    store.save_bytes(run_id=11, attempt=1, name="a.txt", data=b"run11-attempt1")
 
     items_10 = store.list_by_run(10)
     assert len(items_10) == 2

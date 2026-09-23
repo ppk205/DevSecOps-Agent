@@ -7,17 +7,16 @@ mutate finding status.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
-from vulnscan.contracts.validation import EvidenceRecord, ValidationDecision
 from vulnscan.contracts.assessment import Assessment
-from vulnscan.contracts.verification import VerificationObservation
 from vulnscan.contracts.enums import (
-    EvidenceKind,
     EvidenceStrength,
     FindingStatus,
     VerificationOutcome,
 )
+from vulnscan.contracts.validation import EvidenceRecord, ValidationDecision
+from vulnscan.contracts.verification import VerificationObservation
 
 
 class IndependentValidator:
@@ -93,7 +92,7 @@ class IndependentValidator:
             and "contradicts" in (e.source_description or "").lower()
         ]
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         # Decision tree
         if rejected_counterevidence and strong_evidence < self._min_ev:

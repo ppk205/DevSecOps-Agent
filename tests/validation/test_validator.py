@@ -1,19 +1,17 @@
 """T05 gate: independent validator — evidence-based finding status changes."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from vulnscan.assessment.validator import IndependentValidator
-from vulnscan.contracts.validation import EvidenceRecord, ValidationDecision
 from vulnscan.contracts.assessment import Assessment
-from vulnscan.contracts.verification import VerificationObservation
 from vulnscan.contracts.enums import (
     EvidenceKind,
     EvidenceStrength,
     FindingStatus,
     VerificationOutcome,
-    CWECategory,
-    Severity,
 )
+from vulnscan.contracts.validation import EvidenceRecord
+from vulnscan.contracts.verification import VerificationObservation
 
 
 def _evidence(eid: str, fid: str, strength: EvidenceStrength, desc: str = "scanner detection") -> EvidenceRecord:
@@ -23,7 +21,7 @@ def _evidence(eid: str, fid: str, strength: EvidenceStrength, desc: str = "scann
         kind=EvidenceKind.STATIC,
         strength=strength,
         source_description=desc,
-        created_at=datetime.now(timezone.utc),
+        created_at=datetime.now(UTC),
     )
 
 
@@ -39,7 +37,7 @@ def _assessment(fid: str, proposed_status: str = "unresolved") -> Assessment:
         model_id="test-model",
         model_version="v1",
         confidence=0.0,
-        created_at=datetime.now(timezone.utc),
+        created_at=datetime.now(UTC),
     )
 
 
@@ -55,7 +53,7 @@ def _verification(vid: str, fid: str, outcome: VerificationOutcome) -> Verificat
         execution_status="demonstrated",
         is_vulnerable_variant=True,
         evidence_kind=EvidenceKind.STATIC,
-        observed_at=datetime.now(timezone.utc),
+        observed_at=datetime.now(UTC),
     )
 
 

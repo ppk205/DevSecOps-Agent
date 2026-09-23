@@ -8,7 +8,7 @@ conditions: the adapter records them and returns a result, never raising.
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -19,8 +19,8 @@ from vulnscan.contracts import (
     LanguageKind,
     Observation,
     RunStatus,
-    ScanSpecification,
     ScannerResult,
+    ScanSpecification,
     Severity,
     SourceCoordinate,
     ToolName,
@@ -29,7 +29,6 @@ from vulnscan.contracts.enums import CWECategory
 
 from .base import AdapterCapability, ScannerAdapter
 from .platform import which
-from .process import CommandResult
 from .tool_versions import probe_version
 
 _SEVERITY_BY_NAME = {
@@ -89,7 +88,7 @@ def parse_dependency_check_json(
     source_snapshot: str,
 ) -> tuple[list[Observation], list[CoverageRecord]]:
     """Parse a Dependency-Check JSON report into observations + coverage."""
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     observations: list[Observation] = []
     coverage: list[CoverageRecord] = []
 
@@ -175,7 +174,7 @@ class DependencyCheckAdapter(ScannerAdapter):
         )
 
     def run(self, spec: ScanSpecification, *, workdir: str) -> ScannerResult:
-        started = datetime.now(timezone.utc)
+        started = datetime.now(UTC)
         tool_cfg = self._tool_config(spec)
 
         if tool_cfg and not tool_cfg.enabled:
@@ -201,7 +200,7 @@ class DependencyCheckAdapter(ScannerAdapter):
                 argv += [f"--{key}", str(value)]
 
         result = self._invoke(argv, cwd=workdir)
-        finished = datetime.now(timezone.utc)
+        finished = datetime.now(UTC)
 
         if not report_path.exists():
             return self._fatal(

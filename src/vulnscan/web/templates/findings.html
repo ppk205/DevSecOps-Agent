@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block title %}Findings · Run {{ run.id }}{% endblock %}
+{% block content %}
+<h1>Findings</h1><p class="muted">Statuses are evidence decisions, not AI claims. Unresolved and unprocessed remain visible.</p><div class="rule"></div>
+<div class="stats"><div class="stat confirmed"><b>{{ counts.confirmed }}</b>Confirmed</div><div class="stat rejected"><b>{{ counts.rejected }}</b>Rejected</div><div class="stat unresolved"><b>{{ counts.unresolved }}</b>Unresolved</div><div class="stat unprocessed"><b>{{ counts.unprocessed }}</b>Unprocessed</div></div>
+{% if findings %}<table><thead><tr><th>Severity</th><th>Finding</th><th>CWE</th><th>Status</th><th>Location</th></tr></thead><tbody>{% for finding in findings %}<tr><td>{{ finding.severity.value }}</td><td><a href="/findings/{{ finding.finding_id }}">{{ finding.title }}</a></td><td>{{ finding.cwe_category.value if finding.cwe_category else "Unclassified" }}</td><td><span class="status {{ finding.status.value }}">{{ finding.status.value }}</span></td><td>{% if finding.observations and finding.observations[0].location %}<code>{{ finding.observations[0].location.file_path }}:{{ finding.observations[0].location.line_start }}</code>{% else %}—{% endif %}</td></tr>{% endfor %}</tbody></table>{% else %}<p class="muted">No findings recorded for this run.</p>{% endif %}
+{% endblock %}

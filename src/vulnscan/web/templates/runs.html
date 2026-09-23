@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block title %}Run {{ run.id }} · DevSecOps Agent{% endblock %}
+{% block content %}
+<h1>Run progress</h1><p class="muted">Run #{{ run.id }} · {{ target.repository_url }} · <code>{{ target.commit_sha }}</code></p><div class="rule"></div>
+<div class="stats"><div class="stat"><b>{{ run.status|upper }}</b>Run status</div><div class="stat"><b>{{ stages|length }}</b>Stages</div><div class="stat"><b>{{ findings|length }}</b>Findings</div><div class="stat"><b>{{ run.attempt }}</b>Attempt</div></div>
+<section class="panel"><h2>Tool status</h2>{% if stages %}<table><thead><tr><th>#</th><th>Stage</th><th>Status</th><th>Started</th><th>Completed</th><th>Error</th></tr></thead><tbody>{% for stage in stages %}<tr><td>{{ stage.ordinal }}</td><td>{{ stage.name }}</td><td>{{ stage.status }}</td><td>{{ stage.started_at or "—" }}</td><td>{{ stage.completed_at or "—" }}</td><td>{{ stage.error_message or "—" }}</td></tr>{% endfor %}</tbody></table>{% else %}<p class="muted">No stages recorded.</p>{% endif %}</section>
+<div class="actions"><a class="button" href="/runs/{{ run.id }}/findings">Inspect findings</a>{% for fmt in ['json','sarif','html','markdown'] %}<a class="button" href="/runs/{{ run.id }}/export/{{ fmt }}">Export {{ fmt|upper }}</a>{% endfor %}</div>
+{% endblock %}

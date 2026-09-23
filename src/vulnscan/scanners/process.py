@@ -8,10 +8,9 @@ of every adapter, and so timeouts / missing binaries are handled uniformly.
 from __future__ import annotations
 
 import os
-import shutil
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from subprocess import TimeoutExpired
-from typing import Sequence
 
 from .platform import normalize_path, which
 
@@ -57,7 +56,7 @@ def run_command(
 
     start = _now_ms()
     try:
-        proc = subprocess.run(  # noqa: S603 — argv built by adapters, not user input
+        proc = subprocess.run(
             command,
             cwd=str(cwd) if cwd is not None else None,
             capture_output=True,
@@ -112,7 +111,7 @@ def _now_ms() -> int:
 
 
 __all__ = [
-    "binary_available",
     "CommandResult",
+    "binary_available",
     "run_command",
 ]

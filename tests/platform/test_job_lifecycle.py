@@ -2,12 +2,8 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-
 from vulnscan.core.job_manager import JobManager, RunAlreadyRunningError
 from vulnscan.core.stage_tracker import StageTracker
-from vulnscan.core.artifact_store import ArtifactStore
-from vulnscan.storage.models import StageORM
 
 
 def test_submit_to_complete(session, sample_spec, tmp_path):

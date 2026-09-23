@@ -13,30 +13,25 @@ from __future__ import annotations
 
 import hashlib
 import json
-import re
-import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any
 
 from vulnscan.contracts import (
-    ArtifactReference,
     CoverageRecord,
     CoverageUnitStatus,
     ExtractionMode,
-    FindingStatus,
     LanguageKind,
     Observation,
     RunStatus,
-    ScanSpecification,
     ScannerResult,
+    ScanSpecification,
     Severity,
     SourceCoordinate,
     ToolName,
 )
-from vulnscan.contracts.enums import EvidenceKind
 
-from .base import ADAPTER_VERSION, AdapterCapability, ScannerAdapter
+from .base import AdapterCapability, ScannerAdapter
 from .platform import which
 from .tool_versions import probe_version
 
@@ -77,7 +72,7 @@ def _extract_from_sarif_v2(
     source_snapshot: str,
 ) -> tuple[list[Observation], list[CoverageRecord]]:
     """Parse a SARIF v2 document (Semgrep ``--sarif``)."""
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     observations: list[Observation] = []
     coverage: list[CoverageRecord] = []
 
@@ -183,7 +178,7 @@ def _extract_from_legacy_json(
     source_snapshot: str,
 ) -> tuple[list[Observation], list[CoverageRecord]]:
     """Parse Semgrep legacy ``--json`` output (list of ``results``)."""
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     observations: list[Observation] = []
     coverage: list[CoverageRecord] = []
 
@@ -313,8 +308,8 @@ class SemgrepAdapter(ScannerAdapter):
 
     def run(self, spec: ScanSpecification, *, workdir: str) -> ScannerResult:
         cap = self.capabilities()
-        from datetime import datetime, timezone
-        started = datetime.now(timezone.utc)
+        from datetime import datetime
+        started = datetime.now(UTC)
         tool_cfg = self._tool_config(spec)
 
         # Disabled in spec?
@@ -345,7 +340,7 @@ class SemgrepAdapter(ScannerAdapter):
         argv += [workdir]
 
         result = self._invoke(argv, cwd=workdir)
-        finished = datetime.now(timezone.utc)
+        finished = datetime.now(UTC)
 
         if not result.succeeded:
             if result.timed_out or result.returncode > 1:

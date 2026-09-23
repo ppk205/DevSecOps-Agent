@@ -3,15 +3,13 @@
 from __future__ import annotations
 
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-
-import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-_now = datetime.now(timezone.utc)
+_now = datetime.now(UTC)
 
 
 def _make_obs(file_path: str, line_start: int, cwe: str, rule_id: str) -> dict:
