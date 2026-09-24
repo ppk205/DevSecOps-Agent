@@ -52,6 +52,9 @@ browser = [
 cvss = [
     "cvss>=3.0.0",
 ]
+laya = [
+    "laya==0.3.20",
+]
 
 [project.scripts]
 devsecops-agent = "vulnscan.cli.main:main"

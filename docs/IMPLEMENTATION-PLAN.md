@@ -1,8 +1,8 @@
 # Implementation Plan — DevSecOps-Agent
 
-**Version:** 1.0
-**Status:** Draft (T00)
-**Related:** [SRS.md](SRS.md), [TEST-PLAN.md](TEST-PLAN.md), [../.planning/AGENT-HANDOFF.md](../.planning/AGENT-HANDOFF.md)
+**Version:** 1.1
+**Status:** In progress — T00–T07 implemented; T06 checkpoint committed; T08–T10 pending
+**Related:** [SRS.md](SRS.md), [TEST-PLAN.md](TEST-PLAN.md), [../.planning/AGENT-HANDOFF.md](../.planning/AGENT-HANDOFF.md), [Laya decision-routing plan](../.hermes/plans/2026-09-23_000000-laya-decision-routing.md)
 
 ---
 
@@ -36,6 +36,24 @@ T00 ──┬──> T01 ──┐
 - T08 needs T01–T07 (Wave 4). T09 needs T08 (Wave 5). T10 needs T09.
 - T05 and T07 may exchange contract fixtures concurrently; T08 requires their real joint acceptance evidence.
 
+```text
+Deterministic evidence
+        ↓
+Laya batch routing
+        ↓
+Targeted deep analysis
+        ↓
+Independent validation
+        ↓
+Human decision support
+```
+
+The pipeline stages are: scanner adapters → normalization/deduplication/source context → deterministic evidence envelope → optional Laya GPU decision router → targeted deep-analysis worker → `IndependentValidator` → final status and human decision workspace.
+
+Laya is an optional advisory backend, not a scanner, provider replacement, ground-truth source, final-status owner, or CVSS generator. See [the detailed Laya plan](../.hermes/plans/2026-09-23_000000-laya-decision-routing.md).
+
+---
+
 ## 3. Wave execution
 
 | Wave | Tasks | Constraint |
@@ -44,8 +62,8 @@ T00 ──┬──> T01 ──┐
 | 1 | T01, T02, T03 | Independent ownership; shared fixtures until integration exists. |
 | 2 | T04, T05, T07 | Distinct owners; dataset labels isolated from inference inputs. |
 | 3 | T06; unfinished integration checks | No second writer in an owned module. |
-| 4 | T08 | Coordinator runs integration and freeze gate. |
-| 5 | T09, then T10 | Serialize measured scans to avoid hardware contention. |
+| 4 | T08 — integration, Laya compatibility/adapter/protocol freeze | Coordinator + AI | Laya is optional and shadow/advisory by default; baseline remains operational without it. |
+| 5 | T09, then T10 | Evaluate baseline, Laya routing, and full system; reproduce on a clean environment; no unsupported claims. |
 
 ## 4. 17-week schedule
 
@@ -75,9 +93,9 @@ In-wave timing: T00 cross-file/CodeQL + JSP probes in weeks 1–2; T02 detection
 | T05 | CVSS, independent validation | Validation | T00 (+T02, T03) | Scoring vs reference; invented evidence rejected; missing metrics incomplete; counterevidence required. |
 | T06 | Dashboard, reporting | Presentation | T00 (+T01, T02, T04, T05) | Playwright scan→export; CSRF; counts reconcile; JSP position links; masked keys. |
 | T07 | Dataset, labels, evaluator | Evaluation | T00 (+T02, T03, T05 pilot) | Hand-checkable metrics; split enforcement; labels hidden; matching documented; actual dataset size. |
-| T08 | Integration, protocol freeze | Coordinator | T01–T07 | Requirement tests; baseline survives provider failure; budget operational; reproduction by second person. |
-| T09 | Experiments, analysis | Evaluation | T08 | Tables regenerate; recall loss vs 5-point tolerance; undefined metrics disclosed; hypothesis may fail. |
-| T10 | Reproduction, handover | Coordinator + reviewer | T09 | Collaborator reproduces baseline + proposed-system runs; no unsupported claims. |
+| T08 | Integration, Laya compatibility/adapter, protocol freeze | Coordinator + AI | T01–T07 | Baseline survives provider/Laya failure; budget operational; redaction/routing contracts frozen; GPU/CPU behavior documented; full integration evidence present. |
+| T09 | Experiments, analysis | Evaluation | T08 | Baseline/Laya/full-system tables regenerate; route quality and calibration measured; recall loss vs 5-point tolerance; undefined metrics disclosed; hypothesis may fail. |
+| T10 | Reproduction, handover | Coordinator + reviewer | T09 | Clean reproduction of baseline, Laya routing, and proposed system; pinned model revision; no unsupported claims; final limitations and evidence manifest. |
 
 ## 6. Budget allocation
 

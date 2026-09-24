@@ -1,0 +1,14 @@
+{
+  "enabled": false,
+  "mode": "shadow",
+  "model_id": "convaiinnovations/laya",
+  "revision": "aa8c91ca088ec597df95a0d1c76b3063cb2ae5e8",
+  "device": "auto",
+  "batch_size": 4,
+  "max_input_tokens": 512,
+  "timeout_seconds": 30,
+  "cache_enabled": true,
+  "high_confidence_threshold": 0.85,
+  "review_threshold": 0.60,
+  "affects_finding_status": false
+}

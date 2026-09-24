@@ -22,6 +22,15 @@ from .context_evidence import (
 
 # Accuracy contracts (ACC-01 .. ACC-07)
 from .coverage import CoverageRecord
+from .decision import (
+    DecisionAnswer,
+    DecisionQuestion,
+    DecisionRequest,
+    DecisionResult,
+    DecisionRoute,
+    DecisionStatus,
+    DecisionType,
+)
 
 # ruff: noqa: RUF022  (semantic grouping intentionally overrides alphabetical __all__)
 # Enums (shared vocabulary across every module)
@@ -129,6 +138,13 @@ __all__ = [
     "AmbiguousResolution",
     "JSPContext",
     "ContextEvidence",
+    "DecisionType",
+    "DecisionStatus",
+    "DecisionQuestion",
+    "DecisionRequest",
+    "DecisionAnswer",
+    "DecisionResult",
+    "DecisionRoute",
     "VerificationObservation",
     # Evaluator-only
     "MatchingCriteria",
