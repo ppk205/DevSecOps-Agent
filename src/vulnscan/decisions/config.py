@@ -6,6 +6,13 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
+from vulnscan.decisions.protocol import (
+    HIGH_CONFIDENCE_THRESHOLD,
+    MAX_INPUT_TOKENS,
+    MODEL_ID,
+    REVIEW_THRESHOLD,
+)
+
 _TRUE_MODES = {"shadow", "advisory", "off"}
 _FALSE_MODES = {"off", "disabled"}
 
@@ -16,15 +23,15 @@ class LayaConfig:
 
     enabled: bool = False
     mode: str = "shadow"
-    model_id: str = "convaiinnovations/laya"
+    model_id: str = MODEL_ID
     revision: str | None = None
     device: str = "auto"
     batch_size: int = 4
-    max_input_tokens: int = 512
+    max_input_tokens: int = MAX_INPUT_TOKENS
     timeout_seconds: int = 30
     cache_enabled: bool = True
-    high_confidence_threshold: float = 0.85
-    review_threshold: float = 0.60
+    high_confidence_threshold: float = HIGH_CONFIDENCE_THRESHOLD
+    review_threshold: float = REVIEW_THRESHOLD
     affects_finding_status: bool = False
 
     def validate(self) -> None:
@@ -54,15 +61,15 @@ def load_config(path: str | Path | None = None) -> LayaConfig:
     config = LayaConfig(
         enabled=bool(raw.get("enabled", False)),
         mode=str(raw.get("mode", "shadow")),
-        model_id=str(raw.get("model_id", "convaiinnovations/laya")),
+        model_id=str(raw.get("model_id", MODEL_ID)),
         revision=raw.get("revision") or None,
         device=str(raw.get("device", "auto")),
         batch_size=int(raw.get("batch_size", 4)),
-        max_input_tokens=int(raw.get("max_input_tokens", 512)),
+        max_input_tokens=int(raw.get("max_input_tokens", MAX_INPUT_TOKENS)),
         timeout_seconds=int(raw.get("timeout_seconds", 30)),
         cache_enabled=bool(raw.get("cache_enabled", True)),
-        high_confidence_threshold=float(raw.get("high_confidence_threshold", 0.85)),
-        review_threshold=float(raw.get("review_threshold", 0.60)),
+        high_confidence_threshold=float(raw.get("high_confidence_threshold", HIGH_CONFIDENCE_THRESHOLD)),
+        review_threshold=float(raw.get("review_threshold", REVIEW_THRESHOLD)),
         affects_finding_status=bool(raw.get("affects_finding_status", False)),
     )
     config.validate()

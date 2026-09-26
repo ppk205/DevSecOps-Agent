@@ -311,7 +311,7 @@ class ScanPipeline:
 
         reports: dict[str, str] = {}
         if self.output_dir is not None:
-            generator = ReportGenerator(run_id, findings)
+            generator = ReportGenerator(run_id, findings, routing_payloads=routing)
             for fmt in ExportFormat:
                 export = generator.export(fmt, self.output_dir, generated_by="pipeline")
                 reports[fmt.value] = str(export.artifact_ref.path)

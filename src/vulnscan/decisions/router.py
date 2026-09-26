@@ -10,6 +10,11 @@ from vulnscan.contracts.decision import (
     DecisionRoute,
     DecisionStatus,
 )
+from vulnscan.decisions.protocol import (
+    FALLBACK_ROUTE,
+    HIGH_CONFIDENCE_THRESHOLD,
+    REVIEW_THRESHOLD,
+)
 
 _ROUTE_ANSWER = "recommended_action"
 _ROUTE_NAMES = {
@@ -21,14 +26,14 @@ _ROUTE_NAMES = {
     "secret_review",
     "human_review",
     "low_priority",
-    "baseline_fallback",
+    FALLBACK_ROUTE,
 }
 
 
 class DecisionRouter:
     """Apply deterministic route policy without mutating finding status."""
 
-    def __init__(self, *, high_confidence_threshold: float = 0.85, review_threshold: float = 0.60) -> None:
+    def __init__(self, *, high_confidence_threshold: float = HIGH_CONFIDENCE_THRESHOLD, review_threshold: float = REVIEW_THRESHOLD) -> None:
         if not 0.0 <= review_threshold <= high_confidence_threshold <= 1.0:
             raise ValueError("thresholds must satisfy 0 <= review <= high <= 1")
         self.high_confidence_threshold = high_confidence_threshold
@@ -43,7 +48,7 @@ class DecisionRouter:
     ) -> DecisionRoute:
         if result.status is not DecisionStatus.COMPLETED:
             return DecisionRoute(
-                route="baseline_fallback",
+                route=FALLBACK_ROUTE,
                 final_status=final_status,
                 affects_finding_status=False,
                 model_id=result.model_id,

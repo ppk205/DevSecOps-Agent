@@ -20,6 +20,9 @@ from vulnscan.contracts.decision import (
     DecisionStatus,
 )
 from vulnscan.contracts.enums import FindingStatus
+from vulnscan.decisions.protocol import (
+    MAX_INPUT_TOKENS,
+)
 
 from .router import DecisionRouter
 from .state import build_evidence_state
@@ -99,7 +102,7 @@ def triage_many_batched(
     router: DecisionRouter | None = None,
     batch_size: int = 4,
     cache: DecisionCache | None = None,
-    max_input_tokens: int = 512,
+    max_input_tokens: int = MAX_INPUT_TOKENS,
 ) -> list[TriageOutcome]:
     """Route many findings using batched inference plus a per-state cache.
 

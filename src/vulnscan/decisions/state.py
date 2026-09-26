@@ -8,7 +8,11 @@ import re
 from collections.abc import Mapping
 from typing import Any
 
-MAX_STATE_TEXT_CHARS = 1_500
+from vulnscan.decisions.protocol import (
+    MAX_INPUT_CHARS,
+)
+
+MAX_STATE_TEXT_CHARS = MAX_INPUT_CHARS
 
 
 _SECRET_KEYS = {"api_key", "apikey", "token", "password", "passwd", "secret", "authorization"}

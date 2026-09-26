@@ -45,10 +45,32 @@ class ReportGenerator:
         run_id: str,
         findings: list[Finding],
         coverage_summary: dict[str, Any] | None = None,
+        routing_payloads: list[dict[str, Any]] | None = None,
     ) -> None:
         self.run_id = run_id
         self.findings = findings
         self.coverage_summary = coverage_summary or {}
+        self.routing_payloads = routing_payloads or []
+
+    def routing_by_finding(self) -> dict[str, dict[str, Any]]:
+        """Advisory routing payloads keyed by finding id."""
+        return {str(p.get("finding_id")): p for p in self.routing_payloads}
+
+    def routing_counts(self) -> dict[str, int]:
+        """How many findings took each route, including the fallback."""
+        counts: dict[str, int] = {}
+        for payload in self.routing_payloads:
+            route = str(payload.get("route", "unknown"))
+            counts[route] = counts.get(route, 0) + 1
+        return dict(sorted(counts.items(), key=lambda kv: -kv[1]))
+
+    def advisory_unavailable(self) -> list[dict[str, Any]]:
+        """Payloads where the model did not return a usable decision."""
+        return [
+            p
+            for p in self.routing_payloads
+            if str(p.get("decision_status", "")) != "completed"
+        ]
 
     @staticmethod
     def counts(findings: list[Finding]) -> FindingCounts:
@@ -121,8 +143,61 @@ class ReportGenerator:
             "counts": self.counts(self.findings).model_dump(mode="json"),
             "coverage_summary": self.coverage_summary,
             "findings": [f.model_dump(mode="json") for f in self.findings],
+            "advisory_routing": {
+                "is_advisory_only": True,
+                "affects_finding_status": False,
+                "note": (
+                    "Advisory recommendations never set or change a finding status; "
+                    "IndependentValidator remains the sole status owner."
+                ),
+                "route_counts": self.routing_counts(),
+                "routed": len(self.routing_payloads),
+                "unavailable": len(self.advisory_unavailable()),
+                "payloads": self.routing_payloads,
+            },
         }
         return json.dumps(data, indent=2, ensure_ascii=False)
+
+    def advisory_section(self) -> list[str]:
+        """Markdown for the advisory routing block, or a stated absence."""
+        if not self.routing_payloads:
+            absent = (
+                "Laya advisory routing did not run for this scan "
+                "(disabled, unavailable, or no findings to route)."
+            )
+            return ["", "## Advisory routing", "", absent]
+
+        lines = [
+            "",
+            "## Advisory routing",
+            "",
+            (
+                "> Advisory only. These recommendations do not set or change any "
+                "finding status — `IndependentValidator` remains the sole owner."
+            ),
+            "",
+            "| Route | Findings |",
+            "|---|---:|",
+        ]
+        lines.extend(
+            f"| `{html.escape(route)}` | {count} |"
+            for route, count in self.routing_counts().items()
+        )
+
+        unavailable = self.advisory_unavailable()
+        lines.extend(["", f"- Findings routed: {len(self.routing_payloads)}"])
+        lines.append(f"- Findings without a usable model decision: {len(unavailable)}")
+
+        revisions = {
+            str(p.get("model_revision")) for p in self.routing_payloads if p.get("model_revision")
+        }
+        if revisions:
+            lines.append(f"- Model revision(s): `{', '.join(sorted(revisions))}`")
+        truncated = sum(1 for p in self.routing_payloads if p.get("input_truncated"))
+        if truncated:
+            lines.append(f"- Inputs truncated: {truncated}")
+        lines.append("- Affects finding status: `false`")
+        return lines
 
     def to_markdown(self) -> str:
         counts = self.counts(self.findings)
@@ -149,7 +224,9 @@ class ReportGenerator:
             )
         else:
             lines.append("No coverage limitations recorded.")
+        lines.extend(self.advisory_section())
         lines.extend(["", "## Findings", ""])
+        routing = self.routing_by_finding()
         for finding in self.findings:
             cwe = finding.cwe_category.value if finding.cwe_category else "Unclassified"
             lines.extend(
@@ -160,11 +237,22 @@ class ReportGenerator:
                     f"- **Status:** {finding.status.value}",
                     f"- **Severity:** {finding.severity.value}",
                     f"- **CWE:** {cwe}",
-                    "",
-                    html.escape(finding.description or ""),
-                    "",
                 ]
             )
+            payload = routing.get(finding.finding_id)
+            if payload:
+                answers = payload.get("answers", {})
+                review = (answers.get("needs_human_review") or {}).get("noul", "n/a")
+                sufficiency = (answers.get("evidence_sufficiency") or {}).get("score", "n/a")
+                route = html.escape(str(payload.get("route", "")))
+                lines.extend(
+                    [
+                        f"- **Advisory route:** `{route}`",
+                        f"- **Needs human review (model):** {html.escape(str(review))}",
+                        f"- **Evidence sufficiency (model):** {html.escape(str(sufficiency))}",
+                    ]
+                )
+            lines.extend(["", html.escape(finding.description or ""), ""])
         return "\n".join(lines)
 
     def to_html(self) -> str:

@@ -14,6 +14,11 @@ from vulnscan.contracts.decision import (
     DecisionStatus,
     DecisionType,
 )
+from vulnscan.decisions.protocol import (
+    MAX_INPUT_CHARS,
+    MAX_INPUT_TOKENS,
+    MODEL_ID,
+)
 
 from .state import build_evidence_state
 
@@ -25,7 +30,7 @@ def _default_loader() -> Any:
         import laya
     except ImportError as exc:  # pragma: no cover - exercised with injected loader
         raise ImportError("Laya optional dependency is not installed") from exc
-    return laya.load("convaiinnovations/laya")
+    return laya.load(MODEL_ID)
 
 
 def _to_native_questions(questions: Mapping[str, DecisionQuestion]) -> dict[str, dict[str, Any]]:
@@ -113,11 +118,11 @@ class LayaDecisionBackend:
         self,
         *,
         agent_loader: _LOADER_TYPE | None = None,
-        model_id: str = "convaiinnovations/laya",
+        model_id: str = MODEL_ID,
         model_revision: str | None = None,
         device: str = "unknown",
-        max_input_chars: int = 1_500,
-        max_input_tokens: int = 512,
+        max_input_chars: int = MAX_INPUT_CHARS,
+        max_input_tokens: int = MAX_INPUT_TOKENS,
     ) -> None:
         if max_input_chars < 1 or max_input_tokens < 1:
             raise ValueError("input limits must be positive")
@@ -145,7 +150,7 @@ class LayaDecisionBackend:
     ) -> DecisionResult:
         return DecisionResult(
             status=status,
-            model_id="convaiinnovations/laya",
+            model_id=MODEL_ID,
             model_revision=None,
             device="unknown",
             answers={},

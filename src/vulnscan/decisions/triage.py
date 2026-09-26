@@ -19,11 +19,10 @@ from vulnscan.contracts.decision import (
     DecisionType,
 )
 from vulnscan.contracts.enums import FindingStatus
+from vulnscan.decisions.protocol import QUESTION_SET_VERSION
 
 from .base import DecisionBackend
 from .router import DecisionRouter
-
-QUESTION_SET_VERSION = "laya-questions-1"
 
 _ROUTE_CRITERIA: dict[str, str] = {
     "fast_verification": "A single targeted harness run is likely to confirm or refute this.",
