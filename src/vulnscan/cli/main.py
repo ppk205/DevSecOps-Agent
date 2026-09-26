@@ -68,6 +68,55 @@ def scan_list(db_path: str = typer.Option("vulnscan.db", help="SQLite file path.
             typer.echo(f"{r.id}	attempt={r.attempt}	{r.status}")
 
 
+@app.command("laya-config")
+def laya_config(
+    config_path: str = typer.Option("config/laya.json", help="Laya config JSON path."),
+) -> None:
+    """Show the resolved Laya decision-routing configuration.
+
+    Advisory only: the resolved config can never enable status authority.
+    """
+    from ..decisions.config import load_config
+
+    config = load_config(config_path)
+    typer.echo(
+        f"enabled={config.enabled} mode={config.mode} model={config.model_id} "
+        f"revision={config.revision} device={config.device} "
+        f"batch_size={config.batch_size} max_input_tokens={config.max_input_tokens} "
+        f"affects_finding_status={config.affects_finding_status}"
+    )
+
+
+@app.command("laya-check")
+def laya_check(
+    load_model: bool = typer.Option(
+        False, "--load-model", help="Also download and load the pinned model."
+    ),
+    model: str = typer.Option("convaiinnovations/laya", help="Model id or local path."),
+) -> None:
+    """Check whether the optional Laya dependency is usable locally."""
+    try:
+        import laya
+    except ImportError:
+        typer.echo("laya=unavailable (optional dependency not installed)")
+        return
+
+    typer.echo(f"laya=available version={getattr(laya, 'VERSION', 'unknown')}")
+    if not load_model:
+        typer.echo("hint: re-run with --load-model to download weights (needs network)")
+        return
+    try:
+        agent = laya.load(model)
+    except Exception as exc:
+        typer.echo(f"model_load=failed {type(exc).__name__}: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    typer.echo(
+        f"model_load=ok device={getattr(agent, 'device', 'unknown')} "
+        f"predict={callable(getattr(agent, 'predict', None))} "
+        f"predict_batch={callable(getattr(agent, 'predict_batch', None))}"
+    )
+
+
 def main() -> None:
     """Console-script entry point (pyproject: vulnscan.cli.main:main)."""
     app()

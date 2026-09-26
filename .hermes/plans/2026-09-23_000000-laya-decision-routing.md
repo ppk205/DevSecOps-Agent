@@ -1,7 +1,7 @@
 # Laya Decision-Routing Architecture Plan
 
 **Date:** 2026-09-23
-**Status:** In progress — compatibility verified against `laya==0.3.20`; adapter/router implemented; shadow pipeline, T09 experiments, and T10 reproduction pending
+**Status:** In progress — adapter, config, shadow triage stage, cache and batch routing implemented and tested (140 tests); real-model benchmark on RTX 3050 4 GB, pipeline wiring, T09 experiments and T10 reproduction still pending
 **Project:** DevSecOps-Agent
 **Target:** JVA-bookstore at `dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5`
 **Implementation checkpoint:** T06 committed as `6de8693`
