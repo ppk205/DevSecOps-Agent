@@ -25,6 +25,16 @@ class Calibration:
     accuracy: float
 
     def to_dict(self) -> dict[str, Any]:
+        # Every score is None when nothing was graded. A zero here would read
+        # as a measured result, which is the one thing T09 must not invent.
+        if self.n == 0:
+            return {
+                "n": 0,
+                "ece": None,
+                "brier": None,
+                "mean_confidence": None,
+                "accuracy": None,
+            }
         return {
             "n": self.n,
             "ece": round(self.ece, 6),
@@ -147,21 +157,26 @@ class RoutingReport:
     by_language: dict[str, dict[str, Any]] = field(default_factory=dict)
 
     @property
-    def route_accuracy(self) -> float:
-        return self.correct_routes / self.scored_routes if self.scored_routes else 0.0
+    def route_accuracy(self) -> float | None:
+        """``None`` when nothing was scored — zero scored is not 0% accuracy."""
+        return self.correct_routes / self.scored_routes if self.scored_routes else None
 
     @property
-    def false_escalation_rate(self) -> float:
-        return self.false_escalations / self.scored_routes if self.scored_routes else 0.0
+    def false_escalation_rate(self) -> float | None:
+        return self.false_escalations / self.scored_routes if self.scored_routes else None
+
+    @staticmethod
+    def _rate(value: float | None) -> float | None:
+        return None if value is None else round(value, 6)
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "total": self.total,
             "route_counts": dict(sorted(self.route_counts.items(), key=lambda kv: -kv[1])),
             "unavailable": self.unavailable,
-            "route_accuracy": round(self.route_accuracy, 6),
+            "route_accuracy": self._rate(self.route_accuracy),
             "false_escalations": self.false_escalations,
-            "false_escalation_rate": round(self.false_escalation_rate, 6),
+            "false_escalation_rate": self._rate(self.false_escalation_rate),
             "scored_routes": self.scored_routes,
             "by_cwe": self.by_cwe,
             "by_language": self.by_language,

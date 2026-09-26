@@ -56,6 +56,10 @@ def test_empty_input_is_not_an_error() -> None:
     result = compute_calibration([], [])
 
     assert (result.n, result.ece, result.brier) == (0, 0.0, 0.0)
+    # An ungraded series must serialise as unknown, not as a measured zero.
+    assert result.to_dict()["ece"] is None
+    assert result.to_dict()["brier"] is None
+    assert result.to_dict()["accuracy"] is None
 
 
 def test_mismatched_lengths_are_rejected() -> None:
@@ -113,7 +117,8 @@ def test_rows_without_expectations_are_counted_but_not_scored() -> None:
 
     assert report.total == 1
     assert report.scored_routes == 0
-    assert report.route_accuracy == 0.0
+    # Nothing was graded, so accuracy is unknown rather than 0%.
+    assert report.route_accuracy is None
 
 
 def test_unavailable_decisions_are_tracked() -> None:

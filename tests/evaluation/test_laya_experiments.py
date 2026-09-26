@@ -91,6 +91,9 @@ def test_payloads_without_ground_truth_are_still_counted() -> None:
     assert result["graded"] == 1
     assert result["ground_truth_matched"] == 0
     assert result["routing"]["scored_routes"] == 0
+    # Zero scored routes is unknown accuracy, not 0% accuracy.
+    assert result["routing"]["route_accuracy"] is None
+    assert result["routing"]["false_escalation_rate"] is None
 
 
 def test_report_declares_advisory_only_and_status_owner() -> None:

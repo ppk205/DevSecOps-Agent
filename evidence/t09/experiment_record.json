@@ -1,0 +1,42 @@
+{
+  "protocol": {
+    "model_id": "convaiinnovations/laya",
+    "model_revision": "aa8c91ca088ec597df95a0d1c76b3063cb2ae5e8",
+    "question_set_version": "laya-questions-1",
+    "status_owner": "IndependentValidator",
+    "advisory_only": true
+  },
+  "routing": {
+    "total": 29,
+    "route_counts": {
+      "human_review": 18,
+      "low_priority": 11
+    },
+    "unavailable": 0,
+    "route_accuracy": null,
+    "false_escalations": 0,
+    "false_escalation_rate": null,
+    "scored_routes": 0,
+    "by_cwe": {},
+    "by_language": {}
+  },
+  "calibration": {
+    "n": 0,
+    "ece": null,
+    "brier": null,
+    "mean_confidence": null,
+    "accuracy": null
+  },
+  "reliability_diagram": [],
+  "graded": 29,
+  "ground_truth_matched": 0,
+  "error_codes_seen": [],
+  "known_error_codes": {
+    "package_missing": "The laya package is not installed; routing skipped.",
+    "model_unavailable": "The model could not be loaded; routing skipped.",
+    "timeout": "Inference exceeded the configured timeout; routing skipped.",
+    "out_of_memory": "Inference ran out of GPU memory; routing skipped.",
+    "malformed_output": "The model response could not be parsed; routing skipped.",
+    "unknown": "Unclassified failure; routing skipped."
+  }
+}
