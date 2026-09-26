@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import json
+from datetime import UTC, datetime
+
 import typer
 
 from ..storage.database import get_session, init_db
@@ -66,6 +69,40 @@ def scan_list(db_path: str = typer.Option("vulnscan.db", help="SQLite file path.
     with get_session(db_path) as session:
         for r in session.query(RunORM).order_by(RunORM.id.desc()).all():
             typer.echo(f"{r.id}	attempt={r.attempt}	{r.status}")
+
+
+@app.command("scan-run")
+def scan_run(
+    repo: str = typer.Option(..., "--repo", help="Git clone URL of the target."),
+    commit: str = typer.Option(..., "--commit", help="Pinned commit SHA (never HEAD)."),
+    checkout: str = typer.Option(".", "--checkout", help="Working copy path."),
+    out: str = typer.Option("artifacts", "--out", help="Report output directory."),
+    laya: bool = typer.Option(False, "--laya", help="Enable advisory Laya routing."),
+    laya_config_path: str = typer.Option(
+        "config/laya.json", "--laya-config", help="Laya config JSON path."
+    ),
+    run_id: str = typer.Option("", "--run-id", help="Run id (default: run-<timestamp>)."),
+) -> None:
+    """Run the full deterministic-first pipeline and export reports."""
+    from dataclasses import replace
+
+    from ..contracts import ScanSpecification
+    from ..decisions.config import load_config
+    from ..pipeline.runner import ScanPipeline
+
+    config = load_config(laya_config_path)
+    if laya and not config.enabled:
+        config = replace(config, enabled=True)
+    config.validate()
+
+    spec = ScanSpecification(
+        run_id=run_id or f"run-{int(datetime.now(UTC).timestamp())}",
+        target_repository_url=repo,
+        target_commit_sha=commit,
+        repository_checkout_path=checkout,
+    )
+    result = ScanPipeline(spec, laya_config=config, output_dir=out).run()
+    typer.echo(json.dumps(result.as_dict(), indent=2, default=str))
 
 
 @app.command("laya-config")

@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import json
 import logging
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from typing import Any
 
 from vulnscan.contracts.decision import (
@@ -164,17 +164,21 @@ def _run_chunk(
     return [backend.predict(requests[index]) for index in chunk]
 
 
-def _parse(raw: Any, request: DecisionRequest, questions: dict[str, DecisionQuestion]) -> DecisionResult:
+def _parse(
+    raw: Any, request: DecisionRequest, questions: dict[str, DecisionQuestion]
+) -> DecisionResult:
     from .laya import _parse_answer
 
-    if not isinstance(raw, dict) or not isinstance(raw.get("answers"), dict):
+    if not isinstance(raw, Mapping) or not isinstance(raw.get("answers"), Mapping):
+        # A backend that reported a structured failure keeps its own reason.
+        reason = raw.get("__error__") if isinstance(raw, Mapping) else None
         return DecisionResult(
-            status=DecisionStatus.INCOMPLETE,
+            status=DecisionStatus.UNAVAILABLE if reason else DecisionStatus.INCOMPLETE,
             model_id="laya",
             answers={},
             state_hash="",
             question_set_version=request.question_set_version,
-            error_code="malformed_output",
+            error_code=str(reason or "malformed_output"),
         )
     answers = {}
     try:
