@@ -12,6 +12,7 @@ from collections import defaultdict
 from datetime import UTC, datetime
 
 from vulnscan.contracts import (
+    CWECategory,
     EvidenceStrength,
     Finding,
     FindingGroup,
@@ -84,15 +85,16 @@ def group_findings(
         tools = sorted({o.tool for o in obs_list}, key=lambda t: t.value)
 
         now = datetime.now(UTC)
+        cwe = next((o.cwe_category for o in obs_list if o.cwe_category), None)
         finding = Finding(
             finding_id=fp[:16],
             run_id=run_id,
             fingerprint=fp,
             title=_title_for(key, obs_list),
             description=obs_list[0].message,
-            cwe_category=obs_list[0].cwe_category
-            if obs_list[0].cwe_category is not None
-            else next((o.cwe_category for o in obs_list if o.cwe_category), None),
+            # A finding always carries a category; unclassified is a real value,
+            # never a missing field.
+            cwe_category=cwe or CWECategory.UNCLASSIFIED,
             severity=_highest_severity(obs_list),
             status=FindingStatus.UNPROCESSED,
             observations=list(obs_list),
