@@ -32,6 +32,7 @@ from vulnscan.contracts import (
 )
 
 from .base import AdapterCapability, ScannerAdapter
+from .mapping import cwe_category
 from .platform import which
 from .tool_versions import probe_version
 
@@ -97,17 +98,15 @@ def _extract_from_sarif_v2(
             col_start = region.get("startColumn")
             col_end = region.get("endColumn")
 
-            # CWE extraction
+            # CWE extraction. Semgrep tags are formatted as
+            # "CWE-89: Improper ...", so the label must be split from its
+            # description before it can be matched against the enum.
             cwe_cat = None
             for tag in _rules.get(rule_id, {}).get("properties", {}).get("tags", []):
-                if isinstance(tag, str) and tag.upper().startswith("CWE-"):
-                    from vulnscan.contracts.enums import CWECategory
-
-                    try:
-                        cwe_cat = CWECategory(tag.upper())
-                    except ValueError:
-                        pass
-                    break
+                if isinstance(tag, str) and tag.strip().upper().startswith("CWE-"):
+                    cwe_cat = cwe_category(tag.split(":", 1)[0])
+                    if cwe_cat is not None:
+                        break
 
             # Determine language
             ext = Path(file_path).suffix.lower()
@@ -197,17 +196,19 @@ def _extract_from_legacy_json(
             LanguageKind.JSP if ext in (".jsp", ".jspx") else LanguageKind.OTHER
         )
 
-        # CWE from metadata
+        # CWE extraction. The legacy ``--json`` schema puts CWE labels under
+        # ``extra.metadata.cwe`` as a list of "CWE-89: description" strings;
+        # there is no ``tags`` key in this format, so reading only ``tags``
+        # silently classified every finding as UNCLASSIFIED.
         cwe_cat = None
-        for tag in res.get("extra", {}).get("metadata", {}).get("tags", []):
-            if isinstance(tag, str) and tag.upper().startswith("CWE-"):
-                from vulnscan.contracts.enums import CWECategory
-
-                try:
-                    cwe_cat = CWECategory(tag.upper())
-                except ValueError:
-                    pass
-                break
+        metadata = res.get("extra", {}).get("metadata", {})
+        labels = list(metadata.get("cwe", []))
+        labels += [t for t in metadata.get("tags", []) if isinstance(t, str)]
+        for label in labels:
+            if isinstance(label, str) and label.strip().upper().startswith("CWE-"):
+                cwe_cat = cwe_category(label.split(":", 1)[0])
+                if cwe_cat is not None:
+                    break
 
         observations.append(
             Observation(

@@ -154,6 +154,35 @@ def laya_check(
     )
 
 
+@app.command("laya-evaluate")
+def laya_evaluate(
+    scan: str = typer.Option(..., "--scan", help="Scan JSON export with advisory_routing.payloads."),
+    truth: str = typer.Option(..., "--truth", help="Ground-truth JSON for evaluator grading."),
+    out: str = typer.Option("", "--out", help="Optional path to write the experiment record."),
+) -> None:
+    """Grade one run's advisory routing against evaluator ground truth.
+
+    The ground-truth file is the only answer key. Finding statuses are never
+    consulted, so the advisory layer cannot grade itself.
+    """
+    from pathlib import Path as _Path
+
+    from ..evaluation.laya_experiments import evaluate_from_files
+
+    if not _Path(truth).is_file():
+        typer.echo(f"ground truth not found: {truth}", err=True)
+        raise typer.Exit(code=1)
+
+    result = evaluate_from_files(_Path(scan), _Path(truth))
+    rendered = json.dumps(result, indent=2, default=str)
+
+    if out:
+        _Path(out).parent.mkdir(parents=True, exist_ok=True)
+        _Path(out).write_text(rendered, encoding="utf-8")
+        typer.echo(f"experiment_record={out}")
+    typer.echo(rendered)
+
+
 def main() -> None:
     """Console-script entry point (pyproject: vulnscan.cli.main:main)."""
     app()
