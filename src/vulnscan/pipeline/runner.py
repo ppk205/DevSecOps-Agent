@@ -225,7 +225,7 @@ class ScanPipeline:
         try:
             outcomes = triage_many_batched(
                 list(findings),
-                _LazyAgent(backend),
+                backend,
                 questions,
                 batch_size=self.laya_config.batch_size,
                 cache=self.cache if self.laya_config.cache_enabled else None,
@@ -325,20 +325,3 @@ class ScanPipeline:
             routing_payloads=routing,
             reports=reports,
         )
-
-
-class _LazyAgent:
-    """Adapt the lazily-loading backend to the batched-routing agent interface.
-
-    It only serves as the object the batcher calls; every failure is already
-    converted into a structured result by the backend, so the batcher can treat
-    an unavailable model exactly like a malformed answer.
-    """
-
-    def __init__(self, backend: LayaDecisionBackend) -> None:
-        self._backend = backend
-
-    def predict(self, state: Any, questions: Any, **kwargs: Any) -> Any:
-        from ..decisions.decision_requests import request_from_native
-
-        return request_from_native(self._backend, state, questions)

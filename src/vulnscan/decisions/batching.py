@@ -7,6 +7,7 @@ pipeline already decided.
 
 from __future__ import annotations
 
+import inspect
 import json
 import logging
 from collections.abc import Mapping, Sequence
@@ -133,6 +134,22 @@ def triage_many_batched(
     return [outcome for outcome in outcomes if outcome is not None]
 
 
+def _looks_like_backend(candidate: Any) -> bool:
+    """True when *candidate* already returns a typed :class:`DecisionResult`.
+
+    A raw ``laya.Agent`` also has ``predict``, but it takes ``(state, questions)``
+    and returns a dict, so a real backend is told apart by its declared return
+    type. Duck-typing keeps this working for test doubles too.
+    """
+    if not callable(getattr(candidate, "predict", None)):
+        return False
+    try:
+        return_type = inspect.signature(candidate.predict).return_annotation
+    except (TypeError, ValueError):
+        return False
+    return "DecisionResult" in str(return_type)
+
+
 def _run_chunk(
     agent: Any,
     chunk: Sequence[int],
@@ -140,6 +157,12 @@ def _run_chunk(
     max_input_tokens: int,
 ) -> list[DecisionResult]:
     from .laya import LayaDecisionBackend
+
+    # A real backend already speaks our contract, so its typed result is used
+    # as-is with no wire round trip. Duck-typed on purpose: DecisionBackend is a
+    # non-runtime-checkable Protocol, and a test fake must also be accepted.
+    if _looks_like_backend(agent):
+        return [agent.predict(requests[index]) for index in chunk]
 
     states = [requests[index].state for index in chunk]
     first = requests[chunk[0]]
@@ -150,7 +173,8 @@ def _run_chunk(
             raw = agent.predict_batch(states, native, max_len=max_input_tokens)
             if isinstance(raw, Sequence) and len(raw) == len(chunk):
                 return [
-                    _parse(row, requests[index], first.questions) for index, row in zip(chunk, raw, strict=True)
+                    _parse(row, requests[index], first.questions)
+                    for index, row in zip(chunk, raw, strict=True)
                 ]
         except Exception:
             # Batch inference is an optimisation only: a failure must not lose the

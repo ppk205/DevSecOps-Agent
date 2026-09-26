@@ -1,58 +1,44 @@
-"""Bridge between the batcher's native question dicts and our contracts."""
+"""Rebuild typed questions from the dict form used on the wire.
+
+The batcher passes questions around as plain dicts, so this module is the one
+place that converts them back into the typed contract.
+"""
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import Any
 
-from vulnscan.contracts.decision import DecisionQuestion, DecisionRequest, DecisionType
+from vulnscan.contracts.decision import DecisionQuestion, DecisionType
+
+
+def _criteria_from_native(qtype: DecisionType, criteria: Any) -> dict[str, str] | list[str]:
+    """Restore the original criteria shape.
+
+    A score rubric is an *ordinal list* of level labels, while a choice rubric
+    is a dict of ``value -> description``. The dict form is ambiguous on the
+    wire, so an ordinal-keyed dict is read back as the list it came from;
+    otherwise a round trip would silently change the question the model sees.
+    """
+    if isinstance(criteria, list):
+        return [str(item) for item in criteria]
+    if not isinstance(criteria, Mapping):
+        return {}
+    ordinal = sorted(criteria) == [str(i) for i in range(len(criteria))]
+    if qtype is DecisionType.SCORE and ordinal:
+        return [str(criteria[key]) for key in sorted(criteria, key=int)]
+    return {str(key): str(value) for key, value in criteria.items()}
 
 
 def to_decision_questions(native: dict[str, dict[str, Any]]) -> dict[str, DecisionQuestion]:
     """Rebuild typed questions from the dict form the batcher passes around."""
     questions: dict[str, DecisionQuestion] = {}
     for name, raw in native.items():
-        criteria = raw.get("criteria", {})
-        if isinstance(criteria, list):
-            # Score questions carry an ordinal rubric as a list of level labels.
-            criteria = {str(index): label for index, label in enumerate(criteria)}
+        qtype = DecisionType(raw["type"])
         questions[name] = DecisionQuestion(
             name=name,
-            type=DecisionType(raw["type"]),
+            type=qtype,
             instructions=str(raw.get("instructions", "")),
-            criteria=criteria,
+            criteria=_criteria_from_native(qtype, raw.get("criteria", {})),
         )
     return questions
-
-
-def request_from_native(
-    backend: Any, state: dict[str, Any], native: dict[str, dict[str, Any]]
-) -> dict[str, Any]:
-    """Call the backend with a typed request and return the native answer shape.
-
-    The batcher only understands the native shape, so this keeps that single
-    conversion in one place instead of duplicating it per call site.
-    """
-    result = backend.predict(
-        DecisionRequest(
-            state=state,
-            questions=to_decision_questions(native),
-            question_set_version="laya-questions-1",
-        )
-    )
-    if not result.answers:
-        # Preserve the failure reason so the batcher reports it honestly instead
-        # of turning an unavailable model into "malformed output".
-        return {"answers": {}, "__error__": result.error_code or result.status.value}
-    return {
-        "answers": {
-            name: {
-                "type": answer.type.value,
-                "choice": answer.choice,
-                "score": answer.score,
-                "noul": answer.noul,
-                "probabilities": answer.probabilities,
-                "confidence": answer.confidence,
-            }
-            for name, answer in result.answers.items()
-        }
-    }

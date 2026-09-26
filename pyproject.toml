@@ -40,7 +40,6 @@ dev = [
     "pytest-mock>=3.14.0",
     "ruff>=0.5.0",
     "mypy>=1.10.0",
-    "types-click>=8.1.0",
 ]
 scanners = [
     "semgrep>=1.70.0",
