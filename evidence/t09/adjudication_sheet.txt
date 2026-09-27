@@ -1,0 +1,666 @@
+==============================================================================
+[1] 299dd9b27b1055a9  CWE-79 / medium
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\web\AuthServlet.java:129
+  rule      java.lang.security.audit.xss.no-direct-response-writer.no-direct-response-writer
+  Laya      route=human_review conf=0.3889 needs_human=0.247 suff=1.0031
+            top choice=low_priority p=0.6247
+  message   Detected a request with potential user-input going into a OutputStream or Writer object. This bypasses any view or template environments, including HTML escapin
+  ---
+       123 |                 if ("seller".equals(role)) {
+       124 |                     try {
+       125 |                         sellerStatus = DBUtil.getUserStatus(username);
+       126 |                         int shopId = ShopDAO.getShopIdByUserId(userId);
+       127 |                         if (shopId > 0) {
+       128 |                             session.setAttribute("shop_id", shopId);
+  >>   129 |                             System.out.println("DEBUG Login - Shop ID: " + shopId);
+       130 |                         }
+       131 |                     } catch (Exception e) {
+       132 |                         System.out.println("DEBUG Login - Failed to get seller info: " + e.getMessage());
+       133 |                     }
+       134 |                 }
+       135 | 
+  -> LABEL expected_route: None
+
+==============================================================================
+[2] 2ccdae50901961fe  CWE-79 / medium
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\web\seller\ShopRegistrationServlet.java:95
+  rule      java.lang.security.audit.xss.no-direct-response-writer.no-direct-response-writer
+  Laya      route=human_review conf=0.1115 needs_human=0.2003 suff=0.8383
+            top choice=fast_verification p=0.2678
+  message   Detected a request with potential user-input going into a OutputStream or Writer object. This bypasses any view or template environments, including HTML escapin
+  ---
+        89 |                 }
+        90 |             }
+        91 | 
+        92 |             String name = req.getParameter("name");
+        93 |             String address = req.getParameter("address");
+        94 |             String description = req.getParameter("description");
+  >>    95 |             System.out.println("DEBUG ShopRegistrationServlet - name: '" + name + "', address: '" + address + "', description: '" + description + "'");
+        96 | 
+        97 |             if (name == null || name.trim().isEmpty()) {
+        98 |                 System.out.println("DEBUG ShopRegistrationServlet - Name is null or empty, returning 400");
+        99 |                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+       100 |                 out.write(gson.toJson(Map.of("success", false, "message", "Tên shop là bắt buộc")));
+       101 |                 return;
+  -> LABEL expected_route: None
+
+==============================================================================
+[3] 3c94edaa79de15f3  CWE-79 / medium
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\web\TestEmailServlet.java:36
+  rule      java.lang.security.audit.xss.no-direct-response-writer.no-direct-response-writer
+  Laya      route=human_review conf=0.536 needs_human=0.2635 suff=0.9785
+            top choice=low_priority p=0.7688
+  message   Detected a request with potential user-input going into a OutputStream or Writer object. This bypasses any view or template environments, including HTML escapin
+  ---
+        30 |             System.out.println("Recipient: " + email);
+        31 |             
+        32 |             // Send test email
+        33 |             EmailUtil.testEmailConnection(email);
+        34 |             
+        35 |             System.out.println("Test email sent successfully");
+  >>    36 |             out.write("{\"message\":\"Test email sent successfully to " + email + "\"}");
+        37 |         } catch (Exception e) {
+        38 |             System.err.println("Error in TestEmailServlet: " + e.getMessage());
+        39 |             e.printStackTrace();
+        40 |             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        41 |             out.write("{\"error\":\"Failed to send email: " + e.getMessage() + "\"}");
+        42 |         } finally {
+  -> LABEL expected_route: None
+
+==============================================================================
+[4] 3fe136f41126c7fb  CWE-79 / medium
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\web\admin\AdminUsersServlet.java:541
+  rule      java.lang.security.audit.xss.no-direct-response-writer.no-direct-response-writer
+  Laya      route=human_review conf=0.2955 needs_human=0.218 suff=0.9931
+            top choice=low_priority p=0.5717
+  message   Detected a request with potential user-input going into a OutputStream or Writer object. This bypasses any view or template environments, including HTML escapin
+  ---
+       535 |                 out.write("{\"error\":\"Failed to create user\"}");
+       536 |             }
+       537 |         } catch (SQLException e) {
+       538 |             String sqlState = e.getSQLState();
+       539 |             if ("22P02".equals(sqlState)) {
+       540 |                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+  >>   541 |                 out.write("{\"error\":\"Giá trị quyền hoặc trạng thái không hợp lệ cho cơ sở dữ liệu\"," +
+       542 |                         "\"role\":\"" + escapeJson(normalizedRole) + "\"," +
+       543 |                         "\"status\":\"" + escapeJson(normalizedStatus) + "\"}");
+       544 |                 return;
+       545 |             }
+       546 |             if (sqlState != null && sqlState.startsWith("23")) {
+       547 |                 resp.setStatus(HttpServletResponse.SC_CONFLICT);
+  -> LABEL expected_route: None
+
+==============================================================================
+[5] 5a68de8494b99c2d  CWE-79 / medium
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\web\admin\AdminUsersServlet.java:582
+  rule      java.lang.security.audit.xss.no-direct-response-writer.no-direct-response-writer
+  Laya      route=human_review conf=0.1734 needs_human=0.5668 suff=0.5966
+            top choice=low_priority p=0.3958
+  message   Detected a request with potential user-input going into a OutputStream or Writer object. This bypasses any view or template environments, including HTML escapin
+  ---
+       576 |             return;
+       577 |         }
+       578 | 
+       579 |         String normalizedStatus = normalizeStatus(status);
+       580 |         if (normalizedStatus == null) {
+       581 |             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+  >>   582 |             out.write("{\"error\":\"Giá trị trạng thái không hợp lệ cho cơ sở dữ liệu\"," +
+       583 |                 "\"status\":\"" + escapeJson(status != null ? status : "") + "\"," +
+       584 |                 "\"allowed\":" + toJsonLabelArray(statusLookup.values()) + "}");
+       585 |             return;
+       586 |         }
+       587 | 
+       588 |         String sql = "UPDATE users SET username = ?, email = ?, full_name = ?, phone = ?, role = ?, status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
+  -> LABEL expected_route: None
+
+==============================================================================
+[6] 65f920a723390c56  CWE-79 / medium
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\web\admin\AdminUsersServlet.java:501
+  rule      java.lang.security.audit.xss.no-direct-response-writer.no-direct-response-writer
+  Laya      route=human_review conf=0.3559 needs_human=0.2114 suff=1.0126
+            top choice=low_priority p=0.6272
+  message   Detected a request with potential user-input going into a OutputStream or Writer object. This bypasses any view or template environments, including HTML escapin
+  ---
+       495 |             return;
+       496 |         }
+       497 | 
+       498 |         String normalizedRole = normalizeRole(role);
+       499 |         if (normalizedRole == null) {
+       500 |             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+  >>   501 |             out.write("{\"error\":\"Giá trị quyền không hợp lệ cho cơ sở dữ liệu\"," +
+       502 |                 "\"role\":\"" + escapeJson(role != null ? role : "") + "\"," +
+       503 |                 "\"allowed\":" + toJsonLabelArray(roleLookup.values()) + "}");
+       504 |             return;
+       505 |         }
+       506 | 
+       507 |         String normalizedStatus = normalizeStatus(status);
+  -> LABEL expected_route: None
+
+==============================================================================
+[7] 9592f3ae68ac955f  CWE-79 / medium
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\web\admin\AdminUsersServlet.java:573
+  rule      java.lang.security.audit.xss.no-direct-response-writer.no-direct-response-writer
+  Laya      route=human_review conf=0.4679 needs_human=0.2051 suff=0.9826
+            top choice=low_priority p=0.718
+  message   Detected a request with potential user-input going into a OutputStream or Writer object. This bypasses any view or template environments, including HTML escapin
+  ---
+       567 |         }
+       568 | 
+       569 |         int id = Integer.parseInt(idStr);
+       570 |         String normalizedRole = normalizeRole(role);
+       571 |         if (normalizedRole == null) {
+       572 |             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+  >>   573 |             out.write("{\"error\":\"Giá trị quyền không hợp lệ cho cơ sở dữ liệu\"," +
+       574 |                 "\"role\":\"" + escapeJson(role != null ? role : "") + "\"," +
+       575 |                 "\"allowed\":" + toJsonLabelArray(roleLookup.values()) + "}");
+       576 |             return;
+       577 |         }
+       578 | 
+       579 |         String normalizedStatus = normalizeStatus(status);
+  -> LABEL expected_route: None
+
+==============================================================================
+[8] b4b763167183a7c7  CWE-79 / medium
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\web\TestEmailServlet.java:30
+  rule      java.lang.security.audit.xss.no-direct-response-writer.no-direct-response-writer
+  Laya      route=human_review conf=0.5744 needs_human=0.2907 suff=1.013
+            top choice=low_priority p=0.7941
+  message   Detected a request with potential user-input going into a OutputStream or Writer object. This bypasses any view or template environments, including HTML escapin
+  ---
+        24 |                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        25 |                 out.write("{\"error\":\"Email address is required\"}");
+        26 |                 return;
+        27 |             }
+        28 |             
+        29 |             System.out.println("=== Test Email Request ===");
+  >>    30 |             System.out.println("Recipient: " + email);
+        31 |             
+        32 |             // Send test email
+        33 |             EmailUtil.testEmailConnection(email);
+        34 |             
+        35 |             System.out.println("Test email sent successfully");
+        36 |             out.write("{\"message\":\"Test email sent successfully to " + email + "\"}");
+  -> LABEL expected_route: None
+
+==============================================================================
+[9] c3ca402aea3dd88a  CWE-79 / medium
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\web\admin\AdminUsersServlet.java:510
+  rule      java.lang.security.audit.xss.no-direct-response-writer.no-direct-response-writer
+  Laya      route=human_review conf=0.3633 needs_human=0.2243 suff=0.9949
+            top choice=low_priority p=0.6345
+  message   Detected a request with potential user-input going into a OutputStream or Writer object. This bypasses any view or template environments, including HTML escapin
+  ---
+       504 |             return;
+       505 |         }
+       506 | 
+       507 |         String normalizedStatus = normalizeStatus(status);
+       508 |         if (normalizedStatus == null) {
+       509 |             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+  >>   510 |             out.write("{\"error\":\"Giá trị trạng thái không hợp lệ cho cơ sở dữ liệu\"," +
+       511 |                 "\"status\":\"" + escapeJson(status != null ? status : "") + "\"," +
+       512 |                 "\"allowed\":" + toJsonLabelArray(statusLookup.values()) + "}");
+       513 |             return;
+       514 |         }
+       515 | 
+       516 |         String sql = "INSERT INTO users (username, email, password_hash, full_name, phone, role, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+  -> LABEL expected_route: None
+
+==============================================================================
+[10] da8953479a3c48a2  CWE-79 / medium
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\web\seller\ShopRegistrationServlet.java:130
+  rule      java.lang.security.audit.xss.no-direct-response-writer.no-direct-response-writer
+  Laya      route=human_review conf=0.1335 needs_human=0.6214 suff=0.591
+            top choice=low_priority p=0.3355
+  message   Detected a request with potential user-input going into a OutputStream or Writer object. This bypasses any view or template environments, including HTML escapin
+  ---
+       124 |             // Cập nhật lại session
+       125 |             req.getSession().setAttribute("role", "seller");
+       126 |             req.getSession().setAttribute("status", "pending");
+       127 |             req.getSession().setAttribute("shop_id", shopId);
+       128 | 
+       129 |             // ✅ Trả phản hồi JSON về client
+  >>   130 |             out.write(gson.toJson(Map.of(
+       131 |                     "success", true,
+       132 |                     "message", "Yêu cầu đăng ký shop đã được gửi. Vui lòng chờ admin duyệt.",
+       133 |                     "shopId", shopId
+       134 |             )));
+       135 | 
+       136 |         } catch (SQLException e) {
+  -> LABEL expected_route: None
+
+==============================================================================
+[11] ea5103153a01a4f7  CWE-79 / medium
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\web\admin\AdminUsersServlet.java:611
+  rule      java.lang.security.audit.xss.no-direct-response-writer.no-direct-response-writer
+  Laya      route=human_review conf=0.3745 needs_human=0.2406 suff=1.0173
+            top choice=low_priority p=0.6467
+  message   Detected a request with potential user-input going into a OutputStream or Writer object. This bypasses any view or template environments, including HTML escapin
+  ---
+       605 |                 out.write("{\"error\":\"User not found\"}");
+       606 |             }
+       607 |         } catch (SQLException e) {
+       608 |             String sqlState = e.getSQLState();
+       609 |             if ("22P02".equals(sqlState)) {
+       610 |                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+  >>   611 |                 out.write("{\"error\":\"Giá trị quyền hoặc trạng thái không hợp lệ cho cơ sở dữ liệu\"," +
+       612 |                         "\"role\":\"" + escapeJson(normalizedRole) + "\"," +
+       613 |                         "\"status\":\"" + escapeJson(normalizedStatus) + "\"}");
+       614 |                 return;
+       615 |             }
+       616 |             throw e;
+       617 |         }
+  -> LABEL expected_route: None
+
+==============================================================================
+[12] ead5ef51e4aca33e  CWE-79 / medium
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\web\AuthServlet.java:152
+  rule      java.lang.security.audit.xss.no-direct-response-writer.no-direct-response-writer
+  Laya      route=human_review conf=0.3834 needs_human=0.1938 suff=1.006
+            top choice=low_priority p=0.6017
+  message   Detected a request with potential user-input going into a OutputStream or Writer object. This bypasses any view or template environments, including HTML escapin
+  ---
+       146 |                 } else if ("shipper".equals(role)) {
+       147 |                     response = "{\"token\":\"" + token + "\",\"message\":\"Login successful\",\"role\":\"shipper\",\"redirect\":\"/dashboard-shipper.jsp\"}";
+       148 |                 } else {
+       149 |                     response = "{\"token\":\"" + token + "\",\"message\":\"Login successful\",\"role\":\"customer\"}";
+       150 |                 }
+       151 | 
+  >>   152 |                 out.write(response);
+       153 |             } else {
+       154 |                 resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+       155 |                 out.write("{\"error\":\"Invalid credentials\"}");
+       156 |             }
+       157 | 
+       158 |         } catch (Exception e) {
+  -> LABEL expected_route: None
+
+==============================================================================
+[13] f3983d7558f5adcc  CWE-79 / medium
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\web\AuthServlet.java:253
+  rule      java.lang.security.audit.xss.no-direct-response-writer.no-direct-response-writer
+  Laya      route=human_review conf=0.3721 needs_human=0.281 suff=0.9755
+            top choice=low_priority p=0.5949
+  message   Detected a request with potential user-input going into a OutputStream or Writer object. This bypasses any view or template environments, including HTML escapin
+  ---
+       247 |             return;
+       248 |         }
+       249 | 
+       250 |         if (!OTPUtil.canRequestNewOTP(email)) {
+       251 |             long remaining = OTPUtil.getRemainingCooldownSeconds(email);
+       252 |             resp.setStatus(429);
+  >>   253 |             out.write("{\"error\":\"Please wait " + remaining + " seconds before requesting new OTP\"}");
+       254 |             return;
+       255 |         }
+       256 | 
+       257 |         String otp = OTPUtil.generateOTP();
+       258 |         if (OTPUtil.storeOTP(email, otp)) {
+       259 |             try {
+  -> LABEL expected_route: None
+
+==============================================================================
+[14] 13ef46aecde77107  CWE-89 / high
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\web\seller\SellerProductsServlet.java:173
+  rule      java.lang.security.audit.formatted-sql-string.formatted-sql-string
+  Laya      route=human_review conf=0.2378 needs_human=0.4838 suff=0.5089
+            top choice=low_priority p=0.468
+  message   Detected a formatted string in a SQL statement. This could lead to SQL injection if variables in the SQL statement are not properly sanitized. Use a prepared st
+  ---
+       167 |             for (Object param : params) {
+       168 |                 stmt.setObject(index++, param);
+       169 |             }
+       170 |             stmt.setInt(index++, limit);
+       171 |             stmt.setInt(index, offset);
+       172 | 
+  >>   173 |             try (ResultSet rs = stmt.executeQuery()) {
+       174 |                 JsonArray array = new JsonArray();
+       175 |                 while (rs.next()) {
+       176 |                     JsonObject item = new JsonObject();
+       177 |                     item.addProperty("id", rs.getInt("id"));
+       178 |                     item.addProperty("title", rs.getString("title"));
+       179 |                     item.addProperty("author", rs.getString("author"));
+  -> LABEL expected_route: None
+
+==============================================================================
+[15] 7bc5f031ff9dd647  CWE-89 / medium
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\dao\CartDAO.java:599
+  rule      java.lang.security.audit.sqli.jdbc-sqli.jdbc-sqli
+  Laya      route=human_review conf=0.5467 needs_human=0.5334 suff=0.8377
+            top choice=low_priority p=0.7737
+  message   Detected a formatted string in a SQL statement. This could lead to SQL injection if variables in the SQL statement are not properly sanitized. Use a prepared st
+  ---
+       593 |             }
+       594 |         }
+       595 |     }
+       596 | 
+       597 |     private static void ensureConstraint(Connection conn, Statement stmt, String tableName, String constraintName, String alterSql) throws SQLException {
+       598 |         if (!constraintExists(conn, tableName, constraintName)) {
+  >>   599 |             stmt.execute(alterSql);
+       600 |         }
+       601 |     }
+       602 | 
+       603 |     private static boolean constraintExists(Connection conn, String tableName, String constraintName) throws SQLException {
+       604 |         String sql = "SELECT 1 FROM information_schema.table_constraints WHERE table_schema = current_schema() AND table_name = ? AND constraint_name = ?";
+       605 |         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+  -> LABEL expected_route: None
+
+==============================================================================
+[16] 840c73463eeeb628  CWE-89 / medium
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\dao\CartDAO.java:582
+  rule      java.lang.security.audit.sqli.jdbc-sqli.jdbc-sqli
+  Laya      route=human_review conf=0.5215 needs_human=0.3696 suff=0.9774
+            top choice=low_priority p=0.7519
+  message   Detected a formatted string in a SQL statement. This could lead to SQL injection if variables in the SQL statement are not properly sanitized. Use a prepared st
+  ---
+       576 |             }
+       577 |         }
+       578 |     }
+       579 | 
+       580 |     private static void ensureColumn(Connection conn, Statement stmt, String tableName, String columnName, String alterSql) throws SQLException {
+       581 |         if (!columnExists(conn, tableName, columnName)) {
+  >>   582 |             stmt.execute(alterSql);
+       583 |         }
+       584 |     }
+       585 | 
+       586 |     private static boolean columnExists(Connection conn, String tableName, String columnName) throws SQLException {
+       587 |         String sql = "SELECT 1 FROM information_schema.columns WHERE table_schema = current_schema() AND table_name = ? AND column_name = ?";
+       588 |         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+  -> LABEL expected_route: None
+
+==============================================================================
+[17] c98e24d66790a4bf  CWE-89 / high
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\web\seller\SellerProductsServlet.java:208
+  rule      java.lang.security.audit.formatted-sql-string.formatted-sql-string
+  Laya      route=human_review conf=0.3468 needs_human=0.4685 suff=0.6493
+            top choice=low_priority p=0.5881
+  message   Detected a formatted string in a SQL statement. This could lead to SQL injection if variables in the SQL statement are not properly sanitized. Use a prepared st
+  ---
+       202 |         String sql = "SELECT COUNT(*) FROM books b" + whereClause;
+       203 |         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+       204 |             int index = 1;
+       205 |             for (Object param : params) {
+       206 |                 stmt.setObject(index++, param);
+       207 |             }
+  >>   208 |             try (ResultSet rs = stmt.executeQuery()) {
+       209 |                 return rs.next() ? rs.getInt(1) : 0;
+       210 |             }
+       211 |         }
+       212 |     }
+       213 | 
+       214 |     private void getProduct(HttpServletRequest req, HttpServletResponse resp, PrintWriter out,
+  -> LABEL expected_route: None
+
+==============================================================================
+[18] 7a478ec9b468bedd  CWE-UNCLASSIFIED / medium
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\web\seller\ShopRegistrationServlet.java:127
+  rule      java.lang.security.audit.tainted-session-from-http-request.tainted-session-from-http-request
+  Laya      route=human_review conf=0.376 needs_human=0.4626 suff=0.7663
+            top choice=low_priority p=0.6282
+  message   Detected input from a HTTPServletRequest going into a session command, like `setAttribute`. User input into such a command could lead to an attacker inputting m
+  ---
+       121 |                 ps.executeUpdate();
+       122 |             }
+       123 | 
+       124 |             // Cập nhật lại session
+       125 |             req.getSession().setAttribute("role", "seller");
+       126 |             req.getSession().setAttribute("status", "pending");
+  >>   127 |             req.getSession().setAttribute("shop_id", shopId);
+       128 | 
+       129 |             // ✅ Trả phản hồi JSON về client
+       130 |             out.write(gson.toJson(Map.of(
+       131 |                     "success", true,
+       132 |                     "message", "Yêu cầu đăng ký shop đã được gửi. Vui lòng chờ admin duyệt.",
+       133 |                     "shopId", shopId
+  -> LABEL expected_route: None
+
+==============================================================================
+[19] 10b2c513f1b1b717  CWE-89 / high
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\utils\DBUtil.java:908
+  rule      java.lang.security.audit.formatted-sql-string.formatted-sql-string
+  Laya      route=low_priority conf=0.792 needs_human=0.5398 suff=0.74
+            top choice=low_priority p=0.9167
+  message   Detected a formatted string in a SQL statement. This could lead to SQL injection if variables in the SQL statement are not properly sanitized. Use a prepared st
+  ---
+       902 |     private static void addCheckConstraint(Connection conn, String table, String constraintName, String expression) throws SQLException {
+       903 |         if (constraintExists(conn, table, constraintName)) {
+       904 |             return;
+       905 |         }
+       906 |         String sql = "ALTER TABLE " + table + " ADD CONSTRAINT " + constraintName + " CHECK (" + expression + ")";
+       907 |         try (Statement stmt = conn.createStatement()) {
+  >>   908 |             stmt.execute(sql);
+       909 |         }
+       910 |     }
+       911 | 
+       912 |     private static void dropConstraintIfExists(Connection conn, String table, String constraintName) throws SQLException {
+       913 |         String sql = "ALTER TABLE " + table + " DROP CONSTRAINT IF EXISTS " + constraintName;
+       914 |         try (Statement stmt = conn.createStatement()) {
+  -> LABEL expected_route: None
+
+==============================================================================
+[20] 1aa8ce4ea87c9f78  CWE-89 / high
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\utils\DBUtil.java:884
+  rule      java.lang.security.audit.formatted-sql-string.formatted-sql-string
+  Laya      route=low_priority conf=0.7356 needs_human=0.5692 suff=0.69
+            top choice=low_priority p=0.8864
+  message   Detected a formatted string in a SQL statement. This could lead to SQL injection if variables in the SQL statement are not properly sanitized. Use a prepared st
+  ---
+       878 |         } catch (SQLException ex) {
+       879 |             System.err.println("DBUtil - Unable to inspect column " + table + "." + column + ": " + ex.getMessage());
+       880 |             return;
+       881 |         }
+       882 |         String typeSql = "ALTER TABLE " + table + " ALTER COLUMN " + column + " TYPE VARCHAR(" + length + ") USING " + column + "::text";
+       883 |         try (Statement stmt = conn.createStatement()) {
+  >>   884 |             stmt.execute(typeSql);
+       885 |         } catch (SQLException ex) {
+       886 |             if (!isRedundantAlterError(ex)) {
+       887 |                 System.err.println("DBUtil - Unable to alter column type for " + table + "." + column + ": " + ex.getMessage());
+       888 |             }
+       889 |         }
+       890 |         if (defaultValue != null) {
+  -> LABEL expected_route: None
+
+==============================================================================
+[21] 3afa86a177755460  CWE-89 / high
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\utils\DBUtil.java:987
+  rule      java.lang.security.audit.formatted-sql-string.formatted-sql-string
+  Laya      route=low_priority conf=0.6853 needs_human=0.4094 suff=0.6233
+            top choice=low_priority p=0.8584
+  message   Detected a formatted string in a SQL statement. This could lead to SQL injection if variables in the SQL statement are not properly sanitized. Use a prepared st
+  ---
+       981 |         }
+       982 |         String sanitizedValue = value.replace("'", "''");
+       983 |         String alterSql = "DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_enum e JOIN pg_type t ON e.enumtypid = t.oid "
+       984 |             + "WHERE t.typname = '" + typeName + "' AND e.enumlabel = '" + sanitizedValue + "') THEN "
+       985 |             + "ALTER TYPE " + typeName + " ADD VALUE '" + sanitizedValue + "'; END IF; END $$;";
+       986 |         try (Statement stmt = conn.createStatement()) {
+  >>   987 |             stmt.execute(alterSql);
+       988 |         }
+       989 |     }
+       990 | 
+       991 |     private static boolean columnExists(Connection conn, String tableName, String columnName) throws SQLException {
+       992 |         String sql = "SELECT 1 FROM information_schema.columns WHERE table_name = ? AND column_name = ?";
+       993 |         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+  -> LABEL expected_route: None
+
+==============================================================================
+[22] 7c4b1760c7a96728  CWE-89 / high
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\web\ProfileServlet.java:396
+  rule      java.lang.security.audit.formatted-sql-string.formatted-sql-string
+  Laya      route=low_priority conf=0.8309 needs_human=0.3812 suff=0.7662
+            top choice=low_priority p=0.9353
+  message   Detected a formatted string in a SQL statement. This could lead to SQL injection if variables in the SQL statement are not properly sanitized. Use a prepared st
+  ---
+       390 |                 }
+       391 |             }
+       392 |         }
+       393 | 
+       394 |         String alterSql = "ALTER TABLE users ADD COLUMN " + columnName + " " + columnDefinition;
+       395 |         try (Statement alterStmt = conn.createStatement()) {
+  >>   396 |             alterStmt.execute(alterSql);
+       397 |         }
+       398 |     }
+       399 | 
+       400 |     private void changePassword(HttpServletRequest request, HttpServletResponse response) 
+       401 |             throws IOException {
+       402 |         
+  -> LABEL expected_route: None
+
+==============================================================================
+[23] 93adc26bf05c3aad  CWE-89 / high
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\utils\DBUtil.java:915
+  rule      java.lang.security.audit.formatted-sql-string.formatted-sql-string
+  Laya      route=low_priority conf=0.8074 needs_human=0.551 suff=0.6099
+            top choice=low_priority p=0.9242
+  message   Detected a formatted string in a SQL statement. This could lead to SQL injection if variables in the SQL statement are not properly sanitized. Use a prepared st
+  ---
+       909 |         }
+       910 |     }
+       911 | 
+       912 |     private static void dropConstraintIfExists(Connection conn, String table, String constraintName) throws SQLException {
+       913 |         String sql = "ALTER TABLE " + table + " DROP CONSTRAINT IF EXISTS " + constraintName;
+       914 |         try (Statement stmt = conn.createStatement()) {
+  >>   915 |             stmt.execute(sql);
+       916 |         }
+       917 |     }
+       918 | 
+       919 |     private static boolean constraintExists(Connection conn, String table, String constraintName) throws SQLException {
+       920 |         String sql = "SELECT 1 FROM information_schema.table_constraints WHERE table_name = ? AND constraint_name = ?";
+       921 |         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+  -> LABEL expected_route: None
+
+==============================================================================
+[24] aab8f16d7133dd18  CWE-89 / high
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\utils\DBUtil.java:837
+  rule      java.lang.security.audit.formatted-sql-string.formatted-sql-string
+  Laya      route=low_priority conf=0.8433 needs_human=0.6024 suff=0.6051
+            top choice=low_priority p=0.9408
+  message   Detected a formatted string in a SQL statement. This could lead to SQL injection if variables in the SQL statement are not properly sanitized. Use a prepared st
+  ---
+       831 |         }
+       832 |     }
+       833 | 
+       834 |     private static int countRows(Connection conn, String tableName) throws SQLException {
+       835 |         String sql = "SELECT COUNT(*) FROM " + tableName;
+       836 |         try (Statement stmt = conn.createStatement();
+  >>   837 |              ResultSet rs = stmt.executeQuery(sql)) {
+       838 |             if (rs.next()) {
+       839 |                 return rs.getInt(1);
+       840 |             }
+       841 |         }
+       842 |         return 0;
+       843 |     }
+  -> LABEL expected_route: None
+
+==============================================================================
+[25] b4a8db6d21d82b2f  CWE-89 / high
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\java\utils\DBUtil.java:893
+  rule      java.lang.security.audit.formatted-sql-string.formatted-sql-string
+  Laya      route=low_priority conf=0.7349 needs_human=0.498 suff=0.856
+            top choice=low_priority p=0.8853
+  message   Detected a formatted string in a SQL statement. This could lead to SQL injection if variables in the SQL statement are not properly sanitized. Use a prepared st
+  ---
+       887 |                 System.err.println("DBUtil - Unable to alter column type for " + table + "." + column + ": " + ex.getMessage());
+       888 |             }
+       889 |         }
+       890 |         if (defaultValue != null) {
+       891 |             String defaultSql = "ALTER TABLE " + table + " ALTER COLUMN " + column + " SET DEFAULT " + defaultValue;
+       892 |             try (Statement stmt = conn.createStatement()) {
+  >>   893 |                 stmt.execute(defaultSql);
+       894 |             } catch (SQLException ex) {
+       895 |                 if (!isRedundantAlterError(ex)) {
+       896 |                     System.err.println("DBUtil - Unable to set default for " + table + "." + column + ": " + ex.getMessage());
+       897 |                 }
+       898 |             }
+       899 |         }
+  -> LABEL expected_route: None
+
+==============================================================================
+[26] 540da56f308c9f5e  CWE-UNCLASSIFIED / medium
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\webapp\admin-users.html:9
+  rule      html.security.audit.missing-integrity.missing-integrity
+  Laya      route=low_priority conf=0.8118 needs_human=0.5118 suff=0.8209
+            top choice=low_priority p=0.9276
+  message   This tag is missing an 'integrity' subresource integrity attribute. The 'integrity' attribute allows for the browser to verify that externally hosted files (for
+  ---
+         3 | <head>
+         4 |     <meta charset="UTF-8">
+         5 |     <title>Admin - Clear Verification Tokens</title>
+         6 |     <link rel="preconnect" href="https://fonts.googleapis.com">
+         7 |     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+         8 |     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap&subset=vietnamese" rel="stylesheet">
+  >>     9 |     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        10 |     <style>
+        11 |         body {
+        12 |             font-family: 'Roboto', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        13 |             background-color: #f7f7fb;
+        14 |             color: #1f2937;
+        15 |         }
+  -> LABEL expected_route: None
+
+==============================================================================
+[27] a4cafd527e8b34bb  CWE-UNCLASSIFIED / medium
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\webapp\admin-orders.html:9
+  rule      html.security.audit.missing-integrity.missing-integrity
+  Laya      route=low_priority conf=0.8405 needs_human=0.4813 suff=0.8354
+            top choice=low_priority p=0.9409
+  message   This tag is missing an 'integrity' subresource integrity attribute. The 'integrity' attribute allows for the browser to verify that externally hosted files (for
+  ---
+         3 |     <meta name="viewport" content="width=device-width, initial-scale=1">
+         4 |     <title>Admin - Quản lý trạng thái đơn hàng</title>
+         5 |     <link rel="preconnect" href="https://fonts.googleapis.com">
+         6 |     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+         7 |     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Roboto:wght@300;400;500;700&display=swap&subset=vietnamese" rel="stylesheet">
+         8 |     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  >>     9 |     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+        10 |     <style>
+        11 |         body {
+        12 |             background-color: #f6f7fb;
+        13 |             font-family: 'Roboto', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        14 |         }
+        15 |         .timeline {
+  -> LABEL expected_route: None
+
+==============================================================================
+[28] d1abdeea831882c4  CWE-UNCLASSIFIED / medium
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\webapp\admin-orders.html:8
+  rule      html.security.audit.missing-integrity.missing-integrity
+  Laya      route=low_priority conf=0.8002 needs_human=0.5305 suff=0.788
+            top choice=low_priority p=0.9222
+  message   This tag is missing an 'integrity' subresource integrity attribute. The 'integrity' attribute allows for the browser to verify that externally hosted files (for
+  ---
+         2 |     <meta charset="UTF-8">
+         3 |     <meta name="viewport" content="width=device-width, initial-scale=1">
+         4 |     <title>Admin - Quản lý trạng thái đơn hàng</title>
+         5 |     <link rel="preconnect" href="https://fonts.googleapis.com">
+         6 |     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+         7 |     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Roboto:wght@300;400;500;700&display=swap&subset=vietnamese" rel="stylesheet">
+  >>     8 |     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+         9 |     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+        10 |     <style>
+        11 |         body {
+        12 |             background-color: #f6f7fb;
+        13 |             font-family: 'Roboto', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        14 |         }
+  -> LABEL expected_route: None
+
+==============================================================================
+[29] fa2b25ff34fd7f4c  CWE-UNCLASSIFIED / medium
+  file      D:\New folder\DevSecOps-Agent\harness\JVA-bookstore\src\main\webapp\test-email.html:9
+  rule      html.security.audit.missing-integrity.missing-integrity
+  Laya      route=low_priority conf=0.8951 needs_human=0.4675 suff=0.8457
+            top choice=low_priority p=0.9646
+  message   This tag is missing an 'integrity' subresource integrity attribute. The 'integrity' attribute allows for the browser to verify that externally hosted files (for
+  ---
+         3 | <head>
+         4 |     <meta charset="UTF-8">
+         5 |     <title>Test Email - MailerToGo</title>
+         6 |     <link rel="preconnect" href="https://fonts.googleapis.com">
+         7 |     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+         8 |     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Roboto:wght@300;400;500;700&display=swap&subset=vietnamese" rel="stylesheet">
+  >>     9 |     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        10 |     <style>
+        11 |         body {
+        12 |             font-family: 'Roboto', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        13 |             background-color: #f5f7fb;
+        14 |             color: #1f2937;
+        15 |         }
+  -> LABEL expected_route: None
