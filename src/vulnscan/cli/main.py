@@ -183,6 +183,33 @@ def laya_evaluate(
     typer.echo(rendered)
 
 
+@app.command("evidence-manifest")
+def evidence_manifest(
+    out: str = typer.Option("", "--out", help="Optional path to write the manifest."),
+) -> None:
+    """Build the handover evidence manifest with checksums and open blockers."""
+    from pathlib import Path as _Path
+
+    from ..evaluation.manifest import build_manifest
+
+    manifest = build_manifest()
+    rendered = json.dumps(manifest, indent=2, default=str)
+
+    if out:
+        _Path(out).parent.mkdir(parents=True, exist_ok=True)
+        _Path(out).write_text(rendered, encoding="utf-8")
+        typer.echo(f"manifest={out}")
+
+    typer.echo(
+        f"artifacts={len(manifest['artifacts'])} "
+        f"missing={len(manifest['missing_artifacts'])} "
+        f"blockers={len(manifest['blockers'])}"
+    )
+    for blocker in manifest["blockers"]:
+        typer.echo(f"BLOCKER: {blocker}")
+    typer.echo(rendered)
+
+
 def main() -> None:
     """Console-script entry point (pyproject: vulnscan.cli.main:main)."""
     app()

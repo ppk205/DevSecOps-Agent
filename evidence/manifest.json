@@ -1,0 +1,70 @@
+{
+  "generated_at": "2026-09-27T13:42:09.327932+00:00",
+  "protocol": {
+    "contract_version": "decision-contract-1",
+    "question_set_version": "laya-questions-1",
+    "model_id": "convaiinnovations/laya",
+    "model_revision": "aa8c91ca088ec597df95a0d1c76b3063cb2ae5e8",
+    "model_license": "Apache-2.0",
+    "status_owner": "IndependentValidator",
+    "verified_dependencies": {
+      "laya": "0.3.20",
+      "torch": "2.6.0+cu124",
+      "transformers": "5.17.0",
+      "python": "3.11.15"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "docs/REPRODUCTION.md",
+      "present": true,
+      "sha256": "2e71318fcd5ab21f985acd9d372be0cb8b582fd87d7fcbc234cb346781533d35",
+      "size_bytes": 6717
+    },
+    {
+      "path": "requirements.lock.txt",
+      "present": true,
+      "sha256": "d3a22e5a2428445e1874bd24de590ea3f7f672e1169177841e33c7295be736d5",
+      "size_bytes": 2426
+    },
+    {
+      "path": "scripts/record_environment.sh",
+      "present": true,
+      "sha256": "c09932b27eedf74e471be66b7033b62e7301d69775288767d9c2149038d99105",
+      "size_bytes": 1776
+    },
+    {
+      "path": "scripts/laya_bench.py",
+      "present": true,
+      "sha256": "7091818a0ddc57065ac7c48ed2b9e1576518caec9344edcee899409b36051cd5",
+      "size_bytes": 8763
+    },
+    {
+      "path": "src/vulnscan/decisions/protocol.py",
+      "present": true,
+      "sha256": "bb47629b1af97d16be2761a9c251c9dbb06fa777aa65ec4030f5234ccb9bedab",
+      "size_bytes": 4472
+    },
+    {
+      "path": "evidence/t09/ground_truth.json",
+      "present": true,
+      "sha256": "c6d158d8162a3c96be9251da134564962a13c9e20784ae38cf8e0cc984fe999e",
+      "size_bytes": 159
+    },
+    {
+      "path": "evidence/environment/pip-freeze.txt",
+      "present": true,
+      "sha256": "f00ae35bea15b726fa40f839bf8c044b2f9b5d0a0e41a933563fd8e602c17eba",
+      "size_bytes": 2103
+    }
+  ],
+  "missing_artifacts": [],
+  "t09_ground_truth": {
+    "present": true,
+    "adjudicated": false,
+    "rows": 0
+  },
+  "blockers": [
+    "T09 cannot produce accuracy, ECE, or Brier: no adjudicated ground truth exists, so every graded metric is reported as null."
+  ]
+}
