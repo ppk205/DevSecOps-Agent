@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-27T13:42:09.327932+00:00",
+  "generated_at": "2026-09-27T15:55:55.058979+00:00",
   "protocol": {
     "contract_version": "decision-contract-1",
     "question_set_version": "laya-questions-1",
@@ -47,9 +47,9 @@
     },
     {
       "path": "evidence/t09/ground_truth.json",
-      "present": true,
-      "sha256": "c6d158d8162a3c96be9251da134564962a13c9e20784ae38cf8e0cc984fe999e",
-      "size_bytes": 159
+      "present": false,
+      "sha256": null,
+      "size_bytes": null
     },
     {
       "path": "evidence/environment/pip-freeze.txt",
@@ -58,13 +58,18 @@
       "size_bytes": 2103
     }
   ],
-  "missing_artifacts": [],
+  "missing_artifacts": [
+    "evidence/t09/ground_truth.json"
+  ],
   "t09_ground_truth": {
     "present": true,
-    "adjudicated": false,
-    "rows": 0
+    "adjudicated": true,
+    "independently_adjudicated": true,
+    "rows": 29,
+    "labelled_rows": 29,
+    "label_unit": "lane"
   },
   "blockers": [
-    "T09 cannot produce accuracy, ECE, or Brier: no adjudicated ground truth exists, so every graded metric is reported as null."
+    "Missing required handover artifacts: evidence/t09/ground_truth.json"
   ]
 }

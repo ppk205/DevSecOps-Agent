@@ -1,0 +1,133 @@
+{
+  "protocol": {
+    "model_id": "convaiinnovations/laya",
+    "model_revision": "aa8c91ca088ec597df95a0d1c76b3063cb2ae5e8",
+    "question_set_version": "laya-questions-1",
+    "status_owner": "IndependentValidator",
+    "advisory_only": true
+  },
+  "routing": {
+    "total": 29,
+    "route_counts": {
+      "low_priority": 25,
+      "human_review": 4
+    },
+    "unavailable": 0,
+    "route_accuracy": 0.724138,
+    "false_escalations": 0,
+    "false_escalation_rate": 0.0,
+    "scored_routes": 29,
+    "by_cwe": {
+      "CWE-79": {
+        "n": 13,
+        "correct": 10,
+        "accuracy": 0.769231
+      },
+      "CWE-89": {
+        "n": 11,
+        "correct": 10,
+        "accuracy": 0.909091
+      },
+      "CWE-UNCLASSIFIED": {
+        "n": 5,
+        "correct": 1,
+        "accuracy": 0.2
+      }
+    },
+    "by_language": {
+      "unknown": {
+        "n": 29,
+        "correct": 21,
+        "accuracy": 0.724138
+      }
+    }
+  },
+  "calibration": {
+    "n": 29,
+    "ece": 0.339221,
+    "brier": 0.2448,
+    "mean_confidence": 0.559421,
+    "accuracy": 0.724138
+  },
+  "reliability_diagram": [
+    {
+      "lo": 0.1,
+      "hi": 0.2,
+      "count": 3,
+      "mean_confidence": 0.161133,
+      "accuracy": 0.0
+    },
+    {
+      "lo": 0.2,
+      "hi": 0.3,
+      "count": 1,
+      "mean_confidence": 0.2323,
+      "accuracy": 0.0
+    },
+    {
+      "lo": 0.3,
+      "hi": 0.4,
+      "count": 6,
+      "mean_confidence": 0.363367,
+      "accuracy": 1.0
+    },
+    {
+      "lo": 0.5,
+      "hi": 0.6,
+      "count": 7,
+      "mean_confidence": 0.551357,
+      "accuracy": 1.0
+    },
+    {
+      "lo": 0.6,
+      "hi": 0.7,
+      "count": 1,
+      "mean_confidence": 0.6532,
+      "accuracy": 1.0
+    },
+    {
+      "lo": 0.7,
+      "hi": 0.8,
+      "count": 7,
+      "mean_confidence": 0.777857,
+      "accuracy": 0.714286
+    },
+    {
+      "lo": 0.8,
+      "hi": 0.9,
+      "count": 4,
+      "mean_confidence": 0.8424,
+      "accuracy": 0.5
+    }
+  ],
+  "graded": 29,
+  "ground_truth_matched": 29,
+  "error_codes_seen": [],
+  "known_error_codes": {
+    "package_missing": "The laya package is not installed; routing skipped.",
+    "model_unavailable": "The model could not be loaded; routing skipped.",
+    "timeout": "Inference exceeded the configured timeout; routing skipped.",
+    "out_of_memory": "Inference ran out of GPU memory; routing skipped.",
+    "malformed_output": "The model response could not be parsed; routing skipped.",
+    "unknown": "Unclassified failure; routing skipped."
+  },
+  "label_provenance": {
+    "labelled_by": "devsecops-agent",
+    "independently_adjudicated": false,
+    "method": "source read; sink reachability and escaping checked at the reported line",
+    "caveat": "Labels were produced by the same agent that built the pipeline. These metrics are NOT independent validation of Laya and must not be cited as such.",
+    "label_unit": "lane name (one of the 8 Laya lanes), not a yes/no escalation flag"
+  },
+  "confusion_matrix": {
+    "low_priority->low_priority": 21,
+    "low_priority->human_review": 4,
+    "dependency_analysis->low_priority": 4
+  },
+  "known_limitations": [
+    "FALSE NEGATIVES ARE NOT MEASURED: false_escalation_rate=0.0 only means nothing was escalated that should not have been. It says nothing about the 4 true positives Laya routed to low_priority.",
+    "All 4 true positives (missing subresource-integrity on a third-party CDN) were routed to low_priority. Laya has no signal for third-party script provenance, so the one finding class that matters most is the one it misses.",
+    "4 false positives were still escalated to human_review because their probability distribution was not dominant.",
+    "expected lanes were derived from the same source reading as the security verdict, so verdict and lane are not independent judgements.",
+    "n=29 on a single project. These numbers are not a general accuracy estimate."
+  ]
+}

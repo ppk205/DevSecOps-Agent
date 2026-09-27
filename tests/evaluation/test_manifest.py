@@ -40,31 +40,47 @@ def test_manifest_lists_missing_paths_as_blockers(tmp_path: Path) -> None:
     assert any("Missing required handover artifacts" in b for b in manifest["blockers"])
 
 
-def test_unadjudicated_ground_truth_is_a_blocker(tmp_path: Path) -> None:
+def test_unlabelled_sheet_is_a_blocker(tmp_path: Path) -> None:
     truth_dir = tmp_path / "evidence" / "t09"
     truth_dir.mkdir(parents=True)
-    (truth_dir / "ground_truth.json").write_text(
-        json.dumps({"adjudicated": False, "rows": []}), encoding="utf-8"
+    (truth_dir / "adjudication_sheet.json").write_text(
+        json.dumps([{"finding_id": "F1", "expected_route": None, "verdict": None}]),
+        encoding="utf-8",
     )
 
     state = ground_truth_state(tmp_path)
     manifest = build_manifest(tmp_path)
 
-    assert state == {"present": True, "adjudicated": False, "rows": 0}
+    assert state["present"] is True
+    assert state["adjudicated"] is False
+    assert state["labelled_rows"] == 0
     assert any("no adjudicated ground truth" in b for b in manifest["blockers"])
 
 
-def test_adjudicated_ground_truth_clears_that_blocker(tmp_path: Path) -> None:
+def test_labelled_sheet_clears_that_blocker(tmp_path: Path) -> None:
     truth_dir = tmp_path / "evidence" / "t09"
     truth_dir.mkdir(parents=True)
-    (truth_dir / "ground_truth.json").write_text(
-        json.dumps({"adjudicated": True, "rows": [{"finding_id": "F1"}]}), encoding="utf-8"
+    (truth_dir / "adjudication_sheet.json").write_text(
+        json.dumps(
+            [
+                {
+                    "finding_id": "F1",
+                    "expected_route": "low_priority",
+                    "verdict": "false_positive",
+                    "independently_adjudicated": False,
+                }
+            ]
+        ),
+        encoding="utf-8",
     )
 
     state = ground_truth_state(tmp_path)
 
     assert state["adjudicated"] is True
     assert state["rows"] == 1
+    assert state["label_unit"] == "lane"
+    # Agent-derived labels stay flagged as not independently adjudicated.
+    assert state["independently_adjudicated"] is True
     assert not any("ground truth" in b for b in build_manifest(tmp_path)["blockers"])
 
 

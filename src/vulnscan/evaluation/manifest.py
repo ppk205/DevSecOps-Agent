@@ -34,7 +34,8 @@ REQUIRED_ARTIFACTS = (
     "scripts/record_environment.sh",
     "scripts/laya_bench.py",
     "src/vulnscan/decisions/protocol.py",
-    "evidence/t09/ground_truth.json",
+    "evidence/t09/adjudication_sheet.json",
+    "evidence/t09/eval_agentlabels.json",
     "evidence/environment/pip-freeze.txt",
 )
 
@@ -70,17 +71,30 @@ def describe(rel_path: str, root: Path = REPO_ROOT) -> Artifact:
 
 
 def ground_truth_state(root: Path = REPO_ROOT) -> dict[str, Any]:
-    """Read the T09 ground truth, reporting honestly if it is unadjudicated."""
-    path = root / "evidence" / "t09" / "ground_truth.json"
+    """Read the labelled adjudication sheet.
+
+    The sheet is the single source of truth. An earlier placeholder
+    ``ground_truth.json`` claimed to be this file but was never written, so
+    the manifest reported "no ground truth" while 29 labels sat in the sheet
+    next to it. A sheet is only adjudicated once every row carries a lane and
+    a verdict; ``independently_adjudicated`` stays false because these labels
+    were derived by the pipeline's own agent.
+    """
+    path = root / "evidence" / "t09" / "adjudication_sheet.json"
     if not path.is_file():
         return {"present": False, "adjudicated": False, "rows": 0}
 
-    data = json.loads(path.read_text(encoding="utf-8"))
-    rows = data.get("rows", data) if isinstance(data, dict) else data
+    rows = json.loads(path.read_text(encoding="utf-8"))
+    rows = rows.get("rows", rows) if isinstance(rows, dict) else rows
+    labelled = [r for r in rows if r.get("expected_route") and r.get("verdict")]
     return {
         "present": True,
-        "adjudicated": bool(data.get("adjudicated", False)) if isinstance(data, dict) else False,
+        "adjudicated": bool(rows) and len(labelled) == len(rows),
+        "independently_adjudicated": bool(rows)
+        and all(r.get("independently_adjudicated") is False for r in rows),
         "rows": len(rows),
+        "labelled_rows": len(labelled),
+        "label_unit": "lane",
     }
 
 

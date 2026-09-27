@@ -1,7 +1,7 @@
 # Implementation Plan — DevSecOps-Agent
 
 **Version:** 1.1
-**Status:** In progress — T00–T07 implemented; T06 checkpoint committed; T08–T10 pending
+**Status:** In progress — T00–T10 implemented; T09 evaluated on JVA-bookstore
 **Related:** [SRS.md](SRS.md), [TEST-PLAN.md](TEST-PLAN.md), [../.planning/AGENT-HANDOFF.md](../.planning/AGENT-HANDOFF.md), [Laya decision-routing plan](../.hermes/plans/2026-09-23_000000-laya-decision-routing.md)
 
 ---
@@ -51,6 +51,44 @@ Human decision support
 The pipeline stages are: scanner adapters → normalization/deduplication/source context → deterministic evidence envelope → optional Laya GPU decision router → targeted deep-analysis worker → `IndependentValidator` → final status and human decision workspace.
 
 Laya is an optional advisory backend, not a scanner, provider replacement, ground-truth source, final-status owner, or CVSS generator. See [the detailed Laya plan](../.hermes/plans/2026-09-23_000000-laya-decision-routing.md).
+
+### T09 result — Laya advisory routing on JVA-bookstore
+
+29 findings from `dd48d12`, 25 false positives and 4 true positives (missing
+subresource-integrity on third-party CDN scripts).
+
+```text
+route_accuracy        0.724   (21/29)
+false_escalation_rate 0.000
+ECE                   0.339
+Brier                 0.245
+```
+
+```text
+expected -> actual                n  verdict
+low_priority     -> low_priority  21  false_positive
+low_priority     -> human_review   4  false_positive
+dependency_analysis -> low_priority 4  true_positive
+```
+
+Labels are lane names (one of the eight Laya lanes), derived by reading the
+source at each reported line. They were produced by the agent that built the
+pipeline, so these figures are **not independent validation of Laya** and must
+not be cited as such; `evidence/t09/eval_agentlabels.json` records that caveat
+alongside the numbers.
+
+What this run does and does not show:
+
+- **Every true positive was routed to `low_priority`.** Laya has no signal for
+  third-party script provenance, so the one finding class that matters most is
+  the one it misses. `false_escalation_rate = 0.0` measures only unwanted
+  escalation and says nothing about this; false negatives are not measured.
+- ECE 0.339 means self-reported confidence (mean 0.529) is poorly calibrated
+  against the achieved accuracy.
+- n=29 on one project. Not a general accuracy estimate.
+- Router policy was corrected during T09: it previously escalated on Laya's
+  self-reported confidence alone, which rewrote 18 of 29 routes and destroyed
+  the model's own signal. It now decides on the probability distribution.
 
 ---
 

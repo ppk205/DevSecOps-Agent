@@ -1,4 +1,9 @@
-"""The adjudication sheet must render evidence and must never label it."""
+"""The sheet builder renders evidence only; labelling lives in a separate step.
+
+``build_sheet`` must not invent labels. ``scripts/label_sheet.py`` applies
+labels afterwards and stamps every row with its provenance, because the
+evaluating agent is also the one that built the pipeline.
+"""
 
 from __future__ import annotations
 
@@ -132,4 +137,30 @@ def test_real_sheet_covers_all_29_findings() -> None:
     rows = json.loads(path.read_text(encoding="utf-8"))
     assert len(rows) == 29
     assert all(r["source"] for r in rows)
-    assert all(r["expected_route"] is None for r in rows)
+    # A row is complete only when the label carries its own provenance: a
+    # route with no verdict or reason is a half-finished review.
+    for row in rows:
+        assert row["expected_route"] is not None, f"unlabelled: {row['finding_id']}"
+        assert row["verdict"] in {"true_positive", "false_positive"}
+        assert row["label_reason"].strip()
+        assert row["independently_adjudicated"] is False
+        assert row["labelled_by"]
+
+
+def test_experiment_record_carries_the_label_caveat() -> None:
+    """Metrics must not be readable as independent validation.
+
+    The agent that graded Laya is the agent that built the pipeline, so the
+    record has to say so wherever the numbers live, not only in a commit
+    message.
+    """
+    path = REPO / "evidence" / "t09" / "eval_agentlabels.json"
+    if not path.is_file():
+        return  # evaluation not run yet; nothing to assert
+
+    record = json.loads(path.read_text(encoding="utf-8"))
+    provenance = record["label_provenance"]
+    assert provenance["independently_adjudicated"] is False
+    assert provenance["labelled_by"] == "devsecops-agent"
+    assert "NOT independent validation" in provenance["caveat"]
+    assert record["routing"]["route_accuracy"] is not None
