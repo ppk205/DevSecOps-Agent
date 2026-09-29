@@ -20,6 +20,7 @@ from typing import Any
 from vulnscan.contracts import (
     CoverageRecord,
     CoverageUnitStatus,
+    CWECategory,
     ExtractionMode,
     LanguageKind,
     Observation,
@@ -64,6 +65,7 @@ def _make_observation_id(rule_id: str, file_path: str, line: int) -> str:
 
 
 # --- SARIF helpers ------------------------------------------------------- #
+
 
 def _extract_from_sarif_v2(
     sarif: dict[str, Any],
@@ -110,8 +112,10 @@ def _extract_from_sarif_v2(
 
             # Determine language
             ext = Path(file_path).suffix.lower()
-            lang = LanguageKind.JAVA if ext == ".java" else (
-                LanguageKind.JSP if ext in (".jsp", ".jspx") else LanguageKind.OTHER
+            lang = (
+                LanguageKind.JAVA
+                if ext == ".java"
+                else (LanguageKind.JSP if ext in (".jsp", ".jspx") else LanguageKind.OTHER)
             )
 
             observations.append(
@@ -144,8 +148,10 @@ def _extract_from_sarif_v2(
             for al in art_locs:
                 uri = al.get("location", {}).get("artifactLocation", {}).get("uri", "")
                 ext = Path(uri).suffix.lower()
-                lang = LanguageKind.JAVA if ext == ".java" else (
-                    LanguageKind.JSP if ext in (".jsp", ".jspx") else LanguageKind.OTHER
+                lang = (
+                    LanguageKind.JAVA
+                    if ext == ".java"
+                    else (LanguageKind.JSP if ext in (".jsp", ".jspx") else LanguageKind.OTHER)
                 )
                 coverage.append(
                     CoverageRecord(
@@ -162,7 +168,7 @@ def _extract_from_sarif_v2(
                         unresolved_calls=[],
                         cwe_capabilities=[],
                         cwe_limitations=[],
-                        confidence_floor=0.5,
+                        analyzed_at=now,
                     )
                 )
 
@@ -192,8 +198,10 @@ def _extract_from_legacy_json(
         end_col = res.get("end", {}).get("col")
 
         ext = Path(path).suffix.lower()
-        lang = LanguageKind.JAVA if ext == ".java" else (
-            LanguageKind.JSP if ext in (".jsp", ".jspx") else LanguageKind.OTHER
+        lang = (
+            LanguageKind.JAVA
+            if ext == ".java"
+            else (LanguageKind.JSP if ext in (".jsp", ".jspx") else LanguageKind.OTHER)
         )
 
         # CWE extraction. The legacy ``--json`` schema puts CWE labels under
@@ -235,10 +243,12 @@ def _extract_from_legacy_json(
         )
 
     # Coverage from the ``scan_targets`` list
-    for target in data.get("scan_info", {}).get("files", []):
+    for target in data.get("paths", {}).get("scanned", data.get("scan_info", {}).get("files", [])):
         ext = Path(target).suffix.lower()
-        lang = LanguageKind.JAVA if ext == ".java" else (
-            LanguageKind.JSP if ext in (".jsp", ".jspx") else LanguageKind.OTHER
+        lang = (
+            LanguageKind.JAVA
+            if ext == ".java"
+            else (LanguageKind.JSP if ext in (".jsp", ".jspx") else LanguageKind.OTHER)
         )
         coverage.append(
             CoverageRecord(
@@ -255,7 +265,7 @@ def _extract_from_legacy_json(
                 unresolved_calls=[],
                 cwe_capabilities=[],
                 cwe_limitations=[],
-                confidence_floor=0.5,
+                analyzed_at=now,
             )
         )
 
@@ -310,6 +320,7 @@ class SemgrepAdapter(ScannerAdapter):
     def run(self, spec: ScanSpecification, *, workdir: str) -> ScannerResult:
         cap = self.capabilities()
         from datetime import datetime
+
         started = datetime.now(UTC)
         tool_cfg = self._tool_config(spec)
 
@@ -323,7 +334,9 @@ class SemgrepAdapter(ScannerAdapter):
 
         # Build argv
         argv: list[str] = [self.binary_name]
-        argv += ["--config", "auto"]
+        argv += ["--metrics", "off", "--disable-version-check"]
+        if not (tool_cfg and tool_cfg.rule_paths):
+            argv += ["--config", str(Path(__file__).with_name("rules") / "java.yml")]
         argv += ["--json"]
         argv += ["--no-git-ignore"]
         if tool_cfg and tool_cfg.rule_paths:
@@ -338,18 +351,20 @@ class SemgrepAdapter(ScannerAdapter):
                 elif k == "jobs":
                     argv += ["--jobs", str(v)]
                 # other unknown options are skipped
-        argv += [workdir]
+        argv += ["."]
 
         result = self._invoke(argv, cwd=workdir)
         finished = datetime.now(UTC)
 
         if not result.succeeded:
-            if result.timed_out or result.returncode > 1:
+            if result.timed_out or result.returncode not in (0, 1):
                 return self._fatal(spec, started, finished, result, note="semgrep failed")
             # returncode == 1 means findings (not a failure)
             # fall through to parse stdout
             if not result.stdout.strip():
-                return self._fatal(spec, started, finished, result, note="semgrep produced no output")
+                return self._fatal(
+                    spec, started, finished, result, note="semgrep produced no output"
+                )
 
         raw_text = result.stdout.strip()
         if not raw_text:
@@ -359,25 +374,54 @@ class SemgrepAdapter(ScannerAdapter):
         try:
             data = json.loads(raw_text)
         except json.JSONDecodeError:
-            return self._fatal(spec, started, finished, result, note="semgrep output is not valid JSON")
+            return self._fatal(
+                spec, started, finished, result, note="semgrep output is not valid JSON"
+            )
 
-        if isinstance(data, dict) and "runs" in data:
+        if not isinstance(data, dict) or not ({"results", "runs"} & data.keys()):
+            return self._fatal(spec, started, finished, result, note="invalid Semgrep report shape")
+        if "runs" in data:
             observations, coverage_records = parse_sarif(
                 raw_text,
-                run_id=spec.run_id,
+                run_id=spec.run_id or "unassigned",
                 tool_version=cap.version or "unknown",
                 source_snapshot=spec.target_commit_sha,
             )
         else:
             observations, coverage_records = parse_json(
                 raw_text,
-                run_id=spec.run_id,
+                run_id=spec.run_id or "unassigned",
                 tool_version=cap.version or "unknown",
                 source_snapshot=spec.target_commit_sha,
             )
 
+        if not isinstance(data, dict) or not ({"results", "runs"} & data.keys()):
+            return self._fatal(spec, started, finished, result, note="invalid Semgrep report shape")
+        if not (tool_cfg and tool_cfg.rule_paths):
+            for record in coverage_records:
+                record.cwe_capabilities = [
+                    CWECategory("CWE-89"),
+                    CWECategory("CWE-78"),
+                    CWECategory("CWE-327"),
+                ]
+                record.metadata["rules_pack_version"] = "0.2.0"
+        for path in Path(workdir).rglob("*.jsp"):
+            coverage_records.append(
+                CoverageRecord(
+                    run_id=spec.run_id or "unassigned",
+                    tool=self.tool,
+                    tool_version=cap.version or "unknown",
+                    source_snapshot=spec.target_commit_sha,
+                    unit_path=path.relative_to(workdir).as_posix(),
+                    unit_language=LanguageKind.JSP,
+                    eligible=True,
+                    status=CoverageUnitStatus.UNSUPPORTED,
+                    limitation_reason="Versioned Java rules do not parse JSP",
+                    analyzed_at=finished,
+                )
+            )
         return ScannerResult(
-            run_id=spec.run_id,
+            run_id=spec.run_id or "unassigned",
             tool=self.tool,
             tool_version=cap.version or "unknown",
             adapter_version=self.adapter_version,
@@ -388,10 +432,12 @@ class SemgrepAdapter(ScannerAdapter):
             coverage_records=coverage_records,
             raw_output_refs=[],
             eligible_units=len(coverage_records),
-            analyzed_units=sum(1 for c in coverage_records if c.status == CoverageUnitStatus.ANALYZED),
+            analyzed_units=sum(
+                1 for c in coverage_records if c.status == CoverageUnitStatus.ANALYZED
+            ),
             skipped_units=0,
             failed_units=0,
-            errors=[],
+            errors=[str(e.get("message", "Semgrep error")) for e in data.get("errors", [])],
             warnings=[],
             duration_ms=result.duration_ms,
             metadata={"source_format": "sarif" if "runs" in data else "json"},

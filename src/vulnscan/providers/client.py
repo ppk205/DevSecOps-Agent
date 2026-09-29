@@ -31,6 +31,7 @@ class ChatMessage:
 @dataclass
 class ChatResponse:
     """Parsed response from /chat/completions."""
+
     content: str = ""
     tool_calls: list[dict[str, Any]] = field(default_factory=list)
     usage: dict[str, int] = field(default_factory=dict)
@@ -83,7 +84,11 @@ class ProviderClient:
         ProviderError
             On HTTP or response-level errors.
         """
-        use_model = model or self.profile.default_model or (self.profile.models[0] if self.profile.models else None)
+        use_model = (
+            model
+            or self.profile.default_model
+            or (self.profile.models[0] if self.profile.models else None)
+        )
         if not use_model:
             raise ValueError("No model specified and profile has no default_model or models.")
 
@@ -114,8 +119,7 @@ class ProviderClient:
                 resp.raise_for_status()
         except httpx.HTTPStatusError as exc:
             raise ProviderError(
-                f"HTTP {exc.response.status_code} from {self.profile.id}: "
-                f"{exc.response.text[:500]}"
+                f"HTTP {exc.response.status_code} from {self.profile.id}: {exc.response.text[:500]}"
             ) from exc
         except httpx.RequestError as exc:
             raise ProviderError(f"Request failed for {self.profile.id}: {exc}") from exc
@@ -148,6 +152,7 @@ class ProviderClient:
                 completion_tokens=output_tokens,
                 total_tokens=total_tokens,
                 cost_usd=0.0,
+                succeeded=True,
                 run_id="",
             )
             self.budget.record(usage)

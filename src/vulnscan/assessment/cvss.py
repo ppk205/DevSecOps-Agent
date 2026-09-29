@@ -18,7 +18,7 @@ from enum import Enum
 _AV = {"N": 0.85, "A": 0.62, "L": 0.55, "P": 0.20}
 _AC = {"L": 0.77, "H": 0.44}
 _AT = {"N": 0.85, "P": 0.62}
-_PR = {
+_PR: dict[str, float | dict[str, float]] = {
     "N": 0.85,
     "L": {"U": 0.62, "H": 0.68},
     "H": {"U": 0.27, "H": 0.50},
@@ -39,6 +39,7 @@ class Severity(str, Enum):
 @dataclass(frozen=True)
 class CVSSResult:
     """Parsed and scored CVSS v4.0 vector."""
+
     vector: str
     base_score: float
     qualitative: Severity
@@ -68,7 +69,7 @@ def parse_vector(vector: str) -> dict[str, str]:
         raise ValueError(
             f"Invalid CVSS v4.0 vector: must start with 'CVSS:4.0/', got '{vector[:20]}'"
         )
-    parts = vector[len("CVSS:4.0/"):].split("/")
+    parts = vector[len("CVSS:4.0/") :].split("/")
     metrics = {}
     for part in parts:
         if ":" not in part:
@@ -114,10 +115,11 @@ def score(vector: str) -> CVSSResult:
     # PR is scope-dependent
     pr_val = metrics["PR"]
     if pr_val in _PR:
-        if isinstance(_PR[pr_val], dict):
-            pr = _PR[pr_val].get(scope, 0.0)
+        entry = _PR[pr_val]
+        if isinstance(entry, dict):
+            pr = entry.get(scope, 0.0)
         else:
-            pr = _PR[pr_val]
+            pr = entry
     else:
         pr = 0.0
 
@@ -205,10 +207,18 @@ def validate(vector: str) -> list[str]:
     valid_s = {"U", "H"}
 
     checks = [
-        ("AV", valid_av), ("AC", valid_ac), ("AT", valid_at),
-        ("PR", valid_pr), ("UI", valid_ui), ("S", valid_s),
-        ("VC", valid_impact), ("VI", valid_impact), ("VA", valid_impact),
-        ("SC", valid_impact), ("SI", valid_impact), ("SA", valid_impact),
+        ("AV", valid_av),
+        ("AC", valid_ac),
+        ("AT", valid_at),
+        ("PR", valid_pr),
+        ("UI", valid_ui),
+        ("S", valid_s),
+        ("VC", valid_impact),
+        ("VI", valid_impact),
+        ("VA", valid_impact),
+        ("SC", valid_impact),
+        ("SI", valid_impact),
+        ("SA", valid_impact),
     ]
 
     for key, valid_vals in checks:

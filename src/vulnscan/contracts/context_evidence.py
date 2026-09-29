@@ -108,8 +108,7 @@ class JSPContext(VersionedModel):
     original_source_mapping: str | None = Field(
         default=None,
         description=(
-            "Mapping from JSP expression to compiled servlet line "
-            "(e.g. 'JSP:12 -> Servlet:45')."
+            "Mapping from JSP expression to compiled servlet line (e.g. 'JSP:12 -> Servlet:45')."
         ),
     )
     is_escaped: bool = Field(

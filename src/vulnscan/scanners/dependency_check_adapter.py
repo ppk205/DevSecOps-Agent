@@ -7,6 +7,7 @@ conditions: the adapter records them and returns a result, never raising.
 
 from __future__ import annotations
 
+import hashlib
 import json
 from datetime import UTC, datetime
 from pathlib import Path
@@ -51,7 +52,7 @@ def _cvss_to_severity(score: float | None) -> Severity | None:
         return Severity.HIGH
     if score >= 4.0:
         return Severity.MEDIUM
-    if score > 0.1:
+    if score > 0:
         return Severity.LOW
     return Severity.INFO
 
@@ -111,28 +112,28 @@ def parse_dependency_check_json(
                 eligible=True,
                 status=unit_status,
                 limitation_reason=(
-                    "virtual dependency: no local artifact to scan"
-                    if is_virtual
-                    else None
+                    "virtual dependency: no local artifact to scan" if is_virtual else None
                 ),
                 extraction_mode=ExtractionMode.DEPENDENCY_GRAPH,
                 diagnostics=[f"evidence: {vendor_count} vendor, {product_count} product"],
                 unresolved_calls=[],
-                cwe_capabilities=[CWECategory.CWE_1104],
+                cwe_capabilities=[CWECategory.DEPENDENCY_VULNERABILITY],
                 cwe_limitations=[],
-                confidence_floor=0.6,
+                analyzed_at=now,
             )
         )
 
         for vuln in dep.get("vulnerabilities", []) or []:
             vuln_id = str(vuln.get("name") or "unknown")
             description = str(vuln.get("description") or "")
-            cvss = vuln.get("cvssv3") or vuln.get("cvssv2") or {}
+            cvss = vuln.get("cvssv4") or vuln.get("cvssv3") or vuln.get("cvssv2") or {}
             score = cvss.get("baseScore") if isinstance(cvss, dict) else None
             severity = _cvss_to_severity(score) or _name_to_severity(vuln.get("severity"))
 
             observations.append(
                 Observation(
+                    observation_id="obs-"
+                    + hashlib.sha256(f"{dep_name}|{vuln_id}".encode()).hexdigest()[:16],
                     run_id=run_id,
                     tool=ToolName.OWASP_DEPENDENCY_CHECK,
                     tool_version=tool_version,
@@ -193,16 +194,27 @@ class DependencyCheckAdapter(ScannerAdapter):
             "JSON",
             "--out",
             str(report_path.parent),
-            "--noupdate",
+            "--data",
+            "/tmp/dependency-check-data",
+            "--kevURL",
+            "https://raw.githubusercontent.com/cisagov/kev-data/main/known_exploited_vulnerabilities.json",
         ]
+        if spec.metadata.get("advisory_cache_ready"):
+            argv.append("--noupdate")
+        else:
+            argv += [
+                "--nvdDatafeed",
+                "https://nvd.nist.gov/feeds/json/cve/2.0/nvdcve-2.0-{0}.json.gz",
+            ]
         if tool_cfg:
             for key, value in (tool_cfg.options or {}).items():
                 argv += [f"--{key}", str(value)]
 
+        report_path.unlink(missing_ok=True)
         result = self._invoke(argv, cwd=workdir)
         finished = datetime.now(UTC)
 
-        if not report_path.exists():
+        if not result.succeeded or not report_path.exists():
             return self._fatal(
                 spec, started, finished, result, note="dependency-check produced no report"
             )
@@ -214,16 +226,29 @@ class DependencyCheckAdapter(ScannerAdapter):
                 spec, started, finished, result, note=f"unreadable dependency-check report: {exc}"
             )
 
+        if not isinstance(report, dict) or not isinstance(report.get("dependencies"), list):
+            return self._fatal(
+                spec, started, finished, result, note="invalid dependency-check report shape"
+            )
+        if report.get("scanInfo", {}).get("analysisExceptions"):
+            return self._fatal(
+                spec,
+                started,
+                finished,
+                result,
+                note="dependency-check reported analysis exceptions",
+            )
+
         observations, coverage_records = parse_dependency_check_json(
             report,
-            run_id=spec.run_id,
+            run_id=spec.run_id or "unassigned",
             tool_version=cap.version or "unknown",
             source_snapshot=spec.target_commit_sha,
         )
 
         skipped = sum(1 for c in coverage_records if c.status == CoverageUnitStatus.SKIPPED)
         return ScannerResult(
-            run_id=spec.run_id,
+            run_id=spec.run_id or "unassigned",
             tool=self.tool,
             tool_version=cap.version or "unknown",
             adapter_version=self.adapter_version,
@@ -240,7 +265,7 @@ class DependencyCheckAdapter(ScannerAdapter):
             errors=[],
             warnings=[],
             duration_ms=result.duration_ms,
-            metadata={},
+            metadata={"advisory_data_sources": report.get("scanInfo", {}).get("dataSource", [])},
         )
 
 

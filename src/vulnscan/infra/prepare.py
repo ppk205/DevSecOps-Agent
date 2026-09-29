@@ -14,6 +14,7 @@ from pathlib import Path
 @dataclass
 class PreparedCache:
     """Record of what was cached at preparation time."""
+
     m2_cache_dir: Path
     cache_key: str
     items: list[str]

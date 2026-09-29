@@ -22,9 +22,7 @@ class FakeLaya:
         self.result = result
         self.calls: list[tuple[dict[str, Any], dict[str, Any]]] = []
 
-    def predict(
-        self, state: dict[str, Any], questions: dict[str, Any], **kwargs: Any
-    ) -> Any:
+    def predict(self, state: dict[str, Any], questions: dict[str, Any], **kwargs: Any) -> Any:
         self.calls.append((state, questions))
         if isinstance(self.result, Exception):
             raise self.result
@@ -73,7 +71,9 @@ def test_laya_backend_normalizes_typed_answers() -> None:
 
 
 def test_laya_backend_reports_unavailable_without_raising() -> None:
-    backend = LayaDecisionBackend(agent_loader=lambda: (_ for _ in ()).throw(ImportError("no laya")))
+    backend = LayaDecisionBackend(
+        agent_loader=lambda: (_ for _ in ()).throw(ImportError("no laya"))
+    )
 
     result = backend.predict(_request())
 
@@ -83,7 +83,9 @@ def test_laya_backend_reports_unavailable_without_raising() -> None:
 
 
 def test_laya_backend_marks_malformed_output_incomplete() -> None:
-    backend = LayaDecisionBackend(agent_loader=lambda: FakeLaya({"answers": {"route": {"type": "choice"}}}))
+    backend = LayaDecisionBackend(
+        agent_loader=lambda: FakeLaya({"answers": {"route": {"type": "choice"}}})
+    )
 
     result = backend.predict(_request())
 

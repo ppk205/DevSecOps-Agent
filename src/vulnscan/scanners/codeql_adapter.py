@@ -10,6 +10,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 
 from vulnscan.contracts import (
+    RunStatus,
     ScannerResult,
     ScanSpecification,
     ToolName,
@@ -19,7 +20,7 @@ from .base import AdapterCapability, ScannerAdapter
 from .platform import which
 from .process import run_command
 
-ADAPTER_VERSION = "0.1.0-experimental"
+ADAPTER_VERSION = "0.2.0-experimental"
 
 
 class CodeQLAdapter(ScannerAdapter):
@@ -40,7 +41,7 @@ class CodeQLAdapter(ScannerAdapter):
             )
         # Probe version.
         proc = run_command([self.binary_name, "version", "--format", "json"])
-        version = proc.stdout.decode("utf-8", errors="replace").strip() if proc.returncode == 0 else "unknown"
+        version = proc.stdout.strip() if proc.returncode == 0 else "unknown"
         return AdapterCapability(
             tool=self.tool,
             binary=self.binary_name,
@@ -57,16 +58,16 @@ class CodeQLAdapter(ScannerAdapter):
             return self._skipped_result(spec, started, "CodeQL disabled in scan spec")
 
         if not cap.available:
-            return self._failed_result(spec, started, cap.unavailable_message())
+            return self._skipped_result(spec, started, cap.unavailable_message())
 
         # CodeQL database creation + query run would go here.
         # For now, return a documented incomplete result.
         return ScannerResult(
-            run_id=spec.run_id,
+            run_id=spec.run_id or "unassigned",
             tool=ToolName.CODEQL,
             tool_version=cap.version or "unknown",
             adapter_version=ADAPTER_VERSION,
-            status="completed",
+            status=RunStatus.FAILED,
             started_at=started,
             finished_at=datetime.now(UTC),
             observations=[],

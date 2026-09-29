@@ -10,7 +10,9 @@ unless a rule's severity suggests otherwise.
 
 from __future__ import annotations
 
+import hashlib
 import json
+import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -81,12 +83,16 @@ def parse_gitleaks_json(
         commit = finding.get("Commit", "")
 
         ext = Path(file_path).suffix.lower()
-        lang = LanguageKind.JAVA if ext == ".java" else (
-            LanguageKind.JSP if ext in (".jsp", ".jspx") else LanguageKind.OTHER
+        lang = (
+            LanguageKind.JAVA
+            if ext == ".java"
+            else (LanguageKind.JSP if ext in (".jsp", ".jspx") else LanguageKind.OTHER)
         )
 
         observations.append(
             Observation(
+                observation_id="obs-"
+                + hashlib.sha256(f"{rule_id}|{file_path}|{line_start}".encode()).hexdigest()[:16],
                 run_id=run_id,
                 tool=ToolName.GITLEAKS,
                 tool_version=tool_version,
@@ -105,7 +111,7 @@ def parse_gitleaks_json(
                 metadata={
                     "commit": commit,
                     "author": author,
-                    "match": finding.get("Match"),
+                    "match": "[REDACTED]",
                     "entropy": finding.get("Entropy"),
                 },
             )
@@ -118,8 +124,10 @@ def parse_gitleaks_json(
         if fp and fp not in seen_files:
             seen_files.add(fp)
             ext = Path(fp).suffix.lower()
-            lang = LanguageKind.JAVA if ext == ".java" else (
-                LanguageKind.JSP if ext in (".jsp", ".jspx") else LanguageKind.OTHER
+            lang = (
+                LanguageKind.JAVA
+                if ext == ".java"
+                else (LanguageKind.JSP if ext in (".jsp", ".jspx") else LanguageKind.OTHER)
             )
             coverage.append(
                 CoverageRecord(
@@ -136,7 +144,7 @@ def parse_gitleaks_json(
                     unresolved_calls=[],
                     cwe_capabilities=[],
                     cwe_limitations=[],
-                    confidence_floor=0.8,
+                    analyzed_at=now,
                 )
             )
 
@@ -171,79 +179,59 @@ class GitleaksAdapter(ScannerAdapter):
         if not cap.available:
             return self._skipped_result(spec, started, cap.unavailable_message())
 
-        report_path = Path(workdir) / "gitleaks-report.json"
-        argv = [
-            self.binary_name,
-            "detect",
-            "--report-format",
-            "json",
-            "--report-path",
-            str(report_path),
-            "--source",
-            workdir,
-        ]
-        if tool_cfg:
-            for key, value in (tool_cfg.options or {}).items():
-                if isinstance(value, bool) and value:
-                    argv += [f"--{key}"]
-                elif isinstance(value, bool) and not value:
-                    continue
-                else:
-                    argv += [f"--{key}", str(value)]
-
-        result = self._invoke(argv, cwd=workdir)
-        finished = datetime.now(UTC)
-
-        if not report_path.exists():
-            # Gitleaks exits 1 when no findings — that's not a failure
-            if result.returncode in (0, 1):
-                return ScannerResult(
-                    run_id=spec.run_id,
-                    tool=self.tool,
-                    tool_version=cap.version or "unknown",
-                    adapter_version=self.adapter_version,
-                    status=RunStatus.COMPLETED,
-                    started_at=started,
-                    finished_at=finished,
-                    observations=[],
-                    coverage_records=[],
-                    raw_output_refs=[],
-                    eligible_units=0,
-                    analyzed_units=0,
-                    skipped_units=0,
-                    failed_units=0,
-                    errors=[],
-                    warnings=[],
-                    duration_ms=result.duration_ms,
-                    metadata={"exit_code": result.returncode},
+        with tempfile.TemporaryDirectory(prefix="vulnscan-gitleaks-") as temporary:
+            report_path = Path(temporary) / "report.json"
+            argv = [
+                self.binary_name,
+                "detect",
+                "--no-git",
+                "--redact=100",
+                "--report-format",
+                "json",
+                "--report-path",
+                str(report_path),
+                "--source",
+                workdir,
+            ]
+            result = self._invoke(argv, cwd=workdir)
+            finished = datetime.now(UTC)
+            if result.timed_out or result.returncode not in (0, 1) or not report_path.is_file():
+                return self._fatal(
+                    spec, started, finished, result, note="gitleaks did not complete with a report"
                 )
-            return self._fatal(
-                spec, started, finished, result, note="gitleaks did not produce a report"
-            )
-
-        try:
-            report_text = report_path.read_text(encoding="utf-8", errors="replace")
-        except OSError as exc:
-            return self._fatal(
-                spec, started, finished, result, note=f"failed to read gitleaks report: {exc}"
-            )
-
-        try:
-            report_data = json.loads(report_text)
-        except json.JSONDecodeError:
-            return self._fatal(
-                spec, started, finished, result, note="gitleaks report is not valid JSON"
-            )
+            try:
+                report_data = json.loads(report_path.read_text(encoding="utf-8"))
+                if not isinstance(report_data, list):
+                    raise TypeError("expected a JSON array")
+            except (TypeError, ValueError, OSError):
+                return self._fatal(spec, started, finished, result, note="invalid gitleaks report")
 
         observations, coverage_records = parse_gitleaks_json(
             report_data,
-            run_id=spec.run_id,
+            run_id=spec.run_id or "unassigned",
             tool_version=cap.version or "unknown",
             source_snapshot=spec.target_commit_sha,
         )
 
+        coverage_records = [
+            CoverageRecord(
+                run_id=spec.run_id or "unassigned",
+                tool=self.tool,
+                tool_version=cap.version or "unknown",
+                source_snapshot=spec.target_commit_sha,
+                unit_path=path,
+                unit_language=LanguageKind.JSP
+                if path.lower().endswith(".jsp")
+                else LanguageKind.JAVA,
+                eligible=True,
+                status=CoverageUnitStatus.ANALYZED,
+                analyzed_at=finished,
+                extraction_mode=ExtractionMode.TEXT,
+            )
+            for path in spec.metadata.get("manifest", {}).get("inventory", [])
+        ]
         return ScannerResult(
-            run_id=spec.run_id,
+            run_id=spec.run_id or "unassigned",
             tool=self.tool,
             tool_version=cap.version or "unknown",
             adapter_version=self.adapter_version,

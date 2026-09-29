@@ -3,7 +3,7 @@
 **Project**: DevSecOps-Agent — Automated Vulnerability Scanning and Assessment for Java Servlet/JSP Applications
 
 **Document ID**: SRS-001  
-**Version**: 1.0  
+**Version**: 1.1 (v0.2.0 platform milestone)
 **Status**: Approved baseline — awaiting implementation  
 **Authors**: Tran Doan Hoa (23162026), Nguyen Minh Khoi (23162046)  
 **Supervisor**: Nguyen Thi Thanh Van
@@ -32,7 +32,7 @@ The application performs static analysis of Java Servlet/JSP source code. It doe
 - JSP output-context analysis (HTML text, attributes, URLs, embedded JavaScript)
 - Reporting in multiple formats with per-CWE and per-scanner breakdowns
 - Experiment comparison for accuracy evaluation
-- CLI and local web dashboard sharing the same application services
+- Full-screen Textual TUI, CLI, local web dashboard and Ubuntu composite GitHub Action sharing application services
 
 **Out of scope (first release)**:
 
@@ -41,7 +41,7 @@ The application performs static analysis of Java Servlet/JSP source code. It doe
 - Push or email notifications
 - Automatic code remediation
 - Dynamic application security testing (DAST)
-- Continuous integration/continuous deployment (CI/CD) integration
+- Hosted deployment, PyPI/GHCR publishing, detached scans, moving version tags
 - Scanning of non-Java source code (except JSP)
 
 ### 1.3 Definitions, Acronyms, and Abbreviations
@@ -127,7 +127,7 @@ The target application has four user roles. The application declares an authoriz
 
 ### 2.3 Constraints
 
-**C-01**: The application must run entirely locally. No component requires network access except scanner rule updates and LLM API calls.
+**C-01**: The application must run entirely locally. Network access is limited to dependency/tool installation, advisory database updates, optional model downloads and explicitly enabled LLM API calls.
 
 **C-02**: Total AI-usage budget is USD 50 for the project lifetime. The application must track cumulative spend and refuse to exceed the budget without explicit override.
 
@@ -371,9 +371,21 @@ Feature IDs below are stable and carried unchanged into the test plan and eviden
 
 ---
 
+### 3.7 Terminal and CI platform (v0.2.0)
+
+**FR-70: Shared execution.** One service starts, observes, cancels, retries and exports scans. Only one scan may execute per database across processes. Scanner failures preserve partial evidence. Deep analysis without an implementation is unavailable.
+
+**FR-71: Terminal interface.** Interactive bare invocation and `tui` open a keyboard-accessible Textual interface with overview/history, checkout/profile/limits configuration and effective settings review, live progress, filtered findings/evidence and report exports. Quitting an active scan offers stay or cancel and quit. No detached execution.
+
+**FR-72: CI policy.** Fast selects Semgrep and Gitleaks; full adds isolated Maven compilation, SpotBugs/FindSecBugs and Dependency-Check. AI and Laya default off. All selected scanners and coverage reconciliation must succeed. Independently rejected findings alone are excluded; unresolved and unprocessed findings count. Validated assessment severity takes precedence over native severity; unknown remains explicit. Default threshold high includes critical.
+
+**FR-73: Consumer Action.** Root Ubuntu composite Action accepts checkout, profile, config, threshold and output directory; publishes sanitized artifacts/job summary before enforcing the gate. Outputs identify run, status, gate, summary and SARIF. Record verified commit; reject dirty CI sources. Local dirty sources require explicit consent and content manifest.
+
+**FR-74: Release.** Maintainer selects X.Y.Z after version/changelog PR. Freeze main commit, verify exact package version, rerun required checks and full integration, build once and publish GitHub wheel/sdist/checksums/notes. Serialize releases; never move tags or overwrite assets. Resume only matching commit and artifact identities.
+
 ## 4. Data, Storage, and Reporting Requirements
 
-**DR-01 — Database.** The application shall persist all scan state in SQLite via SQLAlchemy, accessed asynchronously through aiosqlite.
+**DR-01 — Database.** The application shall persist all scan state in SQLite via SQLAlchemy. Synchronous scan sessions run in workers; UI reads use independent short-lived sessions.
 
 **DR-02 — Persisted queue.** Queued work, scan configuration, stage status, and retry history shall be persisted so that a process restart resumes the queue without losing queued work.
 
@@ -390,6 +402,10 @@ Feature IDs below are stable and carried unchanged into the test plan and eviden
 **DR-08 — Coverage ledger.** The application shall maintain a per-CWE coverage ledger recording eligible files, analyzed files, parse failures, unsupported constructs, and findings, reconcilable against the intake inventory for Java and JSP independently.
 
 ---
+
+**DR-09: Attempts and migrations.** Preserve integer primary keys; unique public run ID identifies specification, findings and reports. Versioned additive migrations preserve history. Persist stages, scanner results, coverage, findings and artifact references incrementally. Retry creates a linked new attempt; abandoned active jobs become interrupted.
+
+**DR-10: Configuration.** Versioned JSON settings resolve defaults, profile, file, explicit flags in that order and are saved with the run. Persist UTC timestamps and dirty content hashes; never raw credentials.
 
 ## 5. External Interface Requirements
 
@@ -428,6 +444,14 @@ Feature IDs below are stable and carried unchanged into the test plan and eviden
 **IR-13**: The provider abstraction shall support any OpenAI-compatible endpoint, and the dashboard shall allow switching providers and models between scans.
 
 ---
+
+### 5.5 TUI and automation
+
+**IR-14**: `--version` reads installed package metadata. `scan-run` accepts `--profile`, `--config`, `--fail-on`, `--json`, `--db-path`. Bare nonterminal invocation displays help.
+
+**IR-15**: Exit 0 means completed/passed, 1 threshold exceeded, 2 invalid configuration/execution/required scanner/coverage failure, 130 cancellation/interruption. Execution errors precede threshold failures. Write available reports and JSON summary before returning.
+
+**IR-16**: Typed progress events carry public run ID, stage/tool, status, UTC timestamp and sanitized message. Background execution and interface reads use independent sessions.
 
 ## 6. Quality Attributes
 
@@ -486,6 +510,14 @@ Feature IDs below are stable and carried unchanged into the test plan and eviden
 **QR-20 — Platform support.** The Python application shall run on Linux, macOS, and Windows with Python 3.11 or later. Scanner availability may differ by platform; missing scanners shall degrade gracefully per FR-21.
 
 ---
+
+### 6.8 Platform delivery
+
+**QR-21: Cancellation and responsiveness.** TUI workers keep navigation responsive; cancellation terminates scanner process trees and retains partial evidence. Text labels accompany colors; resizing and keyboard-only workflows are supported.
+
+**QR-22: CI containment.** Version rules and lock dependencies/scanners. Full-profile target builds run in a container with scoped mounts, no host credentials, and no privileged execution. Never upload unredacted secrets. Reports stay within the configured artifact directory.
+
+**QR-23: Required checks.** PR/main CI runs Ruff, strict mypy across application code, every offline test area, Linux Python 3.11?3.13 and Windows/macOS 3.11, package installation/assets and real fast fixture scans. JUnit/module coverage are retained even on failure. Full/container integration runs scheduled/manually and before releases. Paid calls/model downloads are excluded.
 
 ## 7. Language, Time, and Formatting Conventions
 

@@ -20,6 +20,7 @@ class BackendUnavailable(RuntimeError):
 @dataclass
 class ExecutionResult:
     """Outcome of running one command under a backend."""
+
     returncode: int
     stdout: bytes
     stderr: bytes

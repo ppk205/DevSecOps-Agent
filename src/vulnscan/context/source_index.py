@@ -32,6 +32,7 @@ class FilterEntry:
 @dataclass
 class SourceIndex:
     """Indexed entry points and auth helpers for the snapshot."""
+
     servlets: list[ServletEntry] = field(default_factory=list)
     filters: list[FilterEntry] = field(default_factory=list)
     web_xml_paths: list[str] = field(default_factory=list)
@@ -145,12 +146,16 @@ def build_source_index(snapshot: Path) -> SourceIndex:
         if "@WebServlet" in source:
             for p in patterns:
                 idx.servlets.append(
-                    ServletEntry(name=cls, url_pattern=p, class_name=cls, declared_in_annotation=True)
+                    ServletEntry(
+                        name=cls, url_pattern=p, class_name=cls, declared_in_annotation=True
+                    )
                 )
         if "@WebFilter" in source:
             for p in patterns:
                 idx.filters.append(
-                    FilterEntry(name=cls, url_pattern=p, class_name=cls, declared_in_annotation=True)
+                    FilterEntry(
+                        name=cls, url_pattern=p, class_name=cls, declared_in_annotation=True
+                    )
                 )
 
     # 3. auth helpers

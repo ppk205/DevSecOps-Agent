@@ -8,11 +8,38 @@ of every adapter, and so timeouts / missing binaries are handled uniformly.
 from __future__ import annotations
 
 import os
-from collections.abc import Sequence
+import tempfile
+from collections.abc import Callable, Sequence
+from contextvars import ContextVar
 from dataclasses import dataclass, field
 from subprocess import TimeoutExpired
 
-from .platform import normalize_path, which
+from .platform import which
+
+
+class ScanCancelled(BaseException):
+    """Cooperative cancellation must not be swallowed by adapter error handlers."""
+
+
+_cancel_check: ContextVar[Callable[[], bool]] = ContextVar("cancel", default=lambda: False)
+
+
+def scanner_environment(extra: dict[str, str] | None = None) -> dict[str, str]:
+    allowed = {
+        "PATH",
+        "PATHEXT",
+        "SYSTEMROOT",
+        "WINDIR",
+        "TEMP",
+        "TMP",
+        "TMPDIR",
+        "JAVA_HOME",
+        "LANG",
+        "LC_ALL",
+        "HOME",
+        "USERPROFILE",
+    }
+    return {k: v for k, v in {**os.environ, **(extra or {})}.items() if k.upper() in allowed}
 
 
 @dataclass
@@ -47,52 +74,81 @@ def run_command(
     """
     import subprocess
 
-    argv = tuple(normalize_path(a) if isinstance(a, str) else a for a in argv)
     command = tuple(str(a) for a in argv)
 
-    full_env: dict[str, str] = dict(os.environ)
-    if env:
-        full_env.update({k: str(v) for k, v in env.items()})
-
+    full_env = scanner_environment(env)
+    home = tempfile.TemporaryDirectory(prefix="vulnscan-home-")
+    full_env.update(
+        HOME=home.name, USERPROFILE=home.name, XDG_CONFIG_HOME=home.name, XDG_CACHE_HOME=home.name
+    )
     start = _now_ms()
+    proc = None
+    stopping = False
     try:
-        proc = subprocess.run(
+        proc = subprocess.Popen(
             command,
             cwd=str(cwd) if cwd is not None else None,
-            capture_output=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            stdin=subprocess.PIPE if input_text else subprocess.DEVNULL,
             text=True,
-            timeout=timeout,
+            encoding="utf-8",
+            errors="replace",
             env=full_env,
-            input=input_text,
-            check=False,
+            start_new_session=os.name != "nt",
+            creationflags=subprocess.CREATE_NEW_PROCESS_GROUP if os.name == "nt" else 0,
         )
-        return CommandResult(
-            returncode=proc.returncode,
-            stdout=proc.stdout or "",
-            stderr=proc.stderr or "",
-            timed_out=False,
-            duration_ms=_now_ms() - start,
-            command=command,
-        )
+        first = True
+        while True:
+            if _cancel_check.get()():
+                raise ScanCancelled()
+            if timeout is not None and _now_ms() - start > timeout * 1000:
+                raise TimeoutExpired(command, timeout)
+            try:
+                stdout, stderr = proc.communicate(input=input_text if first else None, timeout=0.1)
+                return CommandResult(
+                    proc.returncode,
+                    stdout or "",
+                    stderr or "",
+                    duration_ms=_now_ms() - start,
+                    command=command,
+                )
+            except TimeoutExpired:
+                first = False
+    except (KeyboardInterrupt, ScanCancelled):
+        stopping = True
+        raise
     except TimeoutExpired:
+        stopping = True
         return CommandResult(
-            returncode=-1,
-            stdout="",
+            -1,
             stderr=f"command timed out after {timeout}s",
             timed_out=True,
             duration_ms=_now_ms() - start,
             command=command,
         )
     except FileNotFoundError:
-        # stdlib may raise FileNotFoundError directly on POSIX exec failure
-        return CommandResult(
-            returncode=127,
-            stdout="",
-            stderr=f"command not found: {command[0] if command else ''}",
-            timed_out=False,
-            duration_ms=_now_ms() - start,
-            command=command,
-        )
+        return CommandResult(127, stderr=f"command not found: {command[0]}", command=command)
+    finally:
+        if proc is not None and (proc.poll() is None or stopping):
+            if os.name == "nt":
+                subprocess.run(
+                    ["taskkill", "/PID", str(proc.pid), "/T", "/F"],
+                    capture_output=True,
+                    check=False,
+                )
+            else:
+                import signal
+
+                kill_group = getattr(os, "killpg")  # noqa: B009
+                kill_signal = getattr(signal, "SIGKILL")  # noqa: B009
+                try:
+                    kill_group(proc.pid, kill_signal)
+                except ProcessLookupError:
+                    pass
+            proc.kill()
+            proc.communicate()
+        home.cleanup()
 
 
 def binary_available(binary: str) -> bool:

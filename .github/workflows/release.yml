@@ -1,0 +1,58 @@
+name: GitHub release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact package version X.Y.Z already merged to main
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: github-release
+  cancel-in-progress: false
+jobs:
+  freeze:
+    runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.freeze.outputs.sha }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - id: freeze
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: python ci/release.py freeze
+  checks:
+    needs: freeze
+    uses: ./.github/workflows/checks.yml
+    with:
+      ref: ${{ needs.freeze.outputs.sha }}
+  integration:
+    needs: freeze
+    uses: ./.github/workflows/integration.yml
+    with:
+      ref: ${{ needs.freeze.outputs.sha }}
+  publish:
+    needs: [freeze, checks, integration]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.freeze.outputs.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: ${{ needs.checks.outputs.distributions }}
+          path: dist
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ inputs.version }}
+          RELEASE_SHA: ${{ needs.freeze.outputs.sha }}
+        run: python ci/release.py publish

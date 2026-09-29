@@ -42,6 +42,7 @@ def session(in_memory_engine) -> Session:
 def sample_spec():
     """A minimal ScanSpecification for testing (uses real contract)."""
     from vulnscan.contracts import ScanSpecification, ToolConfig
+
     return ScanSpecification(
         target_repository_url="https://github.com/test/repo",
         target_commit_sha="deadbeef00000000000000000000000000000000",

@@ -43,6 +43,7 @@ class TestCaseManagement:
     def test_invalid_regression_held_out(self):
         """Regression variant cannot be held-out (must match parent split)."""
         from vulnscan.contracts.evaluation import EvaluationCase, MatchingCriteria
+
         cases = create_sample_cases()
         bad = EvaluationCase(
             case_id="bad-case",

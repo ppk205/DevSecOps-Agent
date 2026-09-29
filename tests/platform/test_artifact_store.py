@@ -46,4 +46,4 @@ def test_different_content_not_overwritten(tmp_path: Path):
 def test_missing_artifact_raises(tmp_path: Path):
     store = ArtifactStore(tmp_path / "artifacts")
     with pytest.raises(FileNotFoundError):
-        store.retrieve(run_id=999, attempt=1, checksum="a"*64, name="nope.txt")
+        store.retrieve(run_id=999, attempt=1, checksum="a" * 64, name="nope.txt")

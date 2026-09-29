@@ -121,9 +121,7 @@ class TestHumanReadableExports:
 
     def test_html_escapes_untrusted_finding_content(self):
         payload = "<script>alert('xss')</script>"
-        report = ReportGenerator(
-            "run-1", [_finding("f1", FindingStatus.CONFIRMED, title=payload)]
-        )
+        report = ReportGenerator("run-1", [_finding("f1", FindingStatus.CONFIRMED, title=payload)])
         text = report.to_html()
         assert payload not in text
         assert "&lt;script&gt;" in text

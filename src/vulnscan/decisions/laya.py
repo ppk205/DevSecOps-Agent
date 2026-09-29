@@ -27,7 +27,9 @@ _LOADER_TYPE = Callable[[], Any]
 
 def _default_loader() -> Any:
     try:
-        import laya
+        import importlib
+
+        laya = importlib.import_module("laya")
     except ImportError as exc:  # pragma: no cover - exercised with injected loader
         raise ImportError("Laya optional dependency is not installed") from exc
     return laya.load(MODEL_ID)
@@ -82,14 +84,14 @@ def _parse_answer(name: str, raw: Any, question: DecisionQuestion) -> DecisionAn
             raise ValueError(f"answer {name!r} has invalid choice")
     elif question.type is DecisionType.SCORE:
         try:
-            score = float(score)
+            score = float(score) if score is not None else float("nan")
         except (TypeError, ValueError) as exc:
             raise ValueError(f"answer {name!r} has invalid score") from exc
-        if score < 0:
+        if not score >= 0:
             raise ValueError(f"answer {name!r} has invalid score")
     elif question.type is DecisionType.NOUL:
         try:
-            noul = float(noul)
+            noul = float(noul) if noul is not None else float("nan")
         except (TypeError, ValueError) as exc:
             raise ValueError(f"answer {name!r} has invalid noul") from exc
         if not 0.0 <= noul <= 1.0:
@@ -187,16 +189,39 @@ class LayaDecisionBackend:
                 answers[name] = _parse_answer(name, raw["answers"][name], question)
         except ImportError as exc:
             latency_ms = (time.perf_counter() - started) * 1_000
-            return self._failure(request, state_hash, DecisionStatus.UNAVAILABLE, "dependency_unavailable", str(exc), latency_ms)
+            return self._failure(
+                request,
+                state_hash,
+                DecisionStatus.UNAVAILABLE,
+                "dependency_unavailable",
+                str(exc),
+                latency_ms,
+            )
         except TimeoutError as exc:
             latency_ms = (time.perf_counter() - started) * 1_000
-            return self._failure(request, state_hash, DecisionStatus.FAILED, "timeout", str(exc), latency_ms)
+            return self._failure(
+                request, state_hash, DecisionStatus.FAILED, "timeout", str(exc), latency_ms
+            )
         except (ValueError, TypeError, KeyError) as exc:
             latency_ms = (time.perf_counter() - started) * 1_000
-            return self._failure(request, state_hash, DecisionStatus.INCOMPLETE, "malformed_output", str(exc), latency_ms)
+            return self._failure(
+                request,
+                state_hash,
+                DecisionStatus.INCOMPLETE,
+                "malformed_output",
+                str(exc),
+                latency_ms,
+            )
         except Exception as exc:  # noqa: BLE001 - backend boundary must preserve baseline scan
             latency_ms = (time.perf_counter() - started) * 1_000
-            return self._failure(request, state_hash, DecisionStatus.UNAVAILABLE, "backend_unavailable", str(exc), latency_ms)
+            return self._failure(
+                request,
+                state_hash,
+                DecisionStatus.UNAVAILABLE,
+                "backend_unavailable",
+                str(exc),
+                latency_ms,
+            )
 
         return DecisionResult(
             status=DecisionStatus.COMPLETED,

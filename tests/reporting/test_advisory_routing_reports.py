@@ -151,9 +151,7 @@ def test_reporting_never_changes_finding_status() -> None:
 
 @pytest.mark.parametrize("fmt", ["json", "markdown", "html", "sarif"])
 def test_every_format_still_renders(fmt: str, tmp_path) -> None:
-    export = ReportGenerator("R", [_finding()], routing_payloads=[_payload()]).export(
-        fmt, tmp_path
-    )
+    export = ReportGenerator("R", [_finding()], routing_payloads=[_payload()]).export(fmt, tmp_path)
 
     assert export.artifact_ref.path
     assert export.format.value == fmt

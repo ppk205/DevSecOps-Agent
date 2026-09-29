@@ -59,7 +59,12 @@ def _top_two(probabilities: dict[str, float]) -> tuple[float | None, float | Non
 class DecisionRouter:
     """Apply deterministic route policy without mutating finding status."""
 
-    def __init__(self, *, high_confidence_threshold: float = HIGH_CONFIDENCE_THRESHOLD, review_threshold: float = REVIEW_THRESHOLD) -> None:
+    def __init__(
+        self,
+        *,
+        high_confidence_threshold: float = HIGH_CONFIDENCE_THRESHOLD,
+        review_threshold: float = REVIEW_THRESHOLD,
+    ) -> None:
         if not 0.0 <= review_threshold <= high_confidence_threshold <= 1.0:
             raise ValueError("thresholds must satisfy 0 <= review <= high <= 1")
         self.high_confidence_threshold = high_confidence_threshold
@@ -99,31 +104,20 @@ class DecisionRouter:
         selected = answer.choice or "human_review"
         if selected not in _ROUTE_NAMES:
             selected = "human_review"
-
-        # Decide on the probability distribution, not on the model's
-        # self-reported confidence. Laya's confidence can sit well below its
-        # own top-1 probability, and trusting it rewrote 18 of 29 routes on the
-        # T09 run: every clear low_priority was escalated to human_review,
-        # which is the one lane that tells an analyst nothing.
-        top_probability, runner_up = _top_two(answer.probabilities)
-        dominant = (
-            top_probability is not None
-            and top_probability >= DOMINANT_PROBABILITY
-            and (runner_up is None or top_probability - runner_up >= DOMINANT_MARGIN)
-        )
-
-        # A flat distribution is uncertainty, so nothing is trusted. Below that,
-        # the specialised lanes (which cost analyst time) also need the model to
-        # meet its own confidence bar. A dominant low_priority does not: if the
-        # model clearly says "ignore this", second-guessing it is the very
-        # escalation churn this policy exists to remove.
-        if selected in _SPECIALISED_LANES or selected == "low_priority":
-            untrusted = not dominant or (
-                selected in _SPECIALISED_LANES
-                and answer.confidence < self.review_threshold
-            )
-            if untrusted:
-                selected = "human_review"
+        if (
+            answer.confidence < self.review_threshold
+            or answer.confidence < self.high_confidence_threshold
+            and selected
+            in {
+                "fast_verification",
+                "cross_file_analysis",
+                "authorization_analysis",
+                "jsp_context_analysis",
+                "dependency_analysis",
+                "secret_review",
+            }
+        ):
+            selected = "human_review"
 
         return DecisionRoute(
             route=selected,

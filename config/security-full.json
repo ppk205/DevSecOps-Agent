@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "profile": "full",
+  "timeout": 3600,
+  "fail_on": "high",
+  "laya": false
+}

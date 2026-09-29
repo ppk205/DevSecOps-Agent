@@ -1,0 +1,75 @@
+name: DevSecOps Agent
+description: Deterministic Java security scan with persistent evidence and a severity gate
+inputs:
+  checkout-path:
+    description: Clean Git checkout to scan
+    default: '.'
+  profile:
+    description: fast or full (full runs target builds in Docker)
+    default: fast
+  config:
+    description: Optional versioned JSON configuration path
+    default: ''
+  fail-on:
+    description: Minimum failing severity (default high); none disables only the findings gate
+    default: ""
+  output-directory:
+    description: Sanitized report directory (prefer outside the checkout)
+    default: ''
+outputs:
+  run-id:
+    description: Public scan attempt ID
+    value: ${{ steps.scan.outputs.run-id }}
+  scan-status:
+    description: completed, failed or cancelled
+    value: ${{ steps.scan.outputs.scan-status || 'failed' }}
+  gate-result:
+    description: passed or failed
+    value: ${{ steps.scan.outputs.gate-result || 'failed' }}
+  summary-path:
+    description: JSON summary path
+    value: ${{ steps.scan.outputs.summary-path }}
+  sarif-path:
+    description: Sanitized SARIF report path
+    value: ${{ steps.scan.outputs.sarif-path }}
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      with:
+        python-version: '3.11'
+    - name: Install this Action revision and pinned scanners
+      shell: bash
+      env:
+        ACTION_ROOT: ${{ github.action_path }}
+      run: |
+        test "$RUNNER_OS-$RUNNER_ARCH" = Linux-X64 || { echo 'This Action supports Ubuntu x64 only'; exit 2; }
+        python "$ACTION_ROOT/ci/install_action.py"
+    - name: Scan and write sanitized outputs
+      id: scan
+      shell: bash
+      env:
+        ACTION_ROOT: ${{ github.action_path }}
+        SCAN_CHECKOUT: ${{ inputs.checkout-path }}
+        SCAN_PROFILE: ${{ inputs.profile }}
+        SCAN_CONFIG: ${{ inputs.config }}
+        SCAN_THRESHOLD: ${{ inputs.fail-on }}
+        SCAN_OUTPUT: ${{ inputs.output-directory }}
+      run: python "$ACTION_ROOT/ci/action_scan.py"
+    - name: Upload sanitized evidence before enforcing policy
+      if: always() && steps.scan.outputs.summary-path != ''
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      with:
+        name: devsecops-${{ steps.scan.outputs.run-id }}
+        path: ${{ steps.scan.outputs.artifact-directory }}
+        if-no-files-found: error
+    - name: Summarize setup failure
+      if: always() && steps.scan.outputs.summary-path == ''
+      shell: bash
+      run: printf '%s\n' '## DevSecOps scan' 'Setup failed before a scan summary was available. Check the Python and scanner installation logs. The gate remains failed.' >> "$GITHUB_STEP_SUMMARY"
+    - name: Enforce policy
+      if: always()
+      shell: bash
+      env:
+        SCAN_EXIT: ${{ steps.scan.outputs.exit-code }}
+      run: exit "${SCAN_EXIT:-2}"

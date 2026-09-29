@@ -12,6 +12,9 @@ pip-wheel-metadata/
 
 # Virtual envs
 .venv/
+.uv-cache/
+*.db.lock
+junit.xml
 venv/
 env/
 
@@ -79,3 +82,7 @@ reports/
 $RECYCLE.BIN/
 ehthumbs.db
 harness/
+
+.venv-linux/
+.uv-cache-linux/
+*.migration.lock

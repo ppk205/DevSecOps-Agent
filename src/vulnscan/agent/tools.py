@@ -23,9 +23,18 @@ TOOL_SCHEMAS: list[dict[str, Any]] = [
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "file_path": {"type": "string", "description": "Relative or absolute path to the source file."},
-                    "start_line": {"type": "integer", "description": "First line to read (1-indexed)."},
-                    "end_line": {"type": "integer", "description": "Last line to read (inclusive)."},
+                    "file_path": {
+                        "type": "string",
+                        "description": "Relative or absolute path to the source file.",
+                    },
+                    "start_line": {
+                        "type": "integer",
+                        "description": "First line to read (1-indexed).",
+                    },
+                    "end_line": {
+                        "type": "integer",
+                        "description": "Last line to read (inclusive).",
+                    },
                 },
                 "required": ["file_path"],
             },
@@ -42,7 +51,10 @@ TOOL_SCHEMAS: list[dict[str, Any]] = [
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "query": {"type": "string", "description": "Class name, URL pattern, or annotation to search for."},
+                    "query": {
+                        "type": "string",
+                        "description": "Class name, URL pattern, or annotation to search for.",
+                    },
                 },
                 "required": ["query"],
             },
@@ -59,7 +71,10 @@ TOOL_SCHEMAS: list[dict[str, Any]] = [
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "finding_id": {"type": "string", "description": "The finding to look up evidence for."},
+                    "finding_id": {
+                        "type": "string",
+                        "description": "The finding to look up evidence for.",
+                    },
                 },
                 "required": ["finding_id"],
             },

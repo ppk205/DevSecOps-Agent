@@ -16,6 +16,7 @@ from pathlib import Path
 @dataclass
 class JspMapping:
     """One JSP file and its known entry points."""
+
     jsp_path: str
     jsp_line_count: int = 0
     generated_java_path: str | None = None

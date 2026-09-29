@@ -92,9 +92,19 @@ def parse_spotbugs_xml(
     source_snapshot: str,
 ) -> tuple[list[Observation], list[CoverageRecord]]:
     """Parse SpotBugs XML into Observations and CoverageRecords."""
-    from lxml import etree as lxml_etree  # type: ignore[import-untyped]
-    root = lxml_etree.fromstring(xml_text.encode())
+    from lxml import etree as lxml_etree
 
+    root = lxml_etree.fromstring(
+        xml_text.encode(), parser=lxml_etree.XMLParser(resolve_entities=False, no_network=True)
+    )
+
+    if root.tag != "BugCollection":
+        raise ValueError("expected a SpotBugs BugCollection report")
+    errors_element = root.find("Errors")
+    if errors_element is not None and (
+        int(errors_element.get("errors", "0")) or int(errors_element.get("missingClasses", "0"))
+    ):
+        raise ValueError("SpotBugs reported analysis errors or missing classes")
     now = datetime.now(UTC)
     observations: list[Observation] = []
     coverage: list[CoverageRecord] = []
@@ -180,7 +190,7 @@ def parse_spotbugs_xml(
                         unresolved_calls=[],
                         cwe_capabilities=[],
                         cwe_limitations=[],
-                        confidence_floor=0.4,
+                        analyzed_at=now,
                     )
                 )
 
@@ -206,6 +216,7 @@ class SpotBugsAdapter(ScannerAdapter):
 
     def run(self, spec: ScanSpecification, *, workdir: str) -> ScannerResult:
         from datetime import datetime
+
         started = datetime.now(UTC)
         tool_cfg = self._tool_config(spec)
 
@@ -229,51 +240,80 @@ class SpotBugsAdapter(ScannerAdapter):
                 spec,
                 started,
                 datetime.now(UTC),
-                type("FakeResult", (), {"timed_out": False, "returncode": 1, "stdout": "", "stderr": "", "duration_ms": 0})(),
+                type(
+                    "FakeResult",
+                    (),
+                    {
+                        "timed_out": False,
+                        "returncode": 1,
+                        "stdout": "",
+                        "stderr": "",
+                        "duration_ms": 0,
+                    },
+                )(),
                 note=f"classes directory not found: {classes_path} (run 'mvn compile' first)",
             )
 
         # Build command
         argv = [
             self.binary_name,
-            "-xml",
+            "-xml:withMessages",
+            "-exitcode",
+            "-pluginList",
+            "/opt/findsecbugs.jar",
             "-output",
             str(Path(workdir) / "target" / "spotbugs-report.xml"),
             str(classes_path),
         ]
 
+        import os
+
+        dependency_jars = sorted((Path(workdir) / "target/dependency").glob("*.jar"))
+        if dependency_jars:
+            argv[-1:-1] = ["-auxclasspath", os.pathsep.join(str(p) for p in dependency_jars)]
+        output_file = Path(workdir) / "target" / "spotbugs-report.xml"
+        output_file.unlink(missing_ok=True)
+
         # FindSpotBugs needs JAVA_HOME or a JRE on PATH
         import os
-        env = dict(os.environ)
+
+        env = {}
         if "JAVA_HOME" in os.environ:
             env["JAVA_HOME"] = os.environ["JAVA_HOME"]
 
         result = self._invoke(argv, cwd=workdir, env=env)
         finished = datetime.now(UTC)
 
+        if result.timed_out or result.returncode not in (0, 1):
+            return self._fatal(spec, started, finished, result, note="SpotBugs execution failed")
+
         output_file = Path(workdir) / "target" / "spotbugs-report.xml"
         if not output_file.exists():
-            return self._fatal(spec, started, finished, result, note="SpotBugs did not produce XML output")
+            return self._fatal(
+                spec, started, finished, result, note="SpotBugs did not produce XML output"
+            )
 
         try:
             xml_text = output_file.read_text(encoding="utf-8", errors="replace")
         except OSError as exc:
-            return self._fatal(spec, started, finished, result, note=f"failed to read SpotBugs output: {exc}")
+            return self._fatal(
+                spec, started, finished, result, note=f"failed to read SpotBugs output: {exc}"
+            )
 
         try:
             observations, coverage_records = parse_spotbugs_xml(
                 xml_text,
-                run_id=spec.run_id,
+                run_id=spec.run_id or "unassigned",
                 tool_version=cap.version or "unknown",
                 source_snapshot=spec.target_commit_sha,
             )
-        except (ET.ParseError, TypeError, ValueError) as exc:
+        except (ET.ParseError, SyntaxError, TypeError, ValueError) as exc:
             return self._fatal(
                 spec, started, finished, result, note=f"failed to parse SpotBugs XML: {exc}"
             )
 
         return ScannerResult(
-            run_id=spec.run_id,
+            run_id=spec.run_id or "unassigned",
             tool=self.tool,
             tool_version=cap.version or "unknown",
             adapter_version=self.adapter_version,
@@ -284,7 +324,9 @@ class SpotBugsAdapter(ScannerAdapter):
             coverage_records=coverage_records,
             raw_output_refs=[],
             eligible_units=len(coverage_records),
-            analyzed_units=sum(1 for c in coverage_records if c.status == CoverageUnitStatus.ANALYZED),
+            analyzed_units=sum(
+                1 for c in coverage_records if c.status == CoverageUnitStatus.ANALYZED
+            ),
             skipped_units=0,
             failed_units=0,
             errors=[],

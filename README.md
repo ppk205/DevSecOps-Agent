@@ -291,3 +291,28 @@ Place custom Semgrep rules in the `rules/` directory. The scanner adapter loads 
 ## License
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+# v0.2.0 terminal and CI platform
+
+```sh
+uv sync --frozen --extra dev
+uv run devsecops-agent          # TUI in a terminal; help when redirected
+uv run devsecops-agent tui
+uv run devsecops-agent --version
+uv run devsecops-agent scan-run --checkout /path/to/clean/repo --profile fast --json --db-path scans.db --out artifacts
+```
+
+The TUI offers saved history, configuration review, live progress, searchable
+findings/evidence, cancellation, retries and JSON/SARIF/HTML/Markdown exports.
+Use Ctrl+N for setup, Ctrl+R for history refresh, Ctrl+X to cancel and Ctrl+Q to
+quit. A running scan must finish cancellation before quitting. Tab and arrow keys
+navigate controls. UTC timestamps display in Asia/Saigon by default.
+
+Scanners must be installed separately. Fast scans require Semgrep and Gitleaks;
+missing tools produce an actionable failure and partial reports. Local dirty
+checkouts require `--allow-dirty` and retain a content-hash manifest. CI rejects
+dirty checkouts. AI/Laya default off. Deep analysis remains explicitly unavailable.
+The existing `serve` command keeps the local web interface available.
+
+See [consumer workflows, required checks and GitHub releases](docs/CI-INTEGRATION.md)
+and [requirement-to-test traceability](docs/TEST-PLAN.md). Application version comes
+from installed package metadata; contract schema versions remain independent.

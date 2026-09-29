@@ -17,6 +17,7 @@ from typing import Any
 @dataclass(frozen=True)
 class StoredArtifact:
     """Pointer to a stored artifact."""
+
     run_id: int
     attempt: int
     checksum: str
@@ -58,19 +59,21 @@ class ArtifactStore:
         if p.exists():
             # Same name but different content would be a content collision; refuse.
             if hashlib.sha256(p.read_bytes()).hexdigest() != checksum:
-                raise FileExistsError(
-                    f"artifact name collision with different content: {p}"
-                )
+                raise FileExistsError(f"artifact name collision with different content: {p}")
         else:
             p.write_bytes(data)
         return StoredArtifact(run_id, attempt, checksum, p, kind, name)
 
-    def save_json(self, run_id: int, attempt: int, name: str, obj: Any, kind: str = "json") -> StoredArtifact:
+    def save_json(
+        self, run_id: int, attempt: int, name: str, obj: Any, kind: str = "json"
+    ) -> StoredArtifact:
         """Serialize obj to JSON and store it (sorted keys for stability)."""
         data = json.dumps(obj, ensure_ascii=False, sort_keys=True).encode("utf-8")
         return self.save_bytes(run_id, attempt, name, data, kind=kind)
 
-    def save_text(self, run_id: int, attempt: int, name: str, text: str, kind: str = "text") -> StoredArtifact:
+    def save_text(
+        self, run_id: int, attempt: int, name: str, text: str, kind: str = "text"
+    ) -> StoredArtifact:
         return self.save_bytes(run_id, attempt, name, text.encode("utf-8"), kind=kind)
 
     def retrieve(self, run_id: int, attempt: int, checksum: str, name: str) -> bytes:

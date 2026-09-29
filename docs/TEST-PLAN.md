@@ -158,3 +158,23 @@ The application is acceptance-complete when:
 - All ACC-01–07 cases run with traceable fixtures.
 - Shared records retain model/policy/procedure versions through normalization, validation, persistence, export.
 - Scanner and agent input inspection confirms evaluator-only fields are absent.
+
+
+## v0.2.0 platform acceptance (SRS 1.1)
+
+| Requirement | Automated evidence |
+| --- | --- |
+| FR-70, DR-09 | `tests/platform/test_scan_service.py`: persisted attempts, restart, retry, OS lock, recovery and partial cancellation |
+| FR-71, IR-14, QR-21 | `tests/tui/test_app.py`: configure/scan/export/reopen, keyboard navigation, resizing, modal quit and responsive cancellation |
+| FR-72, IR-15 | `test_fr72_policy_outcomes`, missing-scanner/coverage tests and CLI parity tests: high/critical, unresolved/unprocessed, rejected, unknown; execution failures precede thresholds |
+| FR-73, DR-10, QR-22 | checkout commit/dirty manifest, configuration precedence, path traversal and subprocess credential tests; immutable snapshots and redacted outputs |
+| FR-74 | `tests/platform/test_release.py`: exact version/tag selection and immutable rerun assets; `ci/release.py` validates wheel/sdist before publishing |
+| QR-23 | `.github/workflows/checks.yml`: all test areas, Linux 3.11?3.13, Windows/macOS 3.11, Ruff, strict mypy and clean wheel install |
+| FR-72, FR-73, QR-22 | `ci/fixture_scan.py`: real safe/vulnerable Java fixtures; fast on PR/main, full/container scheduled/manual and before release |
+| DR-03, FR-60, IR-16 | Incremental scanner envelopes with SHA-256 references; typed UTC progress; same normalized report source for all exports |
+
+Run `uv sync --frozen --extra dev` before testing. No paid providers or live model
+weights are required by ordinary tests. JUnit and module coverage are uploaded
+with `always()`; integrations retain sanitized reports. Real scanner integration
+is a separate required check, not simulated by adapter fixtures. Repository branch
+protection must select required jobs in GitHub settings.

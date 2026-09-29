@@ -68,7 +68,9 @@ def load_config(path: str | Path | None = None) -> LayaConfig:
         max_input_tokens=int(raw.get("max_input_tokens", MAX_INPUT_TOKENS)),
         timeout_seconds=int(raw.get("timeout_seconds", 30)),
         cache_enabled=bool(raw.get("cache_enabled", True)),
-        high_confidence_threshold=float(raw.get("high_confidence_threshold", HIGH_CONFIDENCE_THRESHOLD)),
+        high_confidence_threshold=float(
+            raw.get("high_confidence_threshold", HIGH_CONFIDENCE_THRESHOLD)
+        ),
         review_threshold=float(raw.get("review_threshold", REVIEW_THRESHOLD)),
         affects_finding_status=bool(raw.get("affects_finding_status", False)),
     )

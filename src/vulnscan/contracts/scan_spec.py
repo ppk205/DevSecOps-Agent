@@ -63,10 +63,10 @@ class ScanSpecification(VersionedModel):
         """A scan must be reproducible, so a moving ref is not a valid pin."""
         if v.strip().upper() in {"HEAD", "MAIN", "MASTER", "TRUNK"}:
             raise ValueError(
-                "target_commit_sha must be a pinned commit SHA, not a moving "
-                f"branch ref ({v!r})"
+                f"target_commit_sha must be a pinned commit SHA, not a moving branch ref ({v!r})"
             )
         return v
+
     repository_checkout_path: str = Field(
         default=".",
         description="Relative or absolute path to an already-checked-out working copy.",

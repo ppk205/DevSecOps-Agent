@@ -3,14 +3,34 @@
 from __future__ import annotations
 
 import json
-from datetime import UTC, datetime
 
 import typer
+from sqlalchemy.exc import SQLAlchemyError
 
 from ..storage.database import get_session, init_db
 from ..storage.models import RunORM, TargetORM
 
 app = typer.Typer(help="DevSecOps-Agent: automated vulnerability scanning.")
+
+
+@app.callback(invoke_without_command=True)
+def root(
+    ctx: typer.Context, version: bool = typer.Option(False, "--version", is_eager=True)
+) -> None:
+    import sys
+
+    from ..version import APP_VERSION
+
+    if version:
+        typer.echo(APP_VERSION)
+        raise typer.Exit()
+    if ctx.invoked_subcommand is None:
+        if sys.stdin.isatty() and sys.stdout.isatty():
+            from ..tui.app import ScanApp
+
+            ScanApp().run()
+        else:
+            typer.echo(ctx.get_help())
 
 
 @app.command("db-init")
@@ -46,20 +66,18 @@ def target_list(db_path: str = typer.Option("vulnscan.db", help="SQLite file pat
 
 @app.command("scan-status")
 def scan_status(
-    run_id: int = typer.Argument(..., help="Run id."),
-    db_path: str = typer.Option("vulnscan.db", help="SQLite file path."),
+    run_id: str = typer.Argument(..., help="Public run ID or integer database ID."),
+    db_path: str = typer.Option("vulnscan.db", "--db-path"),
 ) -> None:
-    """Show the status of a scan run."""
-    init_db(db_path)
-    with get_session(db_path) as session:
-        run = session.get(RunORM, run_id)
-        if run is None:
-            typer.echo(f"No run with id {run_id}", err=True)
-            raise typer.Exit(code=1)
-        typer.echo(
-            f"run={run.id} attempt={run.attempt} status={run.status} "
-            f"target={run.target.commit_sha[:8]}"
-        )
+    """Show the status of a retained scan."""
+    from ..core.scan_service import ScanService
+
+    try:
+        detail = ScanService(db_path).detail(run_id)
+    except ValueError as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(1) from exc
+    typer.echo(f"id={detail['id']} run={detail['run_id']} status={detail['status']}")
 
 
 @app.command("scan-list")
@@ -73,36 +91,112 @@ def scan_list(db_path: str = typer.Option("vulnscan.db", help="SQLite file path.
 
 @app.command("scan-run")
 def scan_run(
-    repo: str = typer.Option(..., "--repo", help="Git clone URL of the target."),
-    commit: str = typer.Option(..., "--commit", help="Pinned commit SHA (never HEAD)."),
-    checkout: str = typer.Option(".", "--checkout", help="Working copy path."),
-    out: str = typer.Option("artifacts", "--out", help="Report output directory."),
-    laya: bool = typer.Option(False, "--laya", help="Enable advisory Laya routing."),
-    laya_config_path: str = typer.Option(
-        "config/laya.json", "--laya-config", help="Laya config JSON path."
-    ),
-    run_id: str = typer.Option("", "--run-id", help="Run id (default: run-<timestamp>)."),
+    checkout: str = typer.Option(".", "--checkout"),
+    repo: str = typer.Option("local", "--repo"),
+    commit: str = typer.Option("", "--commit"),
+    profile: str | None = typer.Option(None, "--profile"),
+    config_path: str | None = typer.Option(None, "--config"),
+    fail_on: str | None = typer.Option(None, "--fail-on"),
+    out: str | None = typer.Option(None, "--out"),
+    db_path: str = typer.Option("vulnscan.db", "--db-path"),
+    json_output: bool = typer.Option(False, "--json"),
+    ci: bool | None = typer.Option(None, "--ci"),
+    allow_dirty: bool | None = typer.Option(None, "--allow-dirty"),
+    timeout: int | None = typer.Option(None, "--timeout"),
+    laya: bool | None = typer.Option(None, "--laya"),
+    laya_config_path: str | None = typer.Option(None, "--laya-config"),
+    run_id: str | None = typer.Option(None, "--run-id"),
 ) -> None:
-    """Run the full deterministic-first pipeline and export reports."""
-    from dataclasses import replace
+    """Scan, persist evidence and enforce policy (0 pass, 1 findings, 2 failure, 130 cancel)."""
+    from pathlib import Path
 
-    from ..contracts import ScanSpecification
-    from ..decisions.config import load_config
-    from ..pipeline.runner import ScanPipeline
+    from ..core.config import resolve_config
+    from ..core.scan_service import ScanService
+    from ..core.security import sanitize
 
-    config = load_config(laya_config_path)
-    if laya and not config.enabled:
-        config = replace(config, enabled=True)
-    config.validate()
+    try:
+        config = resolve_config(
+            profile,
+            config_path,
+            fail_on=fail_on,
+            output_dir=out,
+            ci=ci,
+            allow_dirty=allow_dirty,
+            timeout=timeout,
+            laya=laya,
+            laya_config_path=laya_config_path,
+        )
+        if not json_output:
+            typer.echo(config.model_dump_json(indent=2))
+        result = ScanService(db_path).run(
+            checkout, config, repo=repo, expected_commit=commit, public_id=run_id
+        )
+    except (ValueError, OSError, SQLAlchemyError) as exc:
+        result = {
+            "status": "failed",
+            "gate": "failed",
+            "exit_code": 2,
+            "errors": [sanitize(str(exc))],
+            "run_id": None,
+        }
+        output = Path(out or "artifacts")
+        try:
+            output.mkdir(parents=True, exist_ok=True)
+            (output / "summary.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
+        except OSError:
+            result["errors"].append(
+                "Summary could not be written; check output directory permissions"
+            )
+    typer.echo(json.dumps(result, indent=2))
+    raise typer.Exit(code=result["exit_code"])
 
-    spec = ScanSpecification(
-        run_id=run_id or f"run-{int(datetime.now(UTC).timestamp())}",
-        target_repository_url=repo,
-        target_commit_sha=commit,
-        repository_checkout_path=checkout,
-    )
-    result = ScanPipeline(spec, laya_config=config, output_dir=out).run()
-    typer.echo(json.dumps(result.as_dict(), indent=2, default=str))
+
+@app.command("tui")
+def tui(db_path: str = typer.Option("vulnscan.db", "--db-path")) -> None:
+    """Open the full-screen terminal interface."""
+    from ..tui.app import ScanApp
+
+    ScanApp(db_path).run()
+
+
+@app.command("serve")
+def serve(host: str = "127.0.0.1", port: int = 8000, db_path: str = "vulnscan.db") -> None:
+    """Serve the existing local dashboard against the shared scan history."""
+    import uvicorn
+
+    from ..storage.database import get_engine
+    from ..web.app import create_app
+
+    if host not in {"127.0.0.1", "localhost", "::1"}:
+        raise typer.BadParameter("The dashboard must bind to localhost")
+    uvicorn.run(create_app(engine=get_engine(db_path)), host=host, port=port)
+
+
+@app.command("scan-export")
+def scan_export(
+    run_id: str, fmt: str = "json", out: str = "artifacts", db_path: str = "vulnscan.db"
+) -> None:
+    """Export retained evidence without rerunning scanners."""
+    from ..contracts import ExportFormat
+    from ..core.scan_service import ScanService
+
+    typer.echo(ScanService(db_path).export(run_id, ExportFormat(fmt), out))
+
+
+@app.command("scan-cancel")
+def scan_cancel(run_id: str, db_path: str = "vulnscan.db") -> None:
+    from ..core.scan_service import ScanService
+
+    ScanService(db_path).cancel(run_id)
+
+
+@app.command("scan-retry")
+def scan_retry(run_id: str, db_path: str = "vulnscan.db") -> None:
+    from ..core.scan_service import ScanService
+
+    result = ScanService(db_path).retry(run_id)
+    typer.echo(json.dumps(result, indent=2))
+    raise typer.Exit(result["exit_code"])
 
 
 @app.command("laya-config")
@@ -133,7 +227,9 @@ def laya_check(
 ) -> None:
     """Check whether the optional Laya dependency is usable locally."""
     try:
-        import laya
+        import importlib
+
+        laya = importlib.import_module("laya")
     except ImportError:
         typer.echo("laya=unavailable (optional dependency not installed)")
         return
@@ -156,7 +252,9 @@ def laya_check(
 
 @app.command("laya-evaluate")
 def laya_evaluate(
-    scan: str = typer.Option(..., "--scan", help="Scan JSON export with advisory_routing.payloads."),
+    scan: str = typer.Option(
+        ..., "--scan", help="Scan JSON export with advisory_routing.payloads."
+    ),
     truth: str = typer.Option(..., "--truth", help="Ground-truth JSON for evaluator grading."),
     out: str = typer.Option("", "--out", help="Optional path to write the experiment record."),
 ) -> None:

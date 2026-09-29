@@ -30,7 +30,7 @@ from vulnscan.contracts import (
 from .platform import which
 from .process import CommandResult, run_command
 
-ADAPTER_VERSION = "0.1.0"
+ADAPTER_VERSION = "0.2.0"
 """Bumped whenever an adapter's normalization logic changes output meaning."""
 
 
@@ -97,7 +97,7 @@ class ScannerAdapter(abc.ABC):
     ) -> ScannerResult:
         """Build a ``skipped`` envelope for a disabled/absent tool."""
         return ScannerResult(
-            run_id=spec.run_id,
+            run_id=spec.run_id or "unassigned",
             tool=self.tool,
             tool_version="unknown",
             adapter_version=self.adapter_version,
@@ -148,7 +148,7 @@ class ScannerAdapter(abc.ABC):
                 f"{(result.stderr or result.stdout).strip()[:400]}"
             )
         return ScannerResult(
-            run_id=spec.run_id,
+            run_id=spec.run_id or "unassigned",
             tool=self.tool,
             tool_version="unknown",
             adapter_version=self.adapter_version,

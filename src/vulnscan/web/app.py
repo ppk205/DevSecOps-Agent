@@ -1,11 +1,12 @@
 """FastAPI dashboard for scan intake, progress, findings, and evidence."""
 
 import hmac
+import json
 import logging
 import secrets
 from collections.abc import Generator
 from pathlib import Path
-from typing import Annotated, Any
+from typing import Annotated, Any, cast
 
 from fastapi import Depends, FastAPI, Form, HTTPException, Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -13,13 +14,14 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from vulnscan.contracts import ScanSpecification
 from vulnscan.contracts.enums import ExportFormat, FindingStatus
 from vulnscan.contracts.finding import Finding
-from vulnscan.core.job_manager import JobManager
+from vulnscan.core.config import ScanConfig
+from vulnscan.core.scan_service import ScanService
 from vulnscan.reporting.reporter import ReportGenerator
-from vulnscan.storage.database import get_engine
-from vulnscan.storage.models import Base, FindingORM, RunORM
+from vulnscan.storage.database import get_engine, migrate
+from vulnscan.storage.models import FindingORM, RunORM
+from vulnscan.version import APP_VERSION
 
 _TEMPLATES = Path(__file__).with_name("templates")
 _MIME = {
@@ -34,10 +36,7 @@ logger = logging.getLogger(__name__)
 
 def _findings_for_run(session: Session, run_pk: int) -> list[Finding]:
     rows = (
-        session.query(FindingORM)
-        .filter(FindingORM.run_id == run_pk)
-        .order_by(FindingORM.id)
-        .all()
+        session.query(FindingORM).filter(FindingORM.run_id == run_pk).order_by(FindingORM.id).all()
     )
     return [Finding.model_validate_json(row.finding_json) for row in rows]
 
@@ -52,16 +51,16 @@ def create_app(
     the project singleton from :mod:`vulnscan.storage.database`.
     """
     db_engine = engine or get_engine()
-    Base.metadata.create_all(db_engine)
-    Session = sessionmaker(bind=db_engine, expire_on_commit=False)
+    migrate(db_engine)
+    SessionFactory = sessionmaker(bind=db_engine, expire_on_commit=False)
     output = Path(export_dir)
     output.mkdir(parents=True, exist_ok=True)
 
-    app = FastAPI(title="DevSecOps Agent", version="0.1.0")
+    app = FastAPI(title="DevSecOps Agent", version=APP_VERSION)
     templates = Jinja2Templates(directory=str(_TEMPLATES))
 
     def session_dependency() -> Generator[Session, None, None]:
-        with Session() as session:
+        with SessionFactory() as session:
             yield session
 
     SessionDep = Annotated[Session, Depends(session_dependency)]
@@ -87,7 +86,7 @@ def create_app(
                 replayed = True
                 return {"type": "http.request", "body": body, "more_body": False}
 
-            request._receive = receive  # type: ignore[attr-defined]
+            request._receive = receive
             form = await request.form()
             supplied = request.headers.get("X-CSRF-Token") or form.get("_csrf")
             if not isinstance(supplied, str) or not hmac.compare_digest(supplied, token):
@@ -101,7 +100,7 @@ def create_app(
             samesite="strict",
             secure=request.url.scheme == "https",
         )
-        return response
+        return cast(Response, response)
 
     def render(request: Request, name: str, **context: Any) -> HTMLResponse:
         return templates.TemplateResponse(
@@ -111,7 +110,7 @@ def create_app(
         )
 
     @app.get("/", response_class=HTMLResponse)
-    def target_registration(request: Request, session: SessionDep):
+    def target_registration(request: Request, session: SessionDep) -> HTMLResponse:
         runs = session.query(RunORM).order_by(RunORM.id.desc()).limit(10).all()
         return render(request, "targets.html", runs=runs)
 
@@ -122,19 +121,17 @@ def create_app(
         target_commit_sha: str = Form(...),
         repository_checkout_path: str = Form("."),
     ) -> RedirectResponse:
-        spec = ScanSpecification(
-            target_repository_url=target_repository_url,
-            target_commit_sha=target_commit_sha,
-            repository_checkout_path=repository_checkout_path,
+        service = ScanService(str(db_engine.url.database))
+        result = service.run(
+            repository_checkout_path,
+            ScanConfig(output_dir=str(output)),
+            repo=target_repository_url,
+            expected_commit=target_commit_sha,
         )
-        run_id = JobManager(session).submit_scan(spec)
-        session.commit()
-        return RedirectResponse(f"/runs/{run_id}", status_code=303)
+        return RedirectResponse(f"/runs/{result['id']}", status_code=303)
 
     @app.get("/runs/{run_id}", response_class=HTMLResponse)
-    def run_progress(
-        run_id: int, request: Request, session: SessionDep
-    ):
+    def run_progress(run_id: int, request: Request, session: SessionDep) -> HTMLResponse:
         run = session.get(RunORM, run_id)
         if run is None:
             raise HTTPException(404, "Run not found")
@@ -148,9 +145,7 @@ def create_app(
         )
 
     @app.get("/runs/{run_id}/findings", response_class=HTMLResponse)
-    def findings(
-        run_id: int, request: Request, session: SessionDep
-    ):
+    def findings(run_id: int, request: Request, session: SessionDep) -> HTMLResponse:
         run = session.get(RunORM, run_id)
         if run is None:
             raise HTTPException(404, "Run not found")
@@ -164,40 +159,53 @@ def create_app(
         )
 
     @app.get("/findings/{finding_id}", response_class=HTMLResponse)
-    def evidence_detail(
-        finding_id: str, request: Request, session: SessionDep
-    ):
+    def evidence_detail(finding_id: str, request: Request, session: SessionDep) -> HTMLResponse:
         finding = _find_finding(session, finding_id)
         return render(request, "evidence.html", finding=finding)
+
+    @app.get("/runs/{run_id}/findings/{finding_id}", response_class=HTMLResponse)
+    def run_evidence(
+        run_id: int, finding_id: str, request: Request, session: SessionDep
+    ) -> HTMLResponse:
+        for finding in _findings_for_run(session, run_id):
+            if finding.finding_id == finding_id:
+                return render(request, "evidence.html", finding=finding, run_id=run_id)
+        raise HTTPException(404, "Finding not found in this run")
 
     @app.post("/findings/{finding_id}/status")
     def update_status(
         finding_id: str,
         session: SessionDep,
         status: str = Form(...),
+        run_id: int | None = Form(None),
     ) -> RedirectResponse:
         try:
             new_status = FindingStatus(status)
         except ValueError as exc:
             raise HTTPException(422, f"Unknown status: {status}") from exc
-        row = (
+        query = (
             session.query(FindingORM)
             .join(RunORM)
             .filter(FindingORM.finding_json.like(f'%"finding_id":"{finding_id}"%'))
-            .first()
         )
+        if run_id is not None:
+            query = query.filter(FindingORM.run_id == run_id)
+        row = query.first()
         if row is None:
             raise HTTPException(404, "Finding not found")
         finding = Finding.model_validate_json(row.finding_json)
         finding.status = new_status
         row.finding_json = finding.model_dump_json()
         session.commit()
-        return RedirectResponse(f"/findings/{finding_id}", status_code=303)
+        destination = (
+            f"/runs/{run_id}/findings/{finding_id}"
+            if run_id is not None
+            else f"/findings/{finding_id}"
+        )
+        return RedirectResponse(destination, status_code=303)
 
     @app.get("/runs/{run_id}/export/{fmt}")
-    def export(
-        run_id: int, fmt: str, session: SessionDep
-    ) -> Response:
+    def export(run_id: int, fmt: str, session: SessionDep) -> Response:
         run = session.get(RunORM, run_id)
         if run is None:
             raise HTTPException(404, "Run not found")
@@ -205,7 +213,18 @@ def create_app(
             export_format = ExportFormat(fmt)
         except ValueError as exc:
             raise HTTPException(422, f"Unsupported export: {fmt}") from exc
-        report = ReportGenerator(str(run_id), _findings_for_run(session, run_id))
+        snapshot = json.loads(run.result_json or "{}")
+        report = ReportGenerator(
+            run.public_id or str(run_id),
+            _findings_for_run(session, run_id),
+            coverage_summary=snapshot.get("coverage", {}),
+            run_metadata={
+                "commit": run.target.commit_sha,
+                "status": run.status,
+                "gate": snapshot.get("gate"),
+                "errors": snapshot.get("errors", []),
+            },
+        )
         artifact = report.export(export_format, output, generated_by="dashboard")
         return Response(
             content=Path(artifact.artifact_ref.path).read_bytes(),

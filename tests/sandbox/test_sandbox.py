@@ -89,7 +89,11 @@ class TestDeniedExternal:
         """Verification runs must not get the host docker socket."""
         backend = LocalSubprocessBackend()
         result = backend.run(
-            ["python", "-c", "import os; print('DOCKER' if os.environ.get('DOCKER_HOST') else 'NO_DOCKER')"],
+            [
+                "python",
+                "-c",
+                "import os; print('DOCKER' if os.environ.get('DOCKER_HOST') else 'NO_DOCKER')",
+            ],
             workdir=tmp_path,
             timeout=30.0,
             env=scrub_env(),
@@ -102,7 +106,11 @@ class TestDeniedExternal:
         scrubbed env, and no network permission is granted."""
         backend = LocalSubprocessBackend()
         result = backend.run(
-            ["python", "-c", "import os; print(sorted(k for k in os.environ if 'API' in k.upper()))"],
+            [
+                "python",
+                "-c",
+                "import os; print(sorted(k for k in os.environ if 'API' in k.upper()))",
+            ],
             workdir=tmp_path,
             timeout=30.0,
             env=scrub_env(),
@@ -116,17 +124,18 @@ class TestFailureInjection:
     def test_nonzero_exit_classified_as_harness_failure(self, tmp_path: Path) -> None:
         """An injected nonzero exit is a harness failure, not a security observation."""
         backend = LocalSubprocessBackend()
-        result = backend.run(["python", "-c", "import sys; sys.exit(3)"], workdir=tmp_path, timeout=30.0)
+        result = backend.run(
+            ["python", "-c", "import sys; sys.exit(3)"], workdir=tmp_path, timeout=30.0
+        )
         assert result.returncode == 3
         assert result.timed_out is False
         # A nonzero return code without a security test having run => harness failure.
         assert result.returncode != 0
 
-    def test_docker_backend_unavailable_is_documented_not_crash(self) -> None:
+    def test_docker_backend_unavailable_is_documented_not_crash(self, monkeypatch) -> None:
         """Missing docker must raise BackendUnavailable, not a bare crash."""
         backend = DockerBackend()
-        if backend.is_available():
-            pytest.skip("docker present on this host; unavailable path not exercisable")
+        monkeypatch.setattr(backend, "is_available", lambda: False)
         with pytest.raises(BackendUnavailable):
             backend.run(["echo", "x"], workdir=Path("/tmp"), timeout=5.0)
 

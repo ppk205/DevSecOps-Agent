@@ -60,25 +60,27 @@ class IndependentValidator:
 
         # Count evidence strengths
         strong_evidence = sum(
-            1 for e in evidence
+            1
+            for e in evidence
             if e.strength in (EvidenceStrength.STRONG, EvidenceStrength.MODERATE)
         )
-        weak_evidence = sum(
-            1 for e in evidence
-            if e.strength in (EvidenceStrength.WEAK,)
-        )
+        weak_evidence = sum(1 for e in evidence if e.strength in (EvidenceStrength.WEAK,))
 
         # Count verification outcomes
         demonstrated = sum(
-            1 for v in verification
-            if v.execution_status in (
+            1
+            for v in verification
+            if v.execution_status
+            in (
                 VerificationOutcome.DEMONSTRATED,
                 VerificationOutcome.BLOCKED,
             )
         )
         inconclusive = sum(
-            1 for v in verification
-            if v.execution_status in (
+            1
+            for v in verification
+            if v.execution_status
+            in (
                 VerificationOutcome.INCONCLUSIVE,
                 VerificationOutcome.HARNESSED_FAILED,
                 VerificationOutcome.BLOCKED,
@@ -87,7 +89,8 @@ class IndependentValidator:
 
         # Identify counterevidence
         rejected_counterevidence = [
-            e for e in evidence
+            e
+            for e in evidence
             if e.strength == EvidenceStrength.STRONG
             and "contradicts" in (e.source_description or "").lower()
         ]
@@ -100,8 +103,7 @@ class IndependentValidator:
             strength = EvidenceStrength.STRONG
             outcome = VerificationOutcome.DEMONSTRATED
             rationale = (
-                f"Rejected based on {len(rejected_counterevidence)} strong "
-                f"counterevidence records."
+                f"Rejected based on {len(rejected_counterevidence)} strong counterevidence records."
             )
             if assessment.proposed_status == "confirmed":
                 rationale += (
@@ -111,7 +113,11 @@ class IndependentValidator:
         elif strong_evidence >= self._min_ev or demonstrated >= self._min_verif:
             new_status = FindingStatus.CONFIRMED
             strength = EvidenceStrength.STRONG if demonstrated else EvidenceStrength.MODERATE
-            outcome = VerificationOutcome.DEMONSTRATED if demonstrated else VerificationOutcome.NOT_VERIFIED
+            outcome = (
+                VerificationOutcome.DEMONSTRATED
+                if demonstrated
+                else VerificationOutcome.NOT_VERIFIED
+            )
             rationale = (
                 f"Confirmed with {strong_evidence} supporting evidence "
                 f"({demonstrated} verification demonstrations)."

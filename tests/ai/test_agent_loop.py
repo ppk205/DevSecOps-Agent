@@ -53,9 +53,13 @@ def _finding(fid: str = "f1") -> Finding:
 def _mock_provider_client(responses: list[ChatResponse]) -> ProviderClient:
     """Create a ProviderClient with mocked chat method."""
     profile = ProviderProfile(
-        id="test", label="Test", protocol=ProviderProtocol.OPENAI_CHAT_COMPLETIONS,
-        base_url="https://api.test.com/v1", api_key_env="TEST_KEY",
-        models=["m"], default_model="m",
+        id="test",
+        label="Test",
+        protocol=ProviderProtocol.OPENAI_CHAT_COMPLETIONS,
+        base_url="https://api.test.com/v1",
+        api_key_env="TEST_KEY",
+        models=["m"],
+        default_model="m",
     )
     client = MagicMock(spec=ProviderClient)
     client.profile = profile
@@ -67,11 +71,13 @@ class TestAgentLoop:
     def test_no_tool_calls(self):
         """Agent returns assessment without tool calls."""
         final_resp = ChatResponse(
-            content=json.dumps({
-                "proposed_status": "confirmed",
-                "confidence": 0.85,
-                "rationale": "Strong evidence of SQL injection",
-            }),
+            content=json.dumps(
+                {
+                    "proposed_status": "confirmed",
+                    "confidence": 0.85,
+                    "rationale": "Strong evidence of SQL injection",
+                }
+            ),
             tool_calls=[],
             usage={"total_tokens": 100},
             model="gpt-4o",
@@ -93,7 +99,9 @@ class TestAgentLoop:
         }
         tool_resp = ChatResponse(content="", tool_calls=[tool_call], usage={}, model="m")
         final_resp = ChatResponse(
-            content=json.dumps({"proposed_status": "unresolved", "confidence": 0.3, "rationale": "need more info"}),
+            content=json.dumps(
+                {"proposed_status": "unresolved", "confidence": 0.3, "rationale": "need more info"}
+            ),
             tool_calls=[],
             usage={"total_tokens": 50},
             model="m",
@@ -115,7 +123,9 @@ class TestAgentLoop:
         }
         tool_resp = ChatResponse(content="", tool_calls=[tool_call], usage={}, model="m")
         final_resp = ChatResponse(
-            content=json.dumps({"proposed_status": "unresolved", "confidence": 0.1, "rationale": "tool rejected"}),
+            content=json.dumps(
+                {"proposed_status": "unresolved", "confidence": 0.1, "rationale": "tool rejected"}
+            ),
             tool_calls=[],
             usage={},
             model="m",

@@ -42,8 +42,12 @@ def _redact(value: Any, key: str | None = None) -> Any:
     return value
 
 
-def _state_text(state: Mapping[str, Any], max_chars: int = MAX_STATE_TEXT_CHARS) -> tuple[str, bool]:
-    text = json.dumps(_redact(dict(state)), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+def _state_text(
+    state: Mapping[str, Any], max_chars: int = MAX_STATE_TEXT_CHARS
+) -> tuple[str, bool]:
+    text = json.dumps(
+        _redact(dict(state)), ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    )
     if len(text) <= max_chars:
         return text, False
     return text[:max_chars], True

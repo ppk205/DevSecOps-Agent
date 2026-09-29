@@ -21,6 +21,7 @@ from vulnscan.contracts.validation import ValidationDecision
 @dataclass
 class MatchResult:
     """A pairing between an evaluation case and a produced finding."""
+
     case_id: str
     finding_id: str | None
     matched: bool
@@ -31,6 +32,7 @@ class MatchResult:
 @dataclass
 class CWEResults:
     """Per-CWE metric counts."""
+
     cwe: str
     tp: int = 0  # true positive: confirmed finding matched to expected vulnerable case
     fp: int = 0  # false positive: confirmed finding with no matching expected case
@@ -67,7 +69,10 @@ class CWEResults:
     def to_dict(self) -> dict[str, Any]:
         return {
             "cwe": self.cwe,
-            "tp": self.tp, "fp": self.fp, "fn": self.fn, "tn": self.tn,
+            "tp": self.tp,
+            "fp": self.fp,
+            "fn": self.fn,
+            "tn": self.tn,
             "unresolved": self.unresolved,
             "precision": round(self.precision, 4),
             "recall": round(self.recall, 4),
@@ -82,6 +87,7 @@ class CWEResults:
 @dataclass
 class AggregateResults:
     """Combined results across all CWEs."""
+
     per_cwe: dict[str, CWEResults] = field(default_factory=dict)
     total_tp: int = 0
     total_fp: int = 0
@@ -108,7 +114,11 @@ class AggregateResults:
 
     @property
     def verification_coverage(self) -> float:
-        return self.total_verified / self.total_eligible_verification if self.total_eligible_verification > 0 else 0.0
+        return (
+            self.total_verified / self.total_eligible_verification
+            if self.total_eligible_verification > 0
+            else 0.0
+        )
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -136,13 +146,15 @@ def match_findings_to_cases(
     for case in cases:
         if case.expected_cwe_category is None:
             # Negative case — no finding expected
-            results.append(MatchResult(
-                case_id=case.case_id,
-                finding_id=None,
-                matched=False,
-                match_method="negative",
-                cwe=None,
-            ))
+            results.append(
+                MatchResult(
+                    case_id=case.case_id,
+                    finding_id=None,
+                    matched=False,
+                    match_method="negative",
+                    cwe=None,
+                )
+            )
             continue
 
         best_match = None
@@ -151,11 +163,18 @@ def match_findings_to_cases(
                 continue
 
             # CWE match
-            if case.matching_criteria.match_by_cwe and finding.cwe_category != case.expected_cwe_category:
+            if (
+                case.matching_criteria.match_by_cwe
+                and finding.cwe_category != case.expected_cwe_category
+            ):
                 continue
 
             # Location match
-            if case.matching_criteria.match_by_location and finding.observations and case.variant_path:
+            if (
+                case.matching_criteria.match_by_location
+                and finding.observations
+                and case.variant_path
+            ):
                 obs = finding.observations[0]
                 if obs.location:
                     loc_match = obs.location.file_path == case.variant_path
@@ -169,21 +188,25 @@ def match_findings_to_cases(
 
         if best_match:
             used_findings.add(best_match.finding_id)
-            results.append(MatchResult(
-                case_id=case.case_id,
-                finding_id=best_match.finding_id,
-                matched=True,
-                match_method="location+cwe",
-                cwe=case.expected_cwe_category,
-            ))
+            results.append(
+                MatchResult(
+                    case_id=case.case_id,
+                    finding_id=best_match.finding_id,
+                    matched=True,
+                    match_method="location+cwe",
+                    cwe=case.expected_cwe_category,
+                )
+            )
         else:
-            results.append(MatchResult(
-                case_id=case.case_id,
-                finding_id=None,
-                matched=False,
-                match_method="none",
-                cwe=case.expected_cwe_category,
-            ))
+            results.append(
+                MatchResult(
+                    case_id=case.case_id,
+                    finding_id=None,
+                    matched=False,
+                    match_method="none",
+                    cwe=case.expected_cwe_category,
+                )
+            )
 
     return results
 
@@ -267,4 +290,7 @@ def save_metrics(results: AggregateResults, path: Path) -> None:
 
 def load_metrics(path: Path) -> dict[str, Any]:
     """Load metrics from a JSON file."""
-    return json.loads(path.read_text(encoding="utf-8"))
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise TypeError("metrics must be an object")
+    return payload

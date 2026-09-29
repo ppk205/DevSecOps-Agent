@@ -82,9 +82,13 @@ def compute_calibration(
 
     total = len(confidences)
     accuracy = sum(correct) / total
-    brier = sum(
-        (conf - (1.0 if ok else 0.0)) ** 2 for conf, ok in zip(confidences, correct, strict=True)
-    ) / total
+    brier = (
+        sum(
+            (conf - (1.0 if ok else 0.0)) ** 2
+            for conf, ok in zip(confidences, correct, strict=True)
+        )
+        / total
+    )
 
     ece = 0.0
     for lo in range(bins):

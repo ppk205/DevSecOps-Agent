@@ -31,7 +31,8 @@ def java_target_classpath(spec: ScanSpecification) -> str | None:
     SpotBugs requires compiled bytecode; this helper finds it under the
     standard Maven layout rooted at ``<repo>/target/classes``.
     """
-    return spec.build_artifacts.get("classes_dir")
+    path = spec.metadata.get("build_artifacts", {}).get("classes_dir")
+    return str(path) if path else None
 
 
 def classpath_from_options(tool_cfg: Any) -> str | None:

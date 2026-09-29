@@ -269,7 +269,8 @@ class ScanPipeline:
         targets = [
             p["finding_id"]
             for p in routing
-            if p["route"] in {"cross_file_analysis", "jsp_context_analysis", "authorization_analysis"}
+            if p["route"]
+            in {"cross_file_analysis", "jsp_context_analysis", "authorization_analysis"}
         ]
         if not targets:
             return StageRecord(
@@ -280,8 +281,8 @@ class ScanPipeline:
             )
         return StageRecord(
             name=STAGE_DEEP_ANALYSIS,
-            status="completed",
-            detail=f"{len(targets)} targeted",
+            status="unavailable",
+            detail="targeted deep analysis is not implemented",
             finished_at=_utcnow(),
         )
 
@@ -301,7 +302,7 @@ class ScanPipeline:
         # finding stays UNPROCESSED and final status remains validator-owned.
         validation_stage = StageRecord(
             name=STAGE_VALIDATION,
-            status="completed",
+            status="skipped",
             detail=(
                 f"{len(findings)} findings retain validator-owned status "
                 "(no assessment/verification evidence supplied)"

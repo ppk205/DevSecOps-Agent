@@ -96,9 +96,7 @@ def test_legacy_json_without_cwe_metadata_stays_unset() -> None:
     payload = json.loads(json.dumps(LEGACY_SQLI))
     payload["extra"]["metadata"] = {"category": "security"}
 
-    obs, _ = parse_json(
-        _legacy([payload]), run_id="r", tool_version="1.178.0", source_snapshot="s"
-    )
+    obs, _ = parse_json(_legacy([payload]), run_id="r", tool_version="1.178.0", source_snapshot="s")
 
     assert obs[0].cwe_category is None
 
@@ -107,9 +105,7 @@ def test_legacy_json_ignores_non_cwe_metadata() -> None:
     payload = json.loads(json.dumps(LEGACY_SQLI))
     payload["extra"]["metadata"] = {"owasp": ["A03:2021 - Injection"], "technology": ["jdbc"]}
 
-    obs, _ = parse_json(
-        _legacy([payload]), run_id="r", tool_version="1.178.0", source_snapshot="s"
-    )
+    obs, _ = parse_json(_legacy([payload]), run_id="r", tool_version="1.178.0", source_snapshot="s")
 
     assert obs[0].cwe_category is None
 
@@ -118,15 +114,15 @@ def test_legacy_json_falls_back_to_tags_when_present() -> None:
     payload = json.loads(json.dumps(LEGACY_SQLI))
     payload["extra"]["metadata"] = {"tags": ["CWE-89: Improper Neutralization"]}
 
-    obs, _ = parse_json(
-        _legacy([payload]), run_id="r", tool_version="1.178.0", source_snapshot="s"
-    )
+    obs, _ = parse_json(_legacy([payload]), run_id="r", tool_version="1.178.0", source_snapshot="s")
 
     assert obs[0].cwe_category == CWECategory.SQL_INJECTION
 
 
 def test_sarif_extracts_cwe_from_described_tag() -> None:
-    obs, _ = parse_sarif(json.dumps(SARIF_DOC), run_id="r", tool_version="1.178.0", source_snapshot="s")
+    obs, _ = parse_sarif(
+        json.dumps(SARIF_DOC), run_id="r", tool_version="1.178.0", source_snapshot="s"
+    )
 
     assert len(obs) == 1
     assert obs[0].cwe_category == CWECategory.SQL_INJECTION
@@ -136,7 +132,9 @@ def test_both_schemas_agree_on_the_same_finding() -> None:
     legacy, _ = parse_json(
         _legacy([LEGACY_SQLI]), run_id="r", tool_version="1.178.0", source_snapshot="s"
     )
-    sarif, _ = parse_sarif(json.dumps(SARIF_DOC), run_id="r", tool_version="1.178.0", source_snapshot="s")
+    sarif, _ = parse_sarif(
+        json.dumps(SARIF_DOC), run_id="r", tool_version="1.178.0", source_snapshot="s"
+    )
 
     assert legacy[0].cwe_category == sarif[0].cwe_category
     assert legacy[0].location.file_path == sarif[0].location.file_path

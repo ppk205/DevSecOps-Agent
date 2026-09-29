@@ -1,0 +1,30 @@
+rules:
+  - id: java-sql-concatenation
+    languages: [java]
+    severity: ERROR
+    message: SQL constructed through concatenation; use a parameterized query.
+    metadata:
+      cwe: ['CWE-89: SQL Injection']
+      version: '0.2.0'
+    pattern-either:
+      - pattern: $S.executeQuery($A + $B)
+      - pattern: $S.executeUpdate($A + $B)
+      - pattern: $S.execute($A + $B)
+  - id: java-command-execution
+    languages: [java]
+    severity: ERROR
+    message: Review command execution with externally controlled input.
+    metadata:
+      cwe: ['CWE-78: OS Command Injection']
+      version: '0.2.0'
+    pattern: Runtime.getRuntime().exec($CMD)
+  - id: java-weak-digest
+    languages: [java]
+    severity: WARNING
+    message: Replace the weak digest with an appropriate modern algorithm.
+    metadata:
+      cwe: ['CWE-327: Broken Cryptographic Algorithm']
+      version: '0.2.0'
+    pattern-either:
+      - pattern: MessageDigest.getInstance("MD5")
+      - pattern: MessageDigest.getInstance("SHA-1")

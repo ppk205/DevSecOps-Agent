@@ -70,37 +70,40 @@ class TestMetrics:
         cases = create_sample_cases()
         # Create one finding per vulnerable case
         from vulnscan.contracts.enums import ToolName
+
         findings = []
         now = datetime.now(UTC)
         for c in cases:
             if c.variant_relationship == VariantRelationship.VULNERABLE and c.expected_cwe_category:
-                findings.append(Finding(
-                    finding_id=f"fp-{c.case_id}",
-                    run_id="r1",
-                    fingerprint=f"fp-{c.case_id}",
-                    title=f"Finding for {c.case_id}",
-                    description="test",
-                    cwe_category=c.expected_cwe_category,
-                    severity=Severity.HIGH,
-                    status=FindingStatus.CONFIRMED,
-                    observations=[
-                        Observation(
-                            observation_id=f"obs-{c.case_id}",
-                            detected_at=now,
-                            run_id="r1",
-                            tool=ToolName.SEMGREP,
-                            tool_version="1.0",
-                            rule_id="test-rule",
-                            cwe_category=c.expected_cwe_category,
-                            severity=Severity.HIGH,
-                            message="test",
-                            confidence=0.9,
-                            location=SourceCoordinate(file_path=c.variant_path, line_start=10),
-                        )
-                    ],
-                    created_at=now,
-                    updated_at=now,
-                ))
+                findings.append(
+                    Finding(
+                        finding_id=f"fp-{c.case_id}",
+                        run_id="r1",
+                        fingerprint=f"fp-{c.case_id}",
+                        title=f"Finding for {c.case_id}",
+                        description="test",
+                        cwe_category=c.expected_cwe_category,
+                        severity=Severity.HIGH,
+                        status=FindingStatus.CONFIRMED,
+                        observations=[
+                            Observation(
+                                observation_id=f"obs-{c.case_id}",
+                                detected_at=now,
+                                run_id="r1",
+                                tool=ToolName.SEMGREP,
+                                tool_version="1.0",
+                                rule_id="test-rule",
+                                cwe_category=c.expected_cwe_category,
+                                severity=Severity.HIGH,
+                                message="test",
+                                confidence=0.9,
+                                location=SourceCoordinate(file_path=c.variant_path, line_start=10),
+                            )
+                        ],
+                        created_at=now,
+                        updated_at=now,
+                    )
+                )
 
         decisions = [_decision(f.finding_id, FindingStatus.CONFIRMED) for f in findings]
         results = compute_metrics(cases, findings, decisions)
@@ -115,6 +118,7 @@ class TestMetrics:
         cases = create_sample_cases()
         # Only create one finding for one vulnerable case
         from vulnscan.contracts.enums import ToolName
+
         now = datetime.now(UTC)
         vuln_cases = [c for c in cases if c.variant_relationship == VariantRelationship.VULNERABLE]
         first_case = vuln_cases[0]

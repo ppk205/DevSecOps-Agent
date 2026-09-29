@@ -21,6 +21,8 @@ from vulnscan.contracts.decision import (
 from vulnscan.contracts.enums import FindingStatus
 from vulnscan.decisions.protocol import QUESTION_SET_VERSION
 
+__all__ = ["QUESTION_SET_VERSION", "build_triage_questions"]
+
 from .base import DecisionBackend
 from .router import DecisionRouter
 
@@ -190,9 +192,7 @@ class LayaTriageStage:
         else:
             result = self.backend.predict(request)
 
-        route = self.router.route(
-            request=request, result=result, final_status=final_status
-        )
+        route = self.router.route(request=request, result=result, final_status=final_status)
         return TriageOutcome(
             finding_id=finding_id,
             route=route,

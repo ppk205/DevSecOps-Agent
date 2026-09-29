@@ -17,7 +17,9 @@ from vulnscan.storage.models import Base, FindingORM, RunORM, StageORM, TargetOR
 from vulnscan.web.app import create_app
 
 
-def _finding(title: str = "SQL injection", status: FindingStatus = FindingStatus.CONFIRMED) -> Finding:
+def _finding(
+    title: str = "SQL injection", status: FindingStatus = FindingStatus.CONFIRMED
+) -> Finding:
     now = datetime.now(UTC)
     return Finding(
         finding_id="f-1",
@@ -166,8 +168,12 @@ class TestSecurity:
 class TestExports:
     @pytest.mark.parametrize(
         "fmt,expected",
-        [("json", "application/json"), ("sarif", "application/sarif+json"),
-         ("html", "text/html"), ("markdown", "text/markdown")],
+        [
+            ("json", "application/json"),
+            ("sarif", "application/sarif+json"),
+            ("html", "text/html"),
+            ("markdown", "text/markdown"),
+        ],
     )
     def test_download_format(self, client: TestClient, fmt: str, expected: str):
         response = client.get(f"/runs/{client.run_pk}/export/{fmt}")

@@ -116,7 +116,12 @@ def test_pipeline_runs_deterministic_evidence_to_report(tmp_path: Path) -> None:
     assert len(result.findings) == 1
     assert result.findings[0].cwe_category.value == "CWE-89"
     stage_names = [s.name for s in result.stages]
-    assert stage_names == [STAGE_EVIDENCE, STAGE_ROUTING, "targeted_deep_analysis", STAGE_VALIDATION]
+    assert stage_names == [
+        STAGE_EVIDENCE,
+        STAGE_ROUTING,
+        "targeted_deep_analysis",
+        STAGE_VALIDATION,
+    ]
     assert set(result.reports) == {"json", "sarif", "markdown", "html"}
     for path in result.reports.values():
         assert Path(path).exists()
@@ -194,9 +199,7 @@ def test_pipeline_survives_missing_scanner_binary(tmp_path: Path) -> None:
         adapter_version = "test"
 
         def capabilities(self) -> AdapterCapability:
-            return AdapterCapability(
-                tool=self.tool, binary=self.binary, available=False
-            )
+            return AdapterCapability(tool=self.tool, binary=self.binary, available=False)
 
         def run(self, spec: ScanSpecification, *, workdir: str) -> ScannerResult:
             now = datetime.now(UTC)
@@ -223,9 +226,7 @@ def test_pipeline_survives_missing_scanner_binary(tmp_path: Path) -> None:
 
 
 def test_json_report_is_valid_and_escaped(tmp_path: Path) -> None:
-    result = ScanPipeline(
-        _spec(tmp_path), registry=_registry(), output_dir=tmp_path / "r"
-    ).run()
+    result = ScanPipeline(_spec(tmp_path), registry=_registry(), output_dir=tmp_path / "r").run()
 
     payload = json.loads(Path(result.reports["json"]).read_text(encoding="utf-8"))
 
@@ -238,7 +239,7 @@ def test_validation_stage_never_invents_status(tmp_path: Path) -> None:
     result = ScanPipeline(_spec(tmp_path), registry=_registry()).run()
 
     validation = next(s for s in result.stages if s.name == STAGE_VALIDATION)
-    assert validation.status == "completed"
+    assert validation.status == "skipped"
     assert all(f.status is FindingStatus.UNPROCESSED for f in result.findings)
 
 

@@ -30,6 +30,7 @@ def test_one_at_a_time_guard(session, sample_spec):
     mgr.submit_scan(sample_spec)
     mgr.mark_running(mgr.list_runs()[0].id)
     import pytest
+
     with pytest.raises(RunAlreadyRunningError):
         mgr.submit_scan(sample_spec)
 

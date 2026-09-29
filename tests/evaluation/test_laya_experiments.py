@@ -31,7 +31,9 @@ def _payload(
         "language": language,
         "model_id": "convaiinnovations/laya",
         "model_revision": "aa8c91ca088ec597df95a0d1c76b3063cb2ae5e8",
-        "answers": {"recommended_action": {"type": "choice", "choice": route, "confidence": confidence}},
+        "answers": {
+            "recommended_action": {"type": "choice", "choice": route, "confidence": confidence}
+        },
     }
 
 
@@ -65,9 +67,7 @@ def test_wrong_routes_drive_ece_up() -> None:
 
 
 def test_confident_but_wrong_is_the_costliest_failure() -> None:
-    result = evaluate_routing(
-        [_payload("F1", "low_priority", 1.0)], [_truth("F1", True)]
-    )
+    result = evaluate_routing([_payload("F1", "low_priority", 1.0)], [_truth("F1", True)])
 
     assert result["calibration"]["ece"] == pytest.approx(1.0, abs=1e-6)
     assert result["calibration"]["brier"] == pytest.approx(1.0, abs=1e-6)
@@ -142,9 +142,7 @@ def test_ground_truth_file_accepts_object_or_bare_list(tmp_path: Path) -> None:
 def test_evaluate_from_files_reads_the_advisory_block(tmp_path: Path) -> None:
     scan = tmp_path / "scan.json"
     scan.write_text(
-        json.dumps(
-            {"advisory_routing": {"payloads": [_payload("F1", "human_review")]}}
-        ),
+        json.dumps({"advisory_routing": {"payloads": [_payload("F1", "human_review")]}}),
         encoding="utf-8",
     )
     truth = tmp_path / "truth.json"

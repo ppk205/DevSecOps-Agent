@@ -63,5 +63,6 @@ class TestProviderClient:
         with patch.dict("os.environ", {"TEST_API_KEY": "sk-test123456789"}):
             client = ProviderClient(_profile(), budget=bm)
             from vulnscan.providers.budget import BudgetExhausted
+
             with pytest.raises(BudgetExhausted):
                 client.chat([ChatMessage(role="user", content="hi")])

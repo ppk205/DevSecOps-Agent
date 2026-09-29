@@ -45,7 +45,10 @@ def validate_cases(cases: list[EvaluationCase]) -> list[str]:
             errors.append(f"Duplicate case_id: {c.case_id}")
         ids.add(c.case_id)
 
-        if c.split == SplitMembership.HELD_OUT and c.variant_relationship == VariantRelationship.REGRESSION:
+        if (
+            c.split == SplitMembership.HELD_OUT
+            and c.variant_relationship == VariantRelationship.REGRESSION
+        ):
             errors.append(
                 f"Case {c.case_id}: regression variant cannot be held-out "
                 f"(must be in same split as parent)"
@@ -82,6 +85,7 @@ def create_sample_cases() -> list[EvaluationCase]:
     Covers CWE-89, CWE-79, CWE-862.
     """
     from datetime import datetime
+
     now = datetime(2026, 1, 1, tzinfo=UTC)
     cases: list[EvaluationCase] = []
 
@@ -99,19 +103,21 @@ def create_sample_cases() -> list[EvaluationCase]:
             (SplitMembership.HELD_OUT, VariantRelationship.FIXED, None),
         ]
         for j, (split, var_rel, expected_cwe) in enumerate(splits):
-            case_id = f"{family}-case-{j+1}"
+            case_id = f"{family}-case-{j + 1}"
             is_fixed = var_rel == VariantRelationship.FIXED
-            cases.append(EvaluationCase(
-                case_id=case_id,
-                case_family=family,
-                split=split,
-                variant_relationship=var_rel,
-                expected_cwe_category=expected_cwe,
-                expected_severity=Severity.HIGH,
-                source_commit_sha="dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
-                variant_path=f"harness/JVA-bookstore-{slug}-{'fixed' if is_fixed else 'vulnerable'}",
-                matching_criteria=MatchingCriteria(),
-                created_at=now,
-            ))
+            cases.append(
+                EvaluationCase(
+                    case_id=case_id,
+                    case_family=family,
+                    split=split,
+                    variant_relationship=var_rel,
+                    expected_cwe_category=expected_cwe,
+                    expected_severity=Severity.HIGH,
+                    source_commit_sha="dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+                    variant_path=f"harness/JVA-bookstore-{slug}-{'fixed' if is_fixed else 'vulnerable'}",
+                    matching_criteria=MatchingCriteria(),
+                    created_at=now,
+                )
+            )
 
     return cases

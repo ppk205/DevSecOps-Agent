@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling==1.27.0"]
 build-backend = "hatchling.build"
 
 [project]
 name = "devsecops-agent"
-version = "0.1.0"
+version = "0.2.0"
 description = "Automated vulnerability scanning and DevSecOps assessment agent"
 readme = "README.md"
 license = { text = "MIT" }
@@ -21,6 +21,11 @@ classifiers = [
 ]
 
 dependencies = [
+    "textual>=0.89,<2",
+    "tzdata>=2024.1",
+    "filelock>=3.16",
+    "python-multipart>=0.0.18",
+    "lxml>=5.3",
     "fastapi>=0.115.0",
     "uvicorn[standard]>=0.30.0",
     "jinja2>=3.1.0",
@@ -34,6 +39,9 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
+    "hatchling==1.27.0",
+    "build>=1.2",
+    "types-lxml>=2024.9",
     "pytest>=8.0.0",
     "pytest-asyncio>=0.23.0",
     "pytest-cov>=5.0.0",
@@ -42,7 +50,7 @@ dev = [
     "mypy>=1.10.0",
 ]
 scanners = [
-    "semgrep>=1.70.0",
+    "semgrep==1.178.0",
 ]
 browser = [
     "playwright>=1.45.0",
@@ -72,3 +80,9 @@ line-length = 100
 [tool.mypy]
 python_version = "3.11"
 strict = true
+
+[tool.hatch.build.targets.sdist]
+only-include = ["src/vulnscan", "tests", "docs", "ci", "pyproject.toml", "README.md", "LICENSE", "CHANGELOG.md", "uv.lock", "requirements.lock", "requirements-build.lock", "requirements-scanners.lock", "action.yml"]
+
+[dependency-groups]
+build = ["hatchling==1.27.0"]

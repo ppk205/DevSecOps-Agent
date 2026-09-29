@@ -122,9 +122,7 @@ def group_findings(
         findings.append(finding)
 
     # A finding confirmed by more than one distinct tool has stronger evidence.
-    tool_sets = {
-        f.finding_id: {t.value for t in f.groups[0].tool_names} for f in findings
-    }
+    tool_sets = {f.finding_id: {t.value for t in f.groups[0].tool_names} for f in findings}
     for f in findings:
         if len(tool_sets[f.finding_id]) > 1:
             f.evidence_strength = EvidenceStrength.STRONG

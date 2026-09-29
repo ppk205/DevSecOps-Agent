@@ -57,7 +57,9 @@ class DecisionCache:
 
     def key(self, request: DecisionRequest) -> str:
         state_hash = build_evidence_state(request.state)["state_hash"]
-        return f"{request.question_set_version}|{question_signature(request.questions)}|{state_hash}"
+        return (
+            f"{request.question_set_version}|{question_signature(request.questions)}|{state_hash}"
+        )
 
     def get(self, request: DecisionRequest) -> DecisionResult | None:
         cached = self._entries.get(self.key(request))

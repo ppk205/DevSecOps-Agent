@@ -13,6 +13,7 @@
 <section class="panel">
   <h2>Review status</h2>
   <form method="post" action="/findings/{{ finding.finding_id }}/status">
+    {% if run_id is defined %}<input type="hidden" name="run_id" value="{{ run_id }}">{% endif %}
     <input type="hidden" name="_csrf" value="{{ csrf_token }}">
     <label for="status">Evidence decision</label>
     <select id="status" name="status">
@@ -29,5 +30,6 @@
   {% for observation in finding.observations %}<tr><td>{{ observation.tool.value }} {{ observation.tool_version }}</td><td><code>{{ observation.rule_id }}</code></td><td>{{ observation.message }}</td><td>{% if observation.location %}<code>{{ observation.location.file_path }}:{{ observation.location.line_start }}{% if observation.location.line_end %}-{{ observation.location.line_end }}{% endif %}</code>{% else %}—{% endif %}</td><td>{{ "%.0f"|format(observation.confidence * 100) }}%</td></tr>{% endfor %}
   </tbody></table>{% else %}<p class="muted">No observations attached.</p>{% endif %}
 </section>
+<section class="panel"><h2>Source excerpts</h2>{% for o in finding.observations %}{% if o.location.snippet %}<h3>{{ o.location.as_string() }}</h3><pre>{{ o.location.snippet }}</pre>{% endif %}{% endfor %}</section>
 <section class="panel"><h2>Source fingerprint</h2><pre>{{ finding.fingerprint }}</pre></section>
 {% endblock %}

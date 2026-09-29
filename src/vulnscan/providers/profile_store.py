@@ -12,7 +12,7 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
-from .contracts import ProviderProfile
+from vulnscan.contracts.provider import ProviderProfile
 
 logger = logging.getLogger(__name__)
 

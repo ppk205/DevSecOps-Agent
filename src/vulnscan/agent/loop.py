@@ -111,11 +111,13 @@ class AgentLoop:
             if not resp.tool_calls:
                 return self._parse_assessment(resp, finding, tool_calls_made, total_tokens)
 
-            messages.append(ChatMessage(
-                role="assistant",
-                content=resp.content or "",
-                tool_calls=resp.tool_calls,
-            ))
+            messages.append(
+                ChatMessage(
+                    role="assistant",
+                    content=resp.content or "",
+                    tool_calls=resp.tool_calls,
+                )
+            )
 
             for tc in resp.tool_calls:
                 tool_name = tc["function"]["name"]
@@ -133,11 +135,13 @@ class AgentLoop:
                         logger.warning("Tool %s failed: %s", tool_name, exc)
                         tool_result = {"error": str(exc)}
 
-                messages.append(ChatMessage(
-                    role="tool",
-                    content=json.dumps(tool_result),
-                    tool_call_id=tc["id"],
-                ))
+                messages.append(
+                    ChatMessage(
+                        role="tool",
+                        content=json.dumps(tool_result),
+                        tool_call_id=tc["id"],
+                    )
+                )
                 tool_calls_made += 1
 
         # Exhausted follow-ups

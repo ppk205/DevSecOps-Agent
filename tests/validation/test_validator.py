@@ -14,7 +14,9 @@ from vulnscan.contracts.validation import EvidenceRecord
 from vulnscan.contracts.verification import VerificationObservation
 
 
-def _evidence(eid: str, fid: str, strength: EvidenceStrength, desc: str = "scanner detection") -> EvidenceRecord:
+def _evidence(
+    eid: str, fid: str, strength: EvidenceStrength, desc: str = "scanner detection"
+) -> EvidenceRecord:
     return EvidenceRecord(
         evidence_id=eid,
         finding_id=fid,
@@ -70,12 +72,16 @@ class TestIndependentValidator:
     def test_confirm_with_verification(self):
         v = IndependentValidator(min_evidence_for_confirm=10, min_verification_for_confirm=1)
         verification = _verification("v1", "f1", VerificationOutcome.DEMONSTRATED)
-        decision = v.validate("f1", FindingStatus.UNPROCESSED, _assessment("f1"), [], [verification])
+        decision = v.validate(
+            "f1", FindingStatus.UNPROCESSED, _assessment("f1"), [], [verification]
+        )
         assert decision.new_status == FindingStatus.CONFIRMED
 
     def test_reject_with_counterevidence(self):
         v = IndependentValidator(min_evidence_for_confirm=5)
-        ev1 = _evidence("e1", "f1", EvidenceStrength.STRONG, "contradicts: prepared statement in place")
+        ev1 = _evidence(
+            "e1", "f1", EvidenceStrength.STRONG, "contradicts: prepared statement in place"
+        )
         decision = v.validate("f1", FindingStatus.UNPROCESSED, _assessment("f1"), [ev1])
         assert decision.new_status == FindingStatus.REJECTED
 
