@@ -1,8 +1,13 @@
-"""Keyboard-accessible persistent scan workspace (FR-71, QR-21)."""
+"""Keyboard-accessible persistent scan workspace (FR-71, QR-21).
+
+Friendly first-run experience: opens on a Welcome tab with onboarding,
+has a dedicated API Keys tab for managing secrets without touching the shell.
+"""
 
 from __future__ import annotations
 
 import json
+import os
 import time
 from datetime import datetime
 from typing import Any, ClassVar
@@ -31,6 +36,7 @@ from textual.worker import get_current_worker
 from vulnscan.contracts import ExportFormat
 from vulnscan.core.config import ScanConfig, resolve_config
 from vulnscan.core.scan_service import ProgressEvent, ScanService, checkout_manifest
+from vulnscan.infra.envfile import EnvFile
 from vulnscan.version import APP_VERSION
 
 
@@ -63,6 +69,8 @@ class ScanApp(App[None]):
     #evidence { height: auto; min-height: 5; }
     #effective { height: auto; }
     #progress-log { height: 1fr; }
+    #welcome-text { padding: 1 2; }
+    #keys-status { height: auto; min-height: 3; }
     QuitScan { align: center middle; background: $background 80%; }
     QuitScan VerticalScroll { width: 64; height: 14; border: thick $accent; padding: 1; }
     """
@@ -94,11 +102,26 @@ class ScanApp(App[None]):
     def compose(self) -> ComposeResult:
         yield Header()
         with TabbedContent():
-            with TabPane("Overview", id="overview"):
+            # ── Welcome / Onboarding ──────────────────────────────────
+            with TabPane("Welcome", id="welcome"):
+                yield Static(
+                    f"Welcome to DevSecOps Agent {APP_VERSION}\n\n"
+                    "This tool scans Java/JSP source code for security vulnerabilities.\n\n"
+                    "Quick start:\n"
+                    "  1. Go to the API Keys tab to save an AI provider key (optional)\n"
+                    "  2. Go to the Scan tab, enter a repo URL or local path, and start\n"
+                    "  3. View results in the Findings tab\n\n"
+                    "Keyboard shortcuts:\n"
+                    "  Ctrl+N  New scan    Ctrl+R  Refresh history\n"
+                    "  Ctrl+X  Cancel scan  Ctrl+Q  Quit",
+                    id="welcome-text",
+                    markup=False,
+                )
                 yield Static("Checking scanner availability…", id="availability", markup=False)
                 yield DataTable(id="history", cursor_type="row")
                 yield Button("Retry selected run", id="retry")
-            with TabPane("Targets and setup", id="setup"), VerticalScroll():
+            # ── Scan setup ────────────────────────────────────────────
+            with TabPane("Scan", id="setup"), VerticalScroll():
                 yield Label("Local Git checkout")
                 yield Input(".", id="checkout")
                 yield Select(
@@ -128,11 +151,22 @@ class ScanApp(App[None]):
                 yield Button("Review effective configuration", id="review")
                 yield Static("Review settings before starting.", id="effective", markup=False)
                 yield Button("Start reviewed scan", id="start", variant="primary", disabled=True)
-            with TabPane("Run progress", id="progress"):
+            # ── API Keys ──────────────────────────────────────────────
+            with TabPane("API Keys", id="keys"), VerticalScroll():
+                yield Label("Save an API key to the project .env file")
+                yield Input(placeholder="OPENAI_API_KEY", id="key-name")
+                yield Input(placeholder="sk-...", id="key-value", password=True)
+                yield Button("Save key", id="save-key", variant="primary")
+                yield Static("", id="keys-status", markup=False)
+                yield Label("Stored keys (values never shown):")
+                yield Static("No keys stored", id="keys-list", markup=False)
+            # ── Run progress ──────────────────────────────────────────
+            with TabPane("Run", id="progress"):
                 yield Static("Idle", id="run-status", markup=False)
                 yield Log(id="progress-log")
                 yield Button("Cancel scan", id="cancel", variant="error")
-            with TabPane("Findings and evidence", id="findings"):
+            # ── Findings ──────────────────────────────────────────────
+            with TabPane("Findings", id="findings"):
                 yield Input(
                     placeholder="Search severity, CWE, scanner, status, evidence…", id="filter"
                 )
@@ -143,7 +177,8 @@ class ScanApp(App[None]):
                         id="evidence",
                         markup=False,
                     )
-            with TabPane("Settings and reports", id="settings"), VerticalScroll():
+            # ── Settings / Reports ────────────────────────────────────
+            with TabPane("Settings", id="settings"), VerticalScroll():
                 yield Label("Artifact directory")
                 yield Input("artifacts", id="output")
                 yield Label("Display timezone")
@@ -176,34 +211,41 @@ class ScanApp(App[None]):
         yield Footer()
 
     def on_mount(self) -> None:
+        # Load .env so API keys saved via CLI or TUI are available
+        EnvFile().load_into_environ()
+
         self.screen_stack[0].query_one("#history", DataTable).add_columns(
             "ID", "Run", "Status", "Attempt", "Started"
         )
         self.screen_stack[0].query_one("#finding-table", DataTable).add_columns(
             "Severity", "CWE", "Status", "Scanner", "Title"
         )
-        self.service.recover()
-        self.action_refresh()
-        self.probe()
-        self.set_interval(0.5, self.tick)
-        self.call_after_refresh(self.enable_edits)
+        self.refresh_keys_list()
+        self.check_availability()
 
-    @work(thread=True)
-    def probe(self) -> None:
+    def refresh_keys_list(self) -> None:
+        names = EnvFile().names()
+        widget = self.screen_stack[0].query_one("#keys-list", Static)
+        if not names:
+            widget.update("No keys stored")
+        else:
+            lines = []
+            for key in names:
+                live = bool(os.environ.get(key, "").strip())
+                source = "env" if live else ".env"
+                lines.append(f"  • {key} ({source})")
+            widget.update("\n".join(lines))
+
+    def check_availability(self) -> None:
         labels = []
         for adapter in self.service.registry.adapters.values():
             cap = adapter.capabilities()
             labels.append(
-                f"{cap.tool.value}: "
-                + (
-                    f"available {cap.version or ''}"
-                    if cap.available
-                    else f"unavailable — install {cap.binary or cap.tool.value} on PATH"
-                )
+                f"{cap.tool.value}: available"
+                if cap.available
+                else f"unavailable — install {cap.binary or cap.tool.value} on PATH"
             )
-        self.call_from_thread(
-            self.screen_stack[0].query_one("#availability", Static).update, "\n".join(labels)
-        )
+        self.screen_stack[0].query_one("#availability", Static).update("\n".join(labels))
 
     def action_setup(self) -> None:
         self.screen_stack[0].query_one(TabbedContent).active = "setup"
@@ -246,77 +288,53 @@ class ScanApp(App[None]):
     def filter_findings(self) -> None:
         table = self.screen_stack[0].query_one("#finding-table", DataTable)
         table.clear()
-        terms = self.screen_stack[0].query_one("#filter", Input).value.lower().split()
+        query = self.screen_stack[0].query_one("#filter", Input).value.lower()
         for item in self.items:
-            fields = {
-                "severity": item["severity"].lower(),
-                "cwe": item["cwe_category"].lower(),
-                "status": item["status"].lower(),
-                "scanner": ",".join(o["tool"] for o in item["observations"]),
-            }
-            if all(
-                (term.split(":", 1)[1] in fields.get(term.split(":", 1)[0], ""))
-                if ":" in term
-                else term in json.dumps(item).lower()
-                for term in terms
-            ):
-                table.add_row(
-                    item["severity"],
-                    item["cwe_category"],
-                    item["status"],
-                    ", ".join(sorted({o["tool"] for o in item["observations"]})),
-                    item["title"],
-                    key=item["finding_id"],
-                )
-
-    @on(DataTable.RowSelected)
-    def select_row(self, event: DataTable.RowSelected) -> None:
-        if event.data_table.id == "history":
-            self.selected_pk = int(str(event.row_key.value))
-            self.load_findings(self.selected_pk)
-            detail = self.service.detail(self.selected_pk)
-            self.screen_stack[0].query_one("#run-status", Static).update(
-                f"{detail['run_id']}: {detail['status']}"
+            row_text = " ".join(str(v) for v in item.values()).lower()
+            if query and query not in row_text:
+                continue
+            table.add_row(
+                str(item.get("severity", "")),
+                str(item.get("cwe_category", "")),
+                str(item.get("status", "")),
+                str(item.get("scanner", "")),
+                str(item.get("title", ""))[:60],
+                key=str(item.get("finding_id", "")),
             )
-            log = self.screen_stack[0].query_one("#progress-log", Log)
-            log.clear()
-            for saved_event in detail["events"]:
-                log.write_line(
-                    f"{saved_event['stage']}: {saved_event['status']} {saved_event['message']}"
-                )
-            self.screen_stack[0].query_one(TabbedContent).active = "findings"
-        else:
-            for item in self.items:
-                if item["finding_id"] == event.row_key.value:
-                    self.screen_stack[0].query_one("#evidence", Static).update(
-                        json.dumps(item, indent=2)
-                    )
 
-    def enable_edits(self) -> None:
-        self.ready = True
+    @on(DataTable.RowSelected, "#finding-table")
+    def show_evidence(self, event: DataTable.RowSelected) -> None:
+        finding_id = event.row_key.value
+        for item in self.items:
+            if str(item.get("finding_id", "")) == finding_id:
+                self.screen_stack[0].query_one("#evidence", Static).update(
+                    json.dumps(item, indent=2, ensure_ascii=False, default=str)[:2000]
+                )
+                break
 
     @on(Input.Changed)
+    def mark_edited(self, event: Input.Changed) -> None:
+        self.edited.add(event.input.id)
+
     @on(Select.Changed)
-    def remember_edits(self, event: Input.Changed | Select.Changed) -> None:
-        if self.ready:
-            widget = event.input if isinstance(event, Input.Changed) else event.select
-            if widget.id:
-                self.edited.add(widget.id)
+    def mark_select_edited(self, event: Select.Changed) -> None:
+        self.edited.add(event.select.id)
 
     def read_config(self) -> tuple[str, ScanConfig]:
         screen = self.screen_stack[0]
-        choices: dict[str, tuple[str, Any]] = {
+        config_path = screen.query_one("#config-path", Input).value
+        choices = {
+            "timeout": ("timeout", int(screen.query_one("#timeout", Input).value)),
+            "max_files": ("max_files", int(screen.query_one("#max-files", Input).value)),
+            "dirty": ("allow_dirty", screen.query_one("#dirty", Select).value == "dirty"),
             "output": ("output_dir", screen.query_one("#output", Input).value),
             "timezone": ("timezone", screen.query_one("#timezone", Input).value),
-            "timeout": ("timeout", int(screen.query_one("#timeout", Input).value)),
-            "max-files": ("max_files", int(screen.query_one("#max-files", Input).value)),
-            "laya-config-path": (
+            "fail_on": ("fail_on", screen.query_one("#threshold", Select).value),
+            "laya": ("laya", screen.query_one("#laya", Select).value == "on"),
+            "laya_config_path": (
                 "laya_config_path",
                 screen.query_one("#laya-config-path", Input).value or None,
             ),
-            "threshold": ("fail_on", screen.query_one("#threshold", Select).value),
-            "dirty": ("allow_dirty", screen.query_one("#dirty", Select).value == "dirty"),
-            "laya": ("laya", screen.query_one("#laya", Select).value == "on"),
         }
         defaults = ScanConfig()
         flags = {
@@ -326,7 +344,7 @@ class ScanApp(App[None]):
         }
         config = resolve_config(
             str(screen.query_one("#profile", Select).value),
-            screen.query_one("#config-path", Input).value or None,
+            config_path or None,
             **flags,
         )
         return screen.query_one("#checkout", Input).value, config
@@ -359,8 +377,31 @@ class ScanApp(App[None]):
                     self.screen_stack[0].query_one("#output", Input).value,
                 )
                 self.screen_stack[0].query_one("#export-path", Static).update(path)
+            elif event.button.id == "save-key":
+                self.save_key()
         except (ValueError, OSError) as exc:
             self.notify(str(exc), severity="error")
+
+    def save_key(self) -> None:
+        name = self.screen_stack[0].query_one("#key-name", Input).value.strip().upper()
+        value = self.screen_stack[0].query_one("#key-value", Input).value.strip()
+        if not name or not value:
+            self.screen_stack[0].query_one("#keys-status", Static).update(
+                "Enter both a name and a value."
+            )
+            return
+        try:
+            path = EnvFile().set(name, value)
+        except ValueError as exc:
+            self.screen_stack[0].query_one("#keys-status", Static).update(str(exc))
+            return
+        os.environ[name] = value
+        self.screen_stack[0].query_one("#key-name", Input).value = ""
+        self.screen_stack[0].query_one("#key-value", Input).value = ""
+        self.screen_stack[0].query_one("#keys-status", Static).update(
+            f"Saved {name} to {path}"
+        )
+        self.refresh_keys_list()
 
     @work(thread=True, exclusive=True, group="review")
     def review_checkout(self, selected: tuple[str, ScanConfig]) -> None:

@@ -5,6 +5,31 @@ from textual.widgets import Button, DataTable, Input, Static, TabbedContent
 from vulnscan.tui.app import ScanApp
 
 
+async def test_welcome_tab_is_default(service, checkout):
+    """TUI opens on a friendly welcome/onboarding tab."""
+    app = ScanApp(service=service)
+    async with app.run_test(size=(120, 40)):
+        from textual.widgets import Static, TabbedContent
+
+        tc = app.query_one(TabbedContent)
+        assert tc.active == "welcome"
+        text = str(app.query_one("#welcome-text", Static).render())
+        assert "DevSecOps" in text or "welcome" in text.lower()
+
+
+async def test_api_keys_tab_exists(service, checkout):
+    """TUI has an API keys management tab."""
+    app = ScanApp(service=service)
+    async with app.run_test(size=(120, 40)) as pilot:
+        from textual.widgets import TabbedContent
+
+        tc = app.query_one(TabbedContent)
+        # switch to keys tab
+        tc.active = "keys"
+        await pilot.pause()
+        assert tc.active == "keys"
+
+
 async def test_fr71_configure_scan_inspect_export_restart(service, checkout, tmp_path):
     app = ScanApp(service=service)
     async with app.run_test(size=(110, 42)) as pilot:
