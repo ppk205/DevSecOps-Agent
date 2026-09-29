@@ -40,7 +40,10 @@ def _scan() -> dict:
                     "finding_id": "F1",
                     "route": "human_review",
                     "answers": {
-                        "recommended_action": {"confidence": 0.42, "probabilities": {"a": 0.6, "b": 0.4}},
+                        "recommended_action": {
+                            "confidence": 0.42,
+                            "probabilities": {"a": 0.6, "b": 0.4},
+                        },
                         "needs_human_review": {"noul": 0.3},
                         "evidence_sufficiency": {"score": 0.8},
                     },
@@ -54,7 +57,7 @@ def test_sheet_carries_model_output_and_evidence(tmp_path: Path) -> None:
     src = tmp_path / "src" / "main" / "java" / "dao"
     src.mkdir(parents=True)
     (src / "CartDAO.java").write_text(
-        "line1\nline2\nstmt.execute(\"SELECT \" + id);\nline4\n", encoding="utf-8"
+        'line1\nline2\nstmt.execute("SELECT " + id);\nline4\n', encoding="utf-8"
     )
 
     rows = build_sheet(_scan(), tmp_path)

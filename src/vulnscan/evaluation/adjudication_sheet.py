@@ -96,9 +96,7 @@ def build_sheet(
                 "line": location.get("line_start"),
                 "message": (obs.get("message") or "")[:160],
                 "expected_route": None,
-                "source": _source_excerpt(
-                    file_path, location.get("line_start"), repo_root
-                ),
+                "source": _source_excerpt(file_path, location.get("line_start"), repo_root),
             }
         )
 
@@ -113,9 +111,7 @@ def render_text(rows: Sequence[dict[str, Any]], limit: int | None = None) -> str
 
     for i, row in enumerate(shown, start=1):
         out.append("=" * 78)
-        out.append(
-            f"[{i}] {row['finding_id']}  {row['cwe']} / {row['severity']}"
-        )
+        out.append(f"[{i}] {row['finding_id']}  {row['cwe']} / {row['severity']}")
         out.append(f"  file      {row['file']}:{row['line']}")
         out.append(f"  rule      {row['rule_id']}")
         out.append(
