@@ -36,6 +36,7 @@ from textual.worker import get_current_worker
 from vulnscan.contracts import ExportFormat
 from vulnscan.core.config import ScanConfig, resolve_config
 from vulnscan.core.scan_service import ProgressEvent, ScanService, checkout_manifest
+from vulnscan.core.source import LocalSource, RemoteSource, resolve_source
 from vulnscan.infra.envfile import EnvFile
 from vulnscan.version import APP_VERSION
 
@@ -98,32 +99,23 @@ class ScanApp(App[None]):
         self.started = 0.0
         self.items: list[dict[str, Any]] = []
         self.reviewed: tuple[str, ScanConfig] | None = None
+        self.source: LocalSource | RemoteSource | None = None
 
     def compose(self) -> ComposeResult:
         yield Header()
         with TabbedContent():
             # ── Welcome / Onboarding ──────────────────────────────────
-            with TabPane("Welcome", id="welcome"):
-                yield Static(
-                    f"Welcome to DevSecOps Agent {APP_VERSION}\n\n"
-                    "This tool scans Java/JSP source code for security vulnerabilities.\n\n"
-                    "Quick start:\n"
-                    "  1. Go to the API Keys tab to save an AI provider key (optional)\n"
-                    "  2. Go to the Scan tab, enter a repo URL or local path, and start\n"
-                    "  3. View results in the Findings tab\n\n"
-                    "Keyboard shortcuts:\n"
-                    "  Ctrl+N  New scan    Ctrl+R  Refresh history\n"
-                    "  Ctrl+X  Cancel scan  Ctrl+Q  Quit",
-                    id="welcome-text",
-                    markup=False,
-                )
-                yield Static("Checking scanner availability…", id="availability", markup=False)
-                yield DataTable(id="history", cursor_type="row")
-                yield Button("Retry selected run", id="retry")
-            # ── Scan setup ────────────────────────────────────────────
+            # ── Scan (default tab — the only thing most users need) ──
             with TabPane("Scan", id="setup"), VerticalScroll():
-                yield Label("Local Git checkout")
-                yield Input(".", id="checkout")
+                yield Label("Repository URL or local folder")
+                yield Input(
+                    "https://github.com/owner/repo",
+                    id="checkout",
+                )
+                yield Label("Pinned commit (blank = default branch HEAD)")
+                yield Input(placeholder="optional commit SHA", id="commit")
+                yield Label("Clone cache folder")
+                yield Input("harness", id="workdir")
                 yield Select(
                     [
                         ("Fast: Semgrep + Gitleaks", "fast"),
@@ -148,9 +140,14 @@ class ScanApp(App[None]):
                     allow_blank=False,
                     id="dirty",
                 )
-                yield Button("Review effective configuration", id="review")
-                yield Static("Review settings before starting.", id="effective", markup=False)
-                yield Button("Start reviewed scan", id="start", variant="primary", disabled=True)
+                yield Button("Prepare scan", id="review")
+                yield Static("Enter a repository to begin.", id="effective", markup=False)
+                yield Button("Start scan", id="start", variant="primary", disabled=True)
+            # ── History ───────────────────────────────────────────────
+            with TabPane("History", id="history-tab"):
+                yield Static("Checking scanner availability…", id="availability", markup=False)
+                yield DataTable(id="history", cursor_type="row")
+                yield Button("Retry selected run", id="retry")
             # ── API Keys ──────────────────────────────────────────────
             with TabPane("API Keys", id="keys"), VerticalScroll():
                 yield Label("Save an API key to the project .env file")
@@ -405,23 +402,37 @@ class ScanApp(App[None]):
 
     @work(thread=True, exclusive=True, group="review")
     def review_checkout(self, selected: tuple[str, ScanConfig]) -> None:
+        target = self.screen_stack[0].query_one("#checkout", Input).value
+        commit = self.screen_stack[0].query_one("#commit", Input).value.strip()
+        workdir = self.screen_stack[0].query_one("#workdir", Input).value.strip() or "harness"
         try:
+            source = resolve_source(target, workdir, commit=commit)
+            resolved = (source.checkout, selected[1])
             manifest = checkout_manifest(
-                *selected, excluded=self.service.runtime_paths(selected[1])
+                *resolved, excluded=self.service.runtime_paths(selected[1])
             )
             summary = (
+                f"Repository: {source.repo_url}\n"
                 f"Commit: {manifest['commit']} | {len(manifest['inventory'])} Java/JSP files\n"
-                + selected[1].model_dump_json(indent=2)
+                f"Local path: {source.checkout}"
             )
-            self.call_from_thread(self.apply_review, selected, summary)
+            self.call_from_thread(self.apply_review, selected, resolved, source, summary)
         except (ValueError, OSError) as exc:
             self.call_from_thread(
-                self.screen_stack[0].query_one("#effective", Static).update, str(exc)
+                self.screen_stack[0].query_one("#effective", Static).update,
+                f"Cannot scan: {exc}",
             )
 
-    def apply_review(self, selected: tuple[str, ScanConfig], summary: str) -> None:
+    def apply_review(
+        self,
+        selected: tuple[str, ScanConfig],
+        resolved: tuple[str, ScanConfig],
+        source: LocalSource | RemoteSource,
+        summary: str,
+    ) -> None:
         if selected == self.read_config():
-            self.reviewed = selected
+            self.reviewed = resolved
+            self.source = source
             self.screen_stack[0].query_one("#effective", Static).update(summary)
             self.screen_stack[0].query_one("#start", Button).disabled = False
 
@@ -447,7 +458,10 @@ class ScanApp(App[None]):
             else:
                 assert self.reviewed is not None
                 result = self.service.run(
-                    *self.reviewed, on_event=progress, cancel_signal=lambda: worker.is_cancelled
+                    *self.reviewed,
+                    repo=self.source.repo_url if self.source else "local",
+                    on_event=progress,
+                    cancel_signal=lambda: worker.is_cancelled,
                 )
         except Exception as exc:  # noqa: BLE001 | application boundary preserves partial evidence
             result = {"status": "failed", "exit_code": 2, "errors": [str(exc)]}

@@ -33,7 +33,7 @@ class ScanConfig(BaseModel):
     max_files: int = Field(default=100000, ge=1)
     allow_dirty: bool = False
     ci: bool = False
-    laya: bool = False
+    laya: bool = True
     laya_config_path: str | None = None
 
     @field_validator("timezone")

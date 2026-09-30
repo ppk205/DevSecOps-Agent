@@ -5,16 +5,36 @@ from textual.widgets import Button, DataTable, Input, Static, TabbedContent
 from vulnscan.tui.app import ScanApp
 
 
-async def test_welcome_tab_is_default(service, checkout):
-    """TUI opens on a friendly welcome/onboarding tab."""
+async def test_scan_tab_is_default(service, checkout):
+    """Scan is the landing tab — it is the one thing most users need."""
     app = ScanApp(service=service)
     async with app.run_test(size=(120, 40)):
-        from textual.widgets import Static, TabbedContent
-
         tc = app.query_one(TabbedContent)
-        assert tc.active == "welcome"
-        text = str(app.query_one("#welcome-text", Static).render())
-        assert "DevSecOps" in text or "welcome" in text.lower()
+        assert tc.active == "setup"
+        assert app.query_one("#checkout", Input).value
+        assert app.query_one("#workdir", Input).value == "harness"
+
+
+async def test_scan_tab_accepts_repo_url(service, checkout, monkeypatch):
+    """A pasted URL is resolved to a checkout and pinned commit."""
+    from vulnscan.core.source import RemoteSource
+    from vulnscan.tui import app as tui_app
+
+    monkeypatch.setattr(
+        tui_app,
+        "resolve_source",
+        lambda target, workdir, commit=None: RemoteSource(
+            "https://github.com/ppk205/ComicReaderSite.git",
+            str(checkout),
+            "d489b84bfc606c37c25609d4fba4e6da92db2d8e",
+        ),
+    )
+    app = ScanApp(service=service)
+    async with app.run_test(size=(120, 40)) as pilot:
+        app.query_one("#checkout", Input).value = "https://github.com/ppk205/ComicReaderSite"
+        app.query_one("#commit", Input).value = ""
+        # the target is accepted as a URL, not rejected as a bad path
+        assert "github.com" in app.query_one("#checkout", Input).value
 
 
 async def test_api_keys_tab_exists(service, checkout):
