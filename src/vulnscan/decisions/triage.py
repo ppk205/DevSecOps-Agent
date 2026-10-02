@@ -19,7 +19,11 @@ from vulnscan.contracts.decision import (
     DecisionType,
 )
 from vulnscan.contracts.enums import FindingStatus
-from vulnscan.decisions.protocol import QUESTION_SET_VERSION
+from vulnscan.decisions.protocol import (
+    INPUT_FORMAT_VERSION,
+    QUESTION_SET_VERSION,
+    ROUTING_POLICY_VERSION,
+)
 
 __all__ = ["QUESTION_SET_VERSION", "build_triage_questions"]
 
@@ -77,26 +81,30 @@ def finding_to_state(finding: Any) -> dict[str, Any]:
     tool provenance, source coordinates, and evidence flags. No raw source, no
     credentials, no ground-truth labels.
     """
+
+    def value(item: Any) -> str:
+        return str(getattr(item, "value", item) or "")
+
     observations = list(getattr(finding, "observations", []) or [])
     representative = observations[0] if observations else None
     tool_names = sorted(
-        {str(getattr(obs, "tool", "")) for obs in observations if getattr(obs, "tool", None)}
+        {value(getattr(obs, "tool", "")) for obs in observations if getattr(obs, "tool", None)}
     )
     state: dict[str, Any] = {
         "finding_id": str(getattr(finding, "finding_id", "")),
         "run_id": str(getattr(finding, "run_id", "")),
-        "cwe_category": str(getattr(finding, "cwe_category", "") or ""),
-        "severity": str(getattr(finding, "severity", "") or ""),
-        "evidence_strength": str(getattr(finding, "evidence_strength", "") or ""),
+        "cwe_category": value(getattr(finding, "cwe_category", "")),
+        "severity": value(getattr(finding, "severity", "")),
+        "evidence_strength": value(getattr(finding, "evidence_strength", "")),
         "tool_names": tool_names,
         "observation_count": len(observations),
-        "status": str(getattr(finding, "status", FindingStatus.UNRESOLVED.value) or ""),
+        "rule_ids": sorted({str(getattr(o, "rule_id", "")) for o in observations}),
     }
     location = getattr(representative, "location", None)
     if location is not None:
         state["file_path"] = str(getattr(location, "file_path", ""))
         state["line_start"] = int(getattr(location, "line_start", 0) or 0)
-        state["language"] = str(getattr(location, "language", "") or "")
+        state["language"] = value(getattr(location, "language", ""))
     metadata = getattr(finding, "metadata", None)
     if isinstance(metadata, dict):
         for key in ("has_dataflow", "has_sanitizer", "jsp_context", "dependency_identity"):
@@ -134,6 +142,8 @@ class TriageOutcome:
             "input_truncated": self.result.input_truncated,
             "state_hash": self.state_hash,
             "question_set_version": self.question_set_version,
+            "input_format_version": INPUT_FORMAT_VERSION,
+            "routing_policy_version": ROUTING_POLICY_VERSION,
             "affects_finding_status": self.route.affects_finding_status,
             "final_status": str(self.route.final_status or ""),
             "reasons": list(self.route.reasons),
@@ -145,6 +155,7 @@ class TriageOutcome:
                     "score": answer.score,
                     "noul": answer.noul,
                     "confidence": answer.confidence,
+                    "answer_confidence": answer.answer_confidence,
                     "probabilities": dict(answer.probabilities),
                 }
                 for name, answer in self.result.answers.items()

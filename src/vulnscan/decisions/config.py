@@ -10,6 +10,7 @@ from vulnscan.decisions.protocol import (
     HIGH_CONFIDENCE_THRESHOLD,
     MAX_INPUT_TOKENS,
     MODEL_ID,
+    MODEL_REVISION,
     REVIEW_THRESHOLD,
 )
 
@@ -24,7 +25,7 @@ class LayaConfig:
     enabled: bool = False
     mode: str = "shadow"
     model_id: str = MODEL_ID
-    revision: str | None = None
+    revision: str | None = MODEL_REVISION
     device: str = "auto"
     batch_size: int = 4
     max_input_tokens: int = MAX_INPUT_TOKENS

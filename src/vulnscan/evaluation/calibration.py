@@ -155,6 +155,8 @@ class RoutingReport:
     route_counts: dict[str, int] = field(default_factory=dict)
     unavailable: int = 0
     false_escalations: int = 0
+    missed_escalations: int = 0
+    dangerous_downgrades: int = 0
     correct_routes: int = 0
     scored_routes: int = 0
     by_cwe: dict[str, dict[str, Any]] = field(default_factory=dict)
@@ -180,6 +182,8 @@ class RoutingReport:
             "unavailable": self.unavailable,
             "route_accuracy": self._rate(self.route_accuracy),
             "false_escalations": self.false_escalations,
+            "missed_escalations": self.missed_escalations,
+            "dangerous_downgrades": self.dangerous_downgrades,
             "false_escalation_rate": self._rate(self.false_escalation_rate),
             "scored_routes": self.scored_routes,
             "by_cwe": self.by_cwe,
@@ -208,8 +212,8 @@ def build_routing_report(
     Each row needs ``route``, ``cwe`` and ``language``; rows carrying
     ``expected_route`` are scored, the rest only counted. ``True`` in
     ``expected_route`` means the finding was worth a human, so any escalation
-    to ``human_review`` counts as correct and a non-escalation as a false
-    escalation.
+    to ``human_review`` counts as correct; missed and unnecessary escalations
+    are counted separately.
     """
     report = RoutingReport(total=len(rows))
 
@@ -234,12 +238,20 @@ def build_routing_report(
             escalated = route == "human_review"
             correct = escalated == should_escalate
             if should_escalate and not escalated:
+                report.missed_escalations += 1
+            elif escalated and not should_escalate:
                 report.false_escalations += 1
         else:
             # A named lane is graded as an exact match, so a correctly routed
             # cross_file_analysis must not count as a miss for not escalating.
             should_escalate = route == str(expected)
             correct = route == str(expected)
+            if expected != "human_review" and route == "human_review":
+                report.false_escalations += 1
+            if expected == "human_review" and route != "human_review":
+                report.missed_escalations += 1
+        if expected not in {False, "low_priority"} and route == "low_priority":
+            report.dangerous_downgrades += 1
 
         report.scored_routes += 1
         report.correct_routes += int(correct)

@@ -91,7 +91,7 @@ def ground_truth_state(root: Path = REPO_ROOT) -> dict[str, Any]:
         "present": True,
         "adjudicated": bool(rows) and len(labelled) == len(rows),
         "independently_adjudicated": bool(rows)
-        and all(r.get("independently_adjudicated") is False for r in rows),
+        and all(r.get("independently_adjudicated") is True for r in rows),
         "rows": len(rows),
         "labelled_rows": len(labelled),
         "label_unit": "lane",

@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import atexit
+import importlib.util
+import sys
 import time
 from collections.abc import Callable, Mapping
 from typing import Any
@@ -14,25 +17,22 @@ from vulnscan.contracts.decision import (
     DecisionStatus,
     DecisionType,
 )
+from vulnscan.core.stdio_worker import JSONWorker
 from vulnscan.decisions.protocol import (
     MAX_INPUT_CHARS,
     MAX_INPUT_TOKENS,
     MODEL_ID,
+    MODEL_REVISION,
 )
+from vulnscan.scanners.process import _cancel_check
 
-from .state import build_evidence_state
+from .state import build_evidence_state, model_state
 
 _LOADER_TYPE = Callable[[], Any]
 
 
-def _default_loader() -> Any:
-    try:
-        import importlib
-
-        laya = importlib.import_module("laya")
-    except ImportError as exc:  # pragma: no cover - exercised with injected loader
-        raise ImportError("Laya optional dependency is not installed") from exc
-    return laya.load(MODEL_ID)
+_process_worker = JSONWorker([sys.executable, "-m", "vulnscan.decisions.model_worker"])
+atexit.register(_process_worker.close)
 
 
 def _to_native_questions(questions: Mapping[str, DecisionQuestion]) -> dict[str, dict[str, Any]]:
@@ -105,6 +105,7 @@ def _parse_answer(name: str, raw: Any, question: DecisionQuestion) -> DecisionAn
         noul=noul,
         probabilities=probabilities,
         confidence=confidence,
+        answer_confidence=raw.get("answer_confidence"),
     )
 
 
@@ -121,28 +122,36 @@ class LayaDecisionBackend:
         *,
         agent_loader: _LOADER_TYPE | None = None,
         model_id: str = MODEL_ID,
-        model_revision: str | None = None,
+        model_revision: str | None = MODEL_REVISION,
         device: str = "unknown",
         max_input_chars: int = MAX_INPUT_CHARS,
         max_input_tokens: int = MAX_INPUT_TOKENS,
+        timeout_seconds: float = 30,
+        worker: JSONWorker | None = None,
     ) -> None:
         if max_input_chars < 1 or max_input_tokens < 1:
             raise ValueError("input limits must be positive")
-        self._agent_loader = agent_loader or _default_loader
+        self._agent_loader = agent_loader
         self._agent: Any | None = None
         self.model_id = model_id
         self.model_revision = model_revision
         self.device = device
         self.max_input_chars = max_input_chars
         self.max_input_tokens = max_input_tokens
+        self.timeout_seconds = timeout_seconds
+        self.worker = worker or _process_worker
 
     def _load(self) -> Any:
         if self._agent is None:
+            if self._agent_loader is None:
+                if self.worker is _process_worker and importlib.util.find_spec("laya") is None:
+                    raise ImportError("Laya optional dependency is not installed")
+                raise RuntimeError("Model loading belongs to the child worker")
             self._agent = self._agent_loader()
         return self._agent
 
-    @staticmethod
     def _failure(
+        self,
         request: DecisionRequest,
         state_hash: str,
         status: DecisionStatus,
@@ -152,7 +161,7 @@ class LayaDecisionBackend:
     ) -> DecisionResult:
         return DecisionResult(
             status=status,
-            model_id=MODEL_ID,
+            model_id=self.model_id,
             model_revision=None,
             device="unknown",
             answers={},
@@ -165,72 +174,127 @@ class LayaDecisionBackend:
         )
 
     def predict(self, request: DecisionRequest) -> DecisionResult:
-        envelope = build_evidence_state(request.state, max_chars=self.max_input_chars)
-        state_payload = {
-            key: value
-            for key, value in envelope.items()
-            if key not in {"state_text", "state_hash", "input_truncated"}
-        }
-        state_hash = str(envelope["state_hash"])
+        return self.predict_many([request])[0]
+
+    def predict_many(self, requests: list[DecisionRequest]) -> list[DecisionResult]:
+        if not requests:
+            return []
+        if any(request.questions != requests[0].questions for request in requests):
+            raise ValueError("A batch must share one question set")
+        envelopes = [
+            build_evidence_state(r.state, max_chars=self.max_input_chars) for r in requests
+        ]
+        states = [model_state(e) for e in envelopes]
+        questions = _to_native_questions(requests[0].questions)
         started = time.perf_counter()
         try:
-            agent = self._load()
-            raw = agent.predict(
-                state_payload,
-                _to_native_questions(request.questions),
-                max_len=self.max_input_tokens,
-            )
-            if not isinstance(raw, Mapping) or not isinstance(raw.get("answers"), Mapping):
-                raise TypeError("Laya response has no answers object")
-            answers: dict[str, DecisionAnswer] = {}
-            for name, question in request.questions.items():
-                if name not in raw["answers"]:
-                    raise ValueError(f"missing answer {name!r}")
-                answers[name] = _parse_answer(name, raw["answers"][name], question)
+            revision, device = self.model_revision, self.device
+            if self._agent_loader is None:
+                reply = self.worker.call(
+                    "predict_batch",
+                    {
+                        "model_id": self.model_id,
+                        "revision": self.model_revision,
+                        "device": self.device,
+                        "states": states,
+                        "questions": questions,
+                        "max_input_tokens": self.max_input_tokens,
+                    },
+                    self.timeout_seconds,
+                    _cancel_check.get(),
+                )
+                raw_rows = reply["rows"]
+                revision, device = reply["model_revision"], reply["device"]
+            else:
+                agent = self._load()
+                device = str(getattr(agent, "device", self.device))
+                if len(states) > 1 and hasattr(agent, "predict_batch"):
+                    raw_rows = agent.predict_batch(states, questions, max_len=self.max_input_tokens)
+                else:
+                    raw_rows = [
+                        agent.predict(state, questions, max_len=self.max_input_tokens)
+                        for state in states
+                    ]
+            if not isinstance(raw_rows, list) or len(raw_rows) != len(requests):
+                raise TypeError("Laya returned a mismatched batch")
         except ImportError as exc:
-            latency_ms = (time.perf_counter() - started) * 1_000
-            return self._failure(
-                request,
-                state_hash,
-                DecisionStatus.UNAVAILABLE,
-                "dependency_unavailable",
-                str(exc),
-                latency_ms,
-            )
+            return [
+                self._failure(
+                    r,
+                    str(e["state_hash"]),
+                    DecisionStatus.UNAVAILABLE,
+                    "dependency_unavailable",
+                    str(exc),
+                    (time.perf_counter() - started) * 1000,
+                )
+                for r, e in zip(requests, envelopes, strict=True)
+            ]
         except TimeoutError as exc:
-            latency_ms = (time.perf_counter() - started) * 1_000
-            return self._failure(
-                request, state_hash, DecisionStatus.FAILED, "timeout", str(exc), latency_ms
-            )
-        except (ValueError, TypeError, KeyError) as exc:
-            latency_ms = (time.perf_counter() - started) * 1_000
-            return self._failure(
-                request,
-                state_hash,
-                DecisionStatus.INCOMPLETE,
-                "malformed_output",
-                str(exc),
-                latency_ms,
-            )
+            return [
+                self._failure(
+                    r,
+                    str(e["state_hash"]),
+                    DecisionStatus.FAILED,
+                    "timeout",
+                    str(exc),
+                    (time.perf_counter() - started) * 1000,
+                )
+                for r, e in zip(requests, envelopes, strict=True)
+            ]
         except Exception as exc:  # noqa: BLE001 - backend boundary must preserve baseline scan
-            latency_ms = (time.perf_counter() - started) * 1_000
-            return self._failure(
-                request,
-                state_hash,
-                DecisionStatus.UNAVAILABLE,
-                "backend_unavailable",
-                str(exc),
-                latency_ms,
+            code = (
+                "malformed_output"
+                if isinstance(exc, (ValueError, TypeError, KeyError))
+                else "backend_unavailable"
             )
+            status = (
+                DecisionStatus.INCOMPLETE
+                if code == "malformed_output"
+                else DecisionStatus.UNAVAILABLE
+            )
+            return [
+                self._failure(
+                    r,
+                    str(e["state_hash"]),
+                    status,
+                    code,
+                    str(exc),
+                    (time.perf_counter() - started) * 1000,
+                )
+                for r, e in zip(requests, envelopes, strict=True)
+            ]
 
-        return DecisionResult(
-            status=DecisionStatus.COMPLETED,
-            model_id=self.model_id,
-            model_revision=self.model_revision,
-            device=self.device,
-            answers=answers,
-            latency_ms=(time.perf_counter() - started) * 1_000,
-            input_truncated=bool(envelope["input_truncated"]),
-            state_hash=state_hash,
-            question_set_version=request.question_set_version,
-        )
+        results: list[DecisionResult] = []
+        for request, envelope, raw in zip(requests, envelopes, raw_rows, strict=True):
+            try:
+                if not isinstance(raw, Mapping) or not isinstance(raw.get("answers"), Mapping):
+                    raise TypeError("Laya response has no answers object")
+                answers = {
+                    name: _parse_answer(name, raw["answers"][name], question)
+                    for name, question in request.questions.items()
+                }
+                results.append(
+                    DecisionResult(
+                        status=DecisionStatus.COMPLETED,
+                        model_id=self.model_id,
+                        model_revision=revision,
+                        device=device,
+                        answers=answers,
+                        latency_ms=(time.perf_counter() - started) * 1000 / len(requests),
+                        input_truncated=bool(envelope["input_truncated"]),
+                        state_hash=str(envelope["state_hash"]),
+                        question_set_version=request.question_set_version,
+                    )
+                )
+            except (ValueError, TypeError, KeyError) as exc:
+                results.append(
+                    self._failure(
+                        request,
+                        str(envelope["state_hash"]),
+                        DecisionStatus.INCOMPLETE,
+                        "malformed_output",
+                        str(exc),
+                        (time.perf_counter() - started) * 1000,
+                    )
+                )
+        return results

@@ -104,18 +104,22 @@ class DecisionRouter:
         selected = answer.choice or "human_review"
         if selected not in _ROUTE_NAMES:
             selected = "human_review"
+        review = result.answers.get("needs_human_review")
+        top, second = _top_two(answer.probabilities)
+        chosen = answer.probabilities.get(selected)
+        dominant = (
+            top is not None
+            and chosen == top
+            and top >= DOMINANT_PROBABILITY
+            and top - (second or 0.0) >= DOMINANT_MARGIN
+        )
         if (
-            answer.confidence < self.review_threshold
-            or answer.confidence < self.high_confidence_threshold
-            and selected
-            in {
-                "fast_verification",
-                "cross_file_analysis",
-                "authorization_analysis",
-                "jsp_context_analysis",
-                "dependency_analysis",
-                "secret_review",
-            }
+            review is not None
+            and review.noul is not None
+            and review.noul >= self.review_threshold
+            or not dominant
+            or selected in _SPECIALISED_LANES
+            and answer.confidence < self.review_threshold
         ):
             selected = "human_review"
 

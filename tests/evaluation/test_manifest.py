@@ -80,7 +80,7 @@ def test_labelled_sheet_clears_that_blocker(tmp_path: Path) -> None:
     assert state["rows"] == 1
     assert state["label_unit"] == "lane"
     # Agent-derived labels stay flagged as not independently adjudicated.
-    assert state["independently_adjudicated"] is True
+    assert state["independently_adjudicated"] is False
     assert not any("ground truth" in b for b in build_manifest(tmp_path)["blockers"])
 
 
@@ -89,7 +89,7 @@ def test_manifest_pins_the_frozen_protocol() -> None:
 
     assert protocol["model_revision"] == "aa8c91ca088ec597df95a0d1c76b3063cb2ae5e8"
     assert protocol["status_owner"] == "IndependentValidator"
-    assert protocol["contract_version"] == "decision-contract-1"
+    assert protocol["contract_version"] == "decision-contract-2"
 
 
 def test_real_repo_has_no_missing_artifacts() -> None:
