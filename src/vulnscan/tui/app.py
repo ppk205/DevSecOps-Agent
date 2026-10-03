@@ -33,6 +33,8 @@ from textual.worker import get_current_worker
 from vulnscan.contracts import ExportFormat
 from vulnscan.core.config import ScanConfig, resolve_config
 from vulnscan.core.scan_service import ProgressEvent, ScanService, checkout_manifest
+from vulnscan.core.source import LocalSource, RemoteSource, resolve_source
+from vulnscan.infra.envfile import EnvFile
 from vulnscan.version import APP_VERSION
 
 
@@ -64,6 +66,7 @@ class ScanApp(App[None]):
     DataTable { height: 1fr; min-height: 6; }
     #evidence { height: auto; min-height: 5; }
     #effective { height: auto; }
+    #keys-status { height: auto; min-height: 3; }
     #progress-log { height: 1fr; }
     #paging { height: 3; }
     #paging Button { margin-right: 1; }
@@ -96,6 +99,7 @@ class ScanApp(App[None]):
         self.items: list[dict[str, Any]] = []
         self.reviewed: tuple[str, ScanConfig] | None = None
         self.review_signature: tuple[str, str, str | None, dict[str, Any]] | None = None
+        self.source: LocalSource | RemoteSource | None = None
         self.cancel_signal = Event()
         self.page_offset = 0
         self.page_total = 0
@@ -122,9 +126,16 @@ class ScanApp(App[None]):
                 yield Static("Checking scanner availability…", id="availability", markup=False)
                 yield DataTable(id="history", cursor_type="row")
                 yield Button("Retry selected run", id="retry")
-            with TabPane("Targets and setup", id="setup"), VerticalScroll():
-                yield Label("Local Git checkout")
-                yield Input(".", id="checkout")
+            with TabPane("Scan", id="setup"), VerticalScroll():
+                yield Label("Repository URL or local folder")
+                yield Input(
+                    "https://github.com/ppk205/ComicReaderSite",
+                    id="checkout",
+                )
+                yield Label("Pinned commit (blank = default branch HEAD)")
+                yield Input(placeholder="optional commit SHA", id="commit")
+                yield Label("Clone cache folder")
+                yield Input("harness", id="workdir")
                 yield Select(
                     [
                         ("Fast: Semgrep + Gitleaks", "fast"),
@@ -152,6 +163,15 @@ class ScanApp(App[None]):
                 yield Button("Review effective configuration", id="review")
                 yield Static("Review settings before starting.", id="effective", markup=False)
                 yield Button("Start reviewed scan", id="start", variant="primary", disabled=True)
+            with TabPane("API Keys", id="keys"), VerticalScroll():
+                yield Label("Variable name (e.g. LAYA_API_KEY)")
+                yield Input(placeholder="VARIABLE_NAME", id="key-name")
+                yield Label("Value (never shown again after saving)")
+                yield Input(placeholder="paste secret, then Save", password=True, id="key-value")
+                yield Button("Save to project .env", id="key-save")
+                yield Static("", id="keys-status", markup=False)
+                yield Label("Stored keys (values never shown):")
+                yield Static("No keys stored", id="keys-list", markup=False)
             with TabPane("Run progress", id="progress"):
                 yield Static("Idle", id="run-status", markup=False)
                 yield Log(id="progress-log")
@@ -204,6 +224,9 @@ class ScanApp(App[None]):
         yield Footer()
 
     def on_mount(self) -> None:
+        # Load .env so API keys saved via CLI or TUI are available
+        EnvFile().load_into_environ()
+        self.screen_stack[0].query_one(TabbedContent).active = "setup"
         self.screen_stack[0].query_one("#history", DataTable).add_columns(
             "ID", "Run", "Status", "Attempt", "Started"
         )
@@ -213,6 +236,15 @@ class ScanApp(App[None]):
         self.initialize()
         self.set_interval(0.5, self.tick)
         self.call_after_refresh(self.enable_edits)
+        self.refresh_keys_list()
+
+    def refresh_keys_list(self) -> None:
+        names = EnvFile().names()
+        widget = self.screen_stack[0].query_one("#keys-list", Static)
+        if names:
+            widget.update("\n".join(f"• {name} (stored, value hidden)" for name in names))
+        else:
+            widget.update("No keys stored")
 
     @work(thread=True, group="initialize")
     def initialize(self) -> None:
@@ -514,6 +546,11 @@ class ScanApp(App[None]):
                     ExportFormat(self.screen_stack[0].query_one("#format", Select).value),
                     self.screen_stack[0].query_one("#output", Input).value,
                 )
+            elif event.button.id == "key-save":
+                self.save_key(
+                    self.screen_stack[0].query_one("#key-name", Input).value,
+                    self.screen_stack[0].query_one("#key-value", Input).value,
+                )
             elif event.button.id in {"previous", "next"} and self.selected_pk is not None:
                 self.page_offset = max(
                     0, self.page_offset + (200 if event.button.id == "next" else -200)
@@ -526,17 +563,24 @@ class ScanApp(App[None]):
     def review_checkout(self, signature: tuple[str, str, str | None, dict[str, Any]]) -> None:
         try:
             checkout, profile, path, flags = signature
-            selected = (checkout, resolve_config(profile, path, **flags))
+            config = resolve_config(profile, path, **flags)
+            screen = self.screen_stack[0]
+            source = resolve_source(
+                checkout,
+                screen.query_one("#workdir", Input).value or "harness",
+                commit=screen.query_one("#commit", Input).value or None,
+            )
+            selected = (source.checkout, config)
             manifest = checkout_manifest(
                 *selected, excluded=self.service.runtime_paths(selected[1])
             )
             summary = (
-                f"Commit: {manifest['commit']} | {len(manifest['inventory'])} Java/JSP files\n"
-                + selected[1].model_dump_json(indent=2)
+                f"Repo: {source.repo_url} | Commit: {manifest['commit']} | "
+                f"{len(manifest['inventory'])} Java/JSP files\n" + config.model_dump_json(indent=2)
             )
-            self.call_from_thread(self.apply_review, signature, selected, summary)
+            self.call_from_thread(self.apply_review, signature, selected, source, summary)
         except (ValueError, OSError) as exc:
-            self.call_from_thread(self.review_failed, signature, str(exc))
+            self.call_from_thread(self.review_failed, signature, f"Cannot scan: {exc}")
 
     def review_failed(
         self, signature: tuple[str, str, str | None, dict[str, Any]], message: str
@@ -548,13 +592,28 @@ class ScanApp(App[None]):
         self,
         signature: tuple[str, str, str | None, dict[str, Any]],
         selected: tuple[str, ScanConfig],
+        source: LocalSource | RemoteSource,
         summary: str,
     ) -> None:
         if signature == self.capture_config():
             self.reviewed = selected
             self.review_signature = signature
+            self.source = source
             self.screen_stack[0].query_one("#effective", Static).update(summary)
             self.screen_stack[0].query_one("#start", Button).disabled = False
+
+    def save_key(self, name: str, value: str) -> None:
+        try:
+            path = EnvFile().set(name, value)
+            EnvFile().load_into_environ()
+            self.screen_stack[0].query_one("#key-name", Input).value = ""
+            self.screen_stack[0].query_one("#key-value", Input).value = ""
+            self.screen_stack[0].query_one("#keys-status", Static).update(
+                f"Saved {name} to project .env ({path})"
+            )
+            self.refresh_keys_list()
+        except (ValueError, OSError) as exc:
+            self.screen_stack[0].query_one("#keys-status", Static).update(str(exc))
 
     def begin(self) -> None:
         self.scanning = True
@@ -586,6 +645,7 @@ class ScanApp(App[None]):
                 assert self.reviewed is not None
                 result = self.service.run(
                     *self.reviewed,
+                    repo=self.source.repo_url if self.source else "local",
                     on_event=progress,
                     cancel_signal=lambda: worker.is_cancelled or self.cancel_signal.is_set(),
                 )

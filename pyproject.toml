@@ -71,6 +71,7 @@ training = [
 
 [project.scripts]
 devsecops-agent = "vulnscan.cli.main:main"
+devsec = "vulnscan.cli.main:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/vulnscan"]
