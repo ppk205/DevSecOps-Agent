@@ -237,7 +237,7 @@ def _extract_from_legacy_json(
                     column_end=end_col,
                 ),
                 detected_at=now,
-                metadata={},
+                metadata={"code_excerpt": str(res.get("extra", {}).get("lines", ""))},
                 observation_id=_make_observation_id(rule_id, path, start_line),
             )
         )

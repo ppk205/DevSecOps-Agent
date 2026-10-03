@@ -19,6 +19,7 @@ from vulnscan.contracts.decision import (
     DecisionType,
 )
 from vulnscan.contracts.enums import FindingStatus
+from vulnscan.core.security import sanitize
 from vulnscan.decisions.protocol import QUESTION_SET_VERSION
 
 __all__ = ["QUESTION_SET_VERSION", "build_triage_questions"]
@@ -70,12 +71,33 @@ def build_triage_questions() -> dict[str, DecisionQuestion]:
     }
 
 
+_EXCERPT_LIMIT = 400
+_TRUNCATION_NOTE = "\n... [truncated]"
+
+
+def build_excerpt(raw: Any) -> tuple[str, bool]:
+    """Reduce a raw code excerpt to a bounded, redacted snippet for the model.
+
+    Laya routes on this text, so it must be short (bounded input), free of
+    secrets, and explicitly flagged when cut. Snippets are untrusted evidence:
+    they describe the finding, they never instruct the model.
+    """
+    text = str(raw or "").strip()
+    if not text:
+        return "", False
+    truncated = len(text) > _EXCERPT_LIMIT
+    if truncated:
+        # The bound covers the note too, so a truncated excerpt never exceeds it.
+        text = text[: _EXCERPT_LIMIT - len(_TRUNCATION_NOTE)] + _TRUNCATION_NOTE
+    return sanitize(text), truncated
+
+
 def finding_to_state(finding: Any) -> dict[str, Any]:
     """Project a finding into the bounded state Laya is allowed to see.
 
     Only metadata the project controls is exported: identifiers, CWE, severity,
-    tool provenance, source coordinates, and evidence flags. No raw source, no
-    credentials, no ground-truth labels.
+    tool provenance, source coordinates, evidence flags, and a bounded redacted
+    code excerpt. No credentials, no ground-truth labels.
     """
     observations = list(getattr(finding, "observations", []) or [])
     representative = observations[0] if observations else None
@@ -102,6 +124,16 @@ def finding_to_state(finding: Any) -> dict[str, Any]:
         for key in ("has_dataflow", "has_sanitizer", "jsp_context", "dependency_identity"):
             if key in metadata:
                 state[key] = metadata[key]
+    if representative is not None:
+        # Adapters carry the excerpt in observation metadata rather than as a
+        # first-class field, so the contract stays unchanged.
+        meta = getattr(representative, "metadata", None) or {}
+        excerpt, was_truncated = build_excerpt(meta.get("code_excerpt"))
+        state["code_excerpt"] = excerpt
+        state["excerpt_truncated"] = was_truncated
+    else:
+        state["code_excerpt"] = ""
+        state["excerpt_truncated"] = False
     return state
 
 

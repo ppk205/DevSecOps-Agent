@@ -506,6 +506,12 @@ class ScanService:
                         )
                     )
                     results.append(result)
+                    # A scanner that reports internal errors (a ruleset that
+                    # failed to load, a tool that could not run) must not be
+                    # allowed to look like a clean repository: Semgrep exits 0
+                    # in that case, and the gate would pass on zero findings.
+                    for scan_error in result.errors:
+                        errors.append(f"{cfg.tool.value}: {scan_error}")
                     findings = pipeline.build_findings(results, run_id)
                     persist(cfg.tool.value, result.status.value, "; ".join(result.errors))
                 except Exception as exc:  # noqa: BLE001 ? application boundary preserves partial evidence
