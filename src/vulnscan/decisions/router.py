@@ -104,6 +104,13 @@ class DecisionRouter:
         selected = answer.choice or "human_review"
         if selected not in _ROUTE_NAMES:
             selected = "human_review"
+        review = result.answers.get("needs_human_review")
+        if (
+            review is not None
+            and review.noul is not None
+            and review.noul >= self.review_threshold
+        ):
+            selected = "human_review"
 
         # Decide on the probability distribution, not on the model's
         # self-reported confidence. Laya's confidence can sit well below its
