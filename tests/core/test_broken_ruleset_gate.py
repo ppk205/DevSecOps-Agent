@@ -12,22 +12,17 @@ from datetime import UTC, datetime
 
 import pytest
 
+from tests.platform.test_scan_service import checkout  # noqa: F401
 from vulnscan.contracts import (
     CoverageRecord,
     CoverageUnitStatus,
-    CWECategory,
-    Observation,
     RunStatus,
     ScannerResult,
-    Severity,
-    SourceCoordinate,
     ToolName,
 )
 from vulnscan.core.config import ScanConfig
 from vulnscan.core.scan_service import ScanService
 from vulnscan.scanners.base import AdapterCapability, AdapterRegistry, ScannerAdapter
-
-from tests.platform.test_scan_service import checkout  # noqa: F401
 
 
 class BrokenRulesetAdapter(ScannerAdapter):
@@ -79,7 +74,5 @@ def broken_service(tmp_path):
 def test_gate_does_not_pass_when_ruleset_failed_to_load(checkout, broken_service, tmp_path):  # noqa: F811
     """A clean inventory must not hide a scanner that never actually scanned."""
     result = broken_service.run(str(checkout), ScanConfig(output_dir=str(tmp_path / "reports")))
-    assert result["exit_code"] != 0, (
-        "gate passed despite every scanner reporting a failed ruleset"
-    )
+    assert result["exit_code"] != 0, "gate passed despite every scanner reporting a failed ruleset"
     assert any("failed to load" in error for error in result["errors"]), result["errors"]

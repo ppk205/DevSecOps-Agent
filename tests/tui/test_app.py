@@ -30,7 +30,7 @@ async def test_scan_tab_accepts_repo_url(service, checkout, monkeypatch):
         ),
     )
     app = ScanApp(service=service)
-    async with app.run_test(size=(120, 40)) as pilot:
+    async with app.run_test(size=(120, 40)):
         app.query_one("#checkout", Input).value = "https://github.com/ppk205/ComicReaderSite"
         app.query_one("#commit", Input).value = ""
         # the target is accepted as a URL, not rejected as a bad path

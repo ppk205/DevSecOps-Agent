@@ -83,9 +83,7 @@ def normalise_repo_url(value: str) -> str:
     text = value.strip()
     if not _REMOTE_RE.match(text):
         if not _SLUG_RE.match(text):
-            raise ValueError(
-                f"'{text}' is not a repository. Use a URL or an owner/repo slug."
-            )
+            raise ValueError(f"'{text}' is not a repository. Use a URL or an owner/repo slug.")
         text = "https://github.com/" + text
     if re.match(r"^git@[^:]+:", text) or text.startswith("ssh://"):
         return text if text.endswith(".git") else text + ".git"

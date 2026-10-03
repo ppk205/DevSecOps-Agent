@@ -183,7 +183,11 @@ def env_set(
 
     from ..infra.envfile import EnvFile
 
-    raw = value.strip() if value else getpass.getpass(f"{name.strip().upper()} (hidden input): ").strip()
+    raw = (
+        value.strip()
+        if value
+        else getpass.getpass(f"{name.strip().upper()} (hidden input): ").strip()
+    )
     try:
         path = EnvFile().set(name, raw)
     except ValueError as exc:
@@ -232,7 +236,11 @@ def env_unset(
     if not path.is_file():
         typer.echo(f"{target}: not stored")
         return
-    kept = [line for line in path.read_text(encoding="utf-8").splitlines(keepends=True) if not line.strip().upper().startswith(f"{target}=")]
+    kept = [
+        line
+        for line in path.read_text(encoding="utf-8").splitlines(keepends=True)
+        if not line.strip().upper().startswith(f"{target}=")
+    ]
     removed = len(kept) != len(path.read_text(encoding="utf-8").splitlines(keepends=True))
     path.write_text("".join(kept), encoding="utf-8")
     typer.echo(f"{target}: removed" if removed else f"{target}: not stored")

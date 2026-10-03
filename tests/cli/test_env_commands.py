@@ -47,7 +47,11 @@ def test_env_unset(tmp_path, monkeypatch):
 def test_env_set_rejects_empty_value(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     result = runner.invoke(app, ["env", "set", "BADKEY", "--value", ""])
-    assert result.exit_code != 0 or "empty" in result.output.lower() or "invalid" in result.output.lower()
+    assert (
+        result.exit_code != 0
+        or "empty" in result.output.lower()
+        or "invalid" in result.output.lower()
+    )
 
 
 def test_env_set_rejects_bad_name(tmp_path, monkeypatch):

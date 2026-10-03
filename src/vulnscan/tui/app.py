@@ -395,9 +395,7 @@ class ScanApp(App[None]):
         os.environ[name] = value
         self.screen_stack[0].query_one("#key-name", Input).value = ""
         self.screen_stack[0].query_one("#key-value", Input).value = ""
-        self.screen_stack[0].query_one("#keys-status", Static).update(
-            f"Saved {name} to {path}"
-        )
+        self.screen_stack[0].query_one("#keys-status", Static).update(f"Saved {name} to {path}")
         self.refresh_keys_list()
 
     @work(thread=True, exclusive=True, group="review")
