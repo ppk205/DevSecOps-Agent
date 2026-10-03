@@ -26,9 +26,7 @@ def root(
         raise typer.Exit()
     if ctx.invoked_subcommand is None:
         if sys.stdin.isatty() and sys.stdout.isatty():
-            from ..tui.app import ScanApp
-
-            ScanApp().run()
+            launch_tui()
         else:
             typer.echo(ctx.get_help())
 
@@ -160,6 +158,21 @@ def scan_run(
 @app.command("tui")
 def tui(db_path: str = typer.Option("vulnscan.db", "--db-path")) -> None:
     """Open the full-screen terminal interface."""
+    launch_tui(db_path)
+
+
+def launch_tui(db_path: str = "vulnscan.db") -> None:
+    import os
+    import subprocess
+    import sys
+
+    from ..core.native import binary_path
+
+    binary = binary_path()
+    if binary and os.environ.get("DEVSECOPS_PYTHON_ONLY") != "1":
+        env = {**os.environ, "DEVSECOPS_PYTHON": sys.executable}
+        result = subprocess.run([binary, "tui", "--db-path", db_path], env=env, check=False)
+        raise typer.Exit(result.returncode)
     from ..infra.envfile import EnvFile
     from ..tui.app import ScanApp
 
@@ -397,6 +410,24 @@ def evidence_manifest(
 
 def main() -> None:
     """Console-script entry point (pyproject: vulnscan.cli.main:main)."""
+    import os
+    import subprocess
+    import sys
+
+    from ..core.native import binary_path
+
+    binary = binary_path()
+    if (
+        binary
+        and os.environ.get("DEVSECOPS_PYTHON_ONLY") != "1"
+        and "--version" not in sys.argv[1:]
+    ):
+        result = subprocess.run(
+            [binary, *sys.argv[1:]],
+            env={**os.environ, "DEVSECOPS_PYTHON": sys.executable},
+            check=False,
+        )
+        raise SystemExit(result.returncode)
     app()
 
 

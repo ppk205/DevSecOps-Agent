@@ -10,7 +10,9 @@ from typing import Final
 
 # --- Contract versioning -----------------------------------------------------
 
-CONTRACT_VERSION: Final[str] = "decision-contract-1"
+CONTRACT_VERSION: Final[str] = "decision-contract-2"
+INPUT_FORMAT_VERSION: Final[str] = "laya-state-2"
+ROUTING_POLICY_VERSION: Final[str] = "laya-policy-2"
 QUESTION_SET_VERSION: Final[str] = "laya-questions-1"
 
 # --- Model pin ---------------------------------------------------------------
@@ -107,6 +109,8 @@ FALLBACK_DECISION_STATUS: Final[str] = "incomplete"
 #: ``error_code`` -> human meaning, persisted in artifacts so a report reader
 #: can tell a genuine model refusal from a transport failure.
 ERROR_CODES: Final[dict[str, str]] = {
+    "dependency_unavailable": "Laya or its runtime dependency is missing; install the optional environment.",
+    "backend_unavailable": "Model loading or inference failed; check checkpoint identity and device.",
     "package_missing": "The laya package is not installed; routing skipped.",
     "model_unavailable": "The model could not be loaded; routing skipped.",
     "timeout": "Inference exceeded the configured timeout; routing skipped.",

@@ -71,6 +71,7 @@ class RunORM(Base):
     result_json: Mapped[str] = mapped_column(Text, default="{}")
     events_json: Mapped[str] = mapped_column(Text, default="[]")
     cancel_requested: Mapped[int] = mapped_column(Integer, default=0)
+    findings_revision: Mapped[int] = mapped_column(Integer, default=0)
     created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=_utcnow)
     updated_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=_utcnow, onupdate=_utcnow)
 
@@ -106,6 +107,9 @@ class FindingORM(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     run_id: Mapped[int] = mapped_column(ForeignKey("runs.id"))
     finding_json: Mapped[str] = mapped_column(Text, default="{}")
+    finding_id: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    summary_json: Mapped[str] = mapped_column(Text, default="{}")
+    search_text: Mapped[str] = mapped_column(Text, default="")
     created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=_utcnow)
 
     run: Mapped[RunORM] = relationship("RunORM", back_populates="findings")

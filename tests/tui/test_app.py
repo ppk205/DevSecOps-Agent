@@ -69,6 +69,10 @@ async def test_fr71_configure_scan_inspect_export_restart(service, checkout, tmp
                 break
         assert service.history()[0]["status"] == "completed"
         app.query_one(TabbedContent).active = "findings"
+        for _ in range(100):
+            await pilot.pause(0.05)
+            if app.query_one("#finding-table", DataTable).row_count:
+                break
         app.query_one("#finding-table", DataTable).focus()
         await pilot.press("enter")
         await pilot.pause()
@@ -76,7 +80,10 @@ async def test_fr71_configure_scan_inspect_export_restart(service, checkout, tmp
         await pilot.resize_terminal(75, 26)
         app.query_one(TabbedContent).active = "settings"
         app.query_one("#export", Button).press()
-        await pilot.pause()
+        for _ in range(100):
+            await pilot.pause(0.05)
+            if list((tmp_path / "reports").glob("*.json")):
+                break
         assert list((tmp_path / "reports").glob("*.json"))
         assert app.selected_pk is not None
     restarted = ScanApp(service=service)

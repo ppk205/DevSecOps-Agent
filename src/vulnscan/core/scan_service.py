@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any
 
 from filelock import FileLock, Timeout
-from sqlalchemy import delete
+from sqlalchemy import func, select, update
 
 from vulnscan.contracts import ExportFormat, Finding, ScannerResult, ScanSpecification
 from vulnscan.decisions.config import LayaConfig
@@ -29,6 +29,7 @@ from vulnscan.storage.models import FindingORM, RunORM, StageORM, TargetORM
 from vulnscan.version import APP_VERSION
 
 from .config import ScanConfig
+from .finding_view import project_finding
 from .policy import gate
 from .security import sanitize
 
@@ -40,6 +41,8 @@ class ProgressEvent:
     status: str
     timestamp: str
     message: str
+    pk: int | None = None
+    sequence: int = 0
 
 
 _TEST_DIRS = ("src/test/", "src/it/", "src/e2e/")
@@ -196,19 +199,108 @@ class ScanService:
                     "attempt": r.attempt,
                     "created_at": r.created_at.replace(tzinfo=UTC).isoformat(),
                 }
-                for r in session.query(RunORM).order_by(RunORM.id.desc()).limit(100)
+                for r in session.execute(
+                    select(
+                        RunORM.id,
+                        RunORM.public_id,
+                        RunORM.status,
+                        RunORM.attempt,
+                        RunORM.created_at,
+                    )
+                    .order_by(RunORM.id.desc())
+                    .limit(100)
+                )
             ]
+
+    def summary(self, identifier: int | str) -> dict[str, Any]:
+        pk = self.resolve_id(identifier)
+        with get_session(self.db_path) as session:
+            row = session.execute(
+                select(RunORM.id, RunORM.public_id, RunORM.status, RunORM.findings_revision).where(
+                    RunORM.id == pk
+                )
+            ).one()
+            return {
+                "id": row.id,
+                "run_id": row.public_id or str(row.id),
+                "status": row.status,
+                "revision": row.findings_revision,
+            }
+
+    def finding_page(
+        self, identifier: int | str, query: str = "", offset: int = 0, limit: int = 200
+    ) -> dict[str, Any]:
+        if offset < 0 or not 1 <= limit <= 200:
+            raise ValueError("invalid finding page")
+        info = self.summary(identifier)
+        clauses: list[Any] = [FindingORM.run_id == info["id"]]
+        fields = {
+            "severity": "severity",
+            "cwe": "cwe_category",
+            "status": "status",
+            "scanner": "scanner",
+        }
+        for term in query.lower().split():
+            column: Any = FindingORM.search_text
+            value = term
+            if ":" in term:
+                name, value = term.split(":", 1)
+                if name not in fields:
+                    clauses.append(False)
+                    continue
+                column = func.lower(func.json_extract(FindingORM.summary_json, "$." + fields[name]))
+            pattern = value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+            clauses.append(column.like("%" + pattern + "%", escape="\\"))
+        with get_session(self.db_path) as session:
+            total = session.scalar(select(func.count()).select_from(FindingORM).where(*clauses))
+            rows = session.scalars(
+                select(FindingORM.summary_json)
+                .where(*clauses)
+                .order_by(FindingORM.id)
+                .offset(offset)
+                .limit(limit)
+            )
+            return {
+                **info,
+                "items": [json.loads(r) for r in rows],
+                "total": total or 0,
+                "offset": offset,
+                "limit": limit,
+            }
+
+    def finding(self, identifier: int | str, finding_id: str) -> dict[str, Any]:
+        pk = self.resolve_id(identifier)
+        with get_session(self.db_path) as session:
+            payload = session.scalar(
+                select(FindingORM.finding_json)
+                .where(FindingORM.run_id == pk, FindingORM.finding_id == finding_id)
+                .order_by(FindingORM.id)
+                .limit(1)
+            )
+            if payload is None:
+                raise ValueError("finding not found")
+            item: dict[str, Any] = json.loads(payload)
+            return item
+
+    def progress_since(self, identifier: int | str, cursor: int = 0) -> dict[str, Any]:
+        pk = self.resolve_id(identifier)
+        with get_session(self.db_path) as session:
+            payload = session.scalar(select(RunORM.events_json).where(RunORM.id == pk))
+            events = json.loads(payload or "[]")
+            end = min(len(events), max(0, cursor) + 200)
+            return {"events": events[max(0, cursor) : end], "cursor": end}
 
     def resolve_id(self, identifier: int | str) -> int:
         with get_session(self.db_path) as session:
-            row = (
-                session.get(RunORM, int(identifier))
+            clause = (
+                RunORM.id == int(identifier)
                 if str(identifier).isdigit()
-                else session.query(RunORM).filter_by(public_id=str(identifier)).first()
+                else RunORM.public_id == str(identifier)
             )
-            if row is None:
+            pk = session.scalar(select(RunORM.id).where(clause))
+            if pk is None:
                 raise ValueError("run not found")
-            return row.id
+            return pk
 
     def detail(self, run_id: int | str) -> dict[str, Any]:
         run_id = self.resolve_id(run_id)
@@ -229,10 +321,7 @@ class ScanService:
     def cancel(self, run_id: int | str) -> None:
         run_id = self.resolve_id(run_id)
         with get_session(self.db_path) as session:
-            row = session.get(RunORM, run_id)
-            if row is None:
-                raise ValueError("run not found")
-            row.cancel_requested = 1
+            session.execute(update(RunORM).where(RunORM.id == run_id).values(cancel_requested=1))
 
     def retry(
         self,
@@ -358,12 +447,17 @@ class ScanService:
             if cancel_signal and cancel_signal():
                 return True
             with get_session(self.db_path) as session:
-                row = session.get(RunORM, pk)
-                return bool(row and row.cancel_requested)
+                return bool(session.scalar(select(RunORM.cancel_requested).where(RunORM.id == pk)))
 
         def persist(stage: str, status: str, message: str = "") -> None:
             event = ProgressEvent(
-                run_id, stage, status, datetime.now(UTC).isoformat(), sanitize(message)
+                run_id,
+                stage,
+                status,
+                datetime.now(UTC).isoformat(),
+                sanitize(message),
+                pk,
+                len(events) + 1,
             )
             events.append(asdict(event))
             with get_session(self.db_path) as session:
@@ -395,9 +489,33 @@ class ScanService:
                 stage_row.error_message = event.message
                 if status != "running":
                     stage_row.completed_at = datetime.now(UTC)
-                session.execute(delete(FindingORM).where(FindingORM.run_id == pk))
+                saved = {
+                    f.finding_id: f
+                    for f in session.scalars(
+                        select(FindingORM)
+                        .where(FindingORM.run_id == pk)
+                        .order_by(FindingORM.id.desc())
+                    )
+                }
+                changed = False
                 for finding in findings:
-                    session.add(FindingORM(run_id=pk, finding_json=finding.model_dump_json()))
+                    payload = finding.model_dump_json()
+                    existing = saved.pop(finding.finding_id, None)
+                    if existing is not None and existing.finding_json == payload:
+                        continue
+                    summary, search_text = project_finding(finding.model_dump(mode="json"))
+                    if existing is None:
+                        existing = FindingORM(run_id=pk, finding_id=finding.finding_id)
+                        session.add(existing)
+                    existing.finding_json = payload
+                    existing.summary_json = json.dumps(summary)
+                    existing.search_text = search_text
+                    changed = True
+                for removed in saved.values():
+                    session.delete(removed)
+                    changed = True
+                if changed:
+                    row.findings_revision += 1
             if on_event:
                 on_event(event)
 
@@ -539,6 +657,8 @@ class ScanService:
                 errors.append(
                     "checkout contents changed during scanning; retry from a stable checkout"
                 )
+            if config.laya and not config.ci and findings:
+                persist("laya_batch_routing", "running", "Loading or running the advisory model")
             routing, stage = pipeline.run_routing(findings)
             if cancelled():
                 raise ScanCancelled()

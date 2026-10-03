@@ -98,12 +98,13 @@ def test_correct_escalation_scores_as_accurate() -> None:
     assert report.false_escalation_rate == 0.0
 
 
-def test_missed_escalation_is_a_false_escalation() -> None:
+def test_missed_escalation_is_counted_separately() -> None:
     report = build_routing_report([_row("low_priority", expected=True)])
 
     assert report.correct_routes == 0
-    assert report.false_escalations == 1
-    assert report.false_escalation_rate == 1.0
+    assert report.missed_escalations == 1
+    assert report.false_escalations == 0
+    assert report.false_escalation_rate == 0.0
 
 
 def test_expected_route_can_name_a_specific_lane() -> None:

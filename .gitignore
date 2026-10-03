@@ -23,6 +23,7 @@ env/
 .mypy_cache/
 .ruff_cache/
 .coverage
+.coverage.*
 htmlcov/
 coverage.xml
 
@@ -36,6 +37,17 @@ coverage.xml
 *.sqlite
 *.sqlite3
 *.db
+*.db-journal
+*.db-shm
+*.db-wal
+*.sqlite-journal
+*.sqlite-shm
+*.sqlite-wal
+*.sqlite3-journal
+*.sqlite3-shm
+*.sqlite3-wal
+*.sqlite.lock
+*.sqlite3.lock
 vulnscan.db
 
 # Artifact store (runtime)
@@ -52,6 +64,7 @@ storage/artifacts/
 Thumbs.db
 
 # Target overlays / harness build output (never commit pristine target)
+/JVA-bookstore/
 harness/JVA-bookstore/target/
 harness/JVA-bookstore/.mvn/
 harness/*-overlay/
@@ -69,9 +82,17 @@ odc/
 
 # Secrets / provider config — never commit keys
 .env
-.env.local
+.env.*
+!.env.example
+!.env.template
 *.key
+*.pem
+*.p12
+*.pfx
 secrets.json
+.aws/
+.kaggle/
+kaggle.json
 
 # Reports generated at runtime (dev)
 reports/
@@ -86,3 +107,30 @@ harness/
 .venv-linux/
 .uv-cache-linux/
 *.migration.lock
+
+# Local compiler SDK and Go build output
+.tools/
+bin/
+.go-cache/
+.go-mod/
+*.exe
+*.test
+*.prof
+
+# Local notebook state and model weights
+.ipynb_checkpoints/
+.cache/huggingface/
+/checkpoints/
+/model-cache/
+*.safetensors
+*.pt
+*.pth
+*.ckpt
+*.onnx
+
+# Logs and temporary Office documents
+*.log
+~$*
+
+# Local thesis working documents
+/essay/

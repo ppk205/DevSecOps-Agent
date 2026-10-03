@@ -105,36 +105,23 @@ class DecisionRouter:
         if selected not in _ROUTE_NAMES:
             selected = "human_review"
         review = result.answers.get("needs_human_review")
+        top, second = _top_two(answer.probabilities)
+        chosen = answer.probabilities.get(selected)
+        dominant = (
+            top is not None
+            and chosen == top
+            and top >= DOMINANT_PROBABILITY
+            and top - (second or 0.0) >= DOMINANT_MARGIN
+        )
         if (
             review is not None
             and review.noul is not None
             and review.noul >= self.review_threshold
+            or not dominant
+            or selected in _SPECIALISED_LANES
+            and answer.confidence < self.review_threshold
         ):
             selected = "human_review"
-
-        # Decide on the probability distribution, not on the model's
-        # self-reported confidence. Laya's confidence can sit well below its
-        # own top-1 probability, and trusting it rewrote 18 of 29 routes on the
-        # T09 run: every clear low_priority was escalated to human_review,
-        # which is the one lane that tells an analyst nothing.
-        top_probability, runner_up = _top_two(answer.probabilities)
-        dominant = (
-            top_probability is not None
-            and top_probability >= DOMINANT_PROBABILITY
-            and (runner_up is None or top_probability - runner_up >= DOMINANT_MARGIN)
-        )
-
-        # A flat distribution is uncertainty, so nothing is trusted. Below that,
-        # the specialised lanes (which cost analyst time) also need the model to
-        # meet its own confidence bar. A dominant low_priority does not: if the
-        # model clearly says "ignore this", second-guessing it is the very
-        # escalation churn this policy exists to remove.
-        if selected in _SPECIALISED_LANES or selected == "low_priority":
-            untrusted = not dominant or (
-                selected in _SPECIALISED_LANES and answer.confidence < self.review_threshold
-            )
-            if untrusted:
-                selected = "human_review"
 
         return DecisionRoute(
             route=selected,
