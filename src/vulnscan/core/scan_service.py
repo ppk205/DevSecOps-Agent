@@ -45,6 +45,20 @@ class ProgressEvent:
     sequence: int = 0
 
 
+_TEST_DIRS = ("src/test/", "src/it/", "src/e2e/")
+
+
+def _is_scanned_source(name: str) -> bool:
+    """Production sources are attack surface; test sources are not.
+
+    Test files stay in the immutable snapshot (``files``) — only the scan
+    inventory narrows, so nothing is silently dropped from evidence.
+    """
+    if not name.endswith((".java", ".jsp")):
+        return False
+    return not name.startswith(_TEST_DIRS)
+
+
 def checkout_manifest(
     checkout: str, config: ScanConfig, expected: str = "", *, excluded: list[Path] | None = None
 ) -> dict[str, Any]:
@@ -93,7 +107,7 @@ def checkout_manifest(
         "dirty": dirty,
         "runtime_exclusions": [str(p) for p in runtime if p.is_relative_to(root)],
         "files": files,
-        "inventory": [n for n in files if n.endswith((".java", ".jsp"))],
+        "inventory": [n for n in files if _is_scanned_source(n)],
     }
 
 
@@ -624,6 +638,12 @@ class ScanService:
                         )
                     )
                     results.append(result)
+                    # A scanner that reports internal errors (a ruleset that
+                    # failed to load, a tool that could not run) must not be
+                    # allowed to look like a clean repository: Semgrep exits 0
+                    # in that case, and the gate would pass on zero findings.
+                    for scan_error in result.errors:
+                        errors.append(f"{cfg.tool.value}: {scan_error}")
                     findings = pipeline.build_findings(results, run_id)
                     persist(cfg.tool.value, result.status.value, "; ".join(result.errors))
                 except Exception as exc:  # noqa: BLE001 ? application boundary preserves partial evidence

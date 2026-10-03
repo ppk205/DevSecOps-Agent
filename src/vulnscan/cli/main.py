@@ -89,9 +89,8 @@ def scan_list(db_path: str = typer.Option("vulnscan.db", help="SQLite file path.
 
 @app.command("scan-run")
 def scan_run(
-    checkout: str = typer.Option(".", "--checkout"),
-    repo: str = typer.Option("local", "--repo"),
-    commit: str = typer.Option("", "--commit"),
+    checkout: str = typer.Option(".", "--checkout", help="Repo URL, owner/repo, or local path."),
+    commit: str = typer.Option("", "--commit", help="Pinned commit SHA (blank = HEAD)."),
     profile: str | None = typer.Option(None, "--profile"),
     config_path: str | None = typer.Option(None, "--config"),
     fail_on: str | None = typer.Option(None, "--fail-on"),
@@ -101,16 +100,20 @@ def scan_run(
     ci: bool | None = typer.Option(None, "--ci"),
     allow_dirty: bool | None = typer.Option(None, "--allow-dirty"),
     timeout: int | None = typer.Option(None, "--timeout"),
-    laya: bool | None = typer.Option(None, "--laya"),
+    laya: bool | None = typer.Option(
+        None, "--laya/--no-laya", help="Enable Laya routing (default: on)."
+    ),
     laya_config_path: str | None = typer.Option(None, "--laya-config"),
+    workdir: str = typer.Option("harness", "--workdir", help="Clone cache folder."),
     run_id: str | None = typer.Option(None, "--run-id"),
 ) -> None:
-    """Scan, persist evidence and enforce policy (0 pass, 1 findings, 2 failure, 130 cancel)."""
+    """Scan any repository (URL or local path) and enforce policy."""
     from pathlib import Path
 
     from ..core.config import resolve_config
     from ..core.scan_service import ScanService
     from ..core.security import sanitize
+    from ..core.source import resolve_source
 
     try:
         config = resolve_config(
@@ -125,9 +128,12 @@ def scan_run(
             laya_config_path=laya_config_path,
         )
         if not json_output:
-            typer.echo(config.model_dump_json(indent=2))
+            typer.echo(f"Resolving target: {checkout}")
+        source = resolve_source(checkout, workdir, commit=commit)
+        if not json_output:
+            typer.echo(f"Repository: {source.repo_url}\nCommit: {source.commit}")
         result = ScanService(db_path).run(
-            checkout, config, repo=repo, expected_commit=commit, public_id=run_id
+            source.checkout, config, repo=source.repo_url, public_id=run_id
         )
     except (ValueError, OSError, SQLAlchemyError) as exc:
         result = {
@@ -167,9 +173,90 @@ def launch_tui(db_path: str = "vulnscan.db") -> None:
         env = {**os.environ, "DEVSECOPS_PYTHON": sys.executable}
         result = subprocess.run([binary, "tui", "--db-path", db_path], env=env, check=False)
         raise typer.Exit(result.returncode)
+    from ..infra.envfile import EnvFile
     from ..tui.app import ScanApp
 
+    EnvFile().load_into_environ()
     ScanApp(db_path).run()
+
+
+env_app = typer.Typer(help="Manage API keys and secrets in the project .env file.")
+app.add_typer(env_app, name="env")
+
+
+@env_app.command("set")
+def env_set(
+    name: str = typer.Argument(..., help="Variable name, e.g. OPENAI_API_KEY."),
+    value: str = typer.Option(
+        "", "--value", help="Value to store (prompted securely when omitted)."
+    ),
+) -> None:
+    """Save an API key to the project .env file (permissions 0600)."""
+    import getpass
+
+    from ..infra.envfile import EnvFile
+
+    raw = (
+        value.strip()
+        if value
+        else getpass.getpass(f"{name.strip().upper()} (hidden input): ").strip()
+    )
+    try:
+        path = EnvFile().set(name, raw)
+    except ValueError as exc:
+        typer.echo(f"error: {exc}", err=True)
+        raise typer.Exit(1) from None
+    typer.echo(f"saved {name.strip().upper()} to {path}")
+
+
+@env_app.command("list")
+def env_list() -> None:
+    """List stored key names (values are never printed)."""
+    import os
+
+    from ..infra.envfile import EnvFile, mask_secret
+
+    names = EnvFile().names()
+    if not names:
+        typer.echo("No keys stored yet. Use: devsecops-agent env set OPENAI_API_KEY")
+        return
+    for key in names:
+        live = bool(os.environ.get(key, "").strip())
+        source = "environment" if live else ".env file"
+        typer.echo(f"{key}: {mask_secret('x')} (from {source})")
+
+
+@env_app.command("path")
+def env_path() -> None:
+    """Print the .env file location in use."""
+    from ..infra.envfile import EnvFile
+
+    typer.echo(str(EnvFile().path))
+
+
+@env_app.command("unset")
+def env_unset(
+    name: str = typer.Argument(..., help="Variable name to remove from .env."),
+) -> None:
+    """Remove a key from the project .env file."""
+    from pathlib import Path
+
+    from ..infra.envfile import EnvFile
+
+    target = name.strip().upper()
+    env = EnvFile()
+    path = Path(env.path)
+    if not path.is_file():
+        typer.echo(f"{target}: not stored")
+        return
+    kept = [
+        line
+        for line in path.read_text(encoding="utf-8").splitlines(keepends=True)
+        if not line.strip().upper().startswith(f"{target}=")
+    ]
+    removed = len(kept) != len(path.read_text(encoding="utf-8").splitlines(keepends=True))
+    path.write_text("".join(kept), encoding="utf-8")
+    typer.echo(f"{target}: removed" if removed else f"{target}: not stored")
 
 
 @app.command("serve")
