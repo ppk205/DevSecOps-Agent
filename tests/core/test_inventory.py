@@ -9,8 +9,8 @@ from vulnscan.core.config import ScanConfig
 from vulnscan.core.scan_service import checkout_manifest
 
 
-def _git(*args: str) -> None:
-    subprocess.run(["git", *args], check=True, capture_output=True)
+def _git(cwd: Path, *args: str) -> None:
+    subprocess.run(["git", *args], check=True, capture_output=True, cwd=cwd)
 
 
 def _make_repo(tmp_path: Path) -> Path:
@@ -22,11 +22,11 @@ def _make_repo(tmp_path: Path) -> Path:
     (tmp_path / "src" / "test" / "java" / "app" / "OrderTest.java").write_text(
         "class OrderTest { String q; }", encoding="utf-8"
     )
-    _git("init", "-q", ".")
-    _git("config", "user.email", "t@example.com")
-    _git("config", "user.name", "T")
-    _git("add", "-A")
-    _git("commit", "-q", "-m", "init")
+    _git(tmp_path, "init", "-q", ".")
+    _git(tmp_path, "config", "user.email", "t@example.com")
+    _git(tmp_path, "config", "user.name", "T")
+    _git(tmp_path, "add", "-A")
+    _git(tmp_path, "commit", "-q", "-m", "init")
     return tmp_path
 
 

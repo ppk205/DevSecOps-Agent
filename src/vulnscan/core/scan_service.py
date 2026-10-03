@@ -42,6 +42,20 @@ class ProgressEvent:
     message: str
 
 
+_TEST_DIRS = ("src/test/", "src/it/", "src/e2e/")
+
+
+def _is_scanned_source(name: str) -> bool:
+    """Production sources are attack surface; test sources are not.
+
+    Test files stay in the immutable snapshot (``files``) — only the scan
+    inventory narrows, so nothing is silently dropped from evidence.
+    """
+    if not name.endswith((".java", ".jsp")):
+        return False
+    return not name.startswith(_TEST_DIRS)
+
+
 def checkout_manifest(
     checkout: str, config: ScanConfig, expected: str = "", *, excluded: list[Path] | None = None
 ) -> dict[str, Any]:
@@ -90,7 +104,7 @@ def checkout_manifest(
         "dirty": dirty,
         "runtime_exclusions": [str(p) for p in runtime if p.is_relative_to(root)],
         "files": files,
-        "inventory": [n for n in files if n.endswith((".java", ".jsp"))],
+        "inventory": [n for n in files if _is_scanned_source(n)],
     }
 
 
