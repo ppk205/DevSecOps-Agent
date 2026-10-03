@@ -62,6 +62,7 @@ class DecisionAnswer(VersionedModel):
     noul: float | None = Field(default=None, ge=0.0, le=1.0)
     probabilities: dict[str, float] = Field(default_factory=dict)
     confidence: float = Field(..., ge=0.0, le=1.0)
+    answer_confidence: float | None = Field(default=None, ge=0.0, le=1.0)
 
 
 class DecisionResult(VersionedModel):

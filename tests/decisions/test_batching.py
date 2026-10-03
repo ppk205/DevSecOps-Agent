@@ -28,11 +28,11 @@ class BatchAgent:
 
     def predict_batch(self, states: list[Any], questions: Any, **kwargs: Any) -> list[Any]:
         self.batch_calls.append(list(states))
-        return [{"answers": _answers(state["finding_id"])} for state in states]
+        return [{"answers": _answers("unused")} for _ in states]
 
     def predict(self, state: Any, questions: Any, **kwargs: Any) -> Any:
         self.single_calls += 1
-        return {"answers": _answers(state["finding_id"])}
+        return {"answers": _answers("unused")}
 
 
 def _answers(finding_id: str) -> dict[str, Any]:

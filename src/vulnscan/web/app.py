@@ -17,6 +17,7 @@ from sqlalchemy.orm import Session, sessionmaker
 from vulnscan.contracts.enums import ExportFormat, FindingStatus
 from vulnscan.contracts.finding import Finding
 from vulnscan.core.config import ScanConfig
+from vulnscan.core.finding_view import project_finding
 from vulnscan.core.scan_service import ScanService
 from vulnscan.reporting.reporter import ReportGenerator
 from vulnscan.storage.database import get_engine, migrate
@@ -196,6 +197,13 @@ def create_app(
         finding = Finding.model_validate_json(row.finding_json)
         finding.status = new_status
         row.finding_json = finding.model_dump_json()
+        projection, searchable = project_finding(finding.model_dump(mode="json"))
+        row.finding_id = finding.finding_id
+        row.summary_json = json.dumps(projection)
+        row.search_text = searchable
+        saved_run = session.get(RunORM, row.run_id)
+        if saved_run is not None:
+            saved_run.findings_revision += 1
         session.commit()
         destination = (
             f"/runs/{run_id}/findings/{finding_id}"

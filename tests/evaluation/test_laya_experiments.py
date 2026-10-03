@@ -61,7 +61,7 @@ def test_wrong_routes_drive_ece_up() -> None:
     )
 
     assert result["routing"]["route_accuracy"] == 0.5
-    assert result["routing"]["false_escalations"] == 1
+    assert result["routing"]["missed_escalations"] == 1
     # Half the graded routes were wrong at full confidence.
     assert result["calibration"]["ece"] == pytest.approx(0.5, abs=1e-6)
 

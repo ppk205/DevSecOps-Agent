@@ -62,6 +62,12 @@ cvss = [
 laya = [
     "laya==0.3.20",
 ]
+training = [
+    "laya==0.3.20",
+    "transformers==5.17.0",
+    "safetensors>=0.4,<1",
+    "huggingface-hub>=1,<2",
+]
 
 [project.scripts]
 devsecops-agent = "vulnscan.cli.main:main"
@@ -82,7 +88,7 @@ python_version = "3.11"
 strict = true
 
 [tool.hatch.build.targets.sdist]
-only-include = ["src/vulnscan", "tests", "docs", "ci", "pyproject.toml", "README.md", "LICENSE", "CHANGELOG.md", "uv.lock", "requirements.lock", "requirements-build.lock", "requirements-scanners.lock", "action.yml"]
+only-include = ["src/vulnscan", "tests", "docs", "ci", "cmd", "internal", "go.mod", "go.sum", "notebooks", "pyproject.toml", "README.md", "LICENSE", "CHANGELOG.md", "uv.lock", "requirements.lock", "requirements-build.lock", "requirements-scanners.lock", "action.yml"]
 
 [dependency-groups]
 build = ["hatchling==1.27.0"]

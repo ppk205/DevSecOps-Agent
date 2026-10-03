@@ -21,11 +21,13 @@ from vulnscan.contracts.decision import (
 )
 from vulnscan.contracts.enums import FindingStatus
 from vulnscan.decisions.protocol import (
+    INPUT_FORMAT_VERSION,
+    MAX_INPUT_CHARS,
     MAX_INPUT_TOKENS,
 )
 
 from .router import DecisionRouter
-from .state import build_evidence_state
+from .state import build_evidence_state, model_state
 from .triage import QUESTION_SET_VERSION, TriageOutcome, finding_to_state
 
 _LOGGER = logging.getLogger(__name__)
@@ -56,8 +58,10 @@ class DecisionCache:
         self.misses = 0
 
     def key(self, request: DecisionRequest) -> str:
-        state_hash = build_evidence_state(request.state)["state_hash"]
+        max_chars = int(request.model_policy.get("max_input_chars") or MAX_INPUT_CHARS)
+        state_hash = build_evidence_state(request.state, max_chars=max_chars)["state_hash"]
         return (
+            f"{INPUT_FORMAT_VERSION}|{json.dumps(request.model_policy, sort_keys=True)}|"
             f"{request.question_set_version}|{question_signature(request.questions)}|{state_hash}"
         )
 
@@ -121,6 +125,10 @@ def triage_many_batched(
     requests: dict[int, DecisionRequest] = {}
     for index, finding in enumerate(findings):
         request = _to_request(finding_to_state(finding), questions)
+        request.model_policy = {
+            key: getattr(agent, key, None)
+            for key in ("model_id", "model_revision", "max_input_tokens", "max_input_chars")
+        }
         requests[index] = request
         cached = cache.get(request) if cache is not None else None
         if cached is not None:
@@ -163,13 +171,16 @@ def _run_chunk(
 ) -> list[DecisionResult]:
     from .laya import LayaDecisionBackend
 
+    if isinstance(agent, LayaDecisionBackend):
+        return agent.predict_many([requests[index] for index in chunk])
+
     # A real backend already speaks our contract, so its typed result is used
     # as-is with no wire round trip. Duck-typed on purpose: DecisionBackend is a
     # non-runtime-checkable Protocol, and a test fake must also be accepted.
     if _looks_like_backend(agent):
         return [agent.predict(requests[index]) for index in chunk]
 
-    states = [requests[index].state for index in chunk]
+    states = [model_state(build_evidence_state(requests[index].state)) for index in chunk]
     first = requests[chunk[0]]
     native = _as_native_questions(first.questions)
 
@@ -198,6 +209,8 @@ def _parse(
 ) -> DecisionResult:
     from .laya import _parse_answer
 
+    envelope = build_evidence_state(request.state)
+
     if not isinstance(raw, Mapping) or not isinstance(raw.get("answers"), Mapping):
         # A backend that reported a structured failure keeps its own reason.
         reason = raw.get("__error__") if isinstance(raw, Mapping) else None
@@ -205,7 +218,7 @@ def _parse(
             status=DecisionStatus.UNAVAILABLE if reason else DecisionStatus.INCOMPLETE,
             model_id="laya",
             answers={},
-            state_hash="",
+            state_hash=str(envelope["state_hash"]),
             question_set_version=request.question_set_version,
             error_code=str(reason or "malformed_output"),
         )
@@ -218,7 +231,7 @@ def _parse(
             status=DecisionStatus.INCOMPLETE,
             model_id="laya",
             answers={},
-            state_hash="",
+            state_hash=str(envelope["state_hash"]),
             question_set_version=request.question_set_version,
             error_code="malformed_output",
             error_message=str(exc)[:1_024],
@@ -227,7 +240,8 @@ def _parse(
         status=DecisionStatus.COMPLETED,
         model_id="laya",
         answers=answers,
-        state_hash="",
+        state_hash=str(envelope["state_hash"]),
+        input_truncated=bool(envelope["input_truncated"]),
         question_set_version=request.question_set_version,
     )
 

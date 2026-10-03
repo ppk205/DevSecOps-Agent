@@ -1,5 +1,9 @@
 # DevSecOps-Agent
 
+The application now supports a native Go TUI and service implementation with a
+Python compatibility backend. See [build and keyboard instructions](docs/NATIVE-MIGRATION.md)
+and [the Laya review and training guide](docs/LAYA-TRAINING.md).
+
 Automated vulnerability scanning and severity assessment for Java Servlet/JSP source code, powered by a multi-scanner pipeline with Agentic AI analysis and independent mechanical verification.
 
 ## Overview

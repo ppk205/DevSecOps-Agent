@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import contextlib
+import json
 import sqlite3
 from collections.abc import Generator
 from pathlib import Path
@@ -60,6 +61,7 @@ def migrate(engine: Engine) -> None:
             "result_json": "TEXT NOT NULL DEFAULT '{}'",
             "events_json": "TEXT NOT NULL DEFAULT '[]'",
             "cancel_requested": "INTEGER NOT NULL DEFAULT 0",
+            "findings_revision": "INTEGER NOT NULL DEFAULT 0",
         }.items():
             if name not in columns:
                 conn.exec_driver_sql(f"ALTER TABLE runs ADD COLUMN {name} {sql_type}")
@@ -80,6 +82,30 @@ def migrate(engine: Engine) -> None:
                         f"UPDATE {table} SET {name} = replace({name}, ' ', 'T') || '+00:00' WHERE {name} IS NOT NULL AND {name} NOT LIKE '%+00:00' AND {name} NOT LIKE '%Z'"
                     )
             conn.exec_driver_sql("INSERT INTO schema_migrations VALUES (2)")
+        if not conn.exec_driver_sql("SELECT 1 FROM schema_migrations WHERE version = 3").first():
+            from vulnscan.core.finding_view import project_finding
+
+            finding_columns = {r[1] for r in conn.exec_driver_sql("PRAGMA table_info(findings)")}
+            for name, sql_type in {
+                "finding_id": "VARCHAR(80)",
+                "summary_json": "TEXT NOT NULL DEFAULT '{}'",
+                "search_text": "TEXT NOT NULL DEFAULT ''",
+            }.items():
+                if name not in finding_columns:
+                    conn.exec_driver_sql(f"ALTER TABLE findings ADD COLUMN {name} {sql_type}")
+            for pk, payload in conn.exec_driver_sql("SELECT id, finding_json FROM findings").all():
+                item = json.loads(payload)
+                summary, search_text = project_finding(item)
+                conn.exec_driver_sql(
+                    "UPDATE findings SET finding_id=?, summary_json=?, search_text=? WHERE id=?",
+                    (summary["finding_id"] or None, json.dumps(summary), search_text, pk),
+                )
+            conn.exec_driver_sql("CREATE INDEX IF NOT EXISTS findings_run_id ON findings(run_id)")
+            # Historical duplicates are retained; reconciliation uses the oldest row.
+            conn.exec_driver_sql(
+                "CREATE INDEX IF NOT EXISTS findings_identity ON findings(run_id, finding_id)"
+            )
+            conn.exec_driver_sql("INSERT INTO schema_migrations VALUES (3)")
 
 
 def init_db(db_path: str | Path = "vulnscan.db") -> None:

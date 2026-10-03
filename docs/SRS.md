@@ -3,14 +3,20 @@
 **Project**: DevSecOps-Agent — Automated Vulnerability Scanning and Assessment for Java Servlet/JSP Applications
 
 **Document ID**: SRS-001  
-**Version**: 1.1 (v0.2.0 platform milestone)
-**Status**: Approved baseline — awaiting implementation  
+**Version**: 1.2 (native migration and Laya training preparation)
+**Status**: Approved implementation baseline
 **Authors**: Tran Doan Hoa (23162026), Nguyen Minh Khoi (23162046)  
 **Supervisor**: Nguyen Thi Thanh Van
 
 ---
 
 ## 1. Introduction
+
+**Revision 1.2 — 2026-10-02:** C-04, FR-71, DR-01 and IR-01 permit the verified
+Go implementation with Python compatibility workers. Existing requirement IDs,
+scan capabilities, data history and interfaces remain the controlling contract.
+QR-21 responsiveness and cancellation guide paginated reads and worker isolation;
+FR-40/41, QR-05/12/17 guide independently reviewed Laya training preparation.
 
 ### 1.1 Purpose
 
@@ -133,7 +139,7 @@ The target application has four user roles. The application declares an authoriz
 
 **C-03**: Timeline is 17 weeks with two developers.
 
-**C-04**: The application is written in Python 3.11+ with a Python orchestration service; the analyzed application is Java-only.
+**C-04**: The application supports Python 3.11+ and a native Go interface and service implementation. Components migrate after compatibility and performance verification; Python remains supported for Laya inference, training, and components awaiting those gates. The analyzed application is Java-only.
 
 **C-05**: Scanning is static. Function tests and optional targeted sandbox execution strengthen evidence but are not required for every finding.
 
@@ -375,7 +381,7 @@ Feature IDs below are stable and carried unchanged into the test plan and eviden
 
 **FR-70: Shared execution.** One service starts, observes, cancels, retries and exports scans. Only one scan may execute per database across processes. Scanner failures preserve partial evidence. Deep analysis without an implementation is unavailable.
 
-**FR-71: Terminal interface.** Interactive bare invocation and `tui` open a keyboard-accessible Textual interface with overview/history, checkout/profile/limits configuration and effective settings review, live progress, filtered findings/evidence and report exports. Quitting an active scan offers stay or cancel and quit. No detached execution.
+**FR-71: Terminal interface.** Interactive bare invocation and `tui` open a keyboard-accessible terminal interface (Textual in Python; Bubble Tea in Go) with overview/history, checkout/profile/limits configuration and effective settings review, live progress, filtered findings/evidence and report exports. Quitting an active scan offers stay or cancel and quit. No detached execution.
 
 **FR-72: CI policy.** Fast selects Semgrep and Gitleaks; full adds isolated Maven compilation, SpotBugs/FindSecBugs and Dependency-Check. AI and Laya default off. All selected scanners and coverage reconciliation must succeed. Independently rejected findings alone are excluded; unresolved and unprocessed findings count. Validated assessment severity takes precedence over native severity; unknown remains explicit. Default threshold high includes critical.
 
@@ -385,7 +391,7 @@ Feature IDs below are stable and carried unchanged into the test plan and eviden
 
 ## 4. Data, Storage, and Reporting Requirements
 
-**DR-01 — Database.** The application shall persist all scan state in SQLite via SQLAlchemy. Synchronous scan sessions run in workers; UI reads use independent short-lived sessions.
+**DR-01 — Database.** The application shall persist all scan state in SQLite via SQLAlchemy in Python and database/sql in Go. Background execution and UI reads use independent short-lived connections. Additive migrations preserve integer primary keys and public identities. Paginated finding projections and revisions support incremental UI reads.
 
 **DR-02 — Persisted queue.** Queued work, scan configuration, stage status, and retry history shall be persisted so that a process restart resumes the queue without losing queued work.
 
@@ -411,7 +417,7 @@ Feature IDs below are stable and carried unchanged into the test plan and eviden
 
 ### 5.1 Command-Line Interface
 
-**IR-01**: The CLI shall expose commands for target registration, scan execution, result querying, report generation, experiment comparison, and server startup, using Typer with help text and shell completion.
+**IR-01**: The CLI shall expose commands for target registration, scan execution, result querying, report generation, experiment comparison, and server startup. Python uses Typer; the Go CLI preserves existing commands, flags, exit codes, and configuration. Both provide help text and shell completion.
 
 **IR-02**: The CLI shall accept scan configuration (scanners enabled, rule sets, budget override) as flags and/or a configuration file, and shall echo the effective configuration before starting a scan.
 

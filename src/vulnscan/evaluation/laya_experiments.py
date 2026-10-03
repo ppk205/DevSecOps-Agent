@@ -64,7 +64,11 @@ def _confidence(payload: dict[str, Any]) -> float | None:
     Laya returns a per-answer ``confidence`` alongside the label. It is
     uncalibrated by construction, which is exactly why T09 measures it.
     """
-    value = _answer(payload, "recommended_action").get("confidence")
+    answer = _answer(payload, "recommended_action")
+    value = answer.get("answer_confidence")
+    if value is None:
+        probabilities = answer.get("probabilities") or {}
+        value = max(probabilities.values()) if probabilities else answer.get("confidence")
     return float(value) if isinstance(value, (int, float)) else None
 
 
@@ -78,6 +82,7 @@ def evaluate_routing(
     rows: list[dict[str, Any]] = []
     confidences: list[float] = []
     correct: list[bool] = []
+    raw_rows: list[dict[str, Any]] = []
 
     for payload in payloads:
         finding_id = str(payload.get("finding_id", ""))
@@ -92,15 +97,16 @@ def evaluate_routing(
             "cwe": label.cwe if label else "unknown",
             "language": label.language if label else "unknown",
         }
+        raw_route = str(_answer(payload, "recommended_action").get("choice", row["route"]))
         if label is not None and label.expected_route is not None:
             row["expected_route"] = label.expected_route
 
             confidence = _confidence(payload)
-            escalated = row["route"] == "human_review"
+            escalated = raw_route == "human_review"
             if isinstance(label.expected_route, bool):
                 route_was_correct = escalated == label.expected_route
             else:
-                route_was_correct = row["route"] == str(label.expected_route)
+                route_was_correct = raw_route == str(label.expected_route)
 
             if confidence is not None and row["decision_status"] == "completed":
                 # Calibration is graded on route correctness: did the lane the
@@ -109,11 +115,13 @@ def evaluate_routing(
                 correct.append(route_was_correct)
 
         rows.append(row)
+        raw_rows.append({**row, "route": raw_route})
 
     report = build_routing_report(rows)
     calibration = compute_calibration(confidences, correct)
 
     return {
+        "metrics_schema_version": 2,
         "protocol": {
             "model_id": MODEL_ID,
             "model_revision": MODEL_REVISION,
@@ -122,6 +130,7 @@ def evaluate_routing(
             "advisory_only": True,
         },
         "routing": report.to_dict(),
+        "raw_model_routing": build_routing_report(raw_rows).to_dict(),
         "calibration": calibration.to_dict(),
         "reliability_diagram": reliability_diagram(confidences, correct, RELIABILITY_BINS),
         "graded": len(rows),

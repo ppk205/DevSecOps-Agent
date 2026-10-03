@@ -42,9 +42,11 @@ from vulnscan.normalization.dedup import deduplicate_findings
 from vulnscan.normalization.grouping import group_findings
 from vulnscan.normalization.normalizer import normalize_result
 
+from ..core.native import compute
 from ..decisions.batching import DecisionCache, triage_many_batched
 from ..decisions.config import LayaConfig
 from ..decisions.laya import LayaDecisionBackend
+from ..decisions.router import DecisionRouter
 from ..decisions.triage import build_triage_questions
 from ..reporting.reporter import ReportGenerator
 from ..scanners.base import AdapterRegistry
@@ -192,7 +194,15 @@ class ScanPipeline:
         observations = []
         for result in results:
             observations.extend(normalize_result(result))
-        grouped = group_findings(observations, run_id=run_id)
+        native = compute(
+            "group",
+            {"observations": [o.model_dump(mode="json") for o in observations], "run_id": run_id},
+        )
+        grouped = (
+            [Finding.model_validate(f) for f in native]
+            if native is not None
+            else group_findings(observations, run_id=run_id)
+        )
         return deduplicate_findings(grouped)
 
     # ------------------------------------------------------------------ #
@@ -220,6 +230,7 @@ class ScanPipeline:
             model_revision=self.laya_config.revision,
             device=self.laya_config.device,
             max_input_tokens=self.laya_config.max_input_tokens,
+            timeout_seconds=self.laya_config.timeout_seconds,
         )
         questions = build_triage_questions()
         try:
@@ -227,6 +238,10 @@ class ScanPipeline:
                 list(findings),
                 backend,
                 questions,
+                router=DecisionRouter(
+                    high_confidence_threshold=self.laya_config.high_confidence_threshold,
+                    review_threshold=self.laya_config.review_threshold,
+                ),
                 batch_size=self.laya_config.batch_size,
                 cache=self.cache if self.laya_config.cache_enabled else None,
                 max_input_tokens=self.laya_config.max_input_tokens,
