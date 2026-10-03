@@ -268,6 +268,32 @@ class ScanService:
                 "limit": limit,
             }
 
+    def activity(self, identifier: int | str) -> dict[str, Any]:
+        """FR-71/DR-09: retained activity without loading full finding payloads."""
+        pk = self.resolve_id(identifier)
+        with get_session(self.db_path) as session:
+            names = ("gate", "exit_code", "errors", "reports", "summary_path")
+            row = session.execute(
+                select(
+                    RunORM.public_id,
+                    RunORM.status,
+                    RunORM.events_json,
+                    *(func.json_extract(RunORM.result_json, "$." + name) for name in names),
+                ).where(RunORM.id == pk)
+            ).one()
+            result = dict(zip(names, row[3:], strict=True))
+            for name, default in (("errors", []), ("reports", {})):
+                result[name] = json.loads(result[name]) if result[name] else default
+            result.update(
+                run_id=row[0] or str(pk),
+                status=row[1],
+                findings=session.scalar(
+                    select(func.count()).select_from(FindingORM).where(FindingORM.run_id == pk)
+                )
+                or 0,
+            )
+            return {"id": pk, "events": json.loads(row[2] or "[]"), "result": result}
+
     def finding(self, identifier: int | str, finding_id: str) -> dict[str, Any]:
         pk = self.resolve_id(identifier)
         with get_session(self.db_path) as session:

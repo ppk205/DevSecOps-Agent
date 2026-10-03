@@ -58,6 +58,7 @@ with tempfile.TemporaryDirectory() as directory:
     wheel = next((root / "dist").glob("*.whl"))
     subprocess.run([str(python), "-m", "pip", "install", "--no-deps", str(wheel)], check=True)
     subprocess.run([str(binary / "devsecops-agent"), "--version"], cwd=directory, check=True)
+    subprocess.run([str(binary / "devsec"), "--version"], cwd=directory, check=True)
     subprocess.run(
         [
             str(python),

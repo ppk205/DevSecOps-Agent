@@ -28,7 +28,10 @@ This workspace also has a local SDK under `.tools/go`; its build command is:
 
 The build creates `bin/devsecops-agent-go.exe` on Windows or
 `bin/devsecops-agent-go` elsewhere. Existing console commands discover that
-binary automatically. Native `scan-run`, history, cancel, retry, export and
+binary automatically for operations with native parity. The default `tui` and
+`scan-run` launch through Python to preserve the newer repository URL and
+credential workflows. Set `DEVSECOPS_NATIVE=go` to select the native local
+checkout interface explicitly. Native `scan-run`, history, cancel, retry, export and
 `serve` use the same SQLite database and retained report data.
 
 For a released binary, rename the platform asset to `devsecops-agent-go`
@@ -51,20 +54,37 @@ results. Missing tools remain explicit.
 
 ## Keyboard workflow
 
+The application opens in Workspace with checkout/profile controls and an
+expandable Advanced section containing all scan options. History, Activity,
+Findings and Reports remain views of the same run workflow. Review presents
+effective values and a verified commit before starting. Details use retained
+source excerpts and recorded status; unavailable evidence remains explicit.
+The Python workspace also retains repository URLs, pinned commit and clone-cache
+controls in Advanced options, and a separate API Keys tab with hidden values.
+
+The native interface focuses controls with Tab and uses Enter to edit text or
+activate a control. Left/Right or Enter cycles typed choices. The Python
+fallback uses Textual inputs, Select widgets and a collapsible Advanced section.
+
 | Key | Operation |
 | --- | --- |
-| Ctrl+N | Open scan setup |
-| Tab / Shift+Tab | Move between visible form fields |
+| Ctrl+N | Open Workspace and focus the checkout |
+| Ctrl+K | Open the action menu |
+| Tab / Shift+Tab | Move between visible fields and actions |
+| Enter / Esc | Begin/end text editing or activate/back out of a reader |
+| Ctrl+Space | Complete checkout directory names without blocking navigation |
 | Ctrl+E | Review effective configuration and checkout |
 | Ctrl+S | Start the reviewed scan |
-| Esc | Return to overview |
-| 1–5 | Switch views while outside text editing |
-| Ctrl+R | Refresh history |
+| Ctrl+1–5 | Open History, Workspace, Activity, Findings or Reports, including while editing |
+| 1–5 | Native view shortcuts while outside text editing |
+| Ctrl+R | Open and refresh History |
 | Enter | Open a selected run or finding |
 | / | Search findings; Enter returns to table navigation |
-| PgUp / PgDown | Previous/next finding page |
-| Ctrl+T | Retry a selected run |
-| Ctrl+O | Export a selected run using Settings values |
+| Up/Down, PgUp/PgDown | Scroll a focused review, activity or evidence reader |
+| V | Toggle readable/raw details in review or evidence |
+| PgUp / PgDown | Native result pages while the finding table is focused |
+| Ctrl+T | Retry the highlighted History run, or the explicitly opened run elsewhere |
+| Ctrl+O | Export the highlighted/opened run using the current artifact directory and report format |
 | Ctrl+X | Cancel the executing scan |
 | Ctrl+Q | Quit; an active scan offers stay or cancel and quit |
 
@@ -72,6 +92,12 @@ Finding lists render at most 200 rows. Input is debounced by 150 ms. UI
 updates never read configuration files, execute scanners, or query SQLite.
 Responses carry generations so obsolete searches and historical selections
 cannot overwrite the current view. Refreshing preserves the cursor.
+
+Historical Activity reads saved events, report failures and artifact paths for
+that run. Live activity remains separate when a historical run is inspected.
+The native frame stays within the terminal bounds; both interfaces show a
+resize message below 60 columns or 18 rows. Cancellation and quit still work
+at smaller sizes.
 
 ## Storage and bridge
 

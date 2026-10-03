@@ -47,8 +47,13 @@ def identity(finding):
     )
 
 
-def test_fr70_native_scan_matches_python_findings_policy_and_history(service, checkout, tmp_path):
-    baseline = service.run(str(checkout), settings(tmp_path))
+@pytest.mark.parametrize("laya", [False, True])
+def test_fr70_native_scan_matches_python_findings_policy_and_history(
+    service, checkout, tmp_path, laya
+):
+    # Compare the same advisory configuration; Python and native CLI defaults
+    # differ after URL-scan support was added on main.
+    baseline = service.run(str(checkout), settings(tmp_path, laya=laya))
     baseline_detail = service.detail(baseline["id"])
     path = tmp_path / "native.db"
     result = native(
@@ -60,6 +65,7 @@ def test_fr70_native_scan_matches_python_findings_policy_and_history(service, ch
         "--out",
         str(tmp_path / "go-reports"),
         "--json",
+        *(["--laya"] if laya else []),
     )
     assert result.returncode == baseline["exit_code"], result.stderr + result.stdout
     actual = json.loads(result.stdout)

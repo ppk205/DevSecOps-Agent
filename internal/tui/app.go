@@ -2,7 +2,6 @@
 package tui
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -14,7 +13,6 @@ import (
 	"charm.land/bubbles/v2/textinput"
 	"charm.land/bubbles/v2/viewport"
 	tea "charm.land/bubbletea/v2"
-	"charm.land/lipgloss/v2"
 	"devsecops-agent/internal/bridge"
 	"devsecops-agent/internal/service"
 )
@@ -22,6 +20,7 @@ import (
 type API interface {
 	Init(context.Context) error
 	History(context.Context) ([]service.RunSummary, error)
+	Activity(context.Context, string) (service.RunActivity, error)
 	Findings(context.Context, string, string, int) (service.FindingPage, error)
 	Finding(context.Context, string, string) (json.RawMessage, error)
 	Review(context.Context, string, service.Config) (map[string]any, error)
@@ -86,13 +85,34 @@ type Model struct {
 	log                []string
 	evidence           viewport.Model
 	review             viewport.Model
+	form               viewport.Model
+	activity           viewport.Model
+	advanced           bool
+	editing            bool
+	reviewMode         bool
+	rawReview          bool
+	rawEvidence        bool
+	evidenceFocus      bool
+	evidenceText       string
+	evidenceRaw        string
+	reviewText         string
+	reviewRaw          string
+	menu               bool
+	menuCursor         int
+	activityID         string
+	activityGeneration uint64
+	savedActivity      service.RunActivity
+	activeResult       map[string]any
+	followActive       bool
+	layoutWidth        int
+	activityLoading    bool
 }
 
 var labels = []string{"Checkout", "Profile (fast/full)", "Configuration file", "Timeout (seconds)", "Maximum files", "Artifact directory", "Timezone", "Threshold", "Allow dirty (yes/no)", "Laya (yes/no)", "Laya configuration file", "Export format"}
-var tabs = []string{"Overview", "Setup", "Progress", "Findings", "Settings"}
+var tabs = []string{"History", "Workspace", "Activity", "Findings", "Reports"}
 
 func New(api API) Model {
-	m := Model{api: api, width: 100, height: 35, status: "Loading scan workspace…", availability: "Checking scanner availability…", edited: make(map[int]bool)}
+	m := Model{api: api, tab: 1, width: 100, height: 35, status: "Loading scan workspace…", availability: "Checking scanner availability…", edited: make(map[int]bool)}
 	defaults := []string{".", "fast", "", "600", "100000", "artifacts", "Asia/Saigon", "high", "no", "no", "", "json"}
 	for _, value := range defaults {
 		input := textinput.New()
@@ -110,6 +130,10 @@ func New(api API) Model {
 	m.evidence.SetContent("Select a finding and press Enter to inspect evidence.")
 	m.review = viewport.New(viewport.WithWidth(96), viewport.WithHeight(10))
 	m.review.SetContent("Press Ctrl+E to review effective settings, then Ctrl+S to start.")
+	m.form = viewport.New(viewport.WithWidth(96), viewport.WithHeight(20))
+	m.activity = viewport.New(viewport.WithWidth(96), viewport.WithHeight(20))
+	m.review.SoftWrap, m.evidence.SoftWrap, m.activity.SoftWrap = true, true, true
+	m.resize()
 	return m
 }
 func tick() tea.Cmd {
@@ -135,7 +159,7 @@ func (m Model) findingsCmd() tea.Cmd {
 }
 func (m Model) signature() string {
 	values := []string{}
-	for _, input := range m.inputs {
+	for _, input := range m.inputs[:11] {
 		values = append(values, input.Value())
 	}
 	data, _ := json.Marshal(values)
@@ -154,14 +178,14 @@ func formConfig(values []string, edited map[int]bool) (service.Config, error) {
 	if values[3] != "600" || edited[3] {
 		v, err := strconv.Atoi(values[3])
 		if err != nil {
-			return defaults, err
+			return defaults, fmt.Errorf("Timeout must be a whole number of seconds")
 		}
 		flags["timeout"] = v
 	}
 	if values[4] != "100000" || edited[4] {
 		v, err := strconv.Atoi(values[4])
 		if err != nil {
-			return defaults, err
+			return defaults, fmt.Errorf("Maximum files must be a whole number")
 		}
 		flags["max_files"] = v
 	}
@@ -190,6 +214,13 @@ func (m *Model) begin(retry bool) tea.Cmd {
 	m.activePK = ""
 	m.started = time.Now()
 	m.log = nil
+	m.activeResult = nil
+	m.activityID = ""
+	m.savedActivity = service.RunActivity{}
+	m.activityLoading = false
+	m.activity.SetContent("Starting scan…")
+	m.followActive = true
+	m.editing, m.reviewMode = false, false
 	m.tab = 2
 	m.status = "Starting scan…"
 	m.quitAfter = false
@@ -218,26 +249,21 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.width, m.height = msg.Width, msg.Height
-		m.historyTable.SetHeight(max(3, msg.Height-10))
-		m.findingTable.SetHeight(max(3, (msg.Height-12)/2))
-		m.evidence.SetWidth(max(10, msg.Width-4))
-		m.evidence.SetHeight(max(3, (msg.Height-12)/2))
-		m.review.SetWidth(max(10, msg.Width-4))
-		m.review.SetHeight(max(3, msg.Height-24))
-		m.historyTable.SetWidth(max(10, msg.Width-4))
-		m.findingTable.SetWidth(max(10, msg.Width-4))
-		m.findingTable.SetColumns([]table.Column{{Title: "Severity", Width: 9}, {Title: "CWE", Width: 10}, {Title: "Status", Width: 12}, {Title: "Scanner", Width: 14}, {Title: "Title", Width: max(10, msg.Width-59)}})
-		m.historyTable.SetColumns([]table.Column{{Title: "ID", Width: 5}, {Title: "Run", Width: max(10, msg.Width-62)}, {Title: "Status", Width: 14}, {Title: "Attempt", Width: 7}, {Title: "Started", Width: 22}})
-		m.search.SetWidth(max(10, msg.Width-8))
-		for i := range m.inputs {
-			m.inputs[i].SetWidth(max(10, msg.Width-8))
-		}
+		m.resize()
 	case loaded:
-		if msg.kind == "review" && msg.generation != m.reviewGeneration || msg.kind == "findings" && (msg.generation != m.generation || msg.id != m.selected) || msg.kind == "history" && msg.generation != m.historyGeneration {
+		if msg.kind == "review" && msg.generation != m.reviewGeneration || msg.kind == "findings" && (msg.generation != m.generation || msg.id != m.selected) || msg.kind == "history" && msg.generation != m.historyGeneration || msg.kind == "activity" && (msg.generation != m.activityGeneration || msg.id != m.activityID) || msg.kind == "evidence" && (msg.generation != m.evidenceGeneration || msg.id != m.selected) {
 			break
 		}
 		if msg.err != nil {
-			m.status = msg.err.Error()
+			if msg.kind == "activity" {
+				m.activityLoading = false
+			}
+			m.status = msg.err.Error() + ". " + recoveryAdvice(msg.err.Error())
+			if msg.kind == "review" {
+				m.reviewText = "Review failed\n\n" + m.status
+				m.review.SetContent(m.reviewText)
+				m.reviewMode = true
+			}
 			break
 		}
 		switch msg.kind {
@@ -308,14 +334,23 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.findingTable.SetCursor(restore)
 		case "evidence":
 			if msg.generation == m.evidenceGeneration && msg.id == m.selected {
-				m.evidence.SetContent(msg.value.(string))
+				detail := msg.value.(findingDetail)
+				m.evidenceText, m.evidenceRaw = detail.text, detail.raw
+				m.rawEvidence = false
+				m.evidence.SetContent(detail.text)
 				m.evidence.GotoTop()
+				m.evidenceFocus = true
 			}
 		case "review":
 			if msg.generation == m.reviewGeneration {
 				result := msg.value.(reviewResult)
 				data, _ := json.MarshalIndent(result.result, "", "  ")
-				m.review.SetContent(string(data))
+				m.reviewText = reviewSummary(m.inputs[0].Value(), result.config, result.result)
+				m.reviewRaw = string(data)
+				m.rawReview = false
+				m.review.SetContent(m.reviewText)
+				m.review.GotoTop()
+				m.reviewMode, m.editing = true, false
 				m.reviewSignature = result.signature
 				m.reviewed = &result.config
 				m.status = "Settings reviewed. Ctrl+S starts this scan."
@@ -324,6 +359,28 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.status = "Exported: " + msg.value.(string)
 		case "cancel":
 			m.status = "Cancellation requested; preserving partial evidence…"
+		case "activity":
+			if msg.generation == m.activityGeneration && msg.id == m.activityID {
+				m.savedActivity = msg.value.(service.RunActivity)
+				m.activityLoading = false
+				if msg.id != m.activePK {
+					m.status = "Saved activity: " + m.savedActivity.RunID + " · " + m.savedActivity.Status
+				}
+				m.refreshActivity()
+				if msg.id != m.activePK {
+					m.activity.GotoTop()
+				}
+			}
+		case "completion":
+			if msg.id == m.inputs[0].Value() {
+				completion := msg.value.(pathCompletion)
+				m.inputs[0].SetValue(completion.value)
+				m.inputs[0].CursorEnd()
+				m.status = completion.hint
+				if msg.id != completion.value {
+					m.invalidateReview(0)
+				}
+			}
 		}
 	case searchMsg:
 		if uint64(msg) == m.searchGeneration && m.selected != "" {
@@ -336,22 +393,42 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if m.active == "" {
 			m.active = e.RunID
 			m.activePK = service.ID(e.PK)
-			m.selected = m.activePK
-			m.page.Offset = 0
-			m.generation++
+			if m.followActive {
+				m.selected = m.activePK
+				m.activityID = m.activePK
+				m.page.Offset = 0
+				m.generation++
+			}
 		}
-		m.log = append(m.log, fmt.Sprintf("%s: %s %s", e.Stage, e.Status, e.Message))
+		m.log = append(m.log, eventText(e))
 		if len(m.log) > 200 {
 			m.log = m.log[len(m.log)-200:]
 		}
 		m.dirty = true
+		m.refreshActivity()
 	case finishedMsg:
 		m.scanning = false
+		if m.cancelRun != nil {
+			m.cancelRun()
+		}
 		m.cancelRun = nil
+		m.activeResult = msg.result
+		if m.activePK == "" && msg.result["id"] != nil {
+			m.activePK, m.active = fmt.Sprint(msg.result["id"]), display(msg.result["run_id"])
+			if m.followActive {
+				m.selected, m.activityID = m.activePK, m.activePK
+			}
+		}
 		if msg.err != nil {
-			m.status = msg.err.Error()
+			m.status = msg.err.Error() + ". " + recoveryAdvice(msg.err.Error())
+			m.log = append(m.log, m.status)
 		} else {
 			m.status = fmt.Sprintf("%v: %v | gate %v | exit %v", msg.result["run_id"], msg.result["status"], msg.result["gate"], msg.result["exit_code"])
+		}
+		m.refreshActivity()
+		if m.activityID == m.activePK {
+			m.activityGeneration++
+			m.activityLoading = false
 		}
 		cmds = append(cmds, m.historyCmd())
 		if m.selected == m.activePK {
@@ -363,313 +440,25 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	case tickMsg:
 		cmds = append(cmds, tick())
+		if m.scanning {
+			m.refreshActivity()
+			if m.tab == 2 && m.activePK != "" && m.activityID == m.activePK && !m.activityLoading {
+				cmds = append(cmds, m.activityCmd(m.activePK))
+			}
+		}
 		if m.ready && m.tab == 3 && m.dirty && m.selected == m.activePK {
 			m.dirty = false
 			m.generation++
 			cmds = append(cmds, m.findingsCmd())
 		}
 	case tea.KeyPressMsg:
-		key := msg.String()
-		if m.quitModal {
-			if key == "esc" || key == "n" {
-				m.quitModal = false
-			}
-			if key == "y" || key == "enter" {
-				m.quitModal = false
-				m.quitAfter = true
-				if m.cancelRun != nil {
-					m.cancelRun()
-				}
-			}
-			return m, nil
-		}
-		if key == "ctrl+q" || key == "ctrl+c" {
-			if m.scanning {
-				m.quitModal = true
-				return m, nil
-			}
-			return m, tea.Quit
-		}
-		if key == "ctrl+n" {
-			m.tab = 1
-			m.field = 0
-			m.inputs[0].Focus()
-			return m, nil
-		}
-		if key == "ctrl+r" && m.ready {
-			m.tab = 0
-			return m, m.historyCmd()
-		}
-		if key == "ctrl+x" && m.scanning {
-			if m.cancelRun != nil {
-				m.cancelRun()
-			}
-			m.status = "Cancellation requested…"
-			return m, nil
-		}
-		if !m.ready {
-			break
-		}
-		if key == "ctrl+e" && m.tab == 1 {
-			values := make([]string, len(m.inputs))
-			for i, input := range m.inputs {
-				values[i] = input.Value()
-			}
-			edited := make(map[int]bool)
-			for i, value := range m.edited {
-				edited[i] = value
-			}
-			signature := m.signature()
-			m.reviewed = nil
-			m.reviewGeneration++
-			generation := m.reviewGeneration
-			checkout := values[0]
-			m.status = "Reviewing checkout…"
-			cmds = append(cmds, func() tea.Msg {
-				cfg, err := formConfig(values, edited)
-				if err != nil {
-					return loaded{kind: "review", generation: generation, err: err}
-				}
-				result, err := m.api.Review(context.Background(), checkout, cfg)
-				return loaded{kind: "review", generation: generation, value: reviewResult{cfg, signature, result}, err: err}
-			})
-			break
-		}
-		if key == "ctrl+s" && !m.scanning && m.tab == 1 {
-			if m.reviewed == nil || m.reviewSignature != m.signature() {
-				m.status = "Review the current settings with Ctrl+E first"
-				break
-			}
-			return m, m.begin(false)
-		}
-		if key == "ctrl+t" && !m.scanning && m.selected != "" {
-			return m, m.begin(true)
-		}
-		if key == "ctrl+o" && m.selected != "" {
-			id, format, output := m.selected, m.inputs[11].Value(), m.inputs[5].Value()
-			cmds = append(cmds, func() tea.Msg {
-				path, err := m.api.Export(context.Background(), id, format, output)
-				return loaded{kind: "export", value: path, err: err}
-			})
-			break
-		}
-		if key == "esc" {
-			m.searching = false
-			m.search.Blur()
-			for i := range m.inputs {
-				m.inputs[i].Blur()
-			}
-			m.tab = 0
-			break
-		}
-		if key == "tab" || key == "shift+tab" {
-			if m.tab == 1 || m.tab == 4 {
-				m.inputs[m.field].Blur()
-				delta := 1
-				if key == "shift+tab" {
-					delta = -1
-				}
-				start, end := 0, 5
-				if m.tab == 4 {
-					start, end = 5, len(m.inputs)
-				}
-				m.field = start + (m.field-start+delta+end-start)%(end-start)
-				cmds = append(cmds, m.inputs[m.field].Focus())
-			} else {
-				m.tab = (m.tab + 1) % len(tabs)
-				if m.tab == 1 {
-					m.field = 0
-					cmds = append(cmds, m.inputs[0].Focus())
-				}
-				if m.tab == 4 {
-					m.field = 5
-					cmds = append(cmds, m.inputs[5].Focus())
-				}
-			}
-			break
-		}
-		if m.tab != 1 && m.tab != 4 && !m.searching && key >= "1" && key <= "5" {
-			m.tab = int(key[0] - '1')
-			if m.tab == 1 {
-				m.field = 0
-				cmds = append(cmds, m.inputs[0].Focus())
-			}
-			if m.tab == 4 {
-				m.field = 5
-				cmds = append(cmds, m.inputs[5].Focus())
-			}
-			break
-		}
-		if m.tab == 0 && key == "enter" {
-			row := m.historyTable.SelectedRow()
-			if len(row) > 0 {
-				m.selected = row[0]
-				m.page.Offset = 0
-				m.evidenceGeneration++
-				m.evidence.SetContent("Select a finding and press Enter.")
-				m.generation++
-				m.tab = 3
-				cmds = append(cmds, m.findingsCmd())
-			}
-			break
-		}
-		if m.tab == 3 && key == "/" && !m.searching {
-			m.searching = true
-			cmds = append(cmds, m.search.Focus())
-			break
-		}
-		if m.tab == 3 && key == "enter" {
-			if m.searching {
-				m.searching = false
-				m.search.Blur()
-				break
-			}
-			cursor := m.findingTable.Cursor()
-			if cursor >= 0 && cursor < len(m.page.Items) {
-				id, fid := m.selected, m.page.Items[cursor].FindingID
-				m.evidenceGeneration++
-				generation := m.evidenceGeneration
-				cmds = append(cmds, func() tea.Msg {
-					data, err := m.api.Finding(context.Background(), id, fid)
-					var formatted json.RawMessage
-					if err == nil {
-						formatted = data
-					}
-					var object any
-					_ = json.Unmarshal(formatted, &object)
-					var text bytes.Buffer
-					encoder := json.NewEncoder(&text)
-					encoder.SetEscapeHTML(false)
-					encoder.SetIndent("", "  ")
-					_ = encoder.Encode(object)
-					return loaded{kind: "evidence", id: id, generation: generation, value: text.String(), err: err}
-				})
-			}
-			break
-		}
-		if m.tab == 3 && !m.searching && (key == "pgdown" || key == "pgup") {
-			offset := m.page.Offset
-			if key == "pgdown" && offset+200 < m.page.Total {
-				offset += 200
-			}
-			if key == "pgup" {
-				offset = max(0, offset-200)
-			}
-			m.page.Offset = offset
-			m.generation++
-			cmds = append(cmds, m.findingsCmd())
-			break
-		}
-		if m.tab == 3 && m.searching {
-			old := m.search.Value()
-			var cmd tea.Cmd
-			m.search, cmd = m.search.Update(msg)
-			cmds = append(cmds, cmd)
-			if old != m.search.Value() {
-				m.searchGeneration++
-				m.generation++
-				generation := m.searchGeneration
-				cmds = append(cmds, tea.Tick(150*time.Millisecond, func(time.Time) tea.Msg { return searchMsg(generation) }))
-			}
-			break
-		}
-		if m.tab == 1 || m.tab == 4 {
-			old := m.inputs[m.field].Value()
-			var cmd tea.Cmd
-			m.inputs[m.field], cmd = m.inputs[m.field].Update(msg)
-			m.reviewGeneration++
-			if old != m.inputs[m.field].Value() {
-				m.edited[m.field] = true
-			}
-			cmds = append(cmds, cmd)
-			break
-		}
-		if m.tab == 0 {
-			var cmd tea.Cmd
-			m.historyTable, cmd = m.historyTable.Update(msg)
-			cmds = append(cmds, cmd)
-		}
-		if m.tab == 3 {
-			var cmd tea.Cmd
-			if strings.HasPrefix(key, "ctrl+") {
-				m.evidence, cmd = m.evidence.Update(msg)
-			} else {
-				m.findingTable, cmd = m.findingTable.Update(msg)
-			}
-			cmds = append(cmds, cmd)
-		}
+		updated, cmd := m.handleKey(msg)
+		state := updated.(Model)
+		state.resize()
+		return state, cmd
 	default:
-		// Clipboard and cursor messages arrive independently of key presses.
-		if m.tab == 1 || m.tab == 4 {
-			old := m.inputs[m.field].Value()
-			var cmd tea.Cmd
-			m.inputs[m.field], cmd = m.inputs[m.field].Update(msg)
-			cmds = append(cmds, cmd)
-			if old != m.inputs[m.field].Value() {
-				m.edited[m.field] = true
-				m.reviewGeneration++
-			}
-		}
-		if m.tab == 3 && m.searching {
-			old := m.search.Value()
-			var cmd tea.Cmd
-			m.search, cmd = m.search.Update(msg)
-			cmds = append(cmds, cmd)
-			if old != m.search.Value() {
-				m.searchGeneration++
-				m.generation++
-				generation := m.searchGeneration
-				cmds = append(cmds, tea.Tick(150*time.Millisecond, func(time.Time) tea.Msg { return searchMsg(generation) }))
-			}
-		}
+		return m.handleInput(msg)
 	}
+	m.resize()
 	return m, tea.Batch(cmds...)
-}
-func (m Model) View() tea.View {
-	if m.quitModal {
-		v := tea.NewView("A scan is active. Cancel it and preserve partial evidence before quitting?\n\nY/Enter: cancel and quit    N/Esc: stay")
-		v.AltScreen = true
-		return v
-	}
-	header := []string{}
-	for i, name := range tabs {
-		if i == m.tab {
-			name = lipgloss.NewStyle().Bold(true).Underline(true).Render(name)
-		}
-		header = append(header, fmt.Sprintf("%d %s", i+1, name))
-	}
-	content := ""
-	switch m.tab {
-	case 0:
-		content = m.availability + "\n\n" + m.historyTable.View() + "\nEnter: inspect selected run    Ctrl+T: retry"
-	case 1, 4:
-		start, end := 0, 5
-		if m.tab == 4 {
-			start, end = 5, len(m.inputs)
-		}
-		for i := start; i < end; i++ {
-			marker := "  "
-			if i == m.field {
-				marker = "> "
-			}
-			content += marker + labels[i] + "\n  " + m.inputs[i].View() + "\n"
-		}
-		if m.tab == 1 {
-			content += "\nCtrl+E: review    Ctrl+S: start    Tab: next field\n" + m.review.View()
-		} else {
-			content += "\nCtrl+O: export selected run"
-		}
-	case 2:
-		if m.scanning {
-			content = fmt.Sprintf("Running %s · %.0fs\n", m.active, time.Since(m.started).Seconds())
-		}
-		start := max(0, len(m.log)-max(1, m.height-10))
-		content += strings.Join(m.log[start:], "\n")
-	case 3:
-		content = "Run: " + m.selected + "\n" + m.search.View() + "\n" + m.findingTable.View() + fmt.Sprintf("\n%d–%d of %d · /: search · PgUp/PgDown: pages · Enter: evidence\n", min(m.page.Offset+1, m.page.Total), min(m.page.Offset+200, m.page.Total), m.page.Total) + m.evidence.View()
-	}
-	text := "DevSecOps Agent · Go terminal\n" + strings.Join(header, " | ") + "\n\n" + content + "\n\n" + m.status + "\nCtrl+N new scan · Ctrl+R history · Ctrl+X cancel · Ctrl+Q quit · Esc overview"
-	v := tea.NewView(text)
-	v.AltScreen = true
-	return v
 }

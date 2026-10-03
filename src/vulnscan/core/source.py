@@ -18,7 +18,10 @@ import re
 from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Protocol
+from typing import TYPE_CHECKING, Any, Protocol, cast
+
+if TYPE_CHECKING:
+    from ..scanners.process import CommandResult
 
 _COMMAND_TIMEOUT = 600
 
@@ -50,7 +53,14 @@ class RemoteSource:
     reused: bool = False
 
 
-def _default_run(argv, *, cwd=None, timeout=None, env=None, input_text=None):
+def _default_run(
+    argv: list[str],
+    *,
+    cwd: str | Path | None = None,
+    timeout: float | None = None,
+    env: dict[str, str] | None = None,
+    input_text: str | None = None,
+) -> CommandResult:
     from ..scanners.process import run_command
 
     return run_command(argv, cwd=cwd, timeout=timeout, env=env, input_text=input_text)
@@ -96,7 +106,7 @@ def _head_sha(root: Path, run: Callable[..., Any]) -> str:
     result = run(["git", "rev-parse", "HEAD"], cwd=str(root), timeout=_COMMAND_TIMEOUT)
     if not result.succeeded or not result.stdout.strip():
         raise ValueError("cannot determine the checked-out commit")
-    return result.stdout.strip()
+    return cast(str, result.stdout.strip())
 
 
 def _fetch_commit(root: Path, repo_url: str, commit: str, run: Callable[..., Any]) -> None:

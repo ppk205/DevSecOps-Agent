@@ -4,6 +4,17 @@ The application now supports a native Go TUI and service implementation with a
 Python compatibility backend. See [build and keyboard instructions](docs/NATIVE-MIGRATION.md)
 and [the Laya review and training guide](docs/LAYA-TRAINING.md).
 
+The terminal opens in **Workspace**. Choose a checkout and profile, expand
+Advanced options when needed, then press **Ctrl+E** to review and **Ctrl+S** to
+start. **Ctrl+K** opens the action menu. Review and finding details scroll with
+arrow/page keys; **V** shows raw details. See the
+[TUI review and remediation](docs/TUI-REVIEW.md) for the implemented fixes.
+
+The default Textual workspace retains repository URL input, pinned commits,
+clone-cache settings and the API Keys tab. Set `DEVSECOPS_NATIVE=go` to use the
+native TUI for local checkouts; `DEVSECOPS_NATIVE=python` selects Python for
+all commands. The `devsec` alias is also available.
+
 Automated vulnerability scanning and severity assessment for Java Servlet/JSP source code, powered by a multi-scanner pipeline with Agentic AI analysis and independent mechanical verification.
 
 ## Overview

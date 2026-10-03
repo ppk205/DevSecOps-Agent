@@ -3,7 +3,7 @@
 **Project**: DevSecOps-Agent — Automated Vulnerability Scanning and Assessment for Java Servlet/JSP Applications
 
 **Document ID**: SRS-001  
-**Version**: 1.2 (native migration and Laya training preparation)
+**Version**: 1.3 (terminal workflow acceptance)
 **Status**: Approved implementation baseline
 **Authors**: Tran Doan Hoa (23162026), Nguyen Minh Khoi (23162046)  
 **Supervisor**: Nguyen Thi Thanh Van
@@ -11,6 +11,11 @@
 ---
 
 ## 1. Introduction
+
+**Revision 1.3 — 2026-10-03:** FR-71 and QR-21 now state terminal workflow
+acceptance for run targeting, effective review, readable diagnostics, retained
+activity, keyboard focus and terminal bounds. Existing scan and AI contracts
+remain unchanged.
 
 **Revision 1.2 — 2026-10-02:** C-04, FR-71, DR-01 and IR-01 permit the verified
 Go implementation with Python compatibility workers. Existing requirement IDs,
@@ -383,6 +388,16 @@ Feature IDs below are stable and carried unchanged into the test plan and eviden
 
 **FR-71: Terminal interface.** Interactive bare invocation and `tui` open a keyboard-accessible terminal interface (Textual in Python; Bubble Tea in Go) with overview/history, checkout/profile/limits configuration and effective settings review, live progress, filtered findings/evidence and report exports. Quitting an active scan offers stay or cancel and quit. No detached execution.
 
+Terminal acceptance criteria (2026-10-03): configure and review a scan in one
+Workspace with expandable advanced options; expose existing operations through
+a keyboard action menu and contextual hints. Review and evidence readers must
+scroll using advertised keys. Retry/export from history target the highlighted
+run; actions elsewhere name their target. Activity must identify its own run
+and retain stage events, failure causes, corrective actions and report paths.
+Finding summaries preserve recorded status, source locations, retained snippets
+and evidence references; raw payloads remain optional details. Cursor movement
+must not invalidate a pending review unless configuration values change.
+
 **FR-72: CI policy.** Fast selects Semgrep and Gitleaks; full adds isolated Maven compilation, SpotBugs/FindSecBugs and Dependency-Check. AI and Laya default off. All selected scanners and coverage reconciliation must succeed. Independently rejected findings alone are excluded; unresolved and unprocessed findings count. Validated assessment severity takes precedence over native severity; unknown remains explicit. Default threshold high includes critical.
 
 **FR-73: Consumer Action.** Root Ubuntu composite Action accepts checkout, profile, config, threshold and output directory; publishes sanitized artifacts/job summary before enforcing the gate. Outputs identify run, status, gate, summary and SARIF. Record verified commit; reject dirty CI sources. Local dirty sources require explicit consent and content manifest.
@@ -520,6 +535,12 @@ Feature IDs below are stable and carried unchanged into the test plan and eviden
 ### 6.8 Platform delivery
 
 **QR-21: Cancellation and responsiveness.** TUI workers keep navigation responsive; cancellation terminates scanner process trees and retains partial evidence. Text labels accompany colors; resizing and keyboard-only workflows are supported.
+
+Terminal acceptance covers keyboard-only review/start/inspect/export/history
+workflows at 80x24 and 75x26. Layouts budget the complete screen; below 60 columns
+or 18 rows, show a resize message while retaining quit/cancellation controls.
+Native layouts also remain bounded at 60x20. Interface reads and directory
+completion execute outside the UI update loop.
 
 **QR-22: CI containment.** Version rules and lock dependencies/scanners. Full-profile target builds run in a container with scoped mounts, no host credentials, and no privileged execution. Never upload unredacted secrets. Reports stay within the configured artifact directory.
 

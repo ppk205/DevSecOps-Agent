@@ -169,7 +169,13 @@ def launch_tui(db_path: str = "vulnscan.db") -> None:
     from ..core.native import binary_path
 
     binary = binary_path()
-    if binary and os.environ.get("DEVSECOPS_PYTHON_ONLY") != "1":
+    # The complete URL/credential workflow lives in Textual. Native UI remains
+    # explicit until those newer surfaces have native parity (C-04, FR-71).
+    if (
+        binary
+        and os.environ.get("DEVSECOPS_NATIVE") == "go"
+        and os.environ.get("DEVSECOPS_PYTHON_ONLY") != "1"
+    ):
         env = {**os.environ, "DEVSECOPS_PYTHON": sys.executable}
         result = subprocess.run([binary, "tui", "--db-path", db_path], env=env, check=False)
         raise typer.Exit(result.returncode)
@@ -417,10 +423,13 @@ def main() -> None:
     from ..core.native import binary_path
 
     binary = binary_path()
+    arguments = sys.argv[1:]
+    source_surface = not arguments or arguments[0] in {"tui", "scan-run"}
     if (
         binary
         and os.environ.get("DEVSECOPS_PYTHON_ONLY") != "1"
         and "--version" not in sys.argv[1:]
+        and (not source_surface or os.environ.get("DEVSECOPS_NATIVE") == "go")
     ):
         result = subprocess.run(
             [binary, *sys.argv[1:]],

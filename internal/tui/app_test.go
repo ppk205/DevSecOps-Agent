@@ -17,6 +17,10 @@ type fakeAPI struct{ calls int }
 
 func (f *fakeAPI) Init(context.Context) error                            { f.calls++; return nil }
 func (f *fakeAPI) History(context.Context) ([]service.RunSummary, error) { f.calls++; return nil, nil }
+func (f *fakeAPI) Activity(context.Context, string) (service.RunActivity, error) {
+	f.calls++
+	return service.RunActivity{}, nil
+}
 func (f *fakeAPI) Findings(context.Context, string, string, int) (service.FindingPage, error) {
 	f.calls++
 	return service.FindingPage{}, nil
@@ -114,7 +118,7 @@ func TestQR21SettingsFieldsStayVisible(t *testing.T) {
 	}
 	updated, _ = m.Update(tea.KeyPressMsg{Code: tea.KeyTab})
 	m = updated.(Model)
-	if m.field != 6 {
+	if m.field != 11 {
 		t.Fatal("settings field navigation failed")
 	}
 }
