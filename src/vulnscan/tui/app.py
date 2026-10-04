@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import time
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from datetime import datetime
 from threading import Event
 from typing import Any, ClassVar
@@ -137,6 +137,13 @@ class ScanApp(App[None]):
         def __init__(self, result: dict[str, Any]) -> None:
             self.result = result
             super().__init__()
+
+    class UiUpdate(Message):
+        def __init__(
+            self, callback: Callable[..., Any], args: tuple[Any, ...], kwargs: dict[str, Any]
+        ) -> None:
+            super().__init__()
+            self.callback, self.args, self.kwargs = callback, args, kwargs
 
     def __init__(self, db_path: str = "vulnscan.db", service: ScanService | None = None) -> None:
         super().__init__()
@@ -333,6 +340,14 @@ class ScanApp(App[None]):
         self.set_interval(0.5, self.tick)
         self.call_after_refresh(self.enable_edits)
 
+    def _post_ui(self, callback: Callable[..., Any], *args: Any, **kwargs: Any) -> None:
+        """Deliver worker updates through the UI queue while its screen exists."""
+        self.post_message(self.UiUpdate(callback, args, kwargs))
+
+    def on_scan_app_ui_update(self, message: UiUpdate) -> None:
+        if self.is_running and self.screen_stack:
+            message.callback(*message.args, **message.kwargs)
+
     @work(thread=True, group="initialize")
     def initialize(self) -> None:
         try:
@@ -341,9 +356,9 @@ class ScanApp(App[None]):
                 self._service = ScanService(self.db_path)
             self.service.recover()
             self.service_ready.set()
-            self.call_from_thread(self.initialized)
+            self._post_ui(self.initialized)
         except Exception as exc:  # noqa: BLE001 - UI worker boundary
-            self.call_from_thread(self.notify, str(exc), severity="error")
+            self._post_ui(self.notify, str(exc), severity="error")
 
     def initialized(self) -> None:
         self.starting_service = False
@@ -369,7 +384,7 @@ class ScanApp(App[None]):
                     else f"unavailable — install {cap.binary or cap.tool.value} on PATH"
                 )
             )
-        self.call_from_thread(self.show_availability, "\n".join(labels))
+        self._post_ui(self.show_availability, "\n".join(labels))
 
     def show_availability(self, value: str) -> None:
         self.screen_stack[0].query_one("#availability", Static).update(value)
@@ -408,6 +423,8 @@ class ScanApp(App[None]):
         return self.selected_pk
 
     def update_targets(self) -> None:
+        if not self.is_running or not self.screen_stack:
+            return
         screen = self.screen_stack[0]
         table = screen.query_one("#history", DataTable)
         row = table.get_row_at(table.cursor_row) if table.row_count else None
@@ -490,7 +507,7 @@ class ScanApp(App[None]):
     @work(thread=True, exclusive=True, group="keys-list")
     def refresh_keys_list(self) -> None:
         names = EnvFile().names()
-        self.call_from_thread(self.apply_keys_list, names)
+        self._post_ui(self.apply_keys_list, names)
 
     def apply_keys_list(self, names: list[str]) -> None:
         self.screen_stack[0].query_one("#keys-list", Static).update(
@@ -503,9 +520,9 @@ class ScanApp(App[None]):
             path = EnvFile().set(name, value)
             EnvFile().load_into_environ()
             message = f"Saved {name.strip().upper()} to project .env ({path})"
-            self.call_from_thread(self.key_saved, name, value, message)
+            self._post_ui(self.key_saved, name, value, message)
         except (ValueError, OSError) as exc:
-            self.call_from_thread(self.key_failed, str(exc))
+            self._post_ui(self.key_failed, str(exc))
 
     def key_failed(self, message: str) -> None:
         self.screen_stack[0].query_one("#keys-status", Static).update(message)
@@ -554,7 +571,7 @@ class ScanApp(App[None]):
     @work(thread=True, exclusive=True, group="path-completion")
     def complete_checkout(self, value: str) -> None:
         completed, message = complete_path(value)
-        self.call_from_thread(self.apply_completion, value, completed, message)
+        self._post_ui(self.apply_completion, value, completed, message)
 
     def apply_completion(self, previous: str, completed: str, message: str) -> None:
         widget = self.screen_stack[0].query_one("#checkout", Input)
@@ -572,9 +589,9 @@ class ScanApp(App[None]):
     def fetch_history(self, generation: int) -> None:
         try:
             rows = self.service.history()
-            self.call_from_thread(self.apply_history, generation, rows)
+            self._post_ui(self.apply_history, generation, rows)
         except Exception as exc:  # noqa: BLE001 - UI worker boundary
-            self.call_from_thread(self.notify, str(exc), severity="error")
+            self._post_ui(self.notify, str(exc), severity="error")
 
     def apply_history(self, generation: int, rows: list[dict[str, Any]]) -> None:
         if generation != self.history_generation:
@@ -607,6 +624,8 @@ class ScanApp(App[None]):
         self.update_targets()
 
     def tick(self) -> None:
+        if not self.is_running or not self.screen_stack:
+            return
         if self.scanning and self.activity_pk == self.active_pk:
             count = str(self.partial_findings) if self.partial_findings is not None else "pending"
             self.screen_stack[0].query_one("#run-status", Static).update(
@@ -631,7 +650,7 @@ class ScanApp(App[None]):
             count = int(self.service.activity(pk)["result"]["findings"])
         except Exception:  # noqa: BLE001 - optional read-only progress projection
             count = None
-        self.call_from_thread(self.apply_active_count, pk, generation, count)
+        self._post_ui(self.apply_active_count, pk, generation, count)
 
     def apply_active_count(self, pk: int, generation: int, count: int | None) -> None:
         if pk == self.active_pk and generation == self.scan_generation:
@@ -652,9 +671,9 @@ class ScanApp(App[None]):
     def fetch_findings(self, pk: int, query: str, offset: int, generation: int) -> None:
         try:
             page = self.service.finding_page(pk, query, offset)
-            self.call_from_thread(self.apply_findings, pk, generation, page)
+            self._post_ui(self.apply_findings, pk, generation, page)
         except Exception as exc:  # noqa: BLE001 - UI worker boundary
-            self.call_from_thread(self.notify, str(exc), severity="error")
+            self._post_ui(self.notify, str(exc), severity="error")
 
     def apply_findings(self, pk: int, generation: int, page: dict[str, Any]) -> None:
         if generation != self.findings_generation or pk != self.selected_pk:
@@ -744,7 +763,7 @@ class ScanApp(App[None]):
     def fetch_evidence(self, pk: int, finding_id: str, generation: int) -> None:
         try:
             item = self.service.finding(pk, finding_id)
-            self.call_from_thread(
+            self._post_ui(
                 self.apply_evidence,
                 pk,
                 generation,
@@ -752,7 +771,7 @@ class ScanApp(App[None]):
                 json.dumps(item, indent=2),
             )
         except Exception as exc:  # noqa: BLE001 - UI worker boundary
-            self.call_from_thread(self.notify, str(exc), severity="error")
+            self._post_ui(self.notify, str(exc), severity="error")
 
     def apply_evidence(self, pk: int, generation: int, text: str, raw: str = "") -> None:
         if pk == self.selected_pk and generation == self.evidence_generation:
@@ -788,9 +807,9 @@ class ScanApp(App[None]):
     def fetch_saved_progress(self, pk: int, generation: int) -> None:
         try:
             activity = self.service.activity(pk)
-            self.call_from_thread(self.apply_saved_progress, pk, generation, activity)
+            self._post_ui(self.apply_saved_progress, pk, generation, activity)
         except Exception as exc:  # noqa: BLE001 - UI worker boundary
-            self.call_from_thread(self.notify, str(exc), severity="error")
+            self._post_ui(self.notify, str(exc), severity="error")
 
     def apply_saved_progress(self, pk: int, generation: int, activity: dict[str, Any]) -> None:
         if pk != self.activity_pk or generation != self.activity_generation:
@@ -933,9 +952,9 @@ class ScanApp(App[None]):
             raw = json.dumps(
                 {"configuration": selected[1].model_dump(), "manifest": manifest}, indent=2
             )
-            self.call_from_thread(self.apply_review, signature, selected, source, summary, raw)
+            self._post_ui(self.apply_review, signature, selected, source, summary, raw)
         except (ValueError, OSError) as exc:
-            self.call_from_thread(self.review_failed, signature, str(exc))
+            self._post_ui(self.review_failed, signature, str(exc))
 
     def review_failed(self, signature: ReviewSignature, message: str) -> None:
         if signature == self.capture_config():
@@ -1018,6 +1037,8 @@ class ScanApp(App[None]):
         self.post_message(self.Finished(result))
 
     def on_scan_app_progress(self, message: Progress) -> None:
+        if not self.is_running or not self.screen_stack:
+            return
         event = message.event
         self.current_stage = event.stage.replace("_", " ")
         self.active_run_id = event.run_id
@@ -1036,6 +1057,8 @@ class ScanApp(App[None]):
             self.screen_stack[0].query_one("#progress-log", Log).write_line(line)
 
     def on_scan_app_finished(self, message: Finished) -> None:
+        if not self.is_running or not self.screen_stack:
+            return
         self.scanning = False
         self.active_result = message.result
         self.screen_stack[0].query_one("#cancel", Button).disabled = True
@@ -1070,9 +1093,9 @@ class ScanApp(App[None]):
     def export_run(self, pk: int, fmt: ExportFormat, output: str) -> None:
         try:
             path = self.service.export(pk, fmt, output)
-            self.call_from_thread(self.show_export, path)
+            self._post_ui(self.show_export, path)
         except Exception as exc:  # noqa: BLE001 - UI worker boundary
-            self.call_from_thread(self.notify, str(exc), severity="error")
+            self._post_ui(self.notify, str(exc), severity="error")
 
     def show_export(self, path: str) -> None:
         self.screen_stack[0].query_one("#export-path", Static).update(path)
