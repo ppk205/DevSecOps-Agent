@@ -146,6 +146,21 @@ func TestFR71EmptyFilterAndClipboard(t *testing.T) {
 		t.Fatal("clipboard messages were not delivered to the focused input")
 	}
 }
+func TestScanSendsReviewedTargetNotEditedFields(t *testing.T) {
+	// begin() must scan the reviewed snapshot, not the live form field.
+	// Regression: Ctrl+E reviewed checkout A, user edited the form to B,
+	// Ctrl+S guard blocks until re-review; restoring A scans A.
+	reviewed := service.Config{Profile: "fast"}
+	m := New(&fakeAPI{})
+	m.ready = true
+	m.reviewed = &reviewed
+	m.reviewSignature = m.signature()
+	m.reviewedCheckout = "C:/work/reviewed-checkout"
+	m.inputs[0].SetValue("C:/work/attacker-swapped")
+	if m.reviewedTarget() != "C:/work/reviewed-checkout" {
+		t.Fatalf("review snapshot lost: %q", m.reviewedTarget())
+	}
+}
 func BenchmarkQR21Navigation(b *testing.B) {
 	m := New(&fakeAPI{})
 	m.ready = true

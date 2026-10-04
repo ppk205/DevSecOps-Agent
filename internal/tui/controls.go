@@ -60,6 +60,7 @@ func (m *Model) invalidateReview(field int) {
 	}
 	m.reviewGeneration++
 	m.reviewed = nil
+	m.reviewedCheckout = ""
 	m.status = "Settings changed. Ctrl+E reviews the current scan."
 }
 func (m *Model) clearEvidence() {
@@ -169,6 +170,7 @@ func (m *Model) reviewCmd() tea.Cmd {
 		edited[index] = value
 	}
 	m.reviewed = nil
+	m.reviewedCheckout = ""
 	m.reviewGeneration++
 	generation, signature, api := m.reviewGeneration, m.signature(), m.api
 	m.status = "Reviewing checkout…"
@@ -178,7 +180,7 @@ func (m *Model) reviewCmd() tea.Cmd {
 			return loaded{kind: "review", generation: generation, err: err}
 		}
 		result, err := api.Review(context.Background(), values[0], cfg)
-		return loaded{kind: "review", generation: generation, value: reviewResult{cfg, signature, result}, err: err}
+		return loaded{kind: "review", generation: generation, value: reviewResult{config: cfg, signature: signature, target: values[0], result: result}, err: err}
 	}
 }
 func (m *Model) evidenceCmd() tea.Cmd {

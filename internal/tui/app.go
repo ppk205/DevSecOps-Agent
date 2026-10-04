@@ -47,7 +47,19 @@ type finishedMsg struct {
 type reviewResult struct {
 	config    service.Config
 	signature string
+	target    string
 	result    map[string]any
+}
+
+// reviewedTarget returns the checkout target captured at review time.
+// The Ctrl+S guard already forces signature equality, so begin() must scan
+// the reviewed snapshot — never the live form field, which the user may
+// have edited after Ctrl+E.
+func (m *Model) reviewedTarget() string {
+	if m.reviewed == nil {
+		return ""
+	}
+	return m.reviewedCheckout
 }
 type Model struct {
 	api                API
@@ -79,6 +91,7 @@ type Model struct {
 	edited             map[int]bool
 	reviewSignature    string
 	reviewed           *service.Config
+	reviewedCheckout   string
 	dirty              bool
 	status             string
 	availability       string
@@ -227,7 +240,10 @@ func (m *Model) begin(retry bool) tea.Cmd {
 	ctx, cancel := context.WithCancel(context.Background())
 	m.cancelRun = cancel
 	api, send, id := m.api, m.Send, m.selected
-	config, checkout := m.reviewed, m.inputs[0].Value()
+	config, checkout := m.reviewed, m.reviewedTarget()
+	if checkout == "" {
+		checkout = m.inputs[0].Value()
+	}
 	return func() tea.Msg {
 		progress := func(e bridge.Event) {
 			if send != nil {
@@ -345,7 +361,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if msg.generation == m.reviewGeneration {
 				result := msg.value.(reviewResult)
 				data, _ := json.MarshalIndent(result.result, "", "  ")
-				m.reviewText = reviewSummary(m.inputs[0].Value(), result.config, result.result)
+				m.reviewText = reviewSummary(result.target, result.config, result.result)
 				m.reviewRaw = string(data)
 				m.rawReview = false
 				m.review.SetContent(m.reviewText)
@@ -353,6 +369,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.reviewMode, m.editing = true, false
 				m.reviewSignature = result.signature
 				m.reviewed = &result.config
+				m.reviewedCheckout = result.target
 				m.status = "Settings reviewed. Ctrl+S starts this scan."
 			}
 		case "export":

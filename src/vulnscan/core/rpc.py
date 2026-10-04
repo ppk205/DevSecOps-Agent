@@ -20,6 +20,7 @@ from vulnscan.contracts import ExportFormat
 from vulnscan.core.config import ScanConfig, resolve_config
 from vulnscan.core.scan_service import ScanService, checkout_manifest
 from vulnscan.core.security import sanitize
+from vulnscan.core.source import resolve_source
 from vulnscan.core.stdio_worker import MAX_MESSAGE_BYTES, PROTOCOL_VERSION
 from vulnscan.scanners.process import ScanCancelled, _cancel_check
 from vulnscan.version import APP_VERSION
@@ -208,12 +209,21 @@ class ServiceRPC:
             ).model_dump()
         if method == "review":
             config = ScanConfig.model_validate(params["configuration"])
-            manifest = checkout_manifest(
+            source = resolve_source(
                 str(params["checkout"]),
+                str(params.get("workdir", "harness")),
+                str(params.get("commit", "")),
+            )
+            manifest = checkout_manifest(
+                source.checkout,
                 config,
-                expected=str(params.get("commit", "")),
+                expected=source.commit or str(params.get("commit", "")),
                 excluded=self.service.runtime_paths(config),
             )
+            manifest = dict(manifest)
+            manifest["resolved_checkout"] = source.checkout
+            manifest["repo_url"] = source.repo_url
+            manifest["commit_sha"] = source.commit
             return {"manifest": manifest, "configuration": config.model_dump()}
         if method == "capabilities":
             return [

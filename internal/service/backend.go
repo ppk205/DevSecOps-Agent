@@ -56,7 +56,7 @@ func (b *Backend) Finding(ctx context.Context, id, findingID string) (json.RawMe
 }
 func (b *Backend) Review(ctx context.Context, checkout string, config Config) (map[string]any, error) {
 	var result map[string]any
-	err := b.Client.Call(ctx, "review", map[string]any{"checkout": checkout, "configuration": config}, &result, nil)
+	err := b.Client.Call(ctx, "review", map[string]any{"checkout": checkout, "workdir": "harness", "commit": "", "configuration": config}, &result, nil)
 	return result, err
 }
 func (b *Backend) Run(ctx context.Context, params map[string]any, event func(bridge.Event)) (map[string]any, error) {
