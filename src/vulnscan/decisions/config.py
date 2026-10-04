@@ -18,6 +18,25 @@ _TRUE_MODES = {"shadow", "advisory", "off"}
 _FALSE_MODES = {"off", "disabled"}
 
 
+def _import_torch() -> bool:
+    """Import torch lazily; unit tests must never require the heavy dep."""
+    try:
+        import torch  # noqa: F401
+    except ImportError:
+        return False
+    return True
+
+
+def _torch_cuda_ok() -> bool:
+    """True only when CUDA is importable *and* a device answers."""
+    try:
+        import torch
+
+        return bool(torch.cuda.is_available())
+    except (ImportError, RuntimeError):
+        return False
+
+
 @dataclass(frozen=True)
 class LayaConfig:
     """Validated Laya settings; defaults keep the baseline behaviour intact."""
@@ -27,9 +46,9 @@ class LayaConfig:
     model_id: str = MODEL_ID
     revision: str | None = MODEL_REVISION
     device: str = "auto"
-    batch_size: int = 4
+    batch_size: int = 1
     max_input_tokens: int = MAX_INPUT_TOKENS
-    timeout_seconds: int = 30
+    timeout_seconds: int = 300
     cache_enabled: bool = True
     high_confidence_threshold: float = HIGH_CONFIDENCE_THRESHOLD
     review_threshold: float = REVIEW_THRESHOLD
@@ -39,6 +58,12 @@ class LayaConfig:
         """Reject configurations that could grant Laya status authority."""
         if self.mode not in _TRUE_MODES | _FALSE_MODES:
             raise ValueError(f"unsupported Laya mode: {self.mode!r}")
+        if self.device not in {"auto", "cuda", "cpu"}:
+            raise ValueError("device must be one of: auto, cuda, cpu")
+        if self.device == "cuda":
+            _import_torch()
+            if not _torch_cuda_ok():
+                raise ValueError("device 'cuda' requested but torch.cuda is unavailable")
         if self.batch_size < 1:
             raise ValueError("batch_size must be >= 1")
         if self.max_input_tokens < 1:

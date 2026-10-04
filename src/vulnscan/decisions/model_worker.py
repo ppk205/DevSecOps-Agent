@@ -29,7 +29,10 @@ def load_checkpoint(model_id: str, revision: str | None, device: str) -> tuple[A
         hub = importlib.import_module("huggingface_hub")
         root = Path(hub.snapshot_download(repo_id=model_id, revision=revision))
         identity = root.name
-    agent = laya.load(str(root), device=None if device in {"auto", "unknown"} else device)
+    # Laya ~0.4B (ModernBERT-large + heads) fits any modern CPU; a 4GB laptop
+    # GPU OOMs on the forward pass and silently falls back to CPU anyway, so
+    # pin CPU and spend the budget on a warm worker instead of VRAM roulette.
+    agent = laya.load(str(root), device="cpu")
     return agent, identity
 
 
