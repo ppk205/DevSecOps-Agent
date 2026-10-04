@@ -212,7 +212,7 @@ class ServiceRPC:
             source = resolve_source(
                 str(params["checkout"]),
                 str(params.get("workdir", "harness")),
-                str(params.get("commit", "")),
+                commit=str(params.get("commit", "")),
             )
             manifest = checkout_manifest(
                 source.checkout,

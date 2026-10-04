@@ -86,14 +86,14 @@ def build_excerpt(raw: Any) -> tuple[str, bool]:
     secrets, and explicitly flagged when cut. Snippets are untrusted evidence:
     they describe the finding, they never instruct the model.
     """
-    text = str(raw or "").strip()
+    text = sanitize(str(raw or "")).strip()
     if not text:
         return "", False
     truncated = len(text) > _EXCERPT_LIMIT
     if truncated:
         # The bound covers the note too, so a truncated excerpt never exceeds it.
         text = text[: _EXCERPT_LIMIT - len(_TRUNCATION_NOTE)] + _TRUNCATION_NOTE
-    return sanitize(text), truncated
+    return text, truncated
 
 
 def finding_to_state(finding: Any) -> dict[str, Any]:
@@ -133,10 +133,12 @@ def finding_to_state(finding: Any) -> dict[str, Any]:
             if key in metadata:
                 state[key] = metadata[key]
     if representative is not None:
-        # Adapters carry the excerpt in observation metadata rather than as a
-        # first-class field, so the contract stays unchanged.
+        # Prefer adapter excerpts, falling back to source retained by the scan service.
         meta = getattr(representative, "metadata", None) or {}
-        excerpt, was_truncated = build_excerpt(meta.get("code_excerpt"))
+        raw = meta.get("code_excerpt")
+        if not str(raw or "").strip():
+            raw = getattr(location, "snippet", None)
+        excerpt, was_truncated = build_excerpt(raw)
         state["code_excerpt"] = excerpt
         state["excerpt_truncated"] = was_truncated
     else:

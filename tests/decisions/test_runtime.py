@@ -9,7 +9,9 @@ import time
 import pytest
 
 from tests.decisions.test_batching import BatchAgent, _finding
+from vulnscan.contracts.decision import DecisionStatus
 from vulnscan.core.stdio_worker import JSONWorker
+from vulnscan.decisions import laya
 from vulnscan.decisions.batching import triage_many_batched
 from vulnscan.decisions.laya import LayaDecisionBackend
 from vulnscan.decisions.state import build_evidence_state, model_state
@@ -43,6 +45,56 @@ def test_production_backend_uses_one_batch_call():
     assert all(o.result.model_id == "custom/checkpoint" for o in outcomes)
     assert all(o.result.model_revision == "test-revision" for o in outcomes)
     assert agent.single_calls == 0
+
+
+def test_qr21_missing_laya_does_not_start_a_worker_for_each_finding(mocker):
+    availability = mocker.patch.object(laya.importlib.util, "find_spec", return_value=None)
+    call = mocker.patch.object(laya._process_worker, "call")
+    backend = LayaDecisionBackend()
+
+    outcomes = triage_many_batched(
+        [_finding(f"F-{i}") for i in range(8)], backend, build_triage_questions(), batch_size=1
+    )
+
+    assert len(outcomes) == 8
+    assert all(o.result.status is DecisionStatus.UNAVAILABLE for o in outcomes)
+    assert all(o.result.error_code == "dependency_unavailable" for o in outcomes)
+    assert all(o.route.route == "baseline_fallback" for o in outcomes)
+    assert all(o.result.state_hash for o in outcomes)
+    availability.assert_called_once_with("laya")
+    call.assert_not_called()
+
+
+def test_qr21_child_dependency_failure_is_retained_for_later_batches(mocker):
+    worker = mocker.Mock(spec=JSONWorker)
+    worker.call.side_effect = ImportError("missing model dependency")
+    backend = LayaDecisionBackend(worker=worker)
+
+    outcomes = triage_many_batched(
+        [_finding(f"F-{i}") for i in range(8)], backend, build_triage_questions(), batch_size=1
+    )
+
+    assert all(o.result.error_code == "dependency_unavailable" for o in outcomes)
+    worker.call.assert_called_once()
+
+
+def test_qr21_transient_timeout_allows_a_later_worker_call(mocker):
+    from tests.decisions.test_batching import _answers
+
+    worker = mocker.Mock(spec=JSONWorker)
+    worker.call.side_effect = [
+        TimeoutError("deadline exceeded"),
+        {"rows": [{"answers": _answers("unused")}], "model_revision": "test", "device": "cpu"},
+    ]
+    backend = LayaDecisionBackend(worker=worker)
+
+    outcomes = triage_many_batched(
+        [_finding("F-0"), _finding("F-1")], backend, build_triage_questions(), batch_size=1
+    )
+
+    assert outcomes[0].result.error_code == "timeout"
+    assert outcomes[1].result.status is DecisionStatus.COMPLETED
+    assert worker.call.call_count == 2
 
 
 def test_hash_is_of_the_exact_bounded_inference_payload():
