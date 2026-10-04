@@ -30,7 +30,11 @@ jobs:
       - run: uv sync --frozen --extra dev
       - run: uv run --frozen ruff check src tests ci
       - run: uv run --frozen ruff format --check src tests ci
-      - run: uv run --frozen mypy src/vulnscan
+      - name: Check types for supported platforms
+        run: |
+          uv run --frozen mypy --platform linux src/vulnscan
+          uv run --frozen mypy --platform darwin src/vulnscan
+          uv run --frozen mypy --platform win32 src/vulnscan
   native:
     strategy:
       fail-fast: false
