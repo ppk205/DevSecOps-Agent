@@ -1,4 +1,5 @@
 rules:
+  # ─── Injection ──────────────────────────────────────────────────────
   - id: java-sql-concatenation
     languages: [java]
     severity: ERROR
@@ -10,6 +11,56 @@ rules:
       - pattern: $S.executeQuery($A + $B)
       - pattern: $S.executeUpdate($A + $B)
       - pattern: $S.execute($A + $B)
+      - pattern: $S.executeQuery("..." + $A)
+      - pattern: $S.executeUpdate("..." + $A)
+
+  - id: java-xss-response-writer
+    languages: [java]
+    severity: ERROR
+    mode: taint
+    message: Request data reaches an HTTP response without escaping; use a safe encoder.
+    metadata:
+      cwe: ['CWE-79: Cross-site Scripting (Reflected XSS)']
+      version: '0.2.0'
+    # Taint mode, not a pattern match. A pattern on getWriter().write() alone
+    # flagged every static JSON body on a real repo (15 of 20 hits), because
+    # the sink exists in all of them; only the dataflow says whether it is
+    # actually injectable.
+    pattern-sources:
+      - pattern: $REQ.getParameter(...)
+      - pattern: $REQ.getHeader(...)
+      - pattern: $REQ.getQueryString()
+      - pattern: $REQ.getCookies()
+      - pattern: $REQ.getPathInfo()
+      - pattern: $REQ.getReader()
+      - pattern: $REQ.getInputStream()
+    pattern-sinks:
+      - pattern: $R.getWriter().write(...)
+      - pattern: $R.getWriter().print(...)
+      - pattern: $R.getWriter().println(...)
+      - pattern: $R.getOutputStream().write(...)
+      - pattern: $R.getOutputStream().print(...)
+    pattern-sanitizers:
+      - pattern: org.apache.commons.text.StringEscapeUtils.escapeHtml4(...)
+      - pattern: org.apache.commons.lang3.StringEscapeUtils.escapeHtml4(...)
+      - pattern: org.springframework.web.util.HtmlUtils.htmlEscape(...)
+      - pattern: $S.encodeForHTML(...)
+      - pattern: $S.escapeHtml4(...)
+      - pattern: $S.htmlEscape(...)
+
+  - id: java-path-traversal-file
+    languages: [java]
+    severity: ERROR
+    message: File path includes externally controlled input; validate or canonicalize.
+    metadata:
+      cwe: ['CWE-22: Path Traversal']
+      version: '0.2.0'
+    pattern-either:
+      - pattern: new java.io.File("..." + $X)
+      - pattern: new java.io.FileInputStream("..." + $X)
+      - pattern: new java.io.FileOutputStream("..." + $X)
+      - pattern: new java.io.File($X + "...")
+
   - id: java-command-execution
     languages: [java]
     severity: ERROR
@@ -18,6 +69,21 @@ rules:
       cwe: ['CWE-78: OS Command Injection']
       version: '0.2.0'
     pattern: Runtime.getRuntime().exec($CMD)
+
+  - id: java-xxe-document-builder
+    languages: [java]
+    severity: ERROR
+    message: DocumentBuilder without secure processing is vulnerable to XXE.
+    metadata:
+      cwe: ['CWE-611: XML External Entity Injection']
+      version: '0.2.0'
+    pattern-either:
+      - pattern: javax.xml.parsers.DocumentBuilderFactory.newInstance().newDocumentBuilder()
+      - pattern: javax.xml.transform.TransformerFactory.newInstance().newTransformer()
+      - pattern: DocumentBuilderFactory.newInstance().newDocumentBuilder()
+      - pattern: TransformerFactory.newInstance().newTransformer()
+
+  # ─── Cryptography ──────────────────────────────────────────────────
   - id: java-weak-digest
     languages: [java]
     severity: WARNING
@@ -28,3 +94,92 @@ rules:
     pattern-either:
       - pattern: MessageDigest.getInstance("MD5")
       - pattern: MessageDigest.getInstance("SHA-1")
+
+  - id: java-weak-cipher
+    languages: [java]
+    severity: ERROR
+    message: Replace the weak cipher with AES-256-GCM or equivalent.
+    metadata:
+      cwe: ['CWE-327: Broken Cryptographic Algorithm']
+      version: '0.2.0'
+    pattern-either:
+      - pattern: javax.crypto.Cipher.getInstance("DES")
+      - pattern: javax.crypto.Cipher.getInstance("3DES")
+      - pattern: javax.crypto.Cipher.getInstance("DESede")
+      - pattern: javax.crypto.Cipher.getInstance("Blowfish")
+      - pattern: Cipher.getInstance("DES")
+      - pattern: Cipher.getInstance("3DES")
+      - pattern: Cipher.getInstance("DESede")
+      - pattern: Cipher.getInstance("Blowfish")
+
+  - id: java-weak-cipher-secret-key
+    languages: [java]
+    severity: WARNING
+    message: Secret key uses a legacy algorithm; switch to AES-256.
+    metadata:
+      cwe: ['CWE-327: Broken Cryptographic Algorithm']
+      version: '0.2.0'
+    pattern-either:
+      - pattern: new javax.crypto.spec.SecretKeySpec($X, "DES")
+      - pattern: new javax.crypto.spec.SecretKeySpec($X, "3DES")
+      - pattern: new javax.crypto.spec.SecretKeySpec($X, "DESede")
+
+  # ─── Deserialization / SSRF ───────────────────────────────────────
+  - id: java-unsafe-deserialization
+    languages: [java]
+    severity: ERROR
+    message: ObjectInputStream.readObject enables deserialization attacks; use safe data formats.
+    metadata:
+      cwe: ['CWE-502: Deserialization of Untrusted Data']
+      version: '0.2.0'
+    pattern-either:
+      - pattern: $IN.readObject()
+      - pattern: $OIS.readObject()
+
+  - id: java-unsafe-deserialization-objectmapper
+    languages: [java]
+    severity: WARNING
+    message: ObjectMapper default typing allows polymorphic deserialization exploits.
+    metadata:
+      cwe: ['CWE-502: Deserialization of Untrusted Data']
+      version: '0.2.0'
+    pattern-either:
+      - pattern: $MAPPER.enableDefaultTyping()
+      - pattern: $MAPPER.enableDefaultTyping($POLYMORPHIC)
+      - pattern: $MAPPER.activateDefaultTyping($TL)
+
+  # ─── Randomness / TLS / AuthZ ─────────────────────────────────────
+  - id: java-insecure-random
+    languages: [java]
+    severity: WARNING
+    message: java.util.Random is predictable in security contexts; use SecureRandom.
+    metadata:
+      cwe: ['CWE-330: Use of Insufficiently Random Values']
+      version: '0.2.0'
+    pattern-either:
+      - pattern: new java.util.Random()
+      - pattern: new java.util.Random($SEED)
+      - pattern: java.lang.Math.random()
+
+  - id: java-trust-all-certificates
+    languages: [java]
+    severity: ERROR
+    message: Trusting all certificates disables TLS peer verification.
+    metadata:
+      cwe: ['CWE-295: Improper Certificate Validation']
+      version: '0.2.0'
+    pattern-either:
+      - pattern: javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier($X)
+      - pattern: HttpsURLConnection.setDefaultHostnameVerifier($X)
+      - pattern: $CTX.init($KS, $TM, $R)
+
+  - id: java-permissive-cors
+    languages: [java]
+    severity: WARNING
+    message: Wildcard CORS origin disables cross-origin protections.
+    metadata:
+      cwe: ['CWE-942: Permissive Cross-domain Policy']
+      version: '0.2.0'
+    pattern-either:
+      - pattern: $R.addHeader("Access-Control-Allow-Origin", "*")
+      - pattern: $R.setHeader("Access-Control-Allow-Origin", "*")
