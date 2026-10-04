@@ -32,7 +32,7 @@ func (m Model) footer() string {
 	case m.tab == 4:
 		hint = "Tab: next · Enter: edit/choose · Ctrl+O: export named run"
 	}
-	global := "Ctrl+K: actions · Ctrl+N: new scan · Ctrl+Q: quit"
+	global := "Ctrl+K: save key / actions · Ctrl+N: new scan · Ctrl+Q: quit"
 	if m.scanning {
 		global += " · Ctrl+X: cancel"
 	}
@@ -139,6 +139,30 @@ func (m Model) formView() string {
 	}
 	if m.tab == 4 {
 		lines = append(lines, "", "Export target: "+m.runLabel(m.target()))
+	}
+	if m.tab == 1 {
+		// API keys (values never shown): entry lives on the Workspace tab
+		// next to the scan configuration it authorizes. Ctrl+K saves from
+		// here (or whenever a key entry is in progress); elsewhere Ctrl+K
+		// keeps its newer role as the action menu (see FR71).
+		status := m.envStatus
+		if status == "" {
+			status = "Loading saved keys…"
+		}
+		lines = append(lines, "", "API keys (values never shown): "+status)
+		nameLabel, valueLabel := "  Variable", "  Value (hidden)"
+		if m.keyInput && m.keysFocus == 0 {
+			nameLabel = "> Variable"
+		}
+		if m.keyInput && m.keysFocus == 1 {
+			valueLabel = "> Value (hidden)"
+		}
+		lines = append(lines, nameLabel, "  "+m.keysName.View())
+		lines = append(lines, valueLabel, "  "+m.keysValue.View())
+		lines = append(lines, "  Ctrl+K: save to project .env")
+		if len(m.envNames) > 0 {
+			lines = append(lines, "", "Stored keys (values never shown):", "  "+strings.Join(m.envNames, "\n  "))
+		}
 	}
 	view := m.form
 	view.SetHeight(m.bodyHeight())

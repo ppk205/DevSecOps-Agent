@@ -230,6 +230,23 @@ class ServiceRPC:
                 asdict(adapter.capabilities())
                 for adapter in self.service.registry.adapters.values()
             ]
+        if method == "env_list":
+            # Keys management: return ONLY variable names — values never
+            # cross the RPC boundary (project .env, gitignored).
+            from vulnscan.infra.envfile import EnvFile
+
+            env = EnvFile()
+            return {"names": env.names(), "path": str(env.path)}
+        if method == "env_set":
+            # Save a secret to the project-local .env (permissions 0600).
+            # The raw value is accepted here but NEVER returned or logged;
+            # callers must pass it through and drop their copy afterwards.
+            from vulnscan.infra.envfile import EnvFile
+
+            name = str(params.get("name", "")).strip()
+            value = str(params.get("value", ""))
+            path = EnvFile().set(name, value)
+            return {"name": name.strip().upper().replace("-", "_"), "path": str(path)}
         if method == "cancel":
             self.service.cancel(pk)
             return {"cancel_requested": True}

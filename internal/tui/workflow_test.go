@@ -48,6 +48,8 @@ func (f *workflowAPI) Export(_ context.Context, id, format, output string) (stri
 	f.exported, f.exportedOutput = id, output
 	return output + "/export." + format, nil
 }
+func (f *workflowAPI) EnvList(context.Context) ([]string, error) { return nil, nil }
+func (f *workflowAPI) EnvSet(context.Context, string, string) error { return nil }
 func keyState(m Model, key tea.KeyPressMsg) (Model, tea.Cmd) {
 	state, cmd := m.Update(key)
 	return state.(Model), cmd

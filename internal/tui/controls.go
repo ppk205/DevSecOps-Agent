@@ -241,10 +241,34 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 		}
 		return m, tea.Quit
 	}
-	if key == "ctrl+k" {
-		m.menu = !m.menu
-		m.menuCursor = 0
-		return m, nil
+	if key == "ctrl+k" && !m.keyInput {
+		if m.tab == 1 || m.keysName.Focused() || m.keysValue.Focused() {
+		// Save one API key to the project-local .env. Only the variable
+		// NAME is ever shown or listed again; the value is passed through
+		// once and dropped (EchoPassword on the value field).
+		name := strings.TrimSpace(m.keysName.Value())
+		if name == "" {
+			m.envStatus = "Type a VARIABLE_NAME first."
+			m.keyInput = true
+			m.keysFocus = 0
+			m.keysValue.Blur()
+			return m, m.keysName.Focus()
+		}
+		value := m.keysValue.Value()
+		m.keysValue.SetValue("")
+		m.envStatus = "Saving " + strings.ToUpper(strings.ReplaceAll(name, "-", "_")) + "…"
+		api := m.api
+		return m, func() tea.Msg {
+			if err := api.EnvSet(context.Background(), name, value); err != nil {
+				return loaded{kind: "keys", err: err}
+			}
+			names, err := api.EnvList(context.Background())
+			return loaded{kind: "keys", value: names, err: err}
+		}
+	}
+	// Elsewhere Ctrl+K keeps its newer role: open the action menu (FR71).
+	m.menu, m.menuCursor = true, 0
+	return m, nil
 	}
 	if m.menu {
 		switch key {
@@ -331,6 +355,14 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 	}
 	if key == "esc" {
 		switch {
+		case m.keyInput:
+			// Leaving key entry keeps whatever is typed; Ctrl+K saves it.
+			m.keyInput = false
+			if m.keysFocus == 0 {
+				m.keysValue.Blur()
+			} else {
+				m.keysName.Blur()
+			}
 		case m.editing:
 			m.editing = false
 			m.inputs[m.field].Blur()
@@ -385,6 +417,16 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 		return m, cmd
 	}
 	if m.tab == 1 || m.tab == 4 {
+		if key == "tab" && m.keyInput {
+			// Inside API-key entry: Tab moves name -> value -> name.
+			m.keysFocus = (m.keysFocus + 1) % 2
+			if m.keysFocus == 0 {
+				m.keysValue.Blur()
+				return m, m.keysName.Focus()
+			}
+			m.keysName.Blur()
+			return m, m.keysValue.Focus()
+		}
 		if key == "ctrl+a" && m.tab == 1 && !m.editing {
 			m.advanced = !m.advanced
 			m.field = advancedControl
@@ -498,6 +540,16 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 func (m Model) handleInput(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if m.keyInput {
+		// Typing an API key: name field first, value (hidden) after.
+		var cmd tea.Cmd
+		if m.keysFocus == 0 {
+			m.keysName, cmd = m.keysName.Update(msg)
+		} else {
+			m.keysValue, cmd = m.keysValue.Update(msg)
+		}
+		return m, cmd
+	}
 	if (m.tab == 1 || m.tab == 4) && m.editing && m.field >= 0 && len(choices[m.field]) == 0 {
 		old := m.inputs[m.field].Value()
 		var cmd tea.Cmd

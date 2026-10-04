@@ -29,6 +29,11 @@ type API interface {
 	Cancel(context.Context, string) error
 	Export(context.Context, string, string, string) (string, error)
 	Capabilities(context.Context) ([]map[string]any, error)
+	// EnvList/EnvSet manage API keys in the project-local .env.
+	// EnvList returns ONLY variable names (values are never shown);
+	// EnvSet saves one secret (values are never logged or returned).
+	EnvList(context.Context) ([]string, error)
+	EnvSet(context.Context, string, string) error
 }
 type loaded struct {
 	kind       string
@@ -112,6 +117,12 @@ type Model struct {
 	reviewRaw          string
 	menu               bool
 	menuCursor         int
+	envNames           []string
+	envStatus          string
+	keysName           textinput.Model
+	keysValue          textinput.Model
+	keysFocus          int
+	keyInput           bool
 	activityID         string
 	activityGeneration uint64
 	savedActivity      service.RunActivity
@@ -137,6 +148,16 @@ func New(api API) Model {
 	m.search = textinput.New()
 	m.search.Placeholder = "Search or severity:high cwe:89 scanner:semgrep"
 	m.search.SetWidth(70)
+	m.keysName = textinput.New()
+	m.keysName.Placeholder = "VARIABLE_NAME"
+	m.keysName.CharLimit = 128
+	m.keysName.SetWidth(60)
+	m.keysValue = textinput.New()
+	m.keysValue.Placeholder = "paste secret, then save"
+	m.keysValue.EchoMode = textinput.EchoPassword
+	m.keysValue.CharLimit = 4096
+	m.keysValue.SetWidth(60)
+	m.envStatus = "Loading saved keys…"
 	m.historyTable = table.New(table.WithColumns([]table.Column{{Title: "ID", Width: 6}, {Title: "Run", Width: 24}, {Title: "Status", Width: 15}, {Title: "Attempt", Width: 7}, {Title: "Started", Width: 22}}), table.WithFocused(true), table.WithHeight(12))
 	m.findingTable = table.New(table.WithColumns([]table.Column{{Title: "Severity", Width: 12}, {Title: "CWE", Width: 16}, {Title: "Status", Width: 15}, {Title: "Scanner", Width: 20}, {Title: "Title", Width: 40}}), table.WithFocused(true), table.WithHeight(10))
 	m.evidence = viewport.New(viewport.WithWidth(96), viewport.WithHeight(8))
@@ -154,6 +175,14 @@ func tick() tea.Cmd {
 }
 func (m Model) Init() tea.Cmd {
 	return tea.Batch(tick(), func() tea.Msg { return loaded{kind: "init", err: m.api.Init(context.Background())} })
+}
+
+// keysCmd lists stored API-key names ONLY — values never cross this boundary.
+func (m *Model) keysCmd() tea.Cmd {
+	return func() tea.Msg {
+		names, err := m.api.EnvList(context.Background())
+		return loaded{kind: "keys", value: names, err: err}
+	}
 }
 func (m *Model) historyCmd() tea.Cmd {
 	m.historyGeneration++
@@ -286,7 +315,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "init":
 			m.ready = true
 			m.status = "Ready"
-			cmds = append(cmds, m.historyCmd(), func() tea.Msg {
+			cmds = append(cmds, m.historyCmd(), m.keysCmd(), func() tea.Msg {
 				caps, err := m.api.Capabilities(context.Background())
 				return loaded{kind: "capabilities", value: caps, err: err}
 			})
@@ -371,6 +400,15 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.reviewed = &result.config
 				m.reviewedCheckout = result.target
 				m.status = "Settings reviewed. Ctrl+S starts this scan."
+			}
+		case "keys":
+			if names, ok := msg.value.([]string); ok {
+				m.envNames = names
+			}
+			if msg.err != nil {
+				m.envStatus = msg.err.Error()
+			} else if m.envStatus == "" || m.envStatus == "Loading saved keys…" {
+				m.envStatus = fmt.Sprintf("%d key(s) stored (values never shown)", len(m.envNames))
 			}
 		case "export":
 			m.status = "Exported: " + msg.value.(string)

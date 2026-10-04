@@ -97,6 +97,24 @@ func (b *Backend) Export(ctx context.Context, id, format, output string) (string
 	err := b.Client.Call(ctx, "export", map[string]any{"run_id": id, "format": format, "output": output}, &result, nil)
 	return result.Path, err
 }
+// EnvList returns ONLY stored variable names — values never leave .env.
+func (b *Backend) EnvList(ctx context.Context) ([]string, error) {
+	var result struct {
+		Names []string `json:"names"`
+	}
+	if err := b.Client.Call(ctx, "env_list", map[string]any{}, &result, nil); err != nil {
+		return nil, err
+	}
+	return result.Names, nil
+}
+
+// EnvSet saves one secret to the project-local .env.
+// The value is passed through once and never logged or returned.
+func (b *Backend) EnvSet(ctx context.Context, name, value string) error {
+	var result map[string]any
+	return b.Client.Call(ctx, "env_set", map[string]any{"name": name, "value": value}, &result, nil)
+}
+
 func (b *Backend) Capabilities(ctx context.Context) ([]map[string]any, error) {
 	var result []map[string]any
 	err := b.Client.Call(ctx, "capabilities", map[string]any{}, &result, nil)

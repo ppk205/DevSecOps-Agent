@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"sort"
+	"strings"
 	"testing"
 	"time"
 
@@ -47,6 +48,11 @@ func (f *fakeAPI) Export(context.Context, string, string, string) (string, error
 	return "", nil
 }
 func (f *fakeAPI) Capabilities(context.Context) ([]map[string]any, error) { f.calls++; return nil, nil }
+func (f *fakeAPI) EnvList(context.Context) ([]string, error) {
+	f.calls++
+	return []string{"MISTRAL_API_KEY"}, nil
+}
+func (f *fakeAPI) EnvSet(context.Context, string, string) error { f.calls++; return nil }
 func page(count int) service.FindingPage {
 	items := []service.FindingSummary{}
 	for i := 0; i < count; i++ {
@@ -197,5 +203,41 @@ func TestQR21NavigationLatencyAtTenThousandFindings(t *testing.T) {
 	t.Logf("10,000 findings, 200-row page: navigation/update/view p95 %.3f ms (terminal output excluded)", float64(p95)/float64(time.Millisecond))
 	if p95 > 100*time.Millisecond {
 		t.Fatalf("navigation exceeds responsiveness target: %v", p95)
+	}
+}
+
+func TestKeysSaveNeverRevealsValues(t *testing.T) {
+	m := New(&fakeAPI{})
+	m.ready = true
+	m.tab = 1
+	// Names-only listing: the value field must not leak into names/status.
+	updated, _ := m.Update(loaded{kind: "keys", value: []string{"MISTRAL_API_KEY"}})
+	m = updated.(Model)
+	if len(m.envNames) != 1 || m.envNames[0] != "MISTRAL_API_KEY" {
+		t.Fatalf("expected one stored key name, got %v", m.envNames)
+	}
+	for _, view := range []string{m.review.View(), fmt.Sprint(m.envStatus)} {
+		if strings.Contains(view, "secret") {
+			t.Fatal("stored listing leaked a secret value")
+		}
+	}
+	// Saving clears the value input immediately (pass-through, then drop).
+	m.tab = 1
+	m.keysName.SetValue("provider_api_key")
+	m.keysValue.SetValue("sensitivesecret")
+	updated, cmd := m.Update(tea.KeyPressMsg{Code: 'k', Mod: tea.ModCtrl})
+	m = updated.(Model)
+	if cmd == nil {
+		t.Fatal("Ctrl+K produced no save command")
+	}
+	if m.keysValue.Value() != "" {
+		t.Fatal("value field was not cleared on save")
+	}
+	// Key entry focuses name first; Tab cycles name -> value.
+	m.keysName.SetValue("")
+	updated, _ = m.Update(tea.KeyPressMsg{Code: 'k', Mod: tea.ModCtrl})
+	m = updated.(Model)
+	if !m.keyInput || m.keysFocus != 0 {
+		t.Fatal("Ctrl+K with empty name did not enter key-input mode")
 	}
 }
