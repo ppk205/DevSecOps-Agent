@@ -228,7 +228,7 @@ class ScanPipeline:
         backend = LayaDecisionBackend(
             model_id=self.laya_config.model_id,
             model_revision=self.laya_config.revision,
-            device=self.laya_config.device,
+            device="cpu",
             max_input_tokens=self.laya_config.max_input_tokens,
             timeout_seconds=self.laya_config.timeout_seconds,
         )
