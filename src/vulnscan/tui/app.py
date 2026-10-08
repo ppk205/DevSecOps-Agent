@@ -499,7 +499,9 @@ class ScanApp(App[None]):
         target = self._keys_widget()
         if target is None:
             return
-        target.update("\n".join(f"{name} (stored, value hidden)" for name in names) or "No keys stored")
+        target.update(
+            "\n".join(f"{name} (stored, value hidden)" for name in names) or "No keys stored"
+        )
 
     def _keys_widget(self) -> Static | None:
         """Return the keys list widget, or None when the screen is gone."""
