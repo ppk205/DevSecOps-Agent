@@ -1,0 +1,82 @@
+[
+  {
+    "index": 12,
+    "finding_id": "2ccdae50901961fe",
+    "verdict": "false_positive",
+    "expected_route": "low_priority",
+    "confidence": 0.95,
+    "reason": "Sink is System.out.println (server console), not an HTTP writer. name/address/description are echoed only to stdout for debugging; nothing is returned to the client at this line.",
+    "evidence": "ShopRegistrationServlet.java:95 - System.out.println(\"DEBUG ShopRegistrationServlet - name: '\" + name + ...); console sink",
+    "labelled_by": "hermes-agent"
+  },
+  {
+    "index": 13,
+    "finding_id": "840c73463eeeb628",
+    "verdict": "false_positive",
+    "expected_route": "low_priority",
+    "confidence": 0.95,
+    "reason": "ensureColumn concatenates nothing at the sink; stmt.execute(alterSql) runs a fully-formed ALTER passed in as a parameter. Every one of the 6 call sites passes a compile-time ALTER TABLE literal and a literal table/column name.",
+    "evidence": "CartDAO.java:580-584 definition; call sites CartDAO.java:517,518,522,526,530,534 all string literals",
+    "labelled_by": "hermes-agent"
+  },
+  {
+    "index": 14,
+    "finding_id": "7bc5f031ff9dd647",
+    "verdict": "false_positive",
+    "expected_route": "low_priority",
+    "confidence": 0.95,
+    "reason": "Same shape as idx13: ensureConstraint executes a pre-built alterSql argument; all call sites pass literals. columnExists/constraintExists use PreparedStatement with ? binds.",
+    "evidence": "CartDAO.java:597-601 definition; call sites CartDAO.java:534,551 pass literals; existence checks parameterized at CartDAO.java:604-605",
+    "labelled_by": "hermes-agent"
+  },
+  {
+    "index": 15,
+    "finding_id": "aab8f16d7133dd18",
+    "verdict": "false_positive",
+    "expected_route": "low_priority",
+    "confidence": 0.95,
+    "reason": "countRows builds 'SELECT COUNT(*) FROM ' + tableName, but both call sites pass the literal \"book_metrics\". No request data reaches it.",
+    "evidence": "DBUtil.java:834-835 sink; call sites DBUtil.java:791 and 823 both countRows(conn, \"book_metrics\")",
+    "labelled_by": "hermes-agent"
+  },
+  {
+    "index": 16,
+    "finding_id": "1aa8ce4ea87c9f78",
+    "verdict": "false_positive",
+    "expected_route": "low_priority",
+    "confidence": 0.95,
+    "reason": "coerceColumnToVarchar concatenates table/column/length into an ALTER TYPE statement; all 6 call sites pass literal table and column names plus a literal int length and a quoted literal default.",
+    "evidence": "DBUtil.java:882 typeSql sink; call sites DBUtil.java:849-854 (orders/status, orders/payment_status, orders/payment_method, order_status_history/status, order_payments/method, order_payments/status)",
+    "labelled_by": "hermes-agent"
+  },
+  {
+    "index": 17,
+    "finding_id": "b4a8db6d21d82b2f",
+    "verdict": "false_positive",
+    "expected_route": "low_priority",
+    "confidence": 0.95,
+    "reason": "SET DEFAULT statement built by concatenation; defaultValue is a quoted SQL literal ('new','unpaid','cod','pending') or null at every call site.",
+    "evidence": "DBUtil.java:892 defaultSql sink; call sites DBUtil.java:849-854 pass \"'new'\", \"'unpaid'\", \"'cod'\", null, \"'cod'\", \"'pending'\"",
+    "labelled_by": "hermes-agent"
+  },
+  {
+    "index": 18,
+    "finding_id": "10b2c513f1b1b717",
+    "verdict": "false_positive",
+    "expected_route": "low_priority",
+    "confidence": 0.95,
+    "reason": "addCheckConstraint builds 'ALTER TABLE '+table+' ADD CONSTRAINT '+name+' CHECK ('+expression+')'. All 5 call sites pass literal table, literal constraint name and a literal enum CHECK expression; this is schema bootstrap code, not a request path.",
+    "evidence": "DBUtil.java:902-906 sink; call sites DBUtil.java:863-867",
+    "labelled_by": "hermes-agent"
+  },
+  {
+    "index": 19,
+    "finding_id": "93adc26bf05c3aad",
+    "verdict": "false_positive",
+    "expected_route": "low_priority",
+    "confidence": 0.95,
+    "reason": "dropConstraintIfExists builds an ALTER TABLE DROP CONSTRAINT; the single call site passes literal \"orders\" and \"chk_orders_status_text\".",
+    "evidence": "DBUtil.java:912-914 sink; call site DBUtil.java:862",
+    "labelled_by": "hermes-agent"
+  }
+]

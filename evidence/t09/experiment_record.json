@@ -1,4 +1,5 @@
 {
+  "metrics_schema_version": 2,
   "protocol": {
     "model_id": "convaiinnovations/laya",
     "model_revision": "aa8c91ca088ec597df95a0d1c76b3063cb2ae5e8",
@@ -9,29 +10,142 @@
   "routing": {
     "total": 29,
     "route_counts": {
-      "human_review": 18,
-      "low_priority": 11
+      "low_priority": 25,
+      "human_review": 4
     },
     "unavailable": 0,
-    "route_accuracy": null,
+    "route_accuracy": 0.551724,
+    "false_escalations": 4,
+    "missed_escalations": 0,
+    "dangerous_downgrades": 9,
+    "false_escalation_rate": 0.137931,
+    "scored_routes": 29,
+    "by_cwe": {
+      "CWE-79": {
+        "n": 13,
+        "correct": 9,
+        "accuracy": 0.692308
+      },
+      "CWE-89": {
+        "n": 11,
+        "correct": 7,
+        "accuracy": 0.636364
+      },
+      "CWE-UNCLASSIFIED": {
+        "n": 5,
+        "correct": 0,
+        "accuracy": 0.0
+      }
+    },
+    "by_language": {
+      "unknown": {
+        "n": 29,
+        "correct": 16,
+        "accuracy": 0.551724
+      }
+    }
+  },
+  "raw_model_routing": {
+    "total": 29,
+    "route_counts": {
+      "low_priority": 29
+    },
+    "unavailable": 0,
+    "route_accuracy": 0.62069,
     "false_escalations": 0,
-    "false_escalation_rate": null,
-    "scored_routes": 0,
-    "by_cwe": {},
-    "by_language": {}
+    "missed_escalations": 0,
+    "dangerous_downgrades": 11,
+    "false_escalation_rate": 0.0,
+    "scored_routes": 29,
+    "by_cwe": {
+      "CWE-79": {
+        "n": 13,
+        "correct": 11,
+        "accuracy": 0.846154
+      },
+      "CWE-89": {
+        "n": 11,
+        "correct": 7,
+        "accuracy": 0.636364
+      },
+      "CWE-UNCLASSIFIED": {
+        "n": 5,
+        "correct": 0,
+        "accuracy": 0.0
+      }
+    },
+    "by_language": {
+      "unknown": {
+        "n": 29,
+        "correct": 18,
+        "accuracy": 0.62069
+      }
+    }
   },
   "calibration": {
-    "n": 0,
-    "ece": null,
-    "brier": null,
-    "mean_confidence": null,
-    "accuracy": null
+    "n": 29,
+    "ece": 0.326886,
+    "brier": 0.29119,
+    "mean_confidence": 0.742928,
+    "accuracy": 0.62069
   },
-  "reliability_diagram": [],
+  "reliability_diagram": [
+    {
+      "lo": 0.3,
+      "hi": 0.4,
+      "count": 2,
+      "mean_confidence": 0.3381,
+      "accuracy": 0.5
+    },
+    {
+      "lo": 0.4,
+      "hi": 0.5,
+      "count": 2,
+      "mean_confidence": 0.43875,
+      "accuracy": 0.5
+    },
+    {
+      "lo": 0.5,
+      "hi": 0.6,
+      "count": 4,
+      "mean_confidence": 0.58835,
+      "accuracy": 0.75
+    },
+    {
+      "lo": 0.6,
+      "hi": 0.7,
+      "count": 2,
+      "mean_confidence": 0.635,
+      "accuracy": 0.0
+    },
+    {
+      "lo": 0.7,
+      "hi": 0.8,
+      "count": 5,
+      "mean_confidence": 0.75746,
+      "accuracy": 1.0
+    },
+    {
+      "lo": 0.8,
+      "hi": 0.9,
+      "count": 4,
+      "mean_confidence": 0.83455,
+      "accuracy": 1.0
+    },
+    {
+      "lo": 0.9,
+      "hi": 1.0,
+      "count": 10,
+      "mean_confidence": 0.92423,
+      "accuracy": 0.4
+    }
+  ],
   "graded": 29,
-  "ground_truth_matched": 0,
+  "ground_truth_matched": 29,
   "error_codes_seen": [],
   "known_error_codes": {
+    "dependency_unavailable": "Laya or its runtime dependency is missing; install the optional environment.",
+    "backend_unavailable": "Model loading or inference failed; check checkpoint identity and device.",
     "package_missing": "The laya package is not installed; routing skipped.",
     "model_unavailable": "The model could not be loaded; routing skipped.",
     "timeout": "Inference exceeded the configured timeout; routing skipped.",
