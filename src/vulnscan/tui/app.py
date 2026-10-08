@@ -493,9 +493,22 @@ class ScanApp(App[None]):
         self.call_from_thread(self.apply_keys_list, names)
 
     def apply_keys_list(self, names: list[str]) -> None:
-        self.screen_stack[0].query_one("#keys-list", Static).update(
-            "\n".join(f"{name} (stored, value hidden)" for name in names) or "No keys stored"
-        )
+        # Runs on the UI thread via call_from_thread. The worker that calls this
+        # can outlive the screen (app closing, test teardown), and a worker
+        # exception takes the whole app down with it — so never query blindly.
+        target = self._keys_widget()
+        if target is None:
+            return
+        target.update("\n".join(f"{name} (stored, value hidden)" for name in names) or "No keys stored")
+
+    def _keys_widget(self) -> Static | None:
+        """Return the keys list widget, or None when the screen is gone."""
+        if not self.screen_stack:
+            return None
+        try:
+            return self.screen_stack[0].query_one("#keys-list", Static)
+        except Exception:  # noqa: BLE001 - NoMatches/TooManyMatches when unmounted
+            return None
 
     @work(thread=True, exclusive=True, group="key-save")
     def save_key(self, name: str, value: str) -> None:
@@ -508,17 +521,37 @@ class ScanApp(App[None]):
             self.call_from_thread(self.key_failed, str(exc))
 
     def key_failed(self, message: str) -> None:
-        self.screen_stack[0].query_one("#keys-status", Static).update(message)
+        status = self._keys_status_widget()
+        if status is not None:
+            status.update(message)
+
+    def _keys_status_widget(self) -> Static | None:
+        """Return the keys status widget, or None when the screen is gone."""
+        if not self.screen_stack:
+            return None
+        try:
+            return self.screen_stack[0].query_one("#keys-status", Static)
+        except Exception:  # noqa: BLE001 - NoMatches/TooManyMatches when unmounted
+            return None
 
     def key_saved(self, name: str, value: str, message: str) -> None:
+        if not self.screen_stack:
+            return
         screen = self.screen_stack[0]
-        if (
-            screen.query_one("#key-name", Input).value == name
-            and screen.query_one("#key-value", Input).value == value
-        ):
-            screen.query_one("#key-name", Input).value = ""
-            screen.query_one("#key-value", Input).value = ""
-        screen.query_one("#keys-status", Static).update(message)
+        # Clear the secret from the form only if the user has not started
+        # typing a different key while the worker was running.
+        try:
+            if (
+                screen.query_one("#key-name", Input).value == name
+                and screen.query_one("#key-value", Input).value == value
+            ):
+                screen.query_one("#key-name", Input).value = ""
+                screen.query_one("#key-value", Input).value = ""
+        except Exception:  # noqa: BLE001 - screen torn down while worker ran
+            return
+        status = self._keys_status_widget()
+        if status is not None:
+            status.update(message)
         self.refresh_keys_list()
 
     def action_leave_panel(self) -> None:
