@@ -140,6 +140,7 @@ class LayaDecisionBackend:
         self.max_input_tokens = max_input_tokens
         self.timeout_seconds = timeout_seconds
         self.worker = worker or _process_worker
+        self._dependency_error: str | None = None
 
     def _load(self) -> Any:
         if self._agent is None:
@@ -189,7 +190,11 @@ class LayaDecisionBackend:
         started = time.perf_counter()
         try:
             revision, device = self.model_revision, self.device
+            if self._dependency_error is not None:
+                raise ImportError(self._dependency_error)
             if self._agent_loader is None:
+                if self.worker is _process_worker and importlib.util.find_spec("laya") is None:
+                    raise ImportError("Laya optional dependency is not installed")
                 reply = self.worker.call(
                     "predict_batch",
                     {
@@ -218,6 +223,7 @@ class LayaDecisionBackend:
             if not isinstance(raw_rows, list) or len(raw_rows) != len(requests):
                 raise TypeError("Laya returned a mismatched batch")
         except ImportError as exc:
+            self._dependency_error = str(exc)
             return [
                 self._failure(
                     r,

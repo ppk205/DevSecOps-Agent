@@ -1,8 +1,33 @@
 """FR-71 / QR-21: Pilot tests for keyboard navigation, resize, history and exports."""
 
+import asyncio
+
+import pytest
 from textual.widgets import Button, DataTable, Input, Static, TabbedContent
 
 from vulnscan.tui.app import ScanApp
+
+
+@pytest.mark.parametrize("callback", ["show_availability", "apply_history"])
+async def test_qr21_late_worker_updates_and_history_events_are_ignored_after_quit(
+    service, callback
+):
+    app = ScanApp(service=service)
+    applied = []
+    async with app.run_test() as pilot:
+        # Posting from a worker still applies updates while the UI is mounted.
+        await asyncio.to_thread(app._post_ui, applied.append, "mounted")
+        await pilot.pause()
+        assert applied == ["mounted"]
+
+    assert not app.screen_stack
+    args = ("late probe",) if callback == "show_availability" else (app.history_generation, [])
+    app.on_scan_app_ui_update(app.UiUpdate(getattr(app, callback), args, {}))
+    app.highlight_history()
+    app.tick()
+
+    # A worker completing after the queue closes cannot touch removed screens.
+    await asyncio.to_thread(app._post_ui, getattr(app, callback), *args)
 
 
 async def test_scan_tab_is_default(service, checkout):

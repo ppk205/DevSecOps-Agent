@@ -62,6 +62,19 @@ def test_labels_and_operational_ids_are_excluded_from_model_inputs():
             assert json.dumps(row["gold"])
 
 
+def test_fr40_dataset_export_includes_redacted_retained_source_snippets():
+    scans, labels = inputs()
+    for finding in scans[0]["findings"]:
+        finding["observations"][0]["metadata"] = {}
+        finding["observations"][0]["location"]["snippet"] = "token=private-credential;"
+
+    splits, _ = prepare(scans, labels)
+
+    for rows in splits.values():
+        for row in rows:
+            assert row["state"]["code_excerpt"] == "token=[REDACTED];"
+
+
 def test_one_project_cannot_be_split_into_four_sets():
     scans, labels = inputs()
     for label in labels:
