@@ -71,7 +71,7 @@ def test_excerpt_from_observation_metadata_flows_through() -> None:
     assert state["code_excerpt"] == raw
 
 
-@pytest.mark.parametrize("metadata_excerpt", [None, "", "   "])
+@pytest.mark.parametrize("metadata_excerpt", [None, "", "   ", "requires login"])
 @pytest.mark.parametrize("tool", ["SEMGREP", "SPOTBUGS"])
 def test_fr40_retained_source_snippet_is_used_when_metadata_excerpt_is_empty(
     metadata_excerpt, tool

@@ -136,7 +136,8 @@ def finding_to_state(finding: Any) -> dict[str, Any]:
         # Prefer adapter excerpts, falling back to source retained by the scan service.
         meta = getattr(representative, "metadata", None) or {}
         raw = meta.get("code_excerpt")
-        if not str(raw or "").strip():
+        # Semgrep CE without a login reports `extra.lines` as "requires login".
+        if str(raw or "").strip() in ("", "requires login"):
             raw = getattr(location, "snippet", None)
         excerpt, was_truncated = build_excerpt(raw)
         state["code_excerpt"] = excerpt
