@@ -1,0 +1,13 @@
+{
+  "slug": "java-sec-code",
+  "repo_url": "https://github.com/JoyChou93/java-sec-code",
+  "commit_sha": "4711f4e186258c6e0dd5c3863e7c9592e7e9026a",
+  "license": "No LICENSE file in the repository (all rights reserved by default); only scanner metadata is kept in this repo, no source",
+  "kind": "intentionally vulnerable",
+  "why_chosen": "Spring Boot vulnerable-code collection with Spring Security url rules (no-login list), a hardcoded Shiro key, deny-list deserialization fix variants and an in-memory user list.",
+  "scanned_at": "2026-10-12T07:35:29.753409+00:00",
+  "run_id": "run-9d93d635bb754e0e857edf9947543b6e",
+  "scanners": "semgrep 1.178.0 (shipped java.yml, 13 rules) and gitleaks 8.30.1 ran via `devsec scan-run --profile fast --no-laya --ci`. spotbugs and owasp-dependency-check were not run: docker is unavailable and compiling untrusted code was out of scope. Semgrep skips src/test paths, so the scan reports 'missing coverage' errors and a failed gate; the export is still complete for what was scanned.",
+  "findings": 12,
+  "local_clone_path": "D:/phuc/laya-corpus/jc (shallow clone, not in repo; static scan only, no build tools run)"
+}

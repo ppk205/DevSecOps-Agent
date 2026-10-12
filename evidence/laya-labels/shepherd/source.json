@@ -1,0 +1,13 @@
+{
+  "slug": "shepherd",
+  "repo_url": "https://github.com/OWASP/SecurityShepherd",
+  "commit_sha": "cff3958abf7a18cfc84fe6bed9dd6698631b2cee",
+  "license": "GPL-3.0 (LICENSE in repo root)",
+  "kind": "intentionally vulnerable",
+  "why_chosen": "JSP- and servlet-heavy training platform (122 JSP files) with login, admin-only servlets and many SQL-injection challenge variants sharing one pattern; hardcoded challenge DB credentials in properties files.",
+  "scanned_at": "2026-10-12T07:36:51.808473+00:00",
+  "run_id": "run-afd9b64446864e1aaa3d0cd65574eaa5",
+  "scanners": "semgrep 1.178.0 (shipped java.yml, 13 rules) and gitleaks 8.30.1 ran via `devsec scan-run --profile fast --no-laya --ci`. spotbugs and owasp-dependency-check were not run: docker is unavailable and compiling untrusted code was out of scope. Semgrep skips src/test paths, so the scan reports 'missing coverage' errors and a failed gate; the export is still complete for what was scanned.",
+  "findings": 25,
+  "local_clone_path": "D:/phuc/laya-corpus/shep (shallow clone, not in repo; static scan only, no build tools run)"
+}
