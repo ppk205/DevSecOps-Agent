@@ -1,0 +1,13 @@
+{
+  "slug": "xxl-job",
+  "repo_url": "https://github.com/xuxueli/xxl-job",
+  "commit_sha": "693d27640be76d02ed7214ede57ce75f7f9ebb71",
+  "license": "GPL-3.0 (LICENSE in repo root)",
+  "kind": "ordinary real-world",
+  "why_chosen": "Widely used scheduler with per-job-group permission checks and script (GLUE) execution; scanner hits are mostly non-security hashes and PRNG use, giving realistic false positives.",
+  "scanned_at": "2026-10-12T07:37:52.843527+00:00",
+  "run_id": "run-5d5405ae3be9406aa287e140bc3f3047",
+  "scanners": "semgrep 1.178.0 (shipped java.yml, 13 rules) and gitleaks 8.30.1 ran via `devsec scan-run --profile fast --no-laya --ci`. spotbugs and owasp-dependency-check were not run: docker is unavailable and compiling untrusted code was out of scope. Semgrep skips src/test paths, so the scan reports 'missing coverage' errors and a failed gate; the export is still complete for what was scanned.",
+  "findings": 7,
+  "local_clone_path": "D:/phuc/laya-corpus/xxl (shallow clone, not in repo; static scan only, no build tools run)"
+}

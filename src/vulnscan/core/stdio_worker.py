@@ -6,6 +6,7 @@ import json
 import os
 import queue
 import subprocess
+import sys
 import threading
 import time
 from collections.abc import Callable, Sequence
@@ -20,7 +21,7 @@ PROTOCOL_VERSION = 1
 
 def terminate_tree(process: subprocess.Popen[bytes]) -> None:
     if process.poll() is None:
-        if os.name == "nt":
+        if sys.platform == "win32":
             subprocess.run(
                 ["taskkill", "/PID", str(process.pid), "/T", "/F"],
                 stdout=subprocess.DEVNULL,
@@ -53,13 +54,16 @@ class JSONWorker:
 
     def _start(self) -> None:
         self.responses = queue.Queue(maxsize=4)
+        creationflags = 0
+        if sys.platform == "win32":
+            creationflags = subprocess.CREATE_NO_WINDOW
         self.process = subprocess.Popen(
             self.command,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
-            start_new_session=os.name != "nt",
-            creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+            start_new_session=sys.platform != "win32",
+            creationflags=creationflags,
         )
         process, responses = self.process, self.responses
 

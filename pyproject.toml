@@ -79,6 +79,7 @@ packages = ["src/vulnscan"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
 asyncio_mode = "auto"
 # A hung test otherwise only reports when the whole CI job is killed. This is
 # a ceiling far above the slowest real test (semgrep rule runs take ~6s), not a

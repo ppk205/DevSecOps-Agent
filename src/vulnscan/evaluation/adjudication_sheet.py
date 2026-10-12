@@ -8,7 +8,7 @@ This tool renders; it never labels. Only a person adjudicates.
 from __future__ import annotations
 
 from collections.abc import Sequence
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any
 
 CONTEXT_LINES = 6
@@ -23,15 +23,17 @@ def _repo_path(file_path: str, repo_root: Path) -> Path | None:
     if not file_path:
         return None
     raw = Path(file_path)
+    windows = PureWindowsPath(file_path)
+    portable = windows if windows.is_absolute() else PurePosixPath(file_path.replace("\\", "/"))
     candidates: list[Path] = []
-    if raw.is_absolute():
-        parts = raw.parts
+    if portable.is_absolute():
+        parts = portable.parts
         if "src" in parts:
             idx = len(parts) - 1 - parts[::-1].index("src")
             candidates.append(repo_root.joinpath(*parts[idx:]))
         candidates.append(raw)
     else:
-        candidates.append(repo_root / raw)
+        candidates.append(repo_root.joinpath(*portable.parts))
         candidates.append(raw)
     for candidate in candidates:
         if candidate.is_file():

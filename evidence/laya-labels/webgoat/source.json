@@ -1,0 +1,13 @@
+{
+  "slug": "webgoat",
+  "repo_url": "https://github.com/WebGoat/WebGoat",
+  "commit_sha": "7e198f39189f33e1912f7cbb60e24e42635ca06a",
+  "license": "GPL-2.0 (LICENSE.txt)",
+  "kind": "intentionally vulnerable",
+  "why_chosen": "Spring lessons with vulnerable and fixed variants, hardcoded JWT and challenge secrets, many sample tokens and test fixtures (realistic secret-scanner noise).",
+  "scanned_at": "2026-10-12T07:37:30.972411+00:00",
+  "run_id": "run-5fcd4d7d2eb04de9b65d2c8bd7ad0a16",
+  "scanners": "semgrep 1.178.0 (shipped java.yml, 13 rules) and gitleaks 8.30.1 ran via `devsec scan-run --profile fast --no-laya --ci`. spotbugs and owasp-dependency-check were not run: docker is unavailable and compiling untrusted code was out of scope. Semgrep skips src/test paths, so the scan reports 'missing coverage' errors and a failed gate; the export is still complete for what was scanned.",
+  "findings": 42,
+  "local_clone_path": "D:/phuc/laya-corpus/wg (shallow clone, not in repo; static scan only, no build tools run)"
+}

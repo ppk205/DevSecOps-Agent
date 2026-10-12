@@ -8,6 +8,7 @@ of every adapter, and so timeouts / missing binaries are handled uniformly.
 from __future__ import annotations
 
 import os
+import sys
 import tempfile
 from collections.abc import Callable, Sequence
 from contextvars import ContextVar
@@ -85,6 +86,9 @@ def run_command(
     proc = None
     stopping = False
     try:
+        creationflags = 0
+        if sys.platform == "win32":
+            creationflags = subprocess.CREATE_NEW_PROCESS_GROUP
         proc = subprocess.Popen(
             command,
             cwd=str(cwd) if cwd is not None else None,
@@ -95,8 +99,8 @@ def run_command(
             encoding="utf-8",
             errors="replace",
             env=full_env,
-            start_new_session=os.name != "nt",
-            creationflags=subprocess.CREATE_NEW_PROCESS_GROUP if os.name == "nt" else 0,
+            start_new_session=sys.platform != "win32",
+            creationflags=creationflags,
         )
         first = True
         while True:
@@ -131,7 +135,7 @@ def run_command(
         return CommandResult(127, stderr=f"command not found: {command[0]}", command=command)
     finally:
         if proc is not None and (proc.poll() is None or stopping):
-            if os.name == "nt":
+            if sys.platform == "win32":
                 subprocess.run(
                     ["taskkill", "/PID", str(proc.pid), "/T", "/F"],
                     capture_output=True,

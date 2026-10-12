@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib
 import json
 from dataclasses import dataclass
 from pathlib import Path
@@ -21,7 +22,7 @@ _FALSE_MODES = {"off", "disabled"}
 def _import_torch() -> bool:
     """Import torch lazily; unit tests must never require the heavy dep."""
     try:
-        import torch  # noqa: F401
+        importlib.import_module("torch")
     except ImportError:
         return False
     return True
@@ -30,7 +31,7 @@ def _import_torch() -> bool:
 def _torch_cuda_ok() -> bool:
     """True only when CUDA is importable *and* a device answers."""
     try:
-        import torch
+        torch = importlib.import_module("torch")
 
         return bool(torch.cuda.is_available())
     except (ImportError, RuntimeError):

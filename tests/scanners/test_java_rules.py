@@ -13,15 +13,16 @@ compilable file), but it costs ~6s of process start per case — 24 cases became
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
+import sysconfig
 from pathlib import Path
 
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 RULES = ROOT / "src" / "vulnscan" / "scanners" / "rules" / "java.yml"
-SEMGREP = ROOT / ".venv" / "Scripts" / "semgrep.exe"
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "java"
 
 # rule id -> (vulnerable fixture, safe fixture)
@@ -46,45 +47,65 @@ SILENT_FIXTURES = {
     "ComputedXss": {"java-xss-response-writer"},
 }
 
+# FR-23: every TLS verification bypass shape, and validating/unrelated look-alikes.
+TLS_BYPASSES = [
+    "VulnTrustManager",
+    "VulnNamedTrustManager",
+    "VulnHostnameVerifier",
+    "VulnNamedHostnameVerifier",
+    "VulnInstanceHostnameVerifier",
+]
+TLS_LOOKALIKES = ["SafeTrustManager", "SafeHostnameVerifier", "UnrelatedInit"]
+
+
+@pytest.fixture(scope="session")
+def semgrep() -> str:
+    """QR-20/23: find the provisioned scanner on any supported platform.
+
+    A missing scanner must fail loudly. Skipping here used to make the whole
+    ruleset look green in a venv without the `scanners` extra, which is the
+    one state where these tests cannot say anything about the rules.
+    """
+    executable = shutil.which("semgrep")
+    if executable:
+        return executable
+    script = Path(sysconfig.get_path("scripts")) / ("semgrep.exe" if os.name == "nt" else "semgrep")
+    if not script.is_file():
+        pytest.fail(
+            "semgrep is required: run `uv sync --extra scanners` before running "
+            "the Java ruleset tests"
+        )
+    return str(script)
+
 
 @pytest.fixture(scope="module")
-def findings_by_file() -> dict[str, set[str]]:
+def findings_by_file(semgrep: str, tmp_path_factory: pytest.TempPathFactory) -> dict[str, set[str]]:
     """Scan every fixture once and group the matched rule ids by file name."""
-    staged = ROOT / ".pytest_cache" / "java-rule-scan"
-    if staged.exists():
-        shutil.rmtree(staged)
-    staged.mkdir(parents=True)
+    staged = tmp_path_factory.mktemp("java-rule-scan")
     for source in FIXTURES.glob("*.java"):
         shutil.copy(source, staged / source.name)
 
-    # A missing scanner must fail loudly. Skipping here used to make the whole
-    # ruleset look green in a venv without the `scanners` extra, which is the
-    # one state where these tests cannot say anything about the rules.
-    if not SEMGREP.is_file():
-        pytest.fail(
-            f"semgrep not installed at {SEMGREP}; run `uv sync --extra scanners` "
-            "(or reinstall the scanner extras) before running the Java ruleset tests"
-        )
-
     result = subprocess.run(
         [
-            str(SEMGREP),
+            semgrep,
             "scan",
             "--config",
             str(RULES),
             "--metrics=off",
+            "--disable-version-check",
             "--no-git-ignore",
             "--json",
             str(staged),
         ],
         capture_output=True,
         text=True,
+        encoding="utf-8",
         timeout=300,
         check=False,
     )
     assert result.returncode == 0, f"semgrep failed: {result.stderr[-2000:]}"
     payload = json.loads(result.stdout[result.stdout.index("{") :])
-    assert payload.get("errors") == [], payload["errors"]
+    assert not payload.get("errors"), payload["errors"]
 
     grouped: dict[str, set[str]] = {}
     for item in payload.get("results", []):
@@ -112,3 +133,15 @@ def test_xss_rule_boundaries(fixture: str, expected: set, findings_by_file: dict
     """Console logging, static JSON and escaped output stay quiet; request data
     serialised then written is the real signal and must survive."""
     assert findings_by_file.get(f"{fixture}.java", set()) == expected
+
+
+@pytest.mark.parametrize("fixture", TLS_BYPASSES)
+def test_fr23_tls_verification_bypasses_are_detected(fixture: str, findings_by_file: dict) -> None:
+    assert findings_by_file.get(f"{fixture}.java", set()) == {"java-trust-all-certificates"}
+
+
+@pytest.mark.parametrize("fixture", TLS_LOOKALIKES)
+def test_fr23_validating_tls_and_unrelated_methods_are_not_flagged(
+    fixture: str, findings_by_file: dict
+) -> None:
+    assert findings_by_file.get(f"{fixture}.java", set()) == set()

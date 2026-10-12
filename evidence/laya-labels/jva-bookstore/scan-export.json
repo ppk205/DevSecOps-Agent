@@ -1,0 +1,4115 @@
+{
+  "application_version": "0.2.0",
+  "scan_metadata": {
+    "commit": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+    "target": "D:\\phuc\\Code Project\\DevSecOps-Agent\\JVA-bookstore",
+    "status": "failed",
+    "gate": "failed",
+    "errors": [
+      "gitleaks: gitleaks: gitleaks not found on PATH",
+      "spotbugs: Isolated scan failed (exit 127, timeout=False); verify the scanner image and Docker resource limits. command not found: docker",
+      "owasp-dependency-check: Advisory initialization failed (exit 127, timeout=False): command not found: docker",
+      "gitleaks: required scanner did not complete successfully",
+      "spotbugs: required scanner did not complete successfully",
+      "owasp-dependency-check: required scanner did not complete successfully"
+    ],
+    "configuration": {
+      "schema_version": 1,
+      "profile": "full",
+      "fail_on": "high",
+      "output_dir": "artifacts/laya-rescan/out",
+      "timezone": "Asia/Saigon",
+      "timeout": 3600,
+      "max_files": 100000,
+      "allow_dirty": false,
+      "ci": false,
+      "laya": false,
+      "laya_config_path": null
+    }
+  },
+  "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+  "generated_at": "2026-10-12T07:34:31.507650+00:00",
+  "counts": {
+    "version": "0.1.0",
+    "total": 7,
+    "confirmed": 0,
+    "rejected": 0,
+    "unresolved": 0,
+    "unprocessed": 7
+  },
+  "coverage_summary": {
+    "semgrep": [
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "CreateTestUser.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "GenerateHash.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "ResetPassword.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\controller\\admin\\AdAccountController.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\controller\\admin\\AdCategoryController.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\controller\\admin\\AdCommissionController.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\controller\\admin\\AdDashboardController.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\controller\\admin\\AdOrdersController.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\controller\\admin\\AdProductController.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\controller\\admin\\AdPromotionController.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\controller\\admin\\AdShipperController.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\dao\\BookDAO.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\dao\\CartDAO.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\dao\\CommentDAO.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\dao\\CouponDAO.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\dao\\FavoriteDAO.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\dao\\OrderDAO.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\dao\\RecentViewDAO.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\dao\\ReviewDAO.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\dao\\ShipmentDAO.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\dao\\ShipperDAO.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\dao\\ShopCouponDAO.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\dao\\ShopDAO.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\dao\\SupportChatDAO.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\dao\\UserAddressDAO.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\DBTest.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\filters\\EncodingFilter.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\filters\\JwtFilter.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\models\\Book.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\models\\Cart.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\models\\CartItem.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\models\\Order.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\models\\OrderItem.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\models\\OrderStatusHistory.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\models\\Shipment.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\models\\ShipmentEvent.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\models\\ShipmentStatus.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\models\\Shipper.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\models\\ShippingQuote.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\models\\Shop.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\models\\ShopCoupon.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\models\\SupportConversation.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\models\\SupportConversationSummary.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\models\\SupportMessage.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\models\\UserAddress.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\utils\\AuthUtil.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\utils\\BookDataLoader.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\utils\\DBUtil.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\utils\\EmailUtil.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\utils\\FileStorageUtil.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\utils\\GsonUtil.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\utils\\JwtUtil.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\utils\\LocalDateTimeTypeAdapter.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\utils\\OTPUtil.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\utils\\ShippingCalculator.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\admin\\AdminCategoriesServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\admin\\AdminCommissionsServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\admin\\AdminDashboardServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\admin\\AdminProductsServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\admin\\AdminPromotionsServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\admin\\AdminShippersServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\admin\\AdminUsersServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\AdminOrdersServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\AdminServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\AdminSupportChatServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\AuthServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\BookDetailServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\BooksApiServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\BuyNowServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\CartServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\CheckoutServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\CommentServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\CouponValidationServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\DBTestServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\HealthServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\ProfileServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\ResetServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\ReviewMediaServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\ReviewServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\seller\\RegisterShopPageServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\seller\\SellerAnalyticsPageServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\seller\\SellerAnalyticsServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\seller\\SellerCouponServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\seller\\SellerDashboardServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\seller\\SellerOrdersPageServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\seller\\SellerOrdersServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\seller\\SellerPageHelper.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\seller\\SellerPostServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\seller\\SellerProductsPageServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\seller\\SellerProductsServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\seller\\SellerProfileServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\seller\\SellerSettingServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\seller\\SellerSettingsPageServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\seller\\ShopRegistrationServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\ShipmentEvidenceServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\ShipperApiServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\ShippingQuoteServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\SupportChatServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\TestEmailServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src\\main\\java\\web\\VerifyServlet.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "TestDB.java",
+        "unit_language": "java",
+        "eligible": true,
+        "status": "analyzed",
+        "limitation_reason": null,
+        "extraction_mode": "pattern",
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [
+          "CWE-89",
+          "CWE-78",
+          "CWE-327"
+        ],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {
+          "rules_pack_version": "0.2.0"
+        }
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/admin-orders.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/book-detail.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/catalog.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/checkout.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/dashboard-shipper.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/error.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/forgot-password.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/index.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/login.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/profile.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/register.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/reset-password.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/shipment-detail.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/shipments.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/support.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/admin/AdAccount.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/admin/AdCategory.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/admin/AdCommission.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/admin/AdDashboard.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/admin/AdProduct.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/admin/AdPromotion.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/admin/AdShipper.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/admin/AdSupport.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/Seller/create-post.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/Seller/my-posts.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/Seller/register-shop.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/Seller/SellerAnalytics.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/Seller/sellerDashboard.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/Seller/SellerOrders.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/Seller/SellerProduct.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/Seller/SellerSetting.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/WEB-INF/decorators/main.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/WEB-INF/includes/footer.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/WEB-INF/includes/header.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/WEB-INF/includes/admin/AdSideBar.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/WEB-INF/includes/admin/footer.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/WEB-INF/includes/admin/header.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      },
+      {
+        "version": "0.1.0",
+        "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+        "tool": "semgrep",
+        "tool_version": "1.178.0",
+        "source_snapshot": "dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5",
+        "unit_path": "src/main/webapp/WEB-INF/includes/seller/SellerSideBar.jsp",
+        "unit_language": "jsp",
+        "eligible": true,
+        "status": "unsupported",
+        "limitation_reason": "Versioned Java rules do not parse JSP",
+        "extraction_mode": null,
+        "diagnostics": [],
+        "unresolved_calls": [],
+        "cwe_capabilities": [],
+        "cwe_limitations": [],
+        "duration_ms": null,
+        "analyzed_at": "2026-10-12T07:34:26.753599Z",
+        "miss_reasons": [],
+        "metadata": {}
+      }
+    ],
+    "gitleaks": [],
+    "spotbugs": [],
+    "owasp-dependency-check": []
+  },
+  "findings": [
+    {
+      "version": "0.1.0",
+      "finding_id": "517088fe80074fef",
+      "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+      "fingerprint": "517088fe80074fef29d082e7e9f64af8be03c2a4c4790a6c6873a1a8abba1cdf",
+      "title": "CWE-89 at src/main/java/dao/CartDAO.java:506",
+      "description": "SQL constructed through concatenation; use a parameterized query.",
+      "cwe_category": "CWE-89",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unprocessed",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "obs-b4313a8ccb9a6842",
+          "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+          "tool": "semgrep",
+          "tool_version": "1.178.0",
+          "rule_id": "D.phuc.CodeProject.DevSecOps-Agent.src.vulnscan.scanners.rules.java-sql-concatenation",
+          "rule_pack_version": "0.2.0",
+          "cwe_category": "CWE-89",
+          "severity": "high",
+          "native_severity": "ERROR",
+          "message": "SQL constructed through concatenation; use a parameterized query.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "src/main/java/dao/CartDAO.java",
+            "language": "java",
+            "line_start": 506,
+            "line_end": 515,
+            "column_start": 21,
+            "column_end": 33,
+            "symbol": null,
+            "snippet": "stmt.execute(\"CREATE TABLE IF NOT EXISTS carts (\" +\n                            \"id SERIAL PRIMARY KEY,\" +\n                            \"user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,\" +"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": "D:\\phuc\\Code Project\\DevSecOps-Agent\\artifacts\\laya-rescan\\out\\run-59b60105a2064402aedde32bc5967ce7\\scanner-semgrep.json",
+          "detected_at": "2026-10-12T07:34:26.753599Z",
+          "metadata": {
+            "code_excerpt": "requires login"
+          }
+        }
+      ],
+      "groups": [
+        {
+          "version": "0.1.0",
+          "group_id": "517088fe80074fef-g0",
+          "finding_id": "517088fe80074fef",
+          "tool_names": [
+            "semgrep"
+          ],
+          "observation_ids": [
+            "obs-b4313a8ccb9a6842"
+          ],
+          "representative_observation_id": "obs-b4313a8ccb9a6842",
+          "grouping_rationale": "same file, line, and CWE; merged conservatively — same-CWE findings at different sites stay distinct",
+          "grouping_method": "location-cwe",
+          "grouped_at": "2026-10-12T07:34:29.103584Z",
+          "metadata": {}
+        }
+      ],
+      "evidence_strength": "moderate",
+      "evidence_refs": [
+        "obs-b4313a8ccb9a6842"
+      ],
+      "created_at": "2026-10-12T07:34:29.103584Z",
+      "updated_at": "2026-10-12T07:34:29.103584Z",
+      "metadata": {
+        "grouping_key": [
+          "src/main/java/dao/CartDAO.java",
+          506,
+          "CWE-89"
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "319475a5a9daac4d",
+      "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+      "fingerprint": "319475a5a9daac4df4d980d5f083a9097cb3efea01cb4569e1313d5cf778457b",
+      "title": "CWE-89 at src/main/java/dao/CartDAO.java:540",
+      "description": "SQL constructed through concatenation; use a parameterized query.",
+      "cwe_category": "CWE-89",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unprocessed",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "obs-53bbcaff8513a562",
+          "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+          "tool": "semgrep",
+          "tool_version": "1.178.0",
+          "rule_id": "D.phuc.CodeProject.DevSecOps-Agent.src.vulnscan.scanners.rules.java-sql-concatenation",
+          "rule_pack_version": "0.2.0",
+          "cwe_category": "CWE-89",
+          "severity": "high",
+          "native_severity": "ERROR",
+          "message": "SQL constructed through concatenation; use a parameterized query.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "src/main/java/dao/CartDAO.java",
+            "language": "java",
+            "line_start": 540,
+            "line_end": 549,
+            "column_start": 21,
+            "column_end": 33,
+            "symbol": null,
+            "snippet": "stmt.execute(\"CREATE TABLE IF NOT EXISTS cart_items (\" +\n                            \"id SERIAL PRIMARY KEY,\" +\n                            \"cart_id INTEGER NOT NULL REFERENCES carts(id) ON DELETE CASCADE,\" +"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": "D:\\phuc\\Code Project\\DevSecOps-Agent\\artifacts\\laya-rescan\\out\\run-59b60105a2064402aedde32bc5967ce7\\scanner-semgrep.json",
+          "detected_at": "2026-10-12T07:34:26.753599Z",
+          "metadata": {
+            "code_excerpt": "requires login"
+          }
+        }
+      ],
+      "groups": [
+        {
+          "version": "0.1.0",
+          "group_id": "319475a5a9daac4d-g0",
+          "finding_id": "319475a5a9daac4d",
+          "tool_names": [
+            "semgrep"
+          ],
+          "observation_ids": [
+            "obs-53bbcaff8513a562"
+          ],
+          "representative_observation_id": "obs-53bbcaff8513a562",
+          "grouping_rationale": "same file, line, and CWE; merged conservatively — same-CWE findings at different sites stay distinct",
+          "grouping_method": "location-cwe",
+          "grouped_at": "2026-10-12T07:34:29.103584Z",
+          "metadata": {}
+        }
+      ],
+      "evidence_strength": "moderate",
+      "evidence_refs": [
+        "obs-53bbcaff8513a562"
+      ],
+      "created_at": "2026-10-12T07:34:29.103584Z",
+      "updated_at": "2026-10-12T07:34:29.103584Z",
+      "metadata": {
+        "grouping_key": [
+          "src/main/java/dao/CartDAO.java",
+          540,
+          "CWE-89"
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "31cf379cc13da18b",
+      "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+      "fingerprint": "31cf379cc13da18b31c9cc636acd9c639d42a87fbfd3442ea2c2c82b91d59df5",
+      "title": "CWE-89 at src/main/java/dao/ShipperDAO.java:86",
+      "description": "SQL constructed through concatenation; use a parameterized query.",
+      "cwe_category": "CWE-89",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unprocessed",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "obs-ac9d59602bf4af5a",
+          "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+          "tool": "semgrep",
+          "tool_version": "1.178.0",
+          "rule_id": "D.phuc.CodeProject.DevSecOps-Agent.src.vulnscan.scanners.rules.java-sql-concatenation",
+          "rule_pack_version": "0.2.0",
+          "cwe_category": "CWE-89",
+          "severity": "high",
+          "native_severity": "ERROR",
+          "message": "SQL constructed through concatenation; use a parameterized query.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "src/main/java/dao/ShipperDAO.java",
+            "language": "java",
+            "line_start": 86,
+            "line_end": 89,
+            "column_start": 17,
+            "column_end": 45,
+            "symbol": null,
+            "snippet": "stmt.execute(\"DO $$ BEGIN \"\n                        + \"IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'shipper_status') THEN \"\n                        + \"CREATE TYPE shipper_status AS ENUM ('active', 'inactive', 'pending', 'banned'); \""
+          },
+          "dependency_identity": null,
+          "raw_output_ref": "D:\\phuc\\Code Project\\DevSecOps-Agent\\artifacts\\laya-rescan\\out\\run-59b60105a2064402aedde32bc5967ce7\\scanner-semgrep.json",
+          "detected_at": "2026-10-12T07:34:26.753599Z",
+          "metadata": {
+            "code_excerpt": "requires login"
+          }
+        }
+      ],
+      "groups": [
+        {
+          "version": "0.1.0",
+          "group_id": "31cf379cc13da18b-g0",
+          "finding_id": "31cf379cc13da18b",
+          "tool_names": [
+            "semgrep"
+          ],
+          "observation_ids": [
+            "obs-ac9d59602bf4af5a"
+          ],
+          "representative_observation_id": "obs-ac9d59602bf4af5a",
+          "grouping_rationale": "same file, line, and CWE; merged conservatively — same-CWE findings at different sites stay distinct",
+          "grouping_method": "location-cwe",
+          "grouped_at": "2026-10-12T07:34:29.103584Z",
+          "metadata": {}
+        }
+      ],
+      "evidence_strength": "moderate",
+      "evidence_refs": [
+        "obs-ac9d59602bf4af5a"
+      ],
+      "created_at": "2026-10-12T07:34:29.103584Z",
+      "updated_at": "2026-10-12T07:34:29.103584Z",
+      "metadata": {
+        "grouping_key": [
+          "src/main/java/dao/ShipperDAO.java",
+          86,
+          "CWE-89"
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "3fba2fadf3623bd9",
+      "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+      "fingerprint": "3fba2fadf3623bd93b41635875dc31a1f955c6387ccf9e309da8c48c93bc742f",
+      "title": "CWE-89 at src/main/java/dao/ShipperDAO.java:91",
+      "description": "SQL constructed through concatenation; use a parameterized query.",
+      "cwe_category": "CWE-89",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unprocessed",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "obs-5571f7605ce83a57",
+          "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+          "tool": "semgrep",
+          "tool_version": "1.178.0",
+          "rule_id": "D.phuc.CodeProject.DevSecOps-Agent.src.vulnscan.scanners.rules.java-sql-concatenation",
+          "rule_pack_version": "0.2.0",
+          "cwe_category": "CWE-89",
+          "severity": "high",
+          "native_severity": "ERROR",
+          "message": "SQL constructed through concatenation; use a parameterized query.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "src/main/java/dao/ShipperDAO.java",
+            "language": "java",
+            "line_start": 91,
+            "line_end": 101,
+            "column_start": 17,
+            "column_end": 86,
+            "symbol": null,
+            "snippet": "stmt.execute(\"CREATE TABLE IF NOT EXISTS shippers (\"\n                        + \"id SERIAL PRIMARY KEY, \"\n                        + \"name VARCHAR(255) NOT NULL, \""
+          },
+          "dependency_identity": null,
+          "raw_output_ref": "D:\\phuc\\Code Project\\DevSecOps-Agent\\artifacts\\laya-rescan\\out\\run-59b60105a2064402aedde32bc5967ce7\\scanner-semgrep.json",
+          "detected_at": "2026-10-12T07:34:26.753599Z",
+          "metadata": {
+            "code_excerpt": "requires login"
+          }
+        }
+      ],
+      "groups": [
+        {
+          "version": "0.1.0",
+          "group_id": "3fba2fadf3623bd9-g0",
+          "finding_id": "3fba2fadf3623bd9",
+          "tool_names": [
+            "semgrep"
+          ],
+          "observation_ids": [
+            "obs-5571f7605ce83a57"
+          ],
+          "representative_observation_id": "obs-5571f7605ce83a57",
+          "grouping_rationale": "same file, line, and CWE; merged conservatively — same-CWE findings at different sites stay distinct",
+          "grouping_method": "location-cwe",
+          "grouped_at": "2026-10-12T07:34:29.103584Z",
+          "metadata": {}
+        }
+      ],
+      "evidence_strength": "moderate",
+      "evidence_refs": [
+        "obs-5571f7605ce83a57"
+      ],
+      "created_at": "2026-10-12T07:34:29.103584Z",
+      "updated_at": "2026-10-12T07:34:29.103584Z",
+      "metadata": {
+        "grouping_key": [
+          "src/main/java/dao/ShipperDAO.java",
+          91,
+          "CWE-89"
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "898a2dd0728e2711",
+      "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+      "fingerprint": "898a2dd0728e2711d595ea0cb3eecc331f4b3eb7c275f3e5e910d8ef0af3d749",
+      "title": "CWE-89 at src/main/java/dao/UserAddressDAO.java:206",
+      "description": "SQL constructed through concatenation; use a parameterized query.",
+      "cwe_category": "CWE-89",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unprocessed",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "obs-1a891d38ddab7739",
+          "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+          "tool": "semgrep",
+          "tool_version": "1.178.0",
+          "rule_id": "D.phuc.CodeProject.DevSecOps-Agent.src.vulnscan.scanners.rules.java-sql-concatenation",
+          "rule_pack_version": "0.2.0",
+          "cwe_category": "CWE-89",
+          "severity": "high",
+          "native_severity": "ERROR",
+          "message": "SQL constructed through concatenation; use a parameterized query.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "src/main/java/dao/UserAddressDAO.java",
+            "language": "java",
+            "line_start": 206,
+            "line_end": 224,
+            "column_start": 17,
+            "column_end": 29,
+            "symbol": null,
+            "snippet": "stmt.execute(\"CREATE TABLE IF NOT EXISTS user_addresses (\" +\n                        \"id SERIAL PRIMARY KEY,\" +\n                        \"user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,\" +"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": "D:\\phuc\\Code Project\\DevSecOps-Agent\\artifacts\\laya-rescan\\out\\run-59b60105a2064402aedde32bc5967ce7\\scanner-semgrep.json",
+          "detected_at": "2026-10-12T07:34:26.753599Z",
+          "metadata": {
+            "code_excerpt": "requires login"
+          }
+        }
+      ],
+      "groups": [
+        {
+          "version": "0.1.0",
+          "group_id": "898a2dd0728e2711-g0",
+          "finding_id": "898a2dd0728e2711",
+          "tool_names": [
+            "semgrep"
+          ],
+          "observation_ids": [
+            "obs-1a891d38ddab7739"
+          ],
+          "representative_observation_id": "obs-1a891d38ddab7739",
+          "grouping_rationale": "same file, line, and CWE; merged conservatively — same-CWE findings at different sites stay distinct",
+          "grouping_method": "location-cwe",
+          "grouped_at": "2026-10-12T07:34:29.103584Z",
+          "metadata": {}
+        }
+      ],
+      "evidence_strength": "moderate",
+      "evidence_refs": [
+        "obs-1a891d38ddab7739"
+      ],
+      "created_at": "2026-10-12T07:34:29.103584Z",
+      "updated_at": "2026-10-12T07:34:29.103584Z",
+      "metadata": {
+        "grouping_key": [
+          "src/main/java/dao/UserAddressDAO.java",
+          206,
+          "CWE-89"
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "65df56a4b593c9d8",
+      "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+      "fingerprint": "65df56a4b593c9d8b34f4d0d953069414086d8e49677d4d80b0054c7d6c3517c",
+      "title": "CWE-330 at src/main/java/utils/DBUtil.java:800",
+      "description": "java.util.Random is predictable in security contexts; use SecureRandom.",
+      "cwe_category": "CWE-330",
+      "additional_cwe_labels": [],
+      "severity": "medium",
+      "status": "unprocessed",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "obs-8ecaabd36dc6fa5d",
+          "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+          "tool": "semgrep",
+          "tool_version": "1.178.0",
+          "rule_id": "D.phuc.CodeProject.DevSecOps-Agent.src.vulnscan.scanners.rules.java-insecure-random",
+          "rule_pack_version": "0.2.0",
+          "cwe_category": "CWE-330",
+          "severity": "medium",
+          "native_severity": "WARNING",
+          "message": "java.util.Random is predictable in security contexts; use SecureRandom.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "src/main/java/utils/DBUtil.java",
+            "language": "java",
+            "line_start": 800,
+            "line_end": 800,
+            "column_start": 37,
+            "column_end": 76,
+            "symbol": null,
+            "snippet": "Random random = new Random(20251017L + (bookId * 1973));\n                    boolean highlight = random.nextDouble() < 0.28;\n                    int totalSold = highlight ? 120 + random.nextInt(220) : random.nextInt(130);"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": "D:\\phuc\\Code Project\\DevSecOps-Agent\\artifacts\\laya-rescan\\out\\run-59b60105a2064402aedde32bc5967ce7\\scanner-semgrep.json",
+          "detected_at": "2026-10-12T07:34:26.753599Z",
+          "metadata": {
+            "code_excerpt": "requires login"
+          }
+        }
+      ],
+      "groups": [
+        {
+          "version": "0.1.0",
+          "group_id": "65df56a4b593c9d8-g0",
+          "finding_id": "65df56a4b593c9d8",
+          "tool_names": [
+            "semgrep"
+          ],
+          "observation_ids": [
+            "obs-8ecaabd36dc6fa5d"
+          ],
+          "representative_observation_id": "obs-8ecaabd36dc6fa5d",
+          "grouping_rationale": "same file, line, and CWE; merged conservatively — same-CWE findings at different sites stay distinct",
+          "grouping_method": "location-cwe",
+          "grouped_at": "2026-10-12T07:34:29.103584Z",
+          "metadata": {}
+        }
+      ],
+      "evidence_strength": "moderate",
+      "evidence_refs": [
+        "obs-8ecaabd36dc6fa5d"
+      ],
+      "created_at": "2026-10-12T07:34:29.103584Z",
+      "updated_at": "2026-10-12T07:34:29.103584Z",
+      "metadata": {
+        "grouping_key": [
+          "src/main/java/utils/DBUtil.java",
+          800,
+          "CWE-330"
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "62eda14f6fdfdef3",
+      "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+      "fingerprint": "62eda14f6fdfdef343ceca3b626d68aae8585010ead33061f4d3990b1ba830a0",
+      "title": "CWE-330 at src/main/java/utils/OTPUtil.java:18",
+      "description": "java.util.Random is predictable in security contexts; use SecureRandom.",
+      "cwe_category": "CWE-330",
+      "additional_cwe_labels": [],
+      "severity": "medium",
+      "status": "unprocessed",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "obs-d72f79a473d7c6f2",
+          "run_id": "run-59b60105a2064402aedde32bc5967ce7",
+          "tool": "semgrep",
+          "tool_version": "1.178.0",
+          "rule_id": "D.phuc.CodeProject.DevSecOps-Agent.src.vulnscan.scanners.rules.java-insecure-random",
+          "rule_pack_version": "0.2.0",
+          "cwe_category": "CWE-330",
+          "severity": "medium",
+          "native_severity": "WARNING",
+          "message": "java.util.Random is predictable in security contexts; use SecureRandom.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "src/main/java/utils/OTPUtil.java",
+            "language": "java",
+            "line_start": 18,
+            "line_end": 18,
+            "column_start": 25,
+            "column_end": 37,
+            "symbol": null,
+            "snippet": "Random random = new Random();\n        int otp = 100000 + random.nextInt(900000); // 6 digits\n        return String.valueOf(otp);"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": "D:\\phuc\\Code Project\\DevSecOps-Agent\\artifacts\\laya-rescan\\out\\run-59b60105a2064402aedde32bc5967ce7\\scanner-semgrep.json",
+          "detected_at": "2026-10-12T07:34:26.753599Z",
+          "metadata": {
+            "code_excerpt": "requires login"
+          }
+        }
+      ],
+      "groups": [
+        {
+          "version": "0.1.0",
+          "group_id": "62eda14f6fdfdef3-g0",
+          "finding_id": "62eda14f6fdfdef3",
+          "tool_names": [
+            "semgrep"
+          ],
+          "observation_ids": [
+            "obs-d72f79a473d7c6f2"
+          ],
+          "representative_observation_id": "obs-d72f79a473d7c6f2",
+          "grouping_rationale": "same file, line, and CWE; merged conservatively — same-CWE findings at different sites stay distinct",
+          "grouping_method": "location-cwe",
+          "grouped_at": "2026-10-12T07:34:29.103584Z",
+          "metadata": {}
+        }
+      ],
+      "evidence_strength": "moderate",
+      "evidence_refs": [
+        "obs-d72f79a473d7c6f2"
+      ],
+      "created_at": "2026-10-12T07:34:29.103584Z",
+      "updated_at": "2026-10-12T07:34:29.103584Z",
+      "metadata": {
+        "grouping_key": [
+          "src/main/java/utils/OTPUtil.java",
+          18,
+          "CWE-330"
+        ]
+      }
+    }
+  ],
+  "advisory_routing": {
+    "is_advisory_only": true,
+    "affects_finding_status": false,
+    "note": "Advisory recommendations never set or change a finding status; IndependentValidator remains the sole status owner.",
+    "route_counts": {},
+    "routed": 0,
+    "unavailable": 0,
+    "payloads": []
+  }
+}

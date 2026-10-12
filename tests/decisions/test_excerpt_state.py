@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
+import pytest
+
 from vulnscan.decisions.triage import finding_to_state
 
 
@@ -67,3 +69,38 @@ def test_excerpt_from_observation_metadata_flows_through() -> None:
     )
     state = finding_to_state(finding)
     assert state["code_excerpt"] == raw
+
+
+@pytest.mark.parametrize("metadata_excerpt", [None, "", "   ", "requires login"])
+@pytest.mark.parametrize("tool", ["SEMGREP", "SPOTBUGS"])
+def test_fr40_retained_source_snippet_is_used_when_metadata_excerpt_is_empty(
+    metadata_excerpt, tool
+) -> None:
+    obs = _obs(metadata_excerpt)
+    obs.tool = tool
+    obs.location.snippet = 'stmt.execute(request.getParameter("id"));'
+
+    state = finding_to_state(_finding(obs))
+
+    assert state["code_excerpt"] == obs.location.snippet
+    assert state["excerpt_truncated"] is False
+
+
+def test_fr40_adapter_excerpt_takes_precedence_over_retained_snippet() -> None:
+    obs = _obs("adapter source")
+    obs.location.snippet = "retained source"
+    assert finding_to_state(_finding(obs))["code_excerpt"] == "adapter source"
+
+
+def test_qr12_retained_snippet_is_redacted_before_it_is_bounded(monkeypatch) -> None:
+    secret = "sensitive-credential-" * 5
+    monkeypatch.setenv("MODEL_TEST_API_KEY", secret)
+    obs = _obs(None)
+    obs.location.snippet = "x" * 365 + secret + "y" * 500
+
+    state = finding_to_state(_finding(obs))
+
+    assert state["excerpt_truncated"] is True
+    assert len(state["code_excerpt"]) <= 400
+    assert "sensitive-credential" not in state["code_excerpt"]
+    assert "[REDACTED]" in state["code_excerpt"]

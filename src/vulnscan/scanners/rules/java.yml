@@ -167,11 +167,29 @@ rules:
     message: Trusting all certificates disables TLS peer verification.
     metadata:
       cwe: ['CWE-295: Improper Certificate Validation']
-      version: '0.2.0'
+      version: '0.2.1'
     pattern-either:
-      - pattern: javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier($X)
-      - pattern: HttpsURLConnection.setDefaultHostnameVerifier($X)
-      - pattern: $CTX.init($KS, $TM, $R)
+      - pattern: javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(($HOST, $SESSION) -> true)
+      - pattern: (javax.net.ssl.HttpsURLConnection $CONN).setHostnameVerifier(($HOST, $SESSION) -> true)
+      - patterns:
+          - pattern-either:
+              - pattern-inside: |
+                  new javax.net.ssl.HostnameVerifier() { ... }
+              - pattern-inside: |
+                  class $CLASS implements javax.net.ssl.HostnameVerifier { ... }
+          - pattern: |
+              public boolean verify(...) { return true; }
+      - patterns:
+          - pattern-either:
+              - pattern-inside: |
+                  new javax.net.ssl.X509TrustManager() { ... }
+              - pattern-inside: |
+                  class $CLASS implements javax.net.ssl.X509TrustManager { ... }
+          - pattern-either:
+              - pattern: |
+                  public void checkServerTrusted(...) {}
+              - pattern: |
+                  public void checkServerTrusted(...) { return; }
 
   - id: java-permissive-cors
     languages: [java]

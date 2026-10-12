@@ -10,6 +10,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from vulnscan.evaluation.adjudication_sheet import build_sheet, render_text
 
 REPO = Path(__file__).resolve().parents[2]
@@ -84,7 +86,19 @@ def test_sheet_degrades_when_source_is_unreachable(tmp_path: Path) -> None:
     assert "not reachable" in render_text(rows)
 
 
-def test_absolute_scan_paths_resolve_back_into_the_checkout(tmp_path: Path) -> None:
+@pytest.mark.parametrize(
+    "recorded_path",
+    [
+        "D:/scan/host/root/src/main/java/dao/CartDAO.java",
+        r"D:\scan\host\root\src\main\java\dao\CartDAO.java",
+        "/scan/host/root/src/main/java/dao/CartDAO.java",
+        r"\\server\share\root\src\main\java\dao\CartDAO.java",
+    ],
+)
+def test_fr62_absolute_scan_paths_resolve_back_into_the_checkout(
+    tmp_path: Path, recorded_path: str
+) -> None:
+    """FR-62/QR-20: source evidence survives scans on a different OS."""
     checkout = tmp_path / "repo"
     src = checkout / "src" / "main" / "java" / "dao"
     src.mkdir(parents=True)
@@ -93,14 +107,24 @@ def test_absolute_scan_paths_resolve_back_into_the_checkout(tmp_path: Path) -> N
     scan = _scan()
     # A scan records the absolute path from the machine that ran it; only the
     # part after src/ should be re-resolved against the local checkout.
-    scan["findings"][0]["observations"][0]["location"]["file_path"] = (
-        "D:/scan/host/root/src/main/java/dao/CartDAO.java"
-    )
+    scan["findings"][0]["observations"][0]["location"]["file_path"] = recorded_path
 
     rows = build_sheet(scan, checkout)
 
     assert rows[0]["source"] is not None
     assert "vuln" in rows[0]["source"]
+
+
+def test_fr62_windows_relative_scan_paths_preserve_source_evidence(tmp_path: Path) -> None:
+    src = tmp_path / "src" / "main" / "java" / "dao"
+    src.mkdir(parents=True)
+    (src / "CartDAO.java").write_text("a\nb\nvuln\nd\n", encoding="utf-8")
+    scan = _scan()
+    scan["findings"][0]["observations"][0]["location"]["file_path"] = (
+        r"src\main\java\dao\CartDAO.java"
+    )
+
+    assert "vuln" in build_sheet(scan, tmp_path)[0]["source"]
 
 
 def test_text_sheet_shows_the_blank_label_for_a_human(tmp_path: Path) -> None:
