@@ -45,7 +45,7 @@ class ProgressEvent:
     sequence: int = 0
 
 
-_TEST_DIRS = ("src/test/", "src/it/", "src/e2e/")
+_TEST_SEGMENTS = frozenset({"test", "tests", "it", "e2e"})
 
 
 def _is_scanned_source(name: str) -> bool:
@@ -53,10 +53,14 @@ def _is_scanned_source(name: str) -> bool:
 
     Test files stay in the immutable snapshot (``files``) — only the scan
     inventory narrows, so nothing is silently dropped from evidence.
+
+    A repo may nest its project under a parent directory (``Comic/src/test/``)
+    or use a non-Maven layout, so detection is segment-based, not prefix-based:
+    any path segment that is a test marker excludes the file.
     """
     if not name.endswith((".java", ".jsp")):
         return False
-    return not name.startswith(_TEST_DIRS)
+    return not any(segment in _TEST_SEGMENTS for segment in name.split("/"))
 
 
 def checkout_manifest(
