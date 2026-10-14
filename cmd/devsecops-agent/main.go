@@ -269,9 +269,60 @@ func output(value any, err error) int {
 	}
 	return 0
 }
+
+// pythonEnvironment builds the child env for the Python side. A PYTHONPATH
+// inherited from the caller can point at some other environment's
+// site-packages and shadow this install's compiled wheels (a pydantic_core
+// built for a different interpreter ABI loads and then fails at import), so
+// the key is filtered and re-added pointing at the repo's own src when one
+// exists next to the selected interpreter's venv; otherwise the user's
+// PYTHONPATH is preserved.
+func pythonEnvironment() []string {
+	env := make([]string, 0, len(os.Environ())+2)
+	var userPythonPath string
+	for _, entry := range os.Environ() {
+		key, value, _ := strings.Cut(entry, "=")
+		switch key {
+		case "PYTHONPATH":
+			userPythonPath = value
+		case "DEVSECOPS_PYTHON_ONLY":
+			// re-added below
+		default:
+			env = append(env, entry)
+		}
+	}
+	env = append(env, "DEVSECOPS_PYTHON_ONLY=1")
+	if src := pythonSrcDir(); src != "" {
+		env = append(env, "PYTHONPATH="+src)
+	} else if userPythonPath != "" {
+		env = append(env, "PYTHONPATH="+userPythonPath)
+	}
+	return env
+}
+
+// pythonSrcDir locates <repo>/src relative to the selected interpreter's venv
+// (<venv>/Scripts/python.exe on Windows, <venv>/bin/python elsewhere) so the
+// launcher works from any working directory.
+func pythonSrcDir() string {
+	exe := pythonExecutable()
+	if exe == "" || exe == "python" || exe == "python3" {
+		return "" // PATH fallback; no venv to anchor on
+	}
+	venv := filepath.Dir(filepath.Dir(exe))
+	base := filepath.Base(venv)
+	if base != ".venv" && base != "venv" {
+		return "" // not inside a venv; keep the user's PYTHONPATH
+	}
+	src := filepath.Join(filepath.Dir(venv), "src")
+	if info, err := os.Stat(src); err == nil && info.IsDir() {
+		return src
+	}
+	return ""
+}
+
 func pythonCLI(args []string) int {
 	cmd := exec.Command(pythonExecutable(), append([]string{"-m", "vulnscan.cli.main"}, args...)...)
-	cmd.Env = append(os.Environ(), "DEVSECOPS_PYTHON_ONLY=1")
+	cmd.Env = pythonEnvironment()
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
