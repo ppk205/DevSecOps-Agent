@@ -46,9 +46,7 @@ def test_which_falls_back_to_the_interpreters_venv(
     assert Path(resolved).samefile(binary)
 
 
-def test_which_prefers_path_over_the_venv(
-    fake_venv: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_which_prefers_path_over_the_venv(fake_venv: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     _write_executable(fake_venv / "scanner-probe.exe")
     monkeypatch.setattr(platform_module.shutil, "which", lambda name: "C:/elsewhere/scanner-probe")
 
