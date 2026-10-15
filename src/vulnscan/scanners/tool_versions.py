@@ -13,13 +13,16 @@ from .process import run_command
 def probe_version(binary: str) -> str | None:
     """Try ``<binary> --version`` (or ``-version``) and return the first line.
 
-    Returns ``None`` when the binary is absent or does not respond.
+    Returns ``None`` when the binary is absent or does not respond. The
+    timeout is generous because the first invocation of a freshly installed
+    binary can take tens of seconds while the OS inspects the new executable;
+    warm calls come back in a few seconds.
     """
     resolved = which(binary)
     if resolved is None:
         return None
     for flag in ("--version", "-version"):
-        result = run_command((binary, flag), timeout=10)
+        result = run_command((binary, flag), timeout=30)
         if result.succeeded and result.stdout.strip():
             return result.stdout.strip().splitlines()[0]
     return None

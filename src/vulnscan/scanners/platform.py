@@ -12,9 +12,15 @@ from pathlib import Path
 
 
 def which(binary: str) -> str | None:
-    """``shutil.which`` with an absolute-path short circuit.
+    """``shutil.which`` with a venv-relative fallback.
 
-    Returns the resolved path (string) or ``None`` when the binary is absent.
+    The scanners ship inside the application's own virtualenv (semgrep via
+    the ``scanners`` extra, gitleaks alongside it), but a caller's PATH does
+    not necessarily include ``<venv>/Scripts`` — e.g. when the TUI is started
+    from a shell that never activated the environment. Without the fallback
+    every scanner reports "not found on PATH" and the scan silently produces
+    zero findings. Resolution order: PATH first (an explicitly configured
+    install wins), then the interpreter's own environment (``sys.prefix``).
     """
     if not binary:
         return None
@@ -28,7 +34,31 @@ def which(binary: str) -> str | None:
             if (p.with_suffix(ext)).is_file():
                 return str(p.with_suffix(ext))
         return None
-    return shutil.which(binary)
+    found = shutil.which(binary)
+    if found:
+        return found
+    import sys
+
+    prefixes = [sys.prefix]
+    base_prefix = getattr(sys, "base_prefix", sys.prefix)
+    if base_prefix != sys.prefix:
+        prefixes.append(base_prefix)
+    for prefix in prefixes:
+        for candidate in _binary_candidates(Path(prefix) / "Scripts", binary) + _binary_candidates(
+            Path(prefix) / "bin", binary
+        ):
+            if candidate.is_file():
+                return str(candidate)
+    return None
+
+
+def _binary_candidates(directory: Path, binary: str) -> list[Path]:
+    """Candidate file names for *binary* inside *directory* (``.exe`` on Windows)."""
+    names = [directory / binary]
+    for ext in os.environ.get("PATHEXT", "").split(os.pathsep):
+        if ext:
+            names.append((directory / binary).with_suffix(ext))
+    return names
 
 
 def normalize_path(path: str | os.PathLike[str]) -> str:

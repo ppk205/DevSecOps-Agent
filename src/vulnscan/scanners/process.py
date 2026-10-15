@@ -76,6 +76,14 @@ def run_command(
     import subprocess
 
     command = tuple(str(a) for a in argv)
+    # Resolve the executable through the shared lookup before spawning: the
+    # child env passes the caller's PATH down unchanged, and that PATH does
+    # not necessarily contain the venv the scanners ship in. Without this a
+    # scanner that `which()` can see is still "command not found" at spawn
+    # time (exit 127), because Popen only searches the child's PATH.
+    resolved = which(command[0])
+    if resolved is not None:
+        command = (resolved, *command[1:])
 
     full_env = scanner_environment(env)
     home = tempfile.TemporaryDirectory(prefix="vulnscan-home-")
