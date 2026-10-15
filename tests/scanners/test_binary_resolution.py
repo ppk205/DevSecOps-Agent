@@ -8,6 +8,7 @@ the scan reported "not installed or not present on PATH" with zero findings.
 
 from __future__ import annotations
 
+import os
 import stat
 import sys
 from pathlib import Path
@@ -34,10 +35,16 @@ def _write_executable(path: Path, body: str = "") -> None:
     path.chmod(path.stat().st_mode | stat.S_IEXEC)
 
 
+def _binary_name(stem: str) -> str:
+    """A resolvable binary name for this platform: PATHEXT is a Windows-only
+    mechanism, so POSIX wants the bare name while Windows wants ``.exe``."""
+    return f"{stem}.exe" if os.name == "nt" else stem
+
+
 def test_which_falls_back_to_the_interpreters_venv(
     fake_venv: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    binary = fake_venv / "scanner-probe.exe"
+    binary = fake_venv / _binary_name("scanner-probe")
     _write_executable(binary)
     monkeypatch.setattr(platform_module.shutil, "which", lambda name: None)
 
@@ -89,7 +96,7 @@ def test_run_command_spawns_the_resolved_path(
 ) -> None:
     """The spawn must use the resolved absolute path, not the bare name:
     Popen searches only the child's PATH, which need not contain the venv."""
-    binary = fake_venv / "scanner-probe.exe"
+    binary = fake_venv / _binary_name("scanner-probe")
     _write_executable(binary)
     monkeypatch.setattr(platform_module.shutil, "which", lambda name: None)
     spawned: list[list[str]] = []

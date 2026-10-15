@@ -32,6 +32,7 @@ from vulnscan.scanners.base import AdapterCapability, AdapterRegistry, ScannerAd
 from vulnscan.scanners.process import ScanCancelled, _cancel_check, run_command
 from vulnscan.storage.database import get_session
 from vulnscan.storage.models import RunORM
+from vulnscan.version import APP_VERSION
 
 
 @pytest.fixture
@@ -235,7 +236,7 @@ def test_ir15_cli_uses_same_gate(service, checkout, tmp_path, monkeypatch):
     )
     assert result.exit_code == 0, result.output
     assert json.loads(result.stdout)["gate"] == "passed"
-    assert CliRunner().invoke(app, ["--version"]).stdout.strip() == "0.2.0"
+    assert CliRunner().invoke(app, ["--version"]).stdout.strip() == APP_VERSION
     assert "Usage:" in CliRunner().invoke(app, []).stdout
 
 
