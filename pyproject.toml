@@ -90,6 +90,11 @@ timeout = 300
 target-version = "py311"
 line-length = 100
 
+# torch 2.14+ segfaults on Windows when laya 0.3.20 loads its safetensors;
+# 2.6.0 is the last build verified to work with this model revision.
+[tool.uv]
+override-dependencies = ["torch==2.6.0"]
+
 [tool.mypy]
 python_version = "3.11"
 strict = true
