@@ -1,12 +1,14 @@
 # DevSecOps-Agent
 
 The application now supports a native Go TUI and service implementation with a
-Python compatibility backend. See [build and keyboard instructions](docs/NATIVE-MIGRATION.md)
+Python compatibility backend. Start with [compile, build, and run instructions](docs/BUILD-AND-RUN.md),
+then see [native architecture and keyboard instructions](docs/NATIVE-MIGRATION.md)
 and [the Laya review and training guide](docs/LAYA-TRAINING.md).
 
 The terminal opens in **Workspace**. Choose a checkout and profile, expand
 Advanced options when needed, then press **Ctrl+E** to review and **Ctrl+S** to
-start. **Ctrl+K** opens the action menu. Review and finding details scroll with
+start. **Ctrl+K** opens the action menu in Python; in the native Workspace it
+enters or saves an API key. Review and finding details scroll with
 arrow/page keys; **V** shows raw details. See the
 [TUI review and remediation](docs/TUI-REVIEW.md) for the implemented fixes.
 
@@ -126,81 +128,48 @@ DevSecOps-Agent/
 
 ### Prerequisites
 
-- Python 3.11 or later
-- Java 11+ (for Semgrep, SpotBugs, and target application analysis)
-- Maven 3.6+ (for target application builds)
-- Git
+- Python 3.11 or later and Git
+- Go 1.27.1 to compile the native interface (matching CI)
+- Semgrep 1.178.0 and Gitleaks 8.24.2 for Fast scans
+- Docker and the project scanner image for Full scans, including Java/Maven,
+  SpotBugs/FindSecBugs, and Dependency-Check
 
 ### Setup
 
-```bash
-# Clone the repository
-git clone https://github.com/ppk205/DevSecOps-Agent.git
-cd DevSecOps-Agent
-
-# Create and activate a virtual environment
-python -m venv .venv
-source .venv/bin/activate  # Linux/macOS
-# .venv\Scripts\activate   # Windows
-
-# Install the project in development mode
-pip install -e ".[dev,scanners]"
-
-# Install scanner binaries (if not already available)
-# Semgrep: pip install semgrep
-# SpotBugs: download from https://spotbugs.github.io/
-# FindSecBugs: download plugin from https://find-sec-bugs.github.io/
-# OWASP Dependency-Check: download from https://owasp.org/www-project-dependency-check/
-# Gitleaks: download from https://github.com/gitleaks/gitleaks
-```
+Follow [Compile, build, and run](docs/BUILD-AND-RUN.md) for copyable Windows
+PowerShell and Linux/macOS commands. It covers locked Python installation,
+native compilation, Python wheel/source builds, scanner setup, and verification.
+The Go executable still requires the Python application environment.
 
 ### Configuration
 
-Create a `.env` file in the project root:
-
-```env
-# AI Provider settings
-LLM_API_KEY=your-api-key-here
-LLM_BASE_URL=https://api.openai.com/v1
-LLM_MODEL=gpt-4o
-
-# Scanner paths (adjust to your installation)
-SEMGREP_PATH=semgrep
-SPOTBUGS_PATH=/path/to/spotbugs
-OWASP_DC_PATH=/path/to/dependency-check/bin/dependency-check
-GITLEAKS_PATH=gitleaks
-CODEQL_PATH=/path/to/codeql
-
-# Application
-DATABASE_URL=sqlite+aiosqlite:///data/vulnscan.db
-SECRET_KEY=change-this-to-a-random-string
-HOST=127.0.0.1
-PORT=8000
-```
+No API key or `.env` file is required to open the TUI. Use Workspace to choose
+the checkout, profile, output directory, and advanced options, then review the
+effective settings. Optional secrets can be entered through the Python API Keys
+tab, native Workspace controls, or `devsecops-agent env set VARIABLE_NAME`, which
+prompts for a hidden value. Put scanner executables on `PATH` or in the
+application virtual environment. Scan history defaults to `vulnscan.db` in the
+working directory; select another file with `--db-path`.
 
 ## Usage
 
 ### CLI
 
 ```bash
-# Register a target project
-devsecops-agent register --path /path/to/JVA-bookstore --name jva-bookstore
+# Run a Fast scan without advisory model routing
+devsecops-agent scan-run --checkout /path/to/JVA-bookstore --profile fast --no-laya
 
-# Run a full scan
-devsecops-agent scan --target jva-bookstore
+# View saved scans and inspect a run
+devsecops-agent scan-list
+devsecops-agent scan-status RUN_ID
 
-# Run only specific scanners
-devsecops-agent scan --target jva-bookstore --scanners semgrep,spotbugs
-
-# View scan results
-devsecops-agent results --scan-id 1
-
-# Generate a report
-devsecops-agent report --scan-id 1 --format html --output report.html
-
-# Compare experiments
-devsecops-agent compare --scan-ids 1,2 --output comparison.html
+# Export retained evidence without rescanning
+devsecops-agent scan-export RUN_ID --fmt html --out artifacts/reports
 ```
+
+These commands assume the virtual environment is active and the Python launcher
+is selected (`DEVSECOPS_NATIVE=python`). Replace `RUN_ID` with an ID from
+`scan-list`. See the build guide for commands that work without activation.
 
 ### Web Dashboard
 

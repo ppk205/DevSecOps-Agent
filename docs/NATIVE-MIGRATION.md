@@ -12,6 +12,9 @@ owned bridge requests cancellation and waits for evidence persistence.
 
 ## Build and launch
 
+For Windows and Linux/macOS setup, locked dependencies, compilation, Python
+packages, and scanner prerequisites, see [Compile, build, and run](BUILD-AND-RUN.md).
+
 Install Go 1.27.1 and the existing Python project environment. From the project
 root:
 
@@ -69,7 +72,7 @@ fallback uses Textual inputs, Select widgets and a collapsible Advanced section.
 | Key | Operation |
 | --- | --- |
 | Ctrl+N | Open Workspace and focus the checkout |
-| Ctrl+K | Open the action menu |
+| Ctrl+K | Native Workspace: enter/save an API key; elsewhere (and in Python): open the action menu |
 | Tab / Shift+Tab | Move between visible fields and actions |
 | Enter / Esc | Begin/end text editing or activate/back out of a reader |
 | Ctrl+Space | Complete checkout directory names without blocking navigation |
