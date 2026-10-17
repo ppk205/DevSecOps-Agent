@@ -131,8 +131,10 @@ func (m *Model) refreshActivity() {
 func (m *Model) navigate(tab int) tea.Cmd {
 	id := m.target()
 	m.tab = tab
-	m.editing, m.searching = false, false
+	m.editing, m.searching, m.keyInput = false, false, false
 	m.search.Blur()
+	m.keysName.Blur()
+	m.keysValue.Blur()
 	for i := range m.inputs {
 		m.inputs[i].Blur()
 	}
@@ -241,34 +243,35 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 		}
 		return m, tea.Quit
 	}
-	if key == "ctrl+k" && !m.keyInput {
-		if m.tab == 1 || m.keysName.Focused() || m.keysValue.Focused() {
-		// Save one API key to the project-local .env. Only the variable
-		// NAME is ever shown or listed again; the value is passed through
-		// once and dropped (EchoPassword on the value field).
-		name := strings.TrimSpace(m.keysName.Value())
-		if name == "" {
-			m.envStatus = "Type a VARIABLE_NAME first."
-			m.keyInput = true
-			m.keysFocus = 0
-			m.keysValue.Blur()
-			return m, m.keysName.Focus()
-		}
-		value := m.keysValue.Value()
-		m.keysValue.SetValue("")
-		m.envStatus = "Saving " + strings.ToUpper(strings.ReplaceAll(name, "-", "_")) + "…"
-		api := m.api
-		return m, func() tea.Msg {
-			if err := api.EnvSet(context.Background(), name, value); err != nil {
-				return loaded{kind: "keys", err: err}
+	if key == "ctrl+k" {
+		if m.tab == 1 || m.keyInput {
+			// Save one API key to the project-local .env. Only the variable
+			// NAME is ever shown or listed again; the value is passed through
+			// once and dropped (EchoPassword on the value field).
+			name := strings.TrimSpace(m.keysName.Value())
+			if name == "" {
+				m.navigate(1)
+				m.reviewMode = false
+				m.envStatus = "Type a VARIABLE_NAME first."
+				m.keyInput = true
+				m.keysFocus = 0
+				return m, m.keysName.Focus()
 			}
-			names, err := api.EnvList(context.Background())
-			return loaded{kind: "keys", value: names, err: err}
+			value := m.keysValue.Value()
+			m.keysValue.SetValue("")
+			m.envStatus = "Saving " + strings.ToUpper(strings.ReplaceAll(name, "-", "_")) + "…"
+			api := m.api
+			return m, func() tea.Msg {
+				if err := api.EnvSet(context.Background(), name, value); err != nil {
+					return loaded{kind: "keys", err: err}
+				}
+				names, err := api.EnvList(context.Background())
+				return loaded{kind: "keys", value: names, err: err}
+			}
 		}
-	}
-	// Elsewhere Ctrl+K keeps its newer role: open the action menu (FR71).
-	m.menu, m.menuCursor = true, 0
-	return m, nil
+		// Elsewhere Ctrl+K keeps its newer role: open the action menu (FR71).
+		m.menu, m.menuCursor = true, 0
+		return m, nil
 	}
 	if m.menu {
 		switch key {
@@ -307,7 +310,7 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 	if len(key) == 6 && strings.HasPrefix(key, "ctrl+") && key[5] >= '1' && key[5] <= '5' {
 		return m, m.navigate(int(key[5] - '1'))
 	}
-	if !m.editing && !m.searching && key >= "1" && key <= "5" {
+	if !m.editing && !m.searching && !m.keyInput && key >= "1" && key <= "5" {
 		return m, m.navigate(int(key[0] - '1'))
 	}
 	if key == "ctrl+e" {
@@ -358,11 +361,8 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 		case m.keyInput:
 			// Leaving key entry keeps whatever is typed; Ctrl+K saves it.
 			m.keyInput = false
-			if m.keysFocus == 0 {
-				m.keysValue.Blur()
-			} else {
-				m.keysName.Blur()
-			}
+			m.keysName.Blur()
+			m.keysValue.Blur()
 		case m.editing:
 			m.editing = false
 			m.inputs[m.field].Blur()

@@ -103,7 +103,7 @@ func (m Model) formView() string {
 	lines, focusedLine := []string{}, 0
 	for _, control := range m.controls() {
 		marker := "  "
-		if control == m.field {
+		if control == m.field && !m.keyInput {
 			marker, focusedLine = "> ", len(lines)
 		}
 		switch control {
@@ -152,10 +152,10 @@ func (m Model) formView() string {
 		lines = append(lines, "", "API keys (values never shown): "+status)
 		nameLabel, valueLabel := "  Variable", "  Value (hidden)"
 		if m.keyInput && m.keysFocus == 0 {
-			nameLabel = "> Variable"
+			nameLabel, focusedLine = "> Variable", len(lines)
 		}
 		if m.keyInput && m.keysFocus == 1 {
-			valueLabel = "> Value (hidden)"
+			valueLabel, focusedLine = "> Value (hidden)", len(lines)+2
 		}
 		lines = append(lines, nameLabel, "  "+m.keysName.View())
 		lines = append(lines, valueLabel, "  "+m.keysValue.View())
