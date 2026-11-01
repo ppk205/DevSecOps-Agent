@@ -201,10 +201,40 @@ def hunt_vulns(
                     except (TypeError, ValueError):
                         pass
                 candidates = parse_hunt_list(closing.content or "", max_findings)
+                reply = closing.content or ""
                 detail = (
                     f"closing call parsed {len(candidates)} candidates "
-                    f"(reply {len(closing.content or '')} chars)"
+                    f"(reply {len(reply)} chars: {reply[:150]})"
                 )
+                if not candidates and (reply or "").strip():
+                    # One stricter retry: some gateways prepend prose.
+                    try:
+                        retry = client.chat(
+                            [
+                                ChatMessage(
+                                    role="user",
+                                    content=(
+                                        "Your previous reply was not a JSON array. "
+                                        "Reply with ONLY the JSON array, no other text."
+                                    ),
+                                ),
+                            ],
+                            model=model,
+                            max_tokens=2000,
+                        )
+                        if retry.usage:
+                            try:
+                                total_tokens += int(retry.usage.get("total_tokens", 0))
+                            except (TypeError, ValueError):
+                                pass
+                        candidates = parse_hunt_list(retry.content or "", max_findings)
+                        detail = (
+                            f"retry parsed {len(candidates)} candidates "
+                            f"(reply {(retry.content or '')[:150]})"
+                        )
+                    except Exception as exc:  # noqa: BLE001 - best-effort
+                        logger.warning("hunt retry call failed: %s", exc)
+                        detail += f"; retry failed: {type(exc).__name__}"
             except Exception as exc:  # noqa: BLE001 - fallback is best-effort
                 logger.warning("hunt closing call failed: %s", exc)
                 detail = f"closing call failed: {type(exc).__name__}"
