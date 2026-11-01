@@ -1,6 +1,10 @@
 import { Route, Routes } from "react-router-dom";
 import { Shell } from "./layout/Shell";
-import { FindingsPage, HomePage, LivePage, PlaceholderPage } from "./pages/pages";
+import { HomePage, LivePage, PlaceholderPage } from "./pages/pages";
+import { FindingDetailPage } from "./pages/FindingDetailPage";
+import { FindingsPage } from "./pages/FindingsPage";
+import { LogsPage } from "./pages/LogsPage";
+import { ReportsPage } from "./pages/ReportsPage";
 import { StyleguidePage } from "./pages/StyleguidePage";
 import { en } from "./i18n/en";
 
@@ -15,14 +19,9 @@ export function App() {
         />
         <Route path="live" element={<LivePage />} />
         <Route path="findings" element={<FindingsPage />} />
-        <Route
-          path="reports"
-          element={<PlaceholderPage title={en.reports.title} subtitle={en.reports.subtitle} />}
-        />
-        <Route
-          path="logs"
-          element={<PlaceholderPage title={en.logs.title} subtitle={en.logs.subtitle} />}
-        />
+        <Route path="findings/:id" element={<FindingDetailPage />} />
+        <Route path="reports" element={<ReportsPage />} />
+        <Route path="logs" element={<LogsPage />} />
         <Route
           path="keys"
           element={<PlaceholderPage title={en.apiKeys.title} subtitle={en.apiKeys.subtitle} />}

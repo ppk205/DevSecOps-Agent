@@ -1,18 +1,13 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchScan, fetchScans } from "../api/client";
 import type { ScanSummary } from "../api/types";
 import { DataTable } from "../components/DataTable";
 import { SeverityDonut } from "../components/charts/SeverityDonut";
 import { EmptyState } from "../components/EmptyState";
-import { SeverityBadge } from "../components/SeverityBadge";
 import { SpecCell } from "../components/SpecCell";
 import { StageNode } from "../components/StageNode";
 import { StripeDivider } from "../components/StripeDivider";
-import { VerificationBadge } from "../components/VerificationBadge";
 import { en } from "../i18n/en";
-import { MOCK_FINDINGS } from "../mock/mockRun";
-import type { FindingSummary } from "../api/types";
 
 function PageHeader({ title, subtitle }: { title: string; subtitle: string }) {
   return (
@@ -80,44 +75,6 @@ function PlaceholderPage({ title, subtitle }: { title: string; subtitle: string 
   );
 }
 
-function FindingsPage() {
-  // Phase 1: mock table preview over the scripted ~60 findings.
-  const [filter, setFilter] = useState<string>("all");
-  const rows: FindingSummary[] = MOCK_FINDINGS.filter(
-    (f) => filter === "all" || f.severity === filter,
-  );
-  return (
-    <div>
-      <PageHeader title={en.findings.title} subtitle={en.findings.subtitle} />
-      <div className="mb-4 flex gap-2">
-        {["all", "critical", "high", "medium", "low", "info"].map((s) => (
-          <button
-            key={s}
-            onClick={() => setFilter(s)}
-            className={`label-m border px-3 py-1.5 text-[11px] transition-colors duration-150 ${
-              filter === s ? "border-ink text-ink" : "border-hairline text-muted hover:text-body"
-            }`}
-          >
-            {s}
-          </button>
-        ))}
-      </div>
-      <DataTable
-        columns={[
-          { key: "id", header: "ID", render: (f: FindingSummary) => <span className="font-mono text-xs">{f.id}</span> },
-          { key: "title", header: "Title", render: (f: FindingSummary) => <span className="text-ink">{f.title}</span> },
-          { key: "sev", header: "Severity", render: (f: FindingSummary) => <SeverityBadge severity={f.severity} /> },
-          { key: "ver", header: "State", render: (f: FindingSummary) => <VerificationBadge state={f.status} /> },
-          { key: "tool", header: "Tool", render: (f: FindingSummary) => f.tool },
-          { key: "loc", header: "Location", render: (f: FindingSummary) => <span className="font-mono text-xs">{f.file}:{f.line}</span> },
-        ]}
-        rows={rows}
-        rowKey={(f) => f.id}
-      />
-    </div>
-  );
-}
-
 function LivePage() {
   const { data, isLoading } = useQuery({ queryKey: ["scan", 7], queryFn: () => fetchScan(7) });
   if (isLoading || !data) return <p className="text-body">{en.common.loading}</p>;
@@ -146,4 +103,4 @@ function StageNodeShim(props: { name: string; status: string; last: boolean }) {
   return <StageNode name={props.name} status={status} last={props.last} />;
 }
 
-export { HomePage, FindingsPage, LivePage, PlaceholderPage, PageHeader };
+export { HomePage, LivePage, PlaceholderPage, PageHeader };
