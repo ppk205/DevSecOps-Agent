@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from collections.abc import Sequence
 from datetime import UTC, datetime
 from pathlib import Path
@@ -35,6 +36,7 @@ from typing import Any
 
 from vulnscan.agent.loop import AgentLoop, parse_verdict_text
 from vulnscan.agent.tools import TOOL_SCHEMAS  # noqa: F401  (re-exported for tests)
+from vulnscan.ai.excerpts import code_excerpt_for_finding as _code_excerpt
 from vulnscan.assessment.validator import IndependentValidator
 from vulnscan.contracts.assessment import Assessment
 from vulnscan.contracts.enums import (
@@ -176,27 +178,6 @@ def build_review_agent(
         model_version="v1",
     )
     return loop, client, profile, own_budget
-
-
-def _code_excerpt(snapshot_root: str, finding: Finding, radius: int = 30) -> str:
-    """Read ±radius lines around the first observation location (jailed)."""
-    for obs in finding.observations:
-        if obs.location is None:
-            continue
-        target = _resolve_inside(Path(snapshot_root), obs.location.file_path)
-        if target is None or not target.is_file():
-            continue
-        try:
-            lines = target.read_text(encoding="utf-8", errors="replace").splitlines()
-        except OSError:
-            continue
-        start = max(1, obs.location.line_start - radius)
-        end = min(len(lines), obs.location.line_start + radius)
-        numbered = [f"{n}: {lines[n - 1]}" for n in range(start, end + 1)]
-        return (
-            f"--- {obs.location.file_path} (lines {start}-{end}) ---\n" + "\n".join(numbered)[:3000]
-        )
-    return "(no source excerpt available)"
 
 
 def single_shot_verdict(
