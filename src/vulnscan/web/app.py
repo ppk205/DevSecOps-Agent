@@ -530,7 +530,7 @@ def create_app(
         sort: str = Query(default="severity"),
         order: str = Query(default="asc"),
         page: int = Query(default=1, ge=1),
-        page_size: int = Query(default=50, ge=1, le=200),
+        page_size: int = Query(default=50, ge=1, le=2000),
     ) -> dict[str, Any]:
         """Filtered, sorted, paginated finding list for one scan run."""
         run = session.get(RunORM, run_id)
