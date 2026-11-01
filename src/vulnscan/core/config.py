@@ -40,6 +40,7 @@ class ScanConfig(BaseModel):
     provider_model: str | None = None
     ai_report: bool = False
     max_ai_findings: int = Field(default=10, ge=1, le=500)
+    mode: Literal["deterministic", "hunt"] = "deterministic"
 
     @field_validator("timezone")
     @classmethod

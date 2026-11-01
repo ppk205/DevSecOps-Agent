@@ -119,6 +119,9 @@ def scan_run(
     max_ai_findings: int | None = typer.Option(
         None, "--max-ai-findings", help="Cap on model-reviewed findings per run."
     ),
+    mode: str | None = typer.Option(
+        None, "--mode", help="Scan mode: deterministic (default) or hunt."
+    ),
 ) -> None:
     """Scan any repository (URL or local path) and enforce policy."""
     from pathlib import Path
@@ -144,6 +147,7 @@ def scan_run(
             provider_model=model,
             ai_report=ai_report,
             max_ai_findings=max_ai_findings,
+            mode=mode,
         )
         if not json_output:
             typer.echo(f"Resolving target: {checkout}")
