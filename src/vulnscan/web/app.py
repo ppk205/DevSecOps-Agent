@@ -610,7 +610,7 @@ def create_app(
             snippet = str(loc.get("snippet", "")) if isinstance(loc, dict) else ""
             lines = [
                 {"n": number, "text": text, "highlight": True}
-                for number, text in enumerate(snippet.splitlines() or ([] if snippet else []), start=1)
+                for number, text in enumerate(snippet.splitlines(), start=1)
             ]
             key = f"obs-{index}"
             blocks.append(
