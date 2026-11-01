@@ -6,7 +6,7 @@
   "device": "auto",
   "batch_size": 4,
   "max_input_tokens": 512,
-  "timeout_seconds": 30,
+  "timeout_seconds": 300,
   "cache_enabled": true,
   "high_confidence_threshold": 0.85,
   "review_threshold": 0.60,

@@ -10,7 +10,7 @@ from __future__ import annotations
 import inspect
 import json
 import logging
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from typing import Any
 
 from vulnscan.contracts.decision import (
@@ -109,12 +109,17 @@ def triage_many_batched(
     batch_size: int = 4,
     cache: DecisionCache | None = None,
     max_input_tokens: int = MAX_INPUT_TOKENS,
+    to_state: Callable[[Any], dict[str, Any]] = finding_to_state,
 ) -> list[TriageOutcome]:
     """Route many findings using batched inference plus a per-state cache.
 
     ``agent`` is any object exposing ``predict(state, questions, **kwargs)`` or
     ``predict_batch(states, questions, **kwargs)``; both shapes are supported so
     the stage works against the real ``laya.Agent`` and against fakes.
+
+    ``to_state`` projects one item into the state Laya sees. The default keeps
+    the scanner-based ``Finding`` shape; the harness passes its own candidate
+    projection so Laya can triage items that did not come from a scanner.
     """
     if batch_size < 1:
         raise ValueError("batch_size must be >= 1")
@@ -124,7 +129,7 @@ def triage_many_batched(
     pending: list[int] = []
     requests: dict[int, DecisionRequest] = {}
     for index, finding in enumerate(findings):
-        request = _to_request(finding_to_state(finding), questions)
+        request = _to_request(to_state(finding), questions)
         request.model_policy = {
             key: getattr(agent, key, None)
             for key in ("model_id", "model_revision", "max_input_tokens", "max_input_chars")
