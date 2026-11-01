@@ -358,7 +358,18 @@ def api_scans_create(request: Request, body: ScanCreateIn) -> dict[str, Any]:
         )
         session.add(run)
         session.flush()
-        for ordinal, name in enumerate(["intake", "scan", "hunt", "validate", "report"]):
+        for ordinal, name in enumerate(
+            [
+                "intake",
+                "model_hunt",
+                "scanners",
+                "laya_batch_routing",
+                "laya_verification",
+                "targeted_deep_analysis",
+                "independent_validation",
+                "final_report",
+            ]
+        ):
             session.add(StageORM(run_id=run.id, ordinal=ordinal, name=name, status="pending"))
         session.commit()
         run_id = run.id

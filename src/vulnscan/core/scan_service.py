@@ -25,7 +25,7 @@ from vulnscan.reporting.reporter import ReportGenerator
 from vulnscan.scanners.base import AdapterRegistry
 from vulnscan.scanners.process import ScanCancelled, _cancel_check, run_command
 from vulnscan.storage.database import get_session, init_db
-from vulnscan.storage.models import FindingORM, RunORM, StageORM, TargetORM
+from vulnscan.storage.models import FindingORM, RunORM, ScanEventORM, StageORM, TargetORM
 from vulnscan.version import APP_VERSION
 
 from .config import ScanConfig
@@ -46,6 +46,24 @@ class ProgressEvent:
 
 
 _TEST_SEGMENTS = frozenset({"test", "tests", "it", "e2e"})
+
+
+def _live_event_kind(stage: str, status: str) -> str:
+    """Map a pipeline stage to a scan_events kind (Phase 3 live feed).
+
+    ``stage`` rows always exist; the live event kind mirrors what the
+    operator sees: scanner work as ``log``, AI reasoning as ``ai_step``,
+    proposals as ``ai_proposal``, and checks as ``verification_result``.
+    """
+    if stage in {"model_hunt", "laya_batch_routing", "targeted_deep_analysis"}:
+        return "ai_step"
+    if stage in {"laya_verification", "model_scanner_compare", "independent_validation"}:
+        return "verification_result" if status in {"completed", "partial"} else "ai_step"
+    if stage in {"semgrep", "gitleaks", "spotbugs", "owasp-dependency-check"}:
+        return "log"
+    if stage == "final_report" and status == "completed":
+        return "stage"
+    return "stage"
 
 
 def _is_scanned_source(name: str) -> bool:
@@ -546,6 +564,57 @@ class ScanService:
                     changed = True
                 if changed:
                     row.findings_revision += 1
+                # ---- Phase 3: append-only live event row (never breaks a scan)
+                try:
+                    from sqlalchemy import func as _func
+
+                    max_seq = session.scalar(
+                        select(_func.max(ScanEventORM.seq)).where(ScanEventORM.run_id == pk)
+                    )
+                    next_seq = int(max_seq) + 1 if max_seq is not None else 0
+                    kind = _live_event_kind(stage, status)
+                    session.add(
+                        ScanEventORM(
+                            run_id=pk,
+                            seq=next_seq,
+                            kind=kind,
+                            stage=stage,
+                            message=sanitize(message) or f"{stage} → {status}",
+                            payload_json=json.dumps(
+                                sanitize({"status": status, "stage": stage})
+                            ),
+                            created_at=datetime.now(UTC),
+                        )
+                    )
+                    # AI review completion also yields a proposal row so the
+                    # AI AGENT PANEL has a CVSS/claim feed without parsing.
+                    if stage == "targeted_deep_analysis" and status in {
+                        "completed",
+                        "partial",
+                    }:
+                        try:
+                            proposal_count = len(review["assessments"])
+                        except Exception:  # noqa: BLE001
+                            proposal_count = 0
+                        session.add(
+                            ScanEventORM(
+                                run_id=pk,
+                                seq=next_seq + 1,
+                                kind="ai_proposal",
+                                stage=stage,
+                                message=sanitize(
+                                    message or f"{proposal_count} AI proposals ready"
+                                ),
+                                payload_json=json.dumps(
+                                    sanitize(
+                                        {"status": status, "proposals": proposal_count}
+                                    ),
+                                ),
+                                created_at=datetime.now(UTC),
+                            )
+                        )
+                except Exception:  # noqa: BLE001, S110
+                    pass
             if on_event:
                 on_event(event)
 

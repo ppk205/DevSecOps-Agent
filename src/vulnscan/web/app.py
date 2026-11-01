@@ -34,7 +34,7 @@ from vulnscan.core.finding_view import project_finding
 from vulnscan.core.scan_service import ScanService
 from vulnscan.reporting.reporter import ReportGenerator
 from vulnscan.storage.database import get_engine, migrate
-from vulnscan.storage.models import FindingORM, RunORM, ScanEventORM
+from vulnscan.storage.models import FindingORM, RunORM, ScanEventORM, StageORM
 from vulnscan.version import APP_VERSION
 
 _TEMPLATES = Path(__file__).with_name("templates")
@@ -813,13 +813,18 @@ def create_app(
     async def events_stream(
         run_id: int, request: Request, session: SessionDep
     ) -> EventSourceResponse:
-        """Phase 1 SSE skeleton: hello + persisted events + live hint.
+        """Phase 3 live SSE: hello + backlog + DB-polled tail + done hint.
 
-        Emits stored ``scan_events`` rows newer than ``Last-Event-ID`` (or
-        ``?last_event_id=``), then a ``{"type": "live"}`` hint describing what
-        the Phase 3 live tail will stream. Closes after the burst — the client
-        falls back to polling ``/api/runs/{id}`` (see WEBUI-NOTES §A6).
+        Replays stored ``scan_events`` rows newer than ``Last-Event-ID``
+        (or ``?last_event_id=``), then — while the run is still
+        queued/running — polls the table for new rows every 0.7s (up to
+        ~60s per connection) so a long scan streams without websockets.
+        Terminal runs close after a ``done`` event; live runs close after
+        the poll budget with a ``live`` hint so the client reconnects with
+        ``Last-Event-ID`` resume or falls back to ``?since=`` polling.
         """
+        import asyncio
+
         run = session.get(RunORM, run_id)
         if run is None:
             raise HTTPException(404, "Run not found")
@@ -838,11 +843,15 @@ def create_app(
         )
         payload = [_event_to_dict(r) for r in rows]
         status = run.status
+        last_seq = max((item["seq"] for item in payload), default=cursor)
+        terminal = status in {"completed", "failed", "cancelled"}
 
         async def generator() -> AsyncIterator[dict[str, Any]]:
+            nonlocal last_seq
             yield {
                 "event": "hello",
                 "id": str(cursor),
+                "retry": 1500,
                 "data": json.dumps({"run_id": run_id, "status": status}),
             }
             for item in payload:
@@ -851,12 +860,199 @@ def create_app(
                     "id": str(item["seq"]),
                     "data": json.dumps(item),
                 }
+            if terminal:
+                yield {
+                    "event": "done",
+                    "id": str(last_seq),
+                    "data": json.dumps(
+                        {"type": "done", "run_id": run_id, "status": status}
+                    ),
+                }
+                return
+            # Live tail: poll a fresh session — the request-scoped session
+            # would never see rows committed by the scanner process.
+            for _ in range(85):
+                if await request.is_disconnected():
+                    break
+                await asyncio.sleep(0.7)
+                try:
+                    with SessionFactory() as fresh:
+                        fresh_run = fresh.get(RunORM, run_id)
+                        fresh_status = fresh_run.status if fresh_run else "unknown"
+                        fresh_rows = (
+                            fresh.query(ScanEventORM)
+                            .filter(
+                                ScanEventORM.run_id == run_id,
+                                ScanEventORM.seq > last_seq,
+                            )
+                            .order_by(ScanEventORM.seq, ScanEventORM.id)
+                            .all()
+                        )
+                        fresh_items = [_event_to_dict(r) for r in fresh_rows]
+                except Exception:  # noqa: BLE001, S112
+                    continue
+                for item in fresh_items:
+                    last_seq = max(last_seq, int(item["seq"]))
+                    yield {
+                        "event": item["kind"],
+                        "id": str(item["seq"]),
+                        "data": json.dumps(item),
+                    }
+                if fresh_status in {"completed", "failed", "cancelled"}:
+                    yield {
+                        "event": "done",
+                        "id": str(last_seq),
+                        "data": json.dumps(
+                            {
+                                "type": "done",
+                                "run_id": run_id,
+                                "status": fresh_status,
+                            }
+                        ),
+                    }
+                    return
             yield {
                 "event": "live",
                 "data": json.dumps({"type": "live", "run_id": run_id, "status": status}),
             }
 
         return EventSourceResponse(generator())
+
+    # ---- Phase 3 live scan detail + cancel/retry --------------------------
+
+    @app.get("/api/scans/{run_id}")
+    def scan_detail(run_id: int, session: SessionDep) -> dict[str, Any]:
+        """Live scan snapshot: status, stages, AI evidence, usage, cursors."""
+        run = session.get(RunORM, run_id)
+        if run is None:
+            raise HTTPException(404, "Run not found")
+        snapshot = _snapshot_of(run)
+        rows = (
+            session.query(FindingORM).filter(FindingORM.run_id == run_id).all()
+        )
+        counts = {"total": 0, "confirmed": 0, "rejected": 0, "unresolved": 0, "unprocessed": 0}
+        severity: dict[str, int] = {}
+        for row in rows:
+            try:
+                summary = json.loads(row.summary_json or "{}")
+            except ValueError:
+                summary = {}
+            status_value = str(summary.get("status", "unprocessed"))
+            counts["total"] += 1
+            if status_value in counts:
+                counts[status_value] += 1
+            else:
+                counts["unprocessed"] += 1
+            sev = str(summary.get("severity", "info")).lower()
+            severity[sev] = severity.get(sev, 0) + 1
+        event_rows = (
+            session.query(ScanEventORM)
+            .filter(ScanEventORM.run_id == run_id)
+            .order_by(ScanEventORM.seq, ScanEventORM.id)
+            .all()
+        )
+        ai_usage = snapshot.get("ai_usage", {})
+        if not isinstance(ai_usage, dict):
+            ai_usage = {}
+        assessments = snapshot.get("assessments", [])
+        decisions = snapshot.get("validation_decisions", [])
+        comparison = snapshot.get("comparison", {})
+        comparison_counts: dict[str, int] = {}
+        if isinstance(comparison, dict) and isinstance(comparison.get("counts"), dict):
+            comparison_counts = {str(k): int(v) for k, v in comparison["counts"].items()}
+        target = run.target
+        return {
+            "run_id": run.id,
+            "repo": target.repository_url if target is not None else "",
+            "commit": target.commit_sha if target is not None else "",
+            "status": run.status,
+            "gate": snapshot.get("gate", "unknown"),
+            "counts": counts,
+            "severity": severity,
+            "stages": [
+                {
+                    "name": s.name,
+                    "status": s.status,
+                    "ordinal": s.ordinal,
+                    "message": s.error_message or "",
+                    "started_at": s.started_at.isoformat() if s.started_at else None,
+                    "completed_at": (s.completed_at.isoformat() if s.completed_at else None),
+                }
+                for s in sorted(run.stages, key=lambda s: s.ordinal)
+            ],
+            "ai": {
+                "assessments": assessments if isinstance(assessments, list) else [],
+                "decisions": decisions if isinstance(decisions, list) else [],
+                "comparison_counts": comparison_counts,
+                "usage": ai_usage,
+            },
+            "findings_revision": run.findings_revision,
+            "event_cursor": max((r.seq for r in event_rows), default=-1),
+            "event_count": len(event_rows),
+            "created_at": run.created_at.isoformat() if run.created_at else None,
+        }
+
+    class _CancelIn(BaseModel):
+        reason: str | None = None
+
+    @app.post("/api/scans/{run_id}/cancel")
+    def scan_cancel(run_id: int, session: SessionDep) -> dict[str, Any]:
+        """Request cancellation: sets the flag a running scan polls.
+
+        Queued runs flip to ``cancelled`` immediately; a running scan
+        observes ``cancel_requested`` and stops at the next checkpoint.
+        """
+        run = session.get(RunORM, run_id)
+        if run is None:
+            raise HTTPException(404, "Run not found")
+        if run.status in {"completed", "failed", "cancelled"}:
+            return {"run_id": run_id, "status": run.status, "cancel_requested": bool(run.cancel_requested)}
+        run.cancel_requested = 1
+        if run.status == "queued":
+            run.status = "cancelled"
+        session.commit()
+        return {"run_id": run_id, "status": run.status, "cancel_requested": True}
+
+    @app.post("/api/scans/{run_id}/retry", status_code=201)
+    def scan_retry(run_id: int, session: SessionDep) -> dict[str, Any]:
+        """Clone a terminal run into a fresh queued run (same target)."""
+        from datetime import UTC as _UTC
+        from datetime import datetime as _dt
+
+        run = session.get(RunORM, run_id)
+        if run is None:
+            raise HTTPException(404, "Run not found")
+        if run.status not in {"completed", "failed", "cancelled"}:
+            raise HTTPException(409, "Only terminal runs can be retried")
+        target = run.target
+        if target is None:
+            raise HTTPException(422, "Run has no target to retry")
+        now = _dt.now(_UTC)
+        clone = RunORM(
+            target_id=target.id,
+            status="queued",
+            scan_spec_json=run.scan_spec_json,
+            result_json=json.dumps({"gate": "unknown", "ai_usage": {}}),
+            created_at=now,
+            updated_at=now,
+        )
+        session.add(clone)
+        session.flush()
+        for ordinal, name in enumerate(
+            [
+                "intake",
+                "model_hunt",
+                "scanners",
+                "laya_batch_routing",
+                "laya_verification",
+                "targeted_deep_analysis",
+                "independent_validation",
+                "final_report",
+            ]
+        ):
+            session.add(StageORM(run_id=clone.id, ordinal=ordinal, name=name, status="pending"))
+        session.commit()
+        return {"run_id": clone.id, "status": "queued", "retried_from": run_id}
 
     # ---- Phase 5 Reports + Logs -------------------------------------------
     # Log lines are DERIVED (no dedicated event/log table beyond the Phase 1
