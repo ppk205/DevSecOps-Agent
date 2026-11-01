@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { en } from "../i18n/en";
+import { useStrings } from "../i18n/lang";
 
 interface DrawerProps {
   open: boolean;
@@ -10,6 +10,7 @@ interface DrawerProps {
 
 /** Right slide-over evidence drawer. Escape closes; content scrolls. */
 export function Drawer({ open, title, onClose, children }: DrawerProps) {
+  const en = useStrings();
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {

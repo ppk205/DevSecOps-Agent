@@ -9,7 +9,7 @@ import { FindingDrawer } from "../components/FindingDrawer";
 import { StatusBadge } from "../components/FindingDetailView";
 import { SeverityBadge } from "../components/SeverityBadge";
 import { StripeDivider } from "../components/StripeDivider";
-import { en } from "../i18n/en";
+import { useStrings } from "../i18n/lang";
 import { PageHeader } from "./pages";
 
 const SEVERITIES = ["critical", "high", "medium", "low", "info"] as const;
@@ -44,6 +44,7 @@ function AiDelta({ item }: { item: FindingListItem }) {
 const DEFAULT_QUERY: FindingsQuery = { sort: "severity", order: "asc", page: 1, pageSize: 20 };
 
 export function FindingsPage() {
+  const en = useStrings();
   const [query, setQuery] = useState<FindingsQuery>(DEFAULT_QUERY);
   const [openId, setOpenId] = useState<string | null>(null);
   const [selected, setSelected] = useState(0);
@@ -216,7 +217,7 @@ export function FindingsPage() {
               }
               className="border border-hairline bg-canvas px-2 py-1.5 text-sm text-ink outline-none focus:border-ink"
             >
-              <option value="">All</option>
+              <option value="">{en.findings.allOption}</option>
               {options[field.key === "verifications" ? "statuses" : field.key === "cwes" ? "cwes" : "scanners"].map(
                 (value) => (
                   <option key={value} value={value}>
@@ -426,7 +427,7 @@ export function FindingsPage() {
             </label>
           </div>
           <p className="mt-2 text-[11px] text-muted">
-            Sorted by {query.sort} ({query.order}).
+            {en.findings.sortedBy} {query.sort} ({query.order}).
           </p>
         </div>
       )}

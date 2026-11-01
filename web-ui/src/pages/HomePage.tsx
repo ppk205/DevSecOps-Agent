@@ -10,7 +10,7 @@ import { SeverityDonut } from "../components/charts/SeverityDonut";
 import { EmptyState } from "../components/EmptyState";
 import { SpecCell } from "../components/SpecCell";
 import { StripeDivider } from "../components/StripeDivider";
-import { en } from "../i18n/en";
+import { useStrings } from "../i18n/lang";
 import { tokens } from "../tokens";
 
 const SEVERITY_ORDER: Severity[] = ["critical", "high", "medium", "low", "info"];
@@ -21,6 +21,7 @@ function shortRepo(repo: string): string {
 }
 
 function ToolHealthStrip() {
+  const en = useStrings();
   const toolsQuery = useQuery({ queryKey: ["tools"], queryFn: () => fetchTools(false) });
   if (toolsQuery.isLoading) return <p className="text-body">{en.common.loading}</p>;
   if (toolsQuery.isError || !toolsQuery.data) return null;
@@ -47,11 +48,12 @@ function ToolHealthStrip() {
 }
 
 export function HomePage() {
+  const en = useStrings();
   const scansQuery = useQuery({ queryKey: ["scans"], queryFn: fetchScans });
   if (scansQuery.isLoading) return <p className="text-body">{en.common.loading}</p>;
   if (scansQuery.isError) {
     return (
-      <Banner tone="error" title="Home failed to load">
+      <Banner tone="error" title={en.home.loadFailed}>
         {String(scansQuery.error)}
       </Banner>
     );
@@ -93,7 +95,7 @@ export function HomePage() {
       {/* KPI spec-cells */}
       {latest ? (
         <section
-          aria-label="Key figures"
+          aria-label={en.home.keyFigures}
           className="mb-10 grid grid-cols-2 gap-4 md:grid-cols-6"
         >
           <SpecCell label={en.home.kpiRun} value={`#${latest.run_id}`} />
@@ -140,7 +142,7 @@ export function HomePage() {
           ) : (
             <EmptyState
               title={en.common.emptyTitle}
-              body="Run a scan to populate the severity mix."
+              body={en.home.emptySeverity}
             />
           )}
         </div>
@@ -153,7 +155,7 @@ export function HomePage() {
           {cweBars.length > 0 ? (
             <SeverityBars data={cweBars} />
           ) : (
-            <EmptyState title={en.common.emptyTitle} body="No CWE signal on the latest run yet." />
+            <EmptyState title={en.common.emptyTitle} body={en.home.emptyCwe} />
           )}
         </div>
         <div className="card p-6">
@@ -161,7 +163,7 @@ export function HomePage() {
           <ToolHealthStrip />
           <div className="mt-4">
             <Link to="/keys" className="label-m text-[11px] text-ink no-underline">
-              Manage scanners →
+              {en.home.manageScanners}
             </Link>
           </div>
         </div>
@@ -187,27 +189,27 @@ export function HomePage() {
           columns={[
             {
               key: "run",
-              header: "Run",
+              header: en.home.cols.run,
               render: (s: ScanSummary) => <span className="text-ink">#{s.run_id}</span>,
             },
             {
               key: "repo",
-              header: "Repository",
+              header: en.home.cols.repository,
               render: (s: ScanSummary) => shortRepo(s.repo),
             },
             {
               key: "gate",
-              header: "Gate",
+              header: en.home.cols.gate,
               render: (s: ScanSummary) => s.gate.toUpperCase(),
             },
             {
               key: "status",
-              header: "Status",
+              header: en.home.cols.status,
               render: (s: ScanSummary) => s.status,
             },
             {
               key: "findings",
-              header: "Findings",
+              header: en.home.cols.findings,
               render: (s: ScanSummary) => String(s.counts.total),
             },
           ]}

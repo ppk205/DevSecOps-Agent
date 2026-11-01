@@ -17,7 +17,7 @@ import type {
 import { EmptyState } from "../components/EmptyState";
 import { SeverityBadge } from "../components/SeverityBadge";
 import { StripeDivider } from "../components/StripeDivider";
-import { en } from "../i18n/en";
+import { useStrings } from "../i18n/lang";
 import { isMock } from "../mock/mockClient";
 import { redactSecrets } from "../utils/redact";
 import {
@@ -61,6 +61,7 @@ function statusRank(status: string): number {
 }
 
 export function LivePage() {
+  const en = useStrings();
   const queryClient = useQueryClient();
   const scans = useQuery({ queryKey: ["scans"], queryFn: fetchScans });
   const ids = useMemo(() => (scans.data ?? []).map((s) => s.run_id), [scans.data]);
@@ -487,9 +488,9 @@ export function LivePage() {
               <table className="w-full text-[13px]">
                 <thead>
                   <tr className="text-left text-muted">
-                    <th className="py-1 pr-3 font-normal">Finding</th>
-                    <th className="py-1 pr-3 font-normal">Claim</th>
-                    <th className="py-1 font-normal">Check</th>
+                    <th scope="col" className="py-1 pr-3 font-normal">{en.live.cols.finding}</th>
+                    <th scope="col" className="py-1 pr-3 font-normal">{en.live.cols.claim}</th>
+                    <th scope="col" className="py-1 font-normal">{en.live.cols.check}</th>
                   </tr>
                 </thead>
                 <tbody>

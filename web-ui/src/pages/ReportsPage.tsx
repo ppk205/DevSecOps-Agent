@@ -11,7 +11,7 @@ import type { ReportDescriptor, ReportFormat } from "../api/types";
 import { Button } from "../components/Button";
 import { DataTable } from "../components/DataTable";
 import { EmptyState } from "../components/EmptyState";
-import { en } from "../i18n/en";
+import { useStrings } from "../i18n/lang";
 import { copyText } from "../utils/clipboard";
 import { PageHeader } from "./pages";
 
@@ -26,6 +26,7 @@ function cliCommand(runId: number, format: ReportFormat): string {
 }
 
 function ReportRows({ runId }: { runId: number }) {
+  const en = useStrings();
   const [generating, setGenerating] = useState<ReportFormat | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
@@ -61,7 +62,7 @@ function ReportRows({ runId }: { runId: number }) {
   if (query.isError || !query.data) {
     return (
       <EmptyState
-        title="Reports unavailable"
+        title={en.reports.unavailable}
         body={query.error instanceof Error ? query.error.message : en.common.emptyBody}
         actionLabel={en.common.retry}
         onAction={() => query.refetch()}
@@ -76,34 +77,34 @@ function ReportRows({ runId }: { runId: number }) {
     <div>
       {error && (
         <p role="alert" className="mb-4 border border-hairline px-4 py-3 text-sm text-body">
-          Generate failed: {error}
+          {en.reports.generateFailed}: {error}
         </p>
       )}
       <DataTable
         columns={[
-          { key: "fmt", header: "Format", render: (r: ReportDescriptor) => <span className="text-ink">{r.format}</span> },
-          { key: "size", header: "Size", render: (r: ReportDescriptor) => formatSize(r.size_bytes) },
-          { key: "count", header: "Findings", render: (r: ReportDescriptor) => String(r.findings) },
+          { key: "fmt", header: en.reports.cols.format, render: (r: ReportDescriptor) => <span className="text-ink">{r.format}</span> },
+          { key: "size", header: en.reports.cols.size, render: (r: ReportDescriptor) => formatSize(r.size_bytes) },
+          { key: "count", header: en.reports.cols.findings, render: (r: ReportDescriptor) => String(r.findings) },
           {
             key: "status",
-            header: "Status",
+            header: en.reports.cols.status,
             render: (r: ReportDescriptor) =>
               generating === r.format ? (
-                <span className="text-muted">Generating…</span>
+                <span className="text-muted">{en.reports.generating}</span>
               ) : r.generated ? (
-                <span className="text-ink">Ready</span>
+                <span className="text-ink">{en.reports.ready}</span>
               ) : (
-                <span className="text-muted">Missing</span>
+                <span className="text-muted">{en.reports.missing}</span>
               ),
           },
           {
             key: "actions",
-            header: "Actions",
+            header: en.reports.cols.actions,
             render: (r: ReportDescriptor) => (
               <span className="flex flex-wrap gap-2">
                 {r.generated && r.download_url ? (
                   <a className="label-m text-xs text-ink underline" href={r.download_url} download>
-                    Download
+                    {en.reports.download}
                   </a>
                 ) : (
                   <Button
@@ -112,7 +113,7 @@ function ReportRows({ runId }: { runId: number }) {
                     disabled={generating !== null}
                     onClick={() => handleGenerate(r.format)}
                   >
-                    Generate
+                    {en.reports.generate}
                   </Button>
                 )}
                 <Button
@@ -123,9 +124,9 @@ function ReportRows({ runId }: { runId: number }) {
                       setCopied(ok ? `${runId}:${r.format}` : null),
                     );
                   }}
-                  title="Copy the CLI command that regenerates this artifact"
+                  title={en.reports.copyCliTitle}
                 >
-                  {copied === `${runId}:${r.format}` ? "Copied" : "Copy CLI command"}
+                  {copied === `${runId}:${r.format}` ? en.reports.copied : en.reports.copyCli}
                 </Button>
               </span>
             ),
@@ -136,19 +137,19 @@ function ReportRows({ runId }: { runId: number }) {
       />
       {finalReport?.download_url && (
         <p className="mt-3 text-sm text-body">
-          Final narrative:{" "}
+          {en.reports.finalNarrative}{" "}
           <a className="text-ink underline" href={finalReport.download_url} download>
             {finalReport.filename} ({formatSize(finalReport.size_bytes)})
           </a>{" "}
-          · legacy txt/docx/final-report links stay in the server-rendered UI.
+          {en.reports.legacyNote}
         </p>
       )}
       {htmlReport?.generated && htmlReport.download_url && (
         <div className="mt-8">
           <div className="mb-3 flex items-center gap-3">
-            <h2 className="label-m text-sm text-ink">HTML preview (sandboxed)</h2>
+            <h2 className="label-m text-sm text-ink">{en.reports.previewTitle}</h2>
             <Button variant="secondary" size="sm" onClick={() => setPreview(htmlReport)}>
-              Preview
+              {en.reports.preview}
             </Button>
           </div>
           {preview && (
@@ -160,7 +161,7 @@ function ReportRows({ runId }: { runId: number }) {
                 <span className="font-mono text-xs text-muted">{preview.filename}</span>
                 <span className="ml-auto flex gap-2">
                   <Button variant="ghost" size="sm" onClick={() => setFullscreen((v) => !v)}>
-                    {fullscreen ? "Exit fullscreen" : "Fullscreen"}
+                    {fullscreen ? en.reports.exitFullscreen : en.reports.fullscreen}
                   </Button>
                   <Button variant="ghost" size="sm" onClick={() => { setPreview(null); setFullscreen(false); }}>
                     {en.common.close}
@@ -183,6 +184,7 @@ function ReportRows({ runId }: { runId: number }) {
 }
 
 function ComparePanel({ scanIds }: { scanIds: number[] }) {
+  const en = useStrings();
   const [selected, setSelected] = useState<number[]>(scanIds.slice(0, 2));
   const ready = selected.length >= 2;
   const compare = useQuery({
@@ -197,7 +199,7 @@ function ComparePanel({ scanIds }: { scanIds: number[] }) {
 
   return (
     <div className="mt-12">
-      <h2 className="label-m mb-3 text-sm text-ink">Compare scans</h2>
+      <h2 className="label-m mb-3 text-sm text-ink">{en.reports.compareTitle}</h2>
       <div className="mb-4 flex flex-wrap gap-2">
         {scanIds.map((id) => (
           <label key={id} className="label-m flex cursor-pointer items-center gap-2 border border-hairline px-3 py-1.5 text-[11px] text-body">
@@ -211,13 +213,13 @@ function ComparePanel({ scanIds }: { scanIds: number[] }) {
           </label>
         ))}
       </div>
-      {!ready && <p className="text-sm text-muted">Select at least 2 scans to compare.</p>}
+      {!ready && <p className="text-sm text-muted">{en.reports.compareHint}</p>}
       {ready && compare.isLoading && <p className="text-body">{en.common.loading}</p>}
       {ready && compare.data && (
         <div>
           <div className="grid gap-6 lg:grid-cols-2">
             <div className="card p-6">
-              <div className="label-m mb-3 text-xs text-muted">Per scanner</div>
+              <div className="label-m mb-3 text-xs text-muted">{en.reports.perScanner}</div>
               <DataTable
                 columns={[
                   { key: "tool", header: "Scanner", render: (r: { tool: string }) => r.tool },
@@ -232,7 +234,7 @@ function ComparePanel({ scanIds }: { scanIds: number[] }) {
               />
             </div>
             <div className="card p-6">
-              <div className="label-m mb-3 text-xs text-muted">Per CWE</div>
+              <div className="label-m mb-3 text-xs text-muted">{en.reports.perCwe}</div>
               <DataTable
                 columns={[
                   { key: "cwe", header: "CWE", render: (r: { cwe: string }) => r.cwe },
@@ -250,9 +252,9 @@ function ComparePanel({ scanIds }: { scanIds: number[] }) {
           <div className="mt-6 grid gap-6 lg:grid-cols-3">
             {(
               [
-                ["New", compare.data.new],
-                ["Fixed", compare.data.fixed],
-                ["Changed", compare.data.changed],
+                [en.reports.addedNew, compare.data.new],
+                [en.reports.addedFixed, compare.data.fixed],
+                [en.reports.addedChanged, compare.data.changed],
               ] as const
             ).map(([label, entries]) => (
               <div key={label} className="card p-6">
@@ -260,7 +262,7 @@ function ComparePanel({ scanIds }: { scanIds: number[] }) {
                   {label} ({entries.length})
                 </div>
                 {entries.length === 0 ? (
-                  <p className="text-sm text-muted">None.</p>
+                  <p className="text-sm text-muted">{en.reports.none}</p>
                 ) : (
                   <ul className="space-y-2 text-sm text-body">
                     {entries.map((entry) => (
@@ -279,9 +281,9 @@ function ComparePanel({ scanIds }: { scanIds: number[] }) {
           </div>
           <p className="mt-4 text-sm text-body">
             <a className="text-ink underline" href={compareHtmlUrl(selected)}>
-              Export comparison as HTML
+              {en.reports.exportComparison}
             </a>{" "}
-            <span className="text-muted">(baseline #{compare.data.baseline})</span>
+            <span className="text-muted">({en.reports.baseline} #{compare.data.baseline})</span>
           </p>
         </div>
       )}
@@ -290,6 +292,7 @@ function ComparePanel({ scanIds }: { scanIds: number[] }) {
 }
 
 export function ReportsPage() {
+  const en = useStrings();
   const scans = useQuery({ queryKey: ["scans"], queryFn: fetchScans });
   const ids = useMemo(() => (scans.data ?? []).map((s) => s.run_id), [scans.data]);
   const [runId, setRunId] = useState<number | null>(null);
@@ -303,7 +306,7 @@ export function ReportsPage() {
       ) : (
         <div>
           <label className="label-m mb-2 block text-[11px] text-muted" htmlFor="report-scan">
-            Scan
+            {en.reports.scan}
           </label>
           <select
             id="report-scan"

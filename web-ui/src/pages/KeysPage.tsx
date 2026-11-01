@@ -13,7 +13,7 @@ import {
 import type { GeneralSettings } from "../api/types";
 import { Banner } from "../components/Banner";
 import { Button } from "../components/Button";
-import { en } from "../i18n/en";
+import { useStrings } from "../i18n/lang";
 import { tokens } from "../tokens";
 
 function Section({
@@ -35,6 +35,7 @@ function Section({
 }
 
 export function KeysPage() {
+  const en = useStrings();
   const queryClient = useQueryClient();
   const [verifyMode, setVerifyMode] = useState(false);
   const keysQuery = useQuery({ queryKey: ["keys"], queryFn: fetchKeys });
@@ -133,7 +134,7 @@ export function KeysPage() {
             />
           </label>
           <label className="block">
-            <span className="label-m text-[11px] text-muted">Base URL</span>
+            <span className="label-m text-[11px] text-muted">{en.apiKeys.baseUrl}</span>
             <input
               className="mt-1 w-full border border-hairline bg-canvas px-3 py-2 text-sm text-ink"
               value={baseUrl}
@@ -142,7 +143,7 @@ export function KeysPage() {
             />
           </label>
           <label className="block">
-            <span className="label-m text-[11px] text-muted">Label</span>
+            <span className="label-m text-[11px] text-muted">{en.apiKeys.labelField}</span>
             <input
               className="mt-1 w-full border border-hairline bg-canvas px-3 py-2 text-sm text-ink"
               value={label}
@@ -171,7 +172,7 @@ export function KeysPage() {
         </div>
         {saveMutation.isError && (
           <div className="mt-4">
-            <Banner tone="error" title="Save failed">
+            <Banner tone="error" title={en.apiKeys.saveFailed}>
               {String(saveMutation.error)}
             </Banner>
           </div>
@@ -197,7 +198,7 @@ export function KeysPage() {
                   />
                   <span className="label-m text-xs text-ink">{k.profile}</span>
                   <span className="text-xs text-muted">{k.label}</span>
-                  <span className="font-mono text-xs text-body">{k.masked || "not set"}</span>
+                  <span className="font-mono text-xs text-body">{k.masked || en.apiKeys.notSet}</span>
                   <span className="ml-auto flex gap-2">
                     <Button
                       variant="secondary"
@@ -249,7 +250,7 @@ export function KeysPage() {
                 />
                 <span className="label-m text-xs text-ink">{t.tool}</span>
                 <span className="font-mono text-xs text-body">{t.binary}</span>
-                <span className="font-mono text-xs text-muted">{t.path ?? t.hint ?? "missing"}</span>
+                <span className="font-mono text-xs text-muted">{t.path ?? t.hint ?? en.apiKeys.missing}</span>
                 {t.version && <span className="font-mono text-xs text-body">{t.version}</span>}
               </li>
             ))}
@@ -294,7 +295,7 @@ export function KeysPage() {
       <Section title={en.apiKeys.general} body={en.apiKeys.generalBody}>
         <div className="grid gap-3 md:grid-cols-2">
           <label className="block">
-            <span className="label-m text-[11px] text-muted">Timezone</span>
+            <span className="label-m text-[11px] text-muted">{en.apiKeys.timezone}</span>
             <input
               className="mt-1 w-full border border-hairline bg-canvas px-3 py-2 text-sm text-ink"
               value={settings.timezone ?? ""}
@@ -305,7 +306,7 @@ export function KeysPage() {
             />
           </label>
           <label className="block">
-            <span className="label-m text-[11px] text-muted">Timeout (s)</span>
+            <span className="label-m text-[11px] text-muted">{en.apiKeys.timeoutSecs}</span>
             <input
               type="number"
               className="mt-1 w-full border border-hairline bg-canvas px-3 py-2 text-sm text-ink"
@@ -317,7 +318,7 @@ export function KeysPage() {
             />
           </label>
           <label className="block">
-            <span className="label-m text-[11px] text-muted">Max files</span>
+            <span className="label-m text-[11px] text-muted">{en.apiKeys.maxFiles}</span>
             <input
               type="number"
               className="mt-1 w-full border border-hairline bg-canvas px-3 py-2 text-sm text-ink"
@@ -329,7 +330,7 @@ export function KeysPage() {
             />
           </label>
           <label className="block">
-            <span className="label-m text-[11px] text-muted">Output dir</span>
+            <span className="label-m text-[11px] text-muted">{en.apiKeys.outputDir}</span>
             <input
               className="mt-1 w-full border border-hairline bg-canvas px-3 py-2 text-sm text-ink"
               value={settings.output_dir ?? ""}
@@ -357,7 +358,7 @@ export function KeysPage() {
         </div>
         {settingsMutation.isError && (
           <div className="mt-4">
-            <Banner tone="error" title="Save failed">
+            <Banner tone="error" title={en.apiKeys.saveFailed}>
               {String(settingsMutation.error)}
             </Banner>
           </div>

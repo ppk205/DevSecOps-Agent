@@ -3,10 +3,11 @@ import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchFindingDetail } from "../api/client";
 import { FindingDetailView } from "../components/FindingDetailView";
-import { en } from "../i18n/en";
+import { useStrings } from "../i18n/lang";
 
 /** Deep-linkable full page for one finding (the drawer is the quick view). */
 export function FindingDetailPage() {
+  const en = useStrings();
   const { id } = useParams<{ id: string }>();
   const [showRaw, setShowRaw] = useState(false);
   const { data: detail, isLoading } = useQuery({

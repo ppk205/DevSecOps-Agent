@@ -1,23 +1,24 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { en } from "../i18n/en";
 import { isMock } from "../mock/mockClient";
 import { StripeDivider } from "../components/StripeDivider";
-
-const NAV: { to: string; label: string }[] = [
-  { to: "/", label: en.nav.home },
-  { to: "/scans/new", label: en.nav.newScan },
-  { to: "/live", label: en.nav.live },
-  { to: "/findings", label: en.nav.findings },
-  { to: "/reports", label: en.nav.reports },
-  { to: "/logs", label: en.nav.logs },
-  { to: "/keys", label: en.nav.apiKeys },
-];
+import { useLang, useStrings } from "../i18n/lang";
 
 /**
  * PIT WALL shell: 64px black topnav with 7 nav items,
  * 4px M-stripe progress rail, content, footer.
  */
 export function Shell() {
+  const en = useStrings();
+  const { lang, setLang } = useLang();
+  const NAV: { to: string; label: string }[] = [
+    { to: "/", label: en.nav.home },
+    { to: "/scans/new", label: en.nav.newScan },
+    { to: "/live", label: en.nav.live },
+    { to: "/findings", label: en.nav.findings },
+    { to: "/reports", label: en.nav.reports },
+    { to: "/logs", label: en.nav.logs },
+    { to: "/keys", label: en.nav.apiKeys },
+  ];
   return (
     <div className="flex min-h-screen flex-col bg-canvas">
       <header className="bg-canvas">
@@ -43,6 +44,21 @@ export function Shell() {
             </NavLink>
           ))}
           <div className="ml-auto flex items-center gap-3">
+            <div role="group" aria-label={en.shell.language} className="flex items-center border border-hairline">
+              {(["en", "vi"] as const).map((code) => (
+                <button
+                  key={code}
+                  type="button"
+                  aria-pressed={lang === code}
+                  onClick={() => setLang(code)}
+                  className={`label-m px-2 py-1.5 text-[11px] transition-colors duration-150 ease-out ${
+                    lang === code ? "bg-elevated text-ink" : "text-muted hover:text-body"
+                  }`}
+                >
+                  {code.toUpperCase()}
+                </button>
+              ))}
+            </div>
             {isMock && (
               <span className="label-m border border-warning px-2 py-1 text-[10px] text-warning">
                 {en.common.mockBadge}
@@ -51,9 +67,9 @@ export function Shell() {
             <a
               href="/"
               className="label-m text-[10px] text-muted no-underline transition-colors hover:text-body"
-              title="Legacy server-rendered dashboard"
+              title={en.shell.legacyTitle}
             >
-              Legacy UI
+              {en.app.legacyUi}
             </a>
           </div>
         </nav>

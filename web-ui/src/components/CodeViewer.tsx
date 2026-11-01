@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import type { CodeBlock, TaintStep } from "../api/types";
-import { en } from "../i18n/en";
+import { useStrings } from "../i18n/lang";
 
 interface CodeViewerProps {
   blocks: CodeBlock[];
@@ -12,6 +12,7 @@ interface CodeViewerProps {
  * never innerHTML) so untrusted scanner snippets cannot inject markup.
  */
 export function CodeViewer({ blocks, taintPath }: CodeViewerProps) {
+  const en = useStrings();
   const jumpTo = useCallback((blockKey: string) => {
     document.getElementById(`code-${blockKey}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
   }, []);

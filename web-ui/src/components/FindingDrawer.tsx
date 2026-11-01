@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchFindingDetail } from "../api/client";
-import { en } from "../i18n/en";
+import { useStrings } from "../i18n/lang";
 import { Drawer } from "./Drawer";
 import { FindingDetailView } from "./FindingDetailView";
 
@@ -26,6 +26,7 @@ export function FindingDrawer({
   hasPrev,
   hasNext,
 }: FindingDrawerProps) {
+  const en = useStrings();
   const [showRaw, setShowRaw] = useState(false);
   const { data: detail, isLoading } = useQuery({
     queryKey: ["finding", runId, findingId],

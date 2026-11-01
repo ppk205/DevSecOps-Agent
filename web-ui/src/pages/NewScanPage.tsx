@@ -10,7 +10,7 @@ import {
 } from "../api/client";
 import { Banner } from "../components/Banner";
 import { Button } from "../components/Button";
-import { en } from "../i18n/en";
+import { useStrings } from "../i18n/lang";
 
 const SCANNERS = ["semgrep", "gitleaks", "spotbugs", "owasp-dependency-check"] as const;
 
@@ -19,6 +19,7 @@ function shellQuote(value: string): string {
 }
 
 export function NewScanPage() {
+  const en = useStrings();
   const [repo, setRepo] = useState("https://github.com/example/jva-bookstore");
   const [profile, setProfile] = useState<"fast" | "full">("fast");
   const [tools, setTools] = useState<Record<string, boolean>>({
@@ -272,7 +273,7 @@ export function NewScanPage() {
                     className="mt-1 w-full border border-hairline bg-canvas px-3 py-2 font-mono text-sm text-ink"
                     value={commit}
                     onChange={(e) => setCommit(e.target.value)}
-                    placeholder="optional commit SHA"
+                    placeholder={en.newScan.commitPlaceholder}
                   />
                 </label>
                 <label className="block">
@@ -306,23 +307,23 @@ export function NewScanPage() {
             <h2 className="label-m text-xs text-muted">{en.newScan.review}</h2>
             <dl className="space-y-2 text-sm">
               <div className="flex justify-between gap-4">
-                <dt className="text-muted">Target</dt>
+                <dt className="text-muted">{en.newScan.reviewTarget}</dt>
                 <dd className="break-all text-right font-mono text-xs text-ink">{repo || "—"}</dd>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="text-muted">Profile</dt>
+                <dt className="text-muted">{en.newScan.reviewProfile}</dt>
                 <dd className="text-ink">{profile.toUpperCase()}</dd>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="text-muted">Scanners</dt>
+                <dt className="text-muted">{en.newScan.reviewScanners}</dt>
                 <dd className="text-right text-ink">
                   {SCANNERS.filter((t) => tools[t]).join(", ") || "—"}
                 </dd>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="text-muted">AI</dt>
+                <dt className="text-muted">{en.newScan.reviewAi}</dt>
                 <dd className="text-ink">
-                  {aiReview ? `on · $${estimate.toFixed(2)} est.` : "off"}
+                  {aiReview ? `${en.newScan.aiOnShort} · $${estimate.toFixed(2)} ${en.newScan.estShort}` : en.newScan.aiOffShort}
                 </dd>
               </div>
             </dl>
@@ -333,7 +334,7 @@ export function NewScanPage() {
               </pre>
             </div>
             {startMutation.isError && (
-              <Banner tone="error" title="Start failed">
+              <Banner tone="error" title={en.newScan.startFailed}>
                 {String(startMutation.error)}
               </Banner>
             )}
@@ -341,9 +342,9 @@ export function NewScanPage() {
               <Banner tone="success" title={`${en.newScan.launched} #${startMutation.data.run_id}`}>
                 {en.newScan.launchedBody}{" "}
                 <Link to="/" className="text-ink">
-                  Home
+                  {en.nav.home}
                 </Link>{" "}
-                · <Link to="/live" className="text-ink">Live</Link>
+                · <Link to="/live" className="text-ink">{en.nav.live}</Link>
               </Banner>
             )}
             <Button

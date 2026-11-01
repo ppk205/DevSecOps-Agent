@@ -6,7 +6,7 @@ import { SeverityDonut } from "../components/charts/SeverityDonut";
 import { EmptyState } from "../components/EmptyState";
 import { SpecCell } from "../components/SpecCell";
 import { StripeDivider } from "../components/StripeDivider";
-import { en } from "../i18n/en";
+import { useStrings } from "../i18n/lang";
 
 function PageHeader({ title, subtitle }: { title: string; subtitle: string }) {
   return (
@@ -21,6 +21,7 @@ function PageHeader({ title, subtitle }: { title: string; subtitle: string }) {
 }
 
 function HomePage() {
+  const en = useStrings();
   const { data, isLoading } = useQuery({ queryKey: ["scans"], queryFn: fetchScans });
   const latest: ScanSummary | undefined = data?.[0];
   if (isLoading) return <p className="text-body">{en.common.loading}</p>;

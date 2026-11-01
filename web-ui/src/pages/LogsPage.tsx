@@ -6,7 +6,7 @@ import { fetchLogs, fetchScans, openLogsStream } from "../api/client";
 import type { LogLine } from "../api/types";
 import { Button } from "../components/Button";
 import { EmptyState } from "../components/EmptyState";
-import { en } from "../i18n/en";
+import { useStrings } from "../i18n/lang";
 import { copyText } from "../utils/clipboard";
 import { redactSecrets, redactValue } from "../utils/redact";
 import { PageHeader } from "./pages";
@@ -86,6 +86,7 @@ function LogRow({
   highlight: RegExp | null;
   wrap: boolean;
 }) {
+  const en = useStrings();
   const [expanded, setExpanded] = useState(false);
   const safe = redactValue(line.data);
   const hasData = safe !== null && typeof safe === "object" && Object.keys(safe as object).length > 0;
@@ -108,7 +109,7 @@ function LogRow({
           )}
           {hasData && (
             <button className="label-m text-[11px] text-muted underline" onClick={() => setExpanded((v) => !v)}>
-              {expanded ? "Hide JSON" : "JSON"}
+              {expanded ? en.logs.hideJson : en.logs.showJson}
             </button>
           )}
         </span>
@@ -135,6 +136,7 @@ function download(filename: string, content: string, mime: string) {
 }
 
 export function LogsPage() {
+  const en = useStrings();
   const scans = useQuery({ queryKey: ["scans"], queryFn: fetchScans });
   const ids = useMemo(() => (scans.data ?? []).map((s) => s.run_id), [scans.data]);
   const [scanId, setScanId] = useState<number | null>(null);
@@ -146,7 +148,7 @@ export function LogsPage() {
     try {
       return { re: new RegExp(search, "gi"), error: null };
     } catch {
-      return { re: null, error: "Invalid regex — showing unfiltered lines." };
+      return { re: null, error: "invalid" };
     }
   }, [search]);
   const regexError = highlight.error;
@@ -220,9 +222,9 @@ export function LogsPage() {
       <PageHeader title={en.logs.title} subtitle={en.logs.subtitle} />
       <div className="mb-4 flex flex-wrap items-end gap-3">
         <label className="label-m text-[11px] text-muted">
-          Scan{" "}
+          {en.logs.scan}{" "}
           <select
-            aria-label="Scan"
+            aria-label={en.logs.scan}
             className="ml-1 border border-hairline bg-canvas px-2 py-1.5 text-sm text-ink"
             value={active}
             onChange={(e) => setScanId(Number(e.target.value))}
@@ -235,9 +237,9 @@ export function LogsPage() {
           </select>
         </label>
         <label className="label-m text-[11px] text-muted">
-          Level{" "}
+          {en.logs.level}{" "}
           <select
-            aria-label="Level"
+            aria-label={en.logs.level}
             className="ml-1 border border-hairline bg-canvas px-2 py-1.5 text-sm text-ink"
             value={level}
             onChange={(e) => setLevel(e.target.value)}
@@ -250,9 +252,9 @@ export function LogsPage() {
           </select>
         </label>
         <label className="label-m text-[11px] text-muted">
-          Source{" "}
+          {en.logs.source}{" "}
           <select
-            aria-label="Source"
+            aria-label={en.logs.source}
             className="ml-1 border border-hairline bg-canvas px-2 py-1.5 text-sm text-ink"
             value={source}
             onChange={(e) => setSource(e.target.value)}
@@ -266,9 +268,9 @@ export function LogsPage() {
           </select>
         </label>
         <label className="label-m text-[11px] text-muted">
-          Search (regex){" "}
+          {en.logs.search}{" "}
           <input
-            aria-label="Search"
+            aria-label={en.logs.search}
             className="ml-1 border border-hairline bg-canvas px-2 py-1.5 text-sm text-ink"
             value={search}
             placeholder="error|warn"
@@ -277,10 +279,10 @@ export function LogsPage() {
         </label>
         <span className="ml-auto flex flex-wrap gap-2">
           <Button variant="secondary" size="sm" onClick={() => (paused ? resume() : setPaused(true))}>
-            {paused ? "Resume" : "Pause"}
+            {paused ? en.logs.resume : en.logs.pause}
           </Button>
           <Button variant="ghost" size="sm" onClick={() => setWrap((v) => !v)}>
-            Wrap: {wrap ? "on" : "off"}
+            {en.logs.wrap}: {wrap ? en.logs.onState : en.logs.offState}
           </Button>
           <Button
             variant="ghost"
@@ -292,7 +294,7 @@ export function LogsPage() {
               });
             }}
           >
-            {copied ? "Copied" : "Copy"}
+            {copied ? en.logs.copied : en.logs.copy}
           </Button>
           <Button variant="ghost" size="sm" onClick={() => download(`scan-${active}.log`, `${logText}\n`, "text/plain")}>
             .log
@@ -309,10 +311,10 @@ export function LogsPage() {
         </span>
       </div>
 
-      {regexError && <p className="mb-2 text-sm text-muted">{regexError}</p>}
+      {regexError && <p className="mb-2 text-sm text-muted">{en.logs.invalidRegex}</p>}
       {history.data && (
         <p className="mb-2 text-xs text-muted">
-          {history.data.granularity} · server-side redaction {history.data.redacted ? "on" : "off"} · client redaction on
+          {history.data.granularity} · {en.logs.serverRedaction} {history.data.redacted ? en.logs.onState : en.logs.offState} · {en.logs.clientRedaction}
         </p>
       )}
 
@@ -321,7 +323,7 @@ export function LogsPage() {
           className="label-m mb-3 border border-warning px-3 py-1.5 text-[11px] text-warning"
           onClick={resume}
         >
-          {buffered.length} new line{buffered.length === 1 ? "" : "s"} — resume to view
+          {buffered.length} {buffered.length === 1 ? en.logs.newLine : en.logs.newLines}
         </button>
       )}
 
@@ -329,13 +331,13 @@ export function LogsPage() {
         <p className="text-body">{en.common.loading}</p>
       ) : history.isError ? (
         <EmptyState
-          title="Logs unavailable"
+          title={en.logs.unavailable}
           body={history.error instanceof Error ? history.error.message : en.common.emptyBody}
           actionLabel={en.common.retry}
           onAction={() => history.refetch()}
         />
       ) : visible.length === 0 ? (
-        <EmptyState title="No log lines" body="Adjust the level, source, or search filters." />
+        <EmptyState title={en.logs.noLines} body={en.logs.noLinesBody} />
       ) : (
         <div className={`card ${wrap ? "" : "overflow-x-auto"}`}>
           {visible.map((line) => (

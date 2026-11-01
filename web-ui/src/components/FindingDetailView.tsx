@@ -1,5 +1,5 @@
 import type { FindingDetail } from "../api/types";
-import { en } from "../i18n/en";
+import { useStrings } from "../i18n/lang";
 import type { VerificationState } from "../tokens";
 import { CodeViewer } from "./CodeViewer";
 import { SeverityBadge } from "./SeverityBadge";
@@ -28,6 +28,7 @@ interface FindingDetailViewProps {
 
 /** Shared finding detail body: drawer and /findings/:id render this. */
 export function FindingDetailView({ detail, showRaw, onToggleRaw }: FindingDetailViewProps) {
+  const en = useStrings();
   return (
     <div>
       <header className="mb-6">
@@ -53,7 +54,7 @@ export function FindingDetailView({ detail, showRaw, onToggleRaw }: FindingDetai
         {detail.ai ? (
           <dl className="grid gap-3 text-sm">
             <div className="flex gap-2">
-              <dt className="label-m w-28 shrink-0 text-[11px] text-muted">AI severity</dt>
+              <dt className="label-m w-28 shrink-0 text-[11px] text-muted">{en.findingDetail.aiSeverity}</dt>
               <dd className="text-ink">
                 {detail.scanner_severity} → {detail.ai.proposed_severity ?? "—"}
                 {detail.ai_changed && <span className="ml-2 text-warning">(changed)</span>}
