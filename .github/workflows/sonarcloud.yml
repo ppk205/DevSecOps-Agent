@@ -6,6 +6,8 @@ on:
      - dev # the name of your main branch
  pull_request:
    types: [opened, synchronize, reopened]
+permissions:
+ contents: read
 jobs:
  build:
    name: Build
@@ -31,7 +33,11 @@ jobs:
          path: ~/.m2
          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
          restore-keys: ${{ runner.os }}-m2
-     - name: Build and analyze
+     - name: Build and analyze (Maven projects)
+       if: ${{ hashFiles('**/pom.xml') != '' }}
        env:
          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+     - name: Skip Maven Sonar analysis when no pom.xml is present
+       if: ${{ hashFiles('**/pom.xml') == '' }}
+       run: echo "No pom.xml found; skipping Maven-based Sonar analysis for this repository."
