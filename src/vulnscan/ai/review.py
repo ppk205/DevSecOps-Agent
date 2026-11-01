@@ -145,12 +145,88 @@ def build_tool_handlers(
             ),
         }
 
+    def list_files(args: dict[str, Any]) -> dict[str, Any]:
+        try:
+            rel = str(args.get("dir", ".") or ".")
+            target = _resolve_inside(root, rel)
+            if target is None or not target.is_dir():
+                return {
+                    "error": f"path escapes the scan snapshot or is not a directory: {rel[:200]}"
+                }
+            glob = str(args.get("glob", "*.java") or "*.java")
+            try:
+                paths = sorted(
+                    p.relative_to(root.resolve()).as_posix()
+                    for p in target.rglob(glob)
+                    if p.is_file()
+                )
+            except (OSError, ValueError) as exc:
+                return {"error": f"cannot list {rel[:200]}: {exc}"}
+            if len(paths) > 2000:
+                return {"error": f"too many files match ({len(paths)} > 2000); narrow the glob"}
+            return {"dir": rel[:200], "glob": glob[:200], "files": paths}
+        except Exception as exc:  # noqa: BLE001 - tool boundary never raises
+            return {"error": str(exc)[:500]}
+
+    def grep_code(args: dict[str, Any]) -> dict[str, Any]:
+        try:
+            pattern = str(args.get("pattern", ""))
+            if not pattern:
+                return {"error": "missing required argument: pattern"}
+            try:
+                rx = re.compile(pattern)
+            except re.error as exc:
+                return {"error": f"invalid regex: {exc}"}
+            glob = str(args.get("glob", "*.java") or "*.java")
+            try:
+                max_hits = int(args.get("max_hits", 20))
+            except (TypeError, ValueError):
+                max_hits = 20
+            max_hits = max(1, min(50, max_hits))
+            try:
+                candidates = [p for p in root.rglob(glob) if p.is_file()]
+            except (OSError, ValueError) as exc:
+                return {"error": f"cannot scan snapshot: {exc}"}
+            if len(candidates) > 2000:
+                return {
+                    "error": f"too many files match ({len(candidates)} > 2000); narrow the glob"
+                }
+            resolved = root.resolve()
+            hits: list[dict[str, Any]] = []
+            for path in sorted(candidates):
+                try:
+                    text = path.read_text(encoding="utf-8", errors="replace")
+                except OSError:
+                    continue
+                for lineno, line in enumerate(text.splitlines(), 1):
+                    if rx.search(line):
+                        hits.append(
+                            {
+                                "file": path.relative_to(resolved).as_posix(),
+                                "line": lineno,
+                                "text": line.strip()[:500],
+                            }
+                        )
+                        if len(hits) >= max_hits:
+                            break
+                if len(hits) >= max_hits:
+                    break
+            return {
+                "pattern": pattern[:500],
+                "hits": hits,
+                "truncated": len(hits) >= max_hits,
+            }
+        except Exception as exc:  # noqa: BLE001 - tool boundary never raises
+            return {"error": str(exc)[:500]}
+
     return {
         "inspect_code": inspect_code,
         "get_evidence": get_evidence,
         "check_coverage": check_coverage,
         "lookup_route": lookup_route,
         "propose_verification": propose_verification,
+        "list_files": list_files,
+        "grep_code": grep_code,
     }
 
 
