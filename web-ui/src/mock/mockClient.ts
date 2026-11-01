@@ -12,6 +12,7 @@ import type {
 import { MOCK_EVENTS } from "./mockEvents";
 import { mockFilteredFindings, mockFindingDetail } from "./mockFindingDetails";
 import { MOCK_FINDINGS, MOCK_SCANS, mockCounts } from "./mockRun";
+import { mockLiveEventsHistory, mockLiveFindings, mockLiveScan } from "./mockLive";
 import { MOCK_GENERAL, MOCK_KEYS, MOCK_TOOLS, MOCK_USAGE } from "./mockPhase2";
 import { mockCompare, mockLogs, mockReports } from "./mockReportsLogs";
 
@@ -32,6 +33,9 @@ export const mockApi = {
   counts: () => delay(mockCounts(MOCK_FINDINGS)),
   eventsHistory: (scanId: number): Promise<EventsHistory> =>
     delay({ run_id: scanId, events: MOCK_EVENTS, next_cursor: MOCK_EVENTS.length }),
+  liveScan: (scanId: number) => delay(mockLiveScan(scanId)),
+  liveEvents: (scanId: number) => delay(mockLiveEventsHistory(scanId)),
+  liveFindings: () => delay(mockLiveFindings()),
   reports: (scanId: number) => delay(mockReports(scanId)),
   generateReport: (scanId: number, format: ReportFormat) =>
     delay({

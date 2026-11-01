@@ -1,11 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchScan, fetchScans } from "../api/client";
+import { fetchScans } from "../api/client";
 import type { ScanSummary } from "../api/types";
 import { DataTable } from "../components/DataTable";
 import { SeverityDonut } from "../components/charts/SeverityDonut";
 import { EmptyState } from "../components/EmptyState";
 import { SpecCell } from "../components/SpecCell";
-import { StageNode } from "../components/StageNode";
 import { StripeDivider } from "../components/StripeDivider";
 import { en } from "../i18n/en";
 
@@ -75,32 +74,5 @@ function PlaceholderPage({ title, subtitle }: { title: string; subtitle: string 
   );
 }
 
-function LivePage() {
-  const { data, isLoading } = useQuery({ queryKey: ["scan", 7], queryFn: () => fetchScan(7) });
-  if (isLoading || !data) return <p className="text-body">{en.common.loading}</p>;
-  const done = data.stages.filter((s) => s.status === "completed").length;
-  return (
-    <div>
-      <PageHeader title={en.live.title} subtitle={en.live.subtitle} />
-      <div className="mb-8">
-        <StripeDivider progress={data.stages.length ? done / data.stages.length : 0} />
-        <p className="mt-2 text-xs uppercase tracking-widest text-muted">
-          {done}/{data.stages.length} stages complete
-        </p>
-      </div>
-      <div className="card flex flex-col gap-6 p-6 md:flex-row md:items-center">
-        {data.stages.map((s, i) => (
-          <StageNodeShim key={s.name} name={s.name} status={s.status} last={i === data.stages.length - 1} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function StageNodeShim(props: { name: string; status: string; last: boolean }) {
-  const ok = ["pending", "running", "completed", "failed", "skipped"] as const;
-  const status = (ok as readonly string[]).includes(props.status) ? (props.status as (typeof ok)[number]) : "pending";
-  return <StageNode name={props.name} status={status} last={props.last} />;
-}
-
-export { HomePage, LivePage, PlaceholderPage, PageHeader };
+export { HomePage, PlaceholderPage, PageHeader };
+export { LivePage } from "./LivePage";

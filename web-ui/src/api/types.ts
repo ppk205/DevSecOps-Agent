@@ -48,11 +48,15 @@ export interface FindingSummary {
 }
 
 export interface ScanEvent {
+  /** Row id when the backend supplies it (history/SSE payloads do). */
+  id?: number;
   seq: number;
   kind: EventKind;
   stage: string | null;
   message: string;
   created_at: string;
+  /** Structured payload (status/stage/proposals) when the backend supplies it. */
+  payload?: unknown;
 }
 
 export interface EventsHistory {
@@ -60,6 +64,58 @@ export interface EventsHistory {
   events: ScanEvent[];
   next_cursor: number;
 }
+
+/** Phase 3 — live scan snapshot served by GET /api/scans/{id}. */
+export interface LiveAssessment {
+  finding_id?: string;
+  proposed_severity?: string | null;
+  proposed_status?: string | null;
+  confidence?: number | null;
+  rationale?: string | null;
+  assumptions?: string[];
+  cvss?: {
+    vector: string;
+    base_score?: number | null;
+    qualitative?: string | null;
+    notes?: string;
+  } | null;
+}
+
+export interface LiveDecision {
+  finding_id?: string;
+  previous_status?: string;
+  new_status?: string;
+  outcome?: string;
+}
+
+export interface LiveScanDetail {
+  run_id: number;
+  repo: string;
+  commit: string;
+  status: RunStatus | string;
+  gate: string;
+  counts: Counts;
+  severity: Record<string, number>;
+  stages: StageSummary[];
+  ai: {
+    assessments: LiveAssessment[];
+    decisions: LiveDecision[];
+    comparison_counts: Record<string, number>;
+    usage: Record<string, number>;
+  };
+  findings_revision: number;
+  event_cursor: number;
+  event_count: number;
+  created_at: string | null;
+}
+
+export type LiveConnection =
+  | "idle"
+  | "connecting"
+  | "live"
+  | "reconnecting"
+  | "polling"
+  | "closed";
 
 /** Phase 2 shared shapes (Home / New Scan / Keys). */
 

@@ -174,6 +174,209 @@ export async function fetchEventsHistory(scanId: number) {
   return get<import("../api/types").EventsHistory>(`/api/scans/${scanId}/events/history`);
 }
 
+/** ---- Phase 3: live scan detail, cancel/retry, resilient SSE ---- */
+
+/** Live rail history: scripted 8-node run in mock, same endpoint live. */
+export async function fetchLiveEventsHistory(scanId: number) {
+  if (isMock) return mockApi.liveEvents(scanId);
+  return get<import("../api/types").EventsHistory>(`/api/scans/${scanId}/events/history`);
+}
+export async function fetchLiveScan(
+  scanId: number,
+): Promise<import("../api/types").LiveScanDetail> {
+  if (isMock) return mockApi.liveScan(scanId);
+  return get<import("../api/types").LiveScanDetail>(`/api/scans/${scanId}`);
+}
+
+export async function cancelScan(
+  scanId: number,
+): Promise<{ run_id: number; status: string; cancel_requested: boolean }> {
+  if (isMock) {
+    return { run_id: scanId, status: "cancelled", cancel_requested: true };
+  }
+  return postJson(`/api/scans/${scanId}/cancel`, {});
+}
+
+export async function retryScan(
+  scanId: number,
+): Promise<{ run_id: number; status: string; retried_from?: number }> {
+  if (isMock) {
+    return { run_id: scanId + 1, status: "queued", retried_from: scanId };
+  }
+  return postJson(`/api/scans/${scanId}/retry`, {});
+}
+
+/**
+ * Resilient live-event stream: SSE with Last-Event-ID resume, auto-reconnect
+ * with backoff, and polling fallback when the stream closes or errors.
+ *
+ * Returns an unsubscribe function. `onState` reports the connection so the
+ * page can render the reconnect banner.
+ */
+export function openLiveStream(
+  scanId: number,
+  options: {
+    cursor?: number;
+    onEvent: (kind: string, data: unknown) => void;
+    onState?: (state: import("../api/types").LiveConnection) => void;
+    onDone?: (status: string) => void;
+  },
+): () => void {
+  const { onEvent, onState, onDone } = options;
+  let cursor = options.cursor ?? -1;
+  if (isMock) {
+    onState?.("live");
+    const timers: number[] = [];
+    mockApi.liveEvents(scanId).then((history) => {
+      history.events.forEach((event, i) => {
+        if (event.seq <= cursor) return;
+        timers.push(
+          window.setTimeout(() => {
+            cursor = Math.max(cursor, event.seq);
+            onEvent(event.kind, event);
+          }, 140 * (i + 1)),
+        );
+      });
+      timers.push(
+        window.setTimeout(() => {
+          onState?.("closed");
+          onDone?.("running");
+        }, 140 * (history.events.length + 1)),
+      );
+    });
+    return () => {
+      timers.forEach((t) => window.clearTimeout(t));
+      onState?.("closed");
+    };
+  }
+
+  let stopped = false;
+  let source: EventSource | null = null;
+  let pollTimer: number | null = null;
+  let reconnectTimer: number | null = null;
+  let failures = 0;
+  let done = false;
+
+  const KINDS = [
+    "hello",
+    "stage",
+    "log",
+    "ai_step",
+    "ai_proposal",
+    "verification_result",
+    "done",
+    "live",
+  ];
+
+  function handlePayload(kind: string, raw: string) {
+    let data: unknown = raw;
+    try {
+      data = JSON.parse(raw) as unknown;
+    } catch {
+      // keep raw text
+    }
+    if (kind === "done") {
+      done = true;
+      const status =
+        typeof data === "object" && data !== null
+          ? String((data as Record<string, unknown>).status ?? "completed")
+          : "completed";
+      onDone?.(status);
+      cleanup();
+      onState?.("closed");
+      return;
+    }
+    if (kind === "hello" || kind === "live") {
+      onEvent(kind, data);
+      return;
+    }
+    const seq =
+      typeof data === "object" && data !== null
+        ? Number((data as Record<string, unknown>).seq)
+        : NaN;
+    if (Number.isFinite(seq)) cursor = Math.max(cursor, seq);
+    onEvent(kind, data);
+  }
+
+  function startPolling() {
+    if (stopped || done || pollTimer !== null) return;
+    onState?.("polling");
+    const tick = () => {
+      if (stopped || done) return;
+      fetchEventsHistory(scanId)
+        .then((history) => {
+          for (const event of history.events) {
+            if (event.seq > cursor) {
+              cursor = event.seq;
+              onEvent(event.kind, event);
+            }
+          }
+        })
+        .catch(() => undefined);
+    };
+    void tick();
+    pollTimer = window.setInterval(tick, 3000);
+  }
+
+  function connect() {
+    if (stopped || done) return;
+    onState?.(failures === 0 ? "connecting" : "reconnecting");
+    try {
+      source = new EventSource(`/api/scans/${scanId}/events?last_event_id=${cursor}`);
+    } catch {
+      startPolling();
+      return;
+    }
+    const active = source;
+    for (const kind of KINDS) {
+      active.addEventListener(kind, ((e: Event) => {
+        handlePayload(kind, (e as MessageEvent).data as string);
+      }) as EventListener);
+    }
+    active.onmessage = (msg) => handlePayload("message", msg.data as string);
+    active.onerror = () => {
+      active.close();
+      if (stopped || done) return;
+      failures += 1;
+      if (failures >= 4) {
+        startPolling();
+        return;
+      }
+      onState?.("reconnecting");
+      const backoff = Math.min(5000, 800 * failures);
+      reconnectTimer = window.setTimeout(() => {
+        reconnectTimer = null;
+        connect();
+      }, backoff);
+    };
+    active.onopen = () => {
+      failures = 0;
+      onState?.("live");
+    };
+  }
+
+  connect();
+
+  function cleanup() {
+    source?.close();
+    source = null;
+    if (pollTimer !== null) {
+      window.clearInterval(pollTimer);
+      pollTimer = null;
+    }
+    if (reconnectTimer !== null) {
+      window.clearTimeout(reconnectTimer);
+      reconnectTimer = null;
+    }
+  }
+
+  return () => {
+    stopped = true;
+    cleanup();
+    onState?.("closed");
+  };
+}
+
 /** ---- Phase 2: Home / New Scan / Keys (mock-aware) ---- */
 
 export async function fetchTools(
