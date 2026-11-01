@@ -7,6 +7,7 @@ import { DataTable } from "../components/DataTable";
 import { EmptyState } from "../components/EmptyState";
 import { FindingDrawer } from "../components/FindingDrawer";
 import { StatusBadge } from "../components/FindingDetailView";
+import { onTabListKeyDown } from "../components/Tabs";
 import { SeverityBadge } from "../components/SeverityBadge";
 import { StripeDivider } from "../components/StripeDivider";
 import { useStrings } from "../i18n/lang";
@@ -155,21 +156,32 @@ export function FindingsPage() {
             { key: "source", label: en.findings.tabs.source },
             { key: "dependency", label: en.findings.tabs.dependency },
           ] as const
-        ).map((tab) => (
+        ).map((tab) => {
+          const selected = (query.origin ?? null) === tab.key;
+          const tabId = tab.key ?? "all";
+          return (
           <button
             key={tab.label}
             role="tab"
-            aria-selected={(query.origin ?? null) === tab.key}
+            data-tab={tabId}
+            aria-selected={selected}
+            tabIndex={selected ? 0 : -1}
             onClick={() => patch({ origin: tab.key })}
+            onKeyDown={(e) =>
+              onTabListKeyDown(e, ["all", "source", "dependency"], tabId, (id) =>
+                patch({ origin: id === "all" ? null : (id as "source" | "dependency") }),
+              )
+            }
             className={`label-m border px-3 py-1.5 text-[11px] transition-colors duration-150 ${
-              (query.origin ?? null) === tab.key
+              selected
                 ? "border-ink text-ink"
                 : "border-hairline text-muted hover:text-body"
             }`}
           >
             {tab.label}
           </button>
-        ))}
+          );
+        })}
       </div>
 
       <div className="card mb-4 flex flex-wrap items-end gap-4 p-4">

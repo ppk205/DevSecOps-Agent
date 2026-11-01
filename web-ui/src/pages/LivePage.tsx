@@ -17,6 +17,7 @@ import type {
 import { EmptyState } from "../components/EmptyState";
 import { SeverityBadge } from "../components/SeverityBadge";
 import { StripeDivider } from "../components/StripeDivider";
+import { onTabListKeyDown } from "../components/Tabs";
 import { useStrings } from "../i18n/lang";
 import { isMock } from "../mock/mockClient";
 import { redactSecrets } from "../utils/redact";
@@ -30,6 +31,8 @@ import {
 import { PageHeader } from "./pages";
 
 type MobileTab = "stages" | "ai" | "results" | "logs";
+
+const MOBILE_TABS: MobileTab[] = ["stages", "ai", "results", "logs"];
 
 function toStreamEvent(data: unknown): ScanEvent | null {
   if (typeof data !== "object" || data === null) return null;
@@ -340,14 +343,13 @@ export function LivePage() {
             const nodeStatus = statuses[node.key];
             const selected = selectedNode === node.key;
             return (
+              <div key={node.key} role="listitem">
               <button
-                key={node.key}
-                role="listitem"
                 data-testid={`stage-${node.key}`}
                 aria-pressed={selected}
                 title={node.hint}
                 onClick={() => setSelectedNode((prev) => (prev === node.key ? null : node.key))}
-                className={`border p-3 text-left ${
+                className={`w-full border p-3 text-left transition-colors duration-150 ease-out ${
                   selected ? "border-ink" : "border-hairline"
                 } bg-soft hover:border-body`}
               >
@@ -359,6 +361,7 @@ export function LivePage() {
                   style={nodeStatus === "completed" ? { background: "#0fa336" } : nodeStatus === "failed" ? { background: "#e22718" } : undefined}
                 />
               </button>
+              </div>
             );
           })}
         </div>
@@ -388,13 +391,16 @@ export function LivePage() {
       </div>
 
       <div className="mb-6 flex gap-2 md:hidden" role="tablist" aria-label="Live sections">
-        {(["stages", "ai", "results", "logs"] as MobileTab[]).map((key) => (
+        {MOBILE_TABS.map((key) => (
           <button
             key={key}
             role="tab"
+            data-tab={key}
             aria-selected={tab === key}
+            tabIndex={tab === key ? 0 : -1}
             onClick={() => setTab(key)}
-            className={`label-m flex-1 border px-2 py-2 text-[11px] ${
+            onKeyDown={(e) => onTabListKeyDown(e, MOBILE_TABS, tab, (id) => setTab(id as MobileTab))}
+            className={`label-m flex-1 border px-2 py-2 text-[11px] transition-colors duration-150 ease-out ${
               tab === key ? "border-ink text-ink" : "border-hairline text-muted"
             }`}
           >
@@ -423,7 +429,7 @@ export function LivePage() {
               </ul>
             )}
             <h3 className="label-m mb-2 mt-6 text-[11px] text-muted">{en.live.normalization}</h3>
-            <p data-testid="normalization-counter" className="font-mono text-sm text-body">
+            <p data-testid="normalization-counter" aria-live="polite" className="font-mono text-sm text-body">
               {scannerHits} {en.live.observations} → {total} {en.live.findings}
             </p>
             <h3 className="label-m mb-2 mt-6 text-[11px] text-muted">{en.live.enrichment}</h3>
@@ -447,7 +453,7 @@ export function LivePage() {
           <div className="card p-6">
             <h2 className="label-m mb-4 text-xs text-muted">{en.live.aiPanel}</h2>
             {nowAnalyzing ? (
-              <div data-testid="now-analyzing" className="border border-hairline bg-canvas p-4">
+              <div data-testid="now-analyzing" aria-live="polite" className="border border-hairline bg-canvas p-4">
                 <div className="label-m text-[11px] text-muted">{en.live.nowAnalyzing}</div>
                 <p className="mt-1 text-sm text-ink">{redactSecrets(nowAnalyzing.message)}</p>
               </div>
@@ -455,7 +461,7 @@ export function LivePage() {
               <p className="text-sm text-muted">{en.common.emptyTitle}</p>
             )}
             <h3 className="label-m mb-2 mt-6 text-[11px] text-muted">{en.live.reasoningFeed}</h3>
-            <ol className="max-h-48 space-y-2 overflow-y-auto">
+            <ol aria-live="polite" aria-label={en.live.reasoningFeed} className="max-h-48 space-y-2 overflow-y-auto">
               {[...aiSteps].reverse().slice(0, 8).map((event) => (
                 <li key={event.seq} className="text-[13px] text-body">
                   <span className="mr-2 font-mono text-xs text-muted">#{event.seq}</span>
@@ -516,7 +522,7 @@ export function LivePage() {
                 </tbody>
               </table>
             </div>
-            <p data-testid="queue-progress" className="mt-4 font-mono text-xs text-muted">
+            <p data-testid="queue-progress" aria-live="polite" className="mt-4 font-mono text-xs text-muted">
               {en.live.queue}: {reviewed}/{total} · {proposals.length} proposals
             </p>
           </div>
@@ -529,7 +535,7 @@ export function LivePage() {
               <span className="text-[11px] uppercase tracking-widest text-muted">{en.live.confirmedFirst}</span>
             </div>
             {counts && (
-              <p data-testid="results-counters" className="mb-4 font-mono text-xs text-body">
+              <p data-testid="results-counters" aria-live="polite" className="mb-4 font-mono text-xs text-body">
                 {counts.confirmed}C · {counts.rejected}R · {counts.unresolved}U · {counts.unprocessed}N · {counts.total} total
               </p>
             )}
