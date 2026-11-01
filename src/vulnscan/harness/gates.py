@@ -135,9 +135,7 @@ class GateKeeper:
                     person="auto",
                 )
             if request.gate not in DANGEROUS:
-                return GateDecision(
-                    request.gate, CHOICES[request.gate][0], person="auto"
-                )
+                return GateDecision(request.gate, CHOICES[request.gate][0], person="auto")
         return self._ask(request)
 
     def _ask(self, request: GateRequest) -> GateDecision:

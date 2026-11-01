@@ -59,5 +59,5 @@ def score_cvss4(vector: str) -> float:
     try:
         scored: Any = cvss.CVSS4(value)
         return float(scored.base_score)
-    except Exception as exc:  # noqa: BLE001 - the library raises its own error types
+    except Exception as exc:
         raise ValueError(f"invalid CVSS v4.0 vector {vector!r}: {exc}") from exc

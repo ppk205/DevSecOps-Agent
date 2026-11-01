@@ -9,9 +9,7 @@ import pytest
 from vulnscan.harness.gates import CHOICES, Gate, GateDecision, GateKeeper, GateRequest
 
 
-def keeper(
-    mode: str, answers: list[Any]
-) -> tuple[GateKeeper, list[Gate], list[dict[str, Any]]]:
+def keeper(mode: str, answers: list[Any]) -> tuple[GateKeeper, list[Gate], list[dict[str, Any]]]:
     asked: list[Gate] = []
     log: list[dict[str, Any]] = []
 
@@ -74,11 +72,7 @@ def test_no_gate_offers_always() -> None:
 
 def test_every_decision_is_recorded() -> None:
     k, _, log = keeper("ask", ["reject"])
-    k.ask(
-        GateRequest(
-            Gate.G1_PLAN, "plan", "d", {"scope": ["**/*.java"]}, "approve"
-        )
-    )
+    k.ask(GateRequest(Gate.G1_PLAN, "plan", "d", {"scope": ["**/*.java"]}, "approve"))
     assert log[0]["gate"] == "G1" and log[0]["choice"] == "reject" and log[0]["person"] == "tester"
     assert set(log[0]) >= {
         "type",

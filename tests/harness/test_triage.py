@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from typing import Any
 
+from tests.harness.fakes import BatchAgent
 from vulnscan.decisions.config import load_config
 from vulnscan.harness.triage import candidate_state, triage_candidates
 from vulnscan.harness.workspace import Candidate
-from tests.harness.fakes import BatchAgent
 
 C = [
     Candidate("a1", "CWE-89", "sql_concat", "src/A.java", 3, 'q("x" + n)', has_source=True),

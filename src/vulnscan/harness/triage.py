@@ -85,7 +85,7 @@ def triage_candidates(
             batch_size=config.batch_size,
             to_state=candidate_state,
         )
-    except Exception as exc:  # noqa: BLE001 - triage must never break a session
+    except Exception as exc:
         _LOGGER.warning("Laya triage failed; every candidate goes to human review", exc_info=True)
         reason = f"triage failed: {exc}"
 

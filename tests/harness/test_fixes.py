@@ -35,7 +35,7 @@ def ws(tmp_path: Path) -> Workspace:
 
 def heads(ws: Workspace) -> str:
     return subprocess.run(
-        ["git", "rev-parse", "HEAD"], cwd=ws.target, capture_output=True, text=True
+        ["git", "rev-parse", "HEAD"], cwd=ws.target, capture_output=True, text=True, check=False
     ).stdout
 
 
@@ -63,7 +63,11 @@ def test_diff_that_does_not_apply_leaves_no_branch(ws: Workspace, tmp_path: Path
             tmp_path / "wt",
         )
     branches = subprocess.run(
-        ["git", "branch", "--list", "devsec/*"], cwd=ws.target, capture_output=True, text=True
+        ["git", "branch", "--list", "devsec/*"],
+        cwd=ws.target,
+        capture_output=True,
+        text=True,
+        check=False,
     ).stdout
     assert branches.strip() == ""
 
