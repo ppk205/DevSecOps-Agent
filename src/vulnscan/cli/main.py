@@ -414,6 +414,74 @@ def evidence_manifest(
     typer.echo(rendered)
 
 
+@app.command("chat")
+def chat(
+    target: str = typer.Option(".", help="Target checkout to review."),
+    provider: str = typer.Option("anthropic", help="Provider profile id."),
+    model: str | None = typer.Option(None, help="Model id; defaults to the profile's."),
+    mode: str = typer.Option("ask", help="Gate mode: ask or auto."),
+    prompt: str | None = typer.Option(None, "-p", "--prompt", help="Send one prompt and exit."),
+    resume: str | None = typer.Option(None, help="Session JSONL file to resume."),
+    budget: float = typer.Option(50.0, help="Total USD budget for this session."),
+    sessions_dir: str = typer.Option(".devsec/sessions", help="Where session logs are written."),
+    laya_config_path: str = typer.Option(
+        "config/laya.json", "--laya-config", help="Laya configuration file."
+    ),
+) -> None:
+    """Run the human-gated AI harness: chat, tool calls and permission gates."""
+    import sys
+    from pathlib import Path as _Path
+
+    from ..decisions.config import LayaConfig, load_config
+    from ..harness.console import ChatConsole, console_asker
+    from ..harness.gates import MODES, GateKeeper, refuse_all
+    from ..harness.messages import ProviderError
+    from ..harness.providers import all_profiles, make_transport
+    from ..harness.session import Session
+    from ..harness.tools import ToolContext
+    from ..harness.workspace import Workspace
+    from ..infra.envfile import EnvFile
+    from ..providers.budget import BudgetManager
+
+    if mode not in MODES:
+        typer.echo(f"unknown mode {mode!r}; use one of: {', '.join(MODES)}")
+        raise typer.Exit(2)
+
+    EnvFile().load_into_environ()
+    profiles = all_profiles()
+    profile = profiles.get(provider)
+    if profile is None:
+        typer.echo(f"unknown provider {provider!r}; known: {', '.join(sorted(profiles))}")
+        raise typer.Exit(2)
+    try:
+        transport = make_transport(profile, model)
+    except ProviderError as exc:
+        typer.echo(str(exc))
+        raise typer.Exit(2) from exc
+
+    laya_file = _Path(laya_config_path)
+    laya = load_config(laya_file) if laya_file.is_file() else LayaConfig(timeout_seconds=300)
+
+    from ..harness.audit import SessionLog, new_session_path
+
+    log_path = _Path(resume) if resume else new_session_path(_Path(sessions_dir))
+    interactive = sys.stdin.isatty() and sys.stdout.isatty()
+    keeper = GateKeeper(
+        console_asker() if interactive else refuse_all,
+        SessionLog(log_path).append,
+        person="human" if interactive else "",
+        mode=mode,
+    )
+    log = SessionLog(log_path)
+    ctx = ToolContext(Workspace.open(_Path(target)), keeper, log, laya)
+    session = Session(transport, ctx, budget=BudgetManager(total_usd=budget))
+
+    if not session.start():
+        typer.echo("G0 needs a human: run devsec chat in a terminal")
+        raise typer.Exit(2)
+    raise typer.Exit(ChatConsole(session, profiles=profiles).run(prompt))
+
+
 def main() -> None:
     """Console-script entry point (pyproject: vulnscan.cli.main:main)."""
     import os
@@ -424,7 +492,7 @@ def main() -> None:
 
     binary = binary_path()
     arguments = sys.argv[1:]
-    source_surface = not arguments or arguments[0] in {"tui", "scan-run"}
+    source_surface = not arguments or arguments[0] in {"tui", "scan-run", "chat"}
     if (
         binary
         and os.environ.get("DEVSECOPS_PYTHON_ONLY") != "1"
