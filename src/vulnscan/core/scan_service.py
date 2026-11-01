@@ -834,6 +834,18 @@ class ScanService:
                 except Exception as exc:  # noqa: BLE001 ? application boundary preserves partial evidence
                     errors.append(f"{cfg.tool.value}: {type(exc).__name__}: {exc}")
                     persist(cfg.tool.value, "failed", errors[-1])
+            # Aggregate rail node: web runs pre-create a "scanners" placeholder
+            # row, so mark it from the per-tool outcomes instead of leaving it
+            # pending forever while semgrep/gitleaks show completed.
+            tool_outcomes = [r.status.value for r in results]
+            if len(tool_outcomes) < len(spec.tools):
+                tool_outcomes.append("failed")
+            if any(s == "failed" for s in tool_outcomes):
+                persist("scanners", "failed", "; ".join(errors[-len(spec.tools):]))
+            elif any(s != "completed" for s in tool_outcomes):
+                persist("scanners", "partial", f"{len(results)}/{len(spec.tools)} scanners completed")
+            else:
+                persist("scanners", "completed", f"{len(results)}/{len(spec.tools)} scanners completed")
             if cancelled():
                 raise ScanCancelled()
             # Detect modifications during scanning instead of claiming the original revision.
