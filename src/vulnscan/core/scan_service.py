@@ -183,9 +183,14 @@ class ScanService:
         except Timeout:
             pass  # A live process owns the scan; it must not be marked interrupted.
 
-    def _recover_locked(self) -> None:
+    def _recover_locked(self, exclude_public_id: str | None = None) -> None:
         with get_session(self.db_path) as session:
-            for row in session.query(RunORM).filter(RunORM.status.in_(["running", "queued"])):
+            query = session.query(RunORM).filter(RunORM.status.in_(["running", "queued"]))
+            if exclude_public_id:
+                query = query.filter(
+                    (RunORM.public_id.is_(None)) | (RunORM.public_id != exclude_public_id)
+                )
+            for row in query:
                 row.status = "interrupted"
                 summary = json.loads(row.result_json or "{}")
                 summary.update(status="interrupted", exit_code=130, gate="failed")
@@ -427,7 +432,7 @@ class ScanService:
         except Timeout as exc:
             raise ValueError("another scan is active in this database") from exc
         try:
-            self._recover_locked()
+            self._recover_locked(exclude_public_id=public_id)
             return self._run(
                 checkout,
                 config,
@@ -456,7 +461,10 @@ class ScanService:
         if not re.fullmatch(r"[A-Za-z0-9_-]{1,80}", run_id):
             raise ValueError("run ID must contain only letters, digits, underscores and hyphens")
         with get_session(self.db_path) as session:
-            if session.query(RunORM).filter_by(public_id=run_id).first() is not None:
+            adopted = (
+                session.query(RunORM).filter_by(public_id=run_id).first() if public_id else None
+            )
+            if adopted is not None and adopted.status != "queued":
                 raise ValueError("run ID already exists; choose a new attempt ID")
         output = Path(config.output_dir).resolve() / run_id
         if output.exists() or output.is_symlink():
@@ -478,15 +486,28 @@ class ScanService:
             session.add(target)
             session.flush()
             parent = session.get(RunORM, parent_id) if parent_id else None
-            row = RunORM(
-                target_id=target.id,
-                public_id=run_id,
-                status="running",
-                parent_id=parent_id,
-                attempt=parent.attempt + 1 if parent else 1,
-                scan_spec_json=spec.model_dump_json(),
+            adopted = (
+                session.query(RunORM).filter_by(public_id=run_id).first() if public_id else None
             )
-            session.add(row)
+            if adopted is not None and adopted.status == "queued":
+                # API-queued run: adopt the placeholder row instead of
+                # creating a second one, so live polling keeps working.
+                row = adopted
+                row.target_id = target.id
+                row.status = "running"
+                row.parent_id = parent_id
+                row.attempt = parent.attempt + 1 if parent else row.attempt
+                row.scan_spec_json = spec.model_dump_json()
+            else:
+                row = RunORM(
+                    target_id=target.id,
+                    public_id=run_id,
+                    status="running",
+                    parent_id=parent_id,
+                    attempt=parent.attempt + 1 if parent else 1,
+                    scan_spec_json=spec.model_dump_json(),
+                )
+                session.add(row)
             session.flush()
             pk = row.id
         started = time.monotonic()
@@ -580,9 +601,7 @@ class ScanService:
                             kind=kind,
                             stage=stage,
                             message=sanitize(message) or f"{stage} → {status}",
-                            payload_json=json.dumps(
-                                sanitize({"status": status, "stage": stage})
-                            ),
+                            payload_json=json.dumps(sanitize({"status": status, "stage": stage})),
                             created_at=datetime.now(UTC),
                         )
                     )
@@ -602,13 +621,9 @@ class ScanService:
                                 seq=next_seq + 1,
                                 kind="ai_proposal",
                                 stage=stage,
-                                message=sanitize(
-                                    message or f"{proposal_count} AI proposals ready"
-                                ),
+                                message=sanitize(message or f"{proposal_count} AI proposals ready"),
                                 payload_json=json.dumps(
-                                    sanitize(
-                                        {"status": status, "proposals": proposal_count}
-                                    ),
+                                    sanitize({"status": status, "proposals": proposal_count}),
                                 ),
                                 created_at=datetime.now(UTC),
                             )

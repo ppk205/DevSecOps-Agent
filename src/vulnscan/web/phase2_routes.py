@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any
 
 import httpx
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Query, Request
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -111,7 +111,9 @@ def _scan_to_summary(
     }
 
 
-def _tallies_for_run(session: Session, run_id: int) -> tuple[dict[str, int], dict[str, int], list[dict[str, Any]]]:
+def _tallies_for_run(
+    session: Session, run_id: int
+) -> tuple[dict[str, int], dict[str, int], list[dict[str, Any]]]:
     from vulnscan.storage.models import FindingORM
 
     counts = {"total": 0, "confirmed": 0, "rejected": 0, "unresolved": 0, "unprocessed": 0}
@@ -134,7 +136,10 @@ def _tallies_for_run(session: Session, run_id: int) -> tuple[dict[str, int], dic
         cwe_name = str(summary.get("cwe_category", "") or "")
         if cwe_name:
             cwe[cwe_name] = cwe.get(cwe_name, 0) + 1
-    top = [{"cwe": name, "count": n} for name, n in sorted(cwe.items(), key=lambda kv: kv[1], reverse=True)[:8]]
+    top = [
+        {"cwe": name, "count": n}
+        for name, n in sorted(cwe.items(), key=lambda kv: kv[1], reverse=True)[:8]
+    ]
     return counts, severity, top
 
 
@@ -197,12 +202,18 @@ def api_key_put(profile: str, body: KeyPutIn) -> dict[str, Any]:
         existing = load_profile(slug)
     except FileNotFoundError:
         existing = None
-    api_key_env = body.api_key_env or (existing.api_key_env if existing else f"{slug.upper().replace('-', '_')}_API_KEY")
+    api_key_env = body.api_key_env or (
+        existing.api_key_env if existing else f"{slug.upper().replace('-', '_')}_API_KEY"
+    )
     api_key_env = api_key_env.strip().upper().replace("-", "_")
     base_url = body.base_url or (existing.base_url if existing else "https://api.openai.com/v1")
     label = body.label or (existing.label if existing else slug)
     models = body.models if body.models is not None else (existing.models if existing else [])
-    default_model = body.default_model if body.default_model is not None else (existing.default_model if existing else None)
+    default_model = (
+        body.default_model
+        if body.default_model is not None
+        else (existing.default_model if existing else None)
+    )
     # Key stays in process env / project .env only — never on the profile JSON.
     EnvFile().set(api_key_env, raw)
     saved = ProviderProfile(
@@ -264,12 +275,22 @@ def api_key_test(profile: str) -> dict[str, Any]:
                 },
             )
     except httpx.HTTPError as exc:
-        return {"ok": False, "profile": slug, "model": model, "error": f"{type(exc).__name__}: {exc}"}
+        return {
+            "ok": False,
+            "profile": slug,
+            "model": model,
+            "error": f"{type(exc).__name__}: {exc}",
+        }
     latency_ms = int((time.monotonic() - started) * 1000)
     if real.status_code < 400:
         return {"ok": True, "profile": slug, "model": model, "latency_ms": latency_ms}
     detail = real.text[:300]
-    return {"ok": False, "profile": slug, "model": model, "error": f"HTTP {real.status_code}: {detail}"}
+    return {
+        "ok": False,
+        "profile": slug,
+        "model": model,
+        "error": f"HTTP {real.status_code}: {detail}",
+    }
 
 
 @router.get("/api/usage")
@@ -317,7 +338,11 @@ def api_scans(
 
 
 @router.post("/api/scans")
-def api_scans_create(request: Request, body: ScanCreateIn) -> dict[str, Any]:
+def api_scans_create(
+    request: Request, body: ScanCreateIn, background: BackgroundTasks
+) -> dict[str, Any]:
+    import uuid as _uuid
+
     from vulnscan.storage.models import RunORM, StageORM, TargetORM
 
     repo = (body.repository_url or "").strip()
@@ -327,6 +352,21 @@ def api_scans_create(request: Request, body: ScanCreateIn) -> dict[str, Any]:
     if profile not in {"fast", "full"}:
         raise HTTPException(422, "profile must be fast|full")
     commit = (body.commit_sha or "").strip() or ("0" * 40)
+    checkout = (body.checkout_path or "").strip() or repo
+    public_id = "web-" + _uuid.uuid4().hex[:12]
+    params = {
+        "checkout": checkout,
+        "repo": repo,
+        "commit": body.commit_sha or "",
+        "profile": profile,
+        "tools": list(body.tools or []),
+        "ai_review": body.ai_review,
+        "provider_profile": body.provider_profile,
+        "provider_model": body.provider_model,
+        "max_ai_findings": body.max_ai_findings or 10,
+        "timeout": body.timeout,
+        "max_files": body.max_files,
+    }
     session = _session(request)
     try:
         target = (
@@ -339,19 +379,11 @@ def api_scans_create(request: Request, body: ScanCreateIn) -> dict[str, Any]:
             target = TargetORM(repository_url=repo, commit_sha=commit)
             session.add(target)
             session.flush()
-        spec = {
-            "target_repository_url": repo,
-            "profile": profile,
-            "tools": body.tools or [],
-            "ai_review": body.ai_review,
-            "provider_profile": body.provider_profile,
-            "provider_model": body.provider_model,
-            "max_ai_findings": body.max_ai_findings or 10,
-        }
         run = RunORM(
             target_id=target.id,
+            public_id=public_id,
             status="queued",
-            scan_spec_json=json.dumps(spec),
+            scan_spec_json=json.dumps({"configuration": params}),
             result_json=json.dumps({"gate": "unknown", "ai_usage": {}}),
             created_at=datetime.now(UTC),
             updated_at=datetime.now(UTC),
@@ -375,7 +407,78 @@ def api_scans_create(request: Request, body: ScanCreateIn) -> dict[str, Any]:
         run_id = run.id
     finally:
         session.close()
+    engine = getattr(request.app.state, "db_engine", None)
+    db_path = str(engine.url.database) if engine is not None else "vulnscan.db"
+    output_dir = getattr(request.app.state, "export_dir", None) or "artifacts/reports"
+    background.add_task(_execute_web_scan, db_path, output_dir, public_id, params)
     return {"run_id": run_id, "status": "queued", "profile": profile}
+
+
+def _execute_web_scan(
+    db_path: str, output_dir: str, public_id: str, params: dict[str, Any]
+) -> None:
+    """Run the real pipeline in the background, adopting the queued row.
+
+    Failures are recorded on the run (never silent): the live page polls
+    the same run id and shows the error instead of spinning forever.
+    """
+    from vulnscan.core.config import resolve_config
+    from vulnscan.core.scan_service import ScanService
+    from vulnscan.core.source import resolve_source
+    from vulnscan.storage.database import get_session
+    from vulnscan.storage.models import RunORM
+
+    def _fail(message: str) -> None:
+        try:
+            with get_session(db_path) as session:
+                row = session.query(RunORM).filter_by(public_id=public_id).first()
+                if row is None:
+                    return
+                row.status = "failed"
+                try:
+                    snapshot = json.loads(row.result_json or "{}")
+                except ValueError:
+                    snapshot = {}
+                errors = list(snapshot.get("errors", []))
+                errors.append(message[:500])
+                snapshot["errors"] = errors
+                row.result_json = json.dumps(snapshot)
+        except Exception:  # noqa: BLE001, S110 - failure recorder must never crash the worker
+            pass
+
+    try:
+        config = resolve_config(
+            params.get("profile") or "fast",
+            None,
+            fail_on="high",
+            output_dir=output_dir,
+            timeout=params.get("timeout"),
+            max_files=params.get("max_files"),
+            ai_review=params.get("ai_review"),
+            provider_profile=params.get("provider_profile"),
+            provider_model=params.get("provider_model"),
+            ai_report=bool(params.get("provider_profile")),
+            max_ai_findings=params.get("max_ai_findings") or 10,
+            tools=params.get("tools") or None,
+        )
+    except Exception as exc:  # noqa: BLE001 - record config errors on the run, never raise from worker
+        _fail(f"Invalid scan configuration: {exc}")
+        return
+    try:
+        source = resolve_source(params["checkout"], "harness", commit=params.get("commit") or "")
+    except Exception as exc:  # noqa: BLE001 - record checkout errors on the run, never raise from worker
+        _fail(f"Cannot resolve checkout: {type(exc).__name__}: {exc}")
+        return
+    try:
+        ScanService(db_path).run(
+            source.checkout,
+            config,
+            repo=params["repo"],
+            expected_commit=source.commit,
+            public_id=public_id,
+        )
+    except Exception as exc:  # noqa: BLE001 - record pipeline errors on the run, never raise from worker
+        _fail(f"{type(exc).__name__}: {exc}")
 
 
 def register_phase2(app: Any, db_engine: Any) -> None:

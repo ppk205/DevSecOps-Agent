@@ -537,7 +537,10 @@ def create_app(
         if run is None:
             raise HTTPException(404, "Run not found")
         rows = (
-            session.query(FindingORM).filter(FindingORM.run_id == run_id).order_by(FindingORM.id).all()
+            session.query(FindingORM)
+            .filter(FindingORM.run_id == run_id)
+            .order_by(FindingORM.id)
+            .all()
         )
         snapshot = _snapshot_of(run)
         assessments = _entries_by_finding(snapshot, "assessments")
@@ -682,7 +685,9 @@ def create_app(
                 "proposed_status": str(assessment.get("proposed_status", "")) or None,
                 "cvss": cvss,
                 "confidence": assessment.get("confidence"),
-                "assumptions": [str(a) for a in assumptions] if isinstance(assumptions, list) else [],
+                "assumptions": [str(a) for a in assumptions]
+                if isinstance(assumptions, list)
+                else [],
                 "rationale": str(assessment.get("rationale", "")),
             }
 
@@ -701,7 +706,9 @@ def create_app(
                     )
                 )
                 check = str(
-                    verification_entry.get("procedure_version", verification_entry.get("check", check))
+                    verification_entry.get(
+                        "procedure_version", verification_entry.get("check", check)
+                    )
                 )
             checks.append({"claim": message, "check": check, "outcome": outcome})
 
@@ -864,9 +871,7 @@ def create_app(
                 yield {
                     "event": "done",
                     "id": str(last_seq),
-                    "data": json.dumps(
-                        {"type": "done", "run_id": run_id, "status": status}
-                    ),
+                    "data": json.dumps({"type": "done", "run_id": run_id, "status": status}),
                 }
                 return
             # Live tail: poll a fresh session — the request-scoped session
@@ -927,9 +932,7 @@ def create_app(
         if run is None:
             raise HTTPException(404, "Run not found")
         snapshot = _snapshot_of(run)
-        rows = (
-            session.query(FindingORM).filter(FindingORM.run_id == run_id).all()
-        )
+        rows = session.query(FindingORM).filter(FindingORM.run_id == run_id).all()
         counts = {"total": 0, "confirmed": 0, "rejected": 0, "unresolved": 0, "unprocessed": 0}
         severity: dict[str, int] = {}
         for row in rows:
@@ -1006,7 +1009,11 @@ def create_app(
         if run is None:
             raise HTTPException(404, "Run not found")
         if run.status in {"completed", "failed", "cancelled"}:
-            return {"run_id": run_id, "status": run.status, "cancel_requested": bool(run.cancel_requested)}
+            return {
+                "run_id": run_id,
+                "status": run.status,
+                "cancel_requested": bool(run.cancel_requested),
+            }
         run.cancel_requested = 1
         if run.status == "queued":
             run.status = "cancelled"
@@ -1100,9 +1107,7 @@ def create_app(
     def _report_filename(run_id: int, fmt: str) -> str:
         return f"run-{run_id}-{fmt}.{_REPORT_SUFFIX[fmt]}"
 
-    def _report_descriptor(
-        run_id: int, fmt: str, total_findings: int
-    ) -> dict[str, Any]:
+    def _report_descriptor(run_id: int, fmt: str, total_findings: int) -> dict[str, Any]:
         filename = _report_filename(run_id, fmt)
         path = output / filename
         generated = path.is_file()
@@ -1117,9 +1122,7 @@ def create_app(
             "download_url": f"/api/reports/{filename}/download" if generated else None,
         }
 
-    def _report_generator(
-        run_id: int, run: RunORM, findings: list[Finding]
-    ) -> ReportGenerator:
+    def _report_generator(run_id: int, run: RunORM, findings: list[Finding]) -> ReportGenerator:
         snapshot = json.loads(run.result_json or "{}")
         return ReportGenerator(
             run.public_id or str(run_id),
@@ -1139,9 +1142,7 @@ def create_app(
         if run is None:
             raise HTTPException(404, "Run not found")
         findings = _findings_for_run(session, run_id)
-        reports = [
-            _report_descriptor(run_id, fmt, len(findings)) for fmt in _REPORT_SUFFIX
-        ]
+        reports = [_report_descriptor(run_id, fmt, len(findings)) for fmt in _REPORT_SUFFIX]
         snapshot = json.loads(run.result_json or "{}")
         final_path = (snapshot.get("reports") or {}).get("final-report", "")
         final: dict[str, Any] | None = None
@@ -1168,9 +1169,7 @@ def create_app(
         }
 
     @app.post("/api/scans/{run_id}/reports", status_code=201)
-    def generate_report(
-        run_id: int, request: ReportRequest, session: SessionDep
-    ) -> dict[str, Any]:
+    def generate_report(run_id: int, request: ReportRequest, session: SessionDep) -> dict[str, Any]:
         """Generate one report artifact synchronously.
 
         Generation is sub-second for typical runs; clients poll
@@ -1189,9 +1188,7 @@ def create_app(
             path.write_text(findings_csv(findings), encoding="utf-8")
         else:
             generator = _report_generator(run_id, run, findings)
-            artifact = generator.export(
-                ExportFormat(fmt), output, generated_by="dashboard"
-            )
+            artifact = generator.export(ExportFormat(fmt), output, generated_by="dashboard")
             Path(artifact.artifact_ref.path).replace(path)
         descriptor = _report_descriptor(run_id, fmt, len(findings))
         descriptor["status"] = "ready"
@@ -1286,11 +1283,7 @@ def create_app(
             for fid, item in others.items()
             if fid not in baseline
         ]
-        fixed = [
-            _finding_identity(item)
-            for fid, item in baseline.items()
-            if fid not in others
-        ]
+        fixed = [_finding_identity(item) for fid, item in baseline.items() if fid not in others]
         changed = []
         for fid, item in baseline.items():
             if fid not in others:
@@ -1314,12 +1307,9 @@ def create_app(
                 for run_id in ordered
             ],
             "by_scanner": [
-                {"tool": tool, "counts": counts}
-                for tool, counts in sorted(by_scanner.items())
+                {"tool": tool, "counts": counts} for tool, counts in sorted(by_scanner.items())
             ],
-            "by_cwe": [
-                {"cwe": cwe, "counts": counts} for cwe, counts in sorted(by_cwe.items())
-            ],
+            "by_cwe": [{"cwe": cwe, "counts": counts} for cwe, counts in sorted(by_cwe.items())],
             "new": new,
             "fixed": fixed,
             "changed": changed,
@@ -1370,9 +1360,7 @@ def create_app(
                     "message": redact_secrets(message),
                     "ts": stage.completed_at.isoformat()
                     if stage.completed_at
-                    else (
-                        stage.started_at.isoformat() if stage.started_at else None
-                    ),
+                    else (stage.started_at.isoformat() if stage.started_at else None),
                     "data": {
                         "ordinal": stage.ordinal,
                         "status": stage.status,
@@ -1400,9 +1388,7 @@ def create_app(
                     "message": redact_secrets(row.message),
                     "ts": row.created_at.isoformat() if row.created_at else None,
                     "data": payload,
-                    "finding_id": payload.get("finding_id")
-                    if isinstance(payload, dict)
-                    else None,
+                    "finding_id": payload.get("finding_id") if isinstance(payload, dict) else None,
                 }
             )
             seen.add((row.kind, row.stage or "pipeline", row.message))
@@ -1520,9 +1506,7 @@ def create_app(
                 }
             yield {
                 "event": "live",
-                "data": json.dumps(
-                    {"type": "live", "scan_id": scan_id, "status": status}
-                ),
+                "data": json.dumps({"type": "live", "scan_id": scan_id, "status": status}),
             }
 
         return EventSourceResponse(generator())
@@ -1531,6 +1515,8 @@ def create_app(
     from vulnscan.web.phase2_routes import register_phase2
 
     register_phase2(app, db_engine)
+    app.state.db_engine = db_engine
+    app.state.export_dir = str(output)
 
     # ---- Phase 1 SPA static mount (React build, optional) -------------------
     # web-ui/dist is copied to src/vulnscan/web/static/app at build/packaging
