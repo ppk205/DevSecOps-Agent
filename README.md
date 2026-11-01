@@ -21,39 +21,45 @@ Automated vulnerability scanning and severity assessment for Java Servlet/JSP so
 
 ## Overview
 
-DevSecOps-Agent is a local application that detects, classifies, and assesses vulnerabilities in Java Servlet/JSP projects. It combines conventional static analysis tools (Semgrep, SpotBugs/FindSecBugs, OWASP Dependency-Check, Gitleaks) with AI-assisted contextual analysis to produce CVSS v4.0 severity assessments. Every AI-generated conclusion is independently verified through mechanical checks.
+DevSecOps-Agent finds, explains and helps fix security vulnerabilities in Java
+Servlet/JSP source code. The main path is `devsec chat`: a hand-written AI
+harness that scans with its own source–sink tools, triages candidates with the
+local Laya model, investigates only what a human approved, writes finding cards
+with code evidence, and proposes fixes. A human decides at every gate; the model
+proposes and never decides.
+
+The harness is provider-agnostic: `anthropic`, `openai`, `openrouter`,
+`deepseek`, `ollama`, `lmstudio`, plus user profiles in `.providers/*.json`.
+Keys are read from environment variables only, never from a profile file.
+
+Gate modes are `ask` (default) and `auto`. `auto` approves the routine scanning
+gates (G1–G4) and the re-scan gate (G7) and logs each approval as person `auto`.
+G0 (session start: code leaves the machine, cost) and G6 (writing code) always
+wait for a human in every mode, and G5 (a finding's final status) is never
+decided by code or by auto mode.
+
+Third-party scanners — Semgrep, SpotBugs/FindSecBugs, OWASP Dependency-Check,
+Gitleaks and GitHub CodeQL — are **baselines** for comparison. They run through
+`scan-run` and are not part of the harness pipeline.
 
 The experimental target is [JVA-bookstore](https://github.com/Moseyuh333/JVA-bookstore) (commit `dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5`): 97 Java source files, 38 JSP files, Java 11, Maven WAR packaging, PostgreSQL, `javax.servlet`.
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    CLI / Web Dashboard                   │
-│                  (Typer + FastAPI + Jinja)                │
-├─────────────────────────────────────────────────────────┤
-│                   Orchestration Layer                    │
-│            (scan lifecycle, queue, retry)                │
-├─────────┬──────────┬──────────┬──────────┬──────────────┤
-│ Semgrep │ SpotBugs │   ODG    │ Gitleaks │ CodeQL (exp) │
-│  (CE)   │+FindSec  │          │          │              │
-├─────────┴──────────┴──────────┴──────────┴──────────────┤
-│              Normalization & Deduplication               │
-├─────────────────────────────────────────────────────────┤
-│          Source Context & Java Security Models           │
-│   (call-graph, sanitizers, auth checks, sinks, routes)  │
-├─────────────────────────────────────────────────────────┤
-│            AI Assessment Agent (LLM-backed)              │
-│      (CVSS v4.0 estimation, contextual reasoning)       │
-├─────────────────────────────────────────────────────────┤
-│         Independent Verification Engine                 │
-│   (mechanical checks on AI claims before acceptance)     │
-├─────────────────────────────────────────────────────────┤
-│          Reporting & Experiment Comparison               │
-│       (HTML, CSV, JSON; per-scanner, per-CWE)           │
-├─────────────────────────────────────────────────────────┤
-│   Storage: SQLite (SQLAlchemy) + Artifact Files          │
-└─────────────────────────────────────────────────────────┘
+Human ⇄ harness (src/vulnscan/harness: session loop, gates, audit log)
+           │ provider layer: profile → protocol → transport (httpx)
+           ▼
+   Anthropic Messages · OpenAI-compatible Chat Completions
+   (Anthropic, OpenAI, OpenRouter, DeepSeek, Ollama, LM Studio, custom)
+           │ tool calls, each checked by the gate keeper
+           ▼
+   harness tools: plan → inventory → extract_candidates → Laya triage
+   → select → investigate (read_file, grep, lookup_route)
+   → propose_finding (G5) → propose_fix (G6) → rescan (G7)
+           │
+           ▼
+   human decision → finding cards, decision log, report export
 ```
 
 ## Supported Vulnerability Groups (CWE)
@@ -153,10 +159,35 @@ working directory; select another file with `--db-path`.
 
 ## Usage
 
-### CLI
+### AI harness: `devsec chat`
 
 ```bash
-# Run a Fast scan without advisory model routing
+# Store a key for a cloud provider (value is prompted, never printed)
+devsec env set DEEPSEEK_API_KEY
+
+# Start a review session; ask the human at every gate
+devsec chat --target /path/to/JVA-bookstore --provider deepseek --model deepseek-chat --mode ask
+
+# Same session, routine gates auto-approved and logged as person "auto"
+devsec chat --target /path/to/JVA-bookstore --provider ollama --model llama3 --mode auto
+
+# Send one prompt and exit
+devsec chat --target JVA-bookstore --provider deepseek -p "scan the admin servlets for missing authorization"
+```
+
+Slash commands inside the session: `/help`, `/model <provider> [model]`,
+`/mode ask|auto`, `/cost`, `/review`, `/export [dir]`, `/resume <file>`,
+`/clear`, `/quit`.
+
+Sessions are written to `.devsec/sessions/<id>.jsonl`, approved fixes to
+`.devsec/worktrees/<finding_id>` on branch `devsec/fix-<finding_id>`, and
+reports to `.devsec/reports/<id>/report.md` with a matching `report.json`.
+The harness never commits, pushes or merges.
+
+### Baseline scans (`scan-run`)
+
+```bash
+# Run a Fast baseline scan without advisory model routing
 devsecops-agent scan-run --checkout /path/to/JVA-bookstore --profile fast --no-laya
 
 # View saved scans and inspect a run
@@ -189,27 +220,43 @@ The web dashboard provides four screens:
 
 ## How It Works
 
-### Scan Pipeline
+### Harness review pipeline
+
+1. **G0 session start**: target, commit, provider, model and whether code leaves the machine. Consent is asked again after `/model` switches to a different cloud provider.
+2. **G1 plan**: the model states modules, file globs and vulnerability classes; the human approves, edits or rejects.
+3. **G2 scan**: each scan tool call (inventory, candidate extraction, Laya triage) is approved before it runs.
+4. **Laya triage**: the local model routes every candidate (`authorization_analysis`, `cross_file_analysis`, `jsp_context_analysis`, `fast_verification`, `dependency_analysis`, `secret_review`, `human_review`, `low_priority`); it never sets a status.
+5. **G3 selection**: the human accepts or changes the routes and chooses what to investigate.
+6. **G4 investigation**: the model reads the chosen code with `read_file`, `grep` and `lookup_route`. Every read is logged and wrapped as `<untrusted_code>`.
+7. **G5 finding**: the model proposes a card with a source→sink path, an explanation and a CVSS v4.0 vector; the harness checks every citation and computes the score. Only a human confirms, rejects or asks for more evidence.
+8. **G6 fix / G7 re-scan**: for a confirmed finding the model may propose a diff. Applying it writes only inside `.devsec/worktrees/<finding_id>` on branch `devsec/fix-<finding_id>`, and a re-scan reports whether the candidate is gone.
+
+When the model is unavailable the error is shown and logged, the history is
+kept and `/resume` continues the session. A rejected step is not retried until
+the human sends a new message.
+
+### Baseline scanner pipeline (`scan-run`)
 
 1. **Intake**: Register a Java Servlet/JSP project; the system catalogs all `.java` and `.jsp` files
 2. **Source Parsing**: Java and JSP files are parsed; AST and call-graph analysis extracts security-relevant context
 3. **Static Scanning**: Each enabled scanner analyzes the source and produces findings
 4. **Normalization**: Findings from all scanners are normalized into a common schema, deduplicated, and tagged with CWE IDs
 5. **Context Enrichment**: For each finding, the system assembles the finding-specific route, filter, callers, sanitizers, and sinks
-6. **AI Assessment**: The AI agent evaluates each normalized finding with contextual information and proposes a CVSS v4.0 assessment
-7. **Verification**: The independent verification engine mechanically checks every AI claim against source evidence before acceptance
-8. **Reporting**: Results are persisted in SQLite and available via CLI, web dashboard, or exported reports
+6. **Optional Laya triage**: advisory routing, off by default in `config/laya.json`
+7. **Reporting**: Results are persisted in SQLite and available via CLI, web dashboard, or exported reports
 
-### Verification Philosophy
+Baseline results are the comparison arm of the experiment, not part of the
+harness.
 
-AI is a **supporting tool**, not the final authority. Every AI-generated assessment is subject to mechanical verification:
+### Decision ownership
 
-- **Sanitization claims** are checked against actual encoding/context
-- **Authorization assumptions** are verified against the declared policy
-- **CVSS vector components** are validated against source evidence
-- **Scope and impact estimates** are cross-referenced with application architecture
+The harness never decides a finding. It checks evidence and records what the
+human said:
 
-Failed verifications are flagged and reported — findings with unverifiable AI conclusions remain in their scanner-original state.
+- **Citations** are checked against the target: file exists, line is in range, the quoted code is within two lines of it
+- **CVSS vectors** must be valid `CVSS:4.0/…`; the score is computed by `cvss` 3.6, never typed
+- **Missing evidence** is reported as "unknown", never as "safe"
+- **Status** (`confirmed`, `rejected`, `need_more`, `proposed`) is set only by a human answer at G5 or `/review`
 
 ## Development
 

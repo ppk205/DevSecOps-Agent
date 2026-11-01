@@ -187,6 +187,50 @@ and 130 for cancellation. Open <http://127.0.0.1:8000> for the dashboard and use
 Ctrl+C to stop its server. The default SQLite file is `vulnscan.db` in the
 working directory; use the same `--db-path` when sharing history across commands.
 
+## 4a. Run the AI harness
+
+`devsec chat` is the harness: it talks to a model, calls the gated tools and
+pauses for a human at every gate. It needs Python 3.11 and, for a cloud
+provider, one API key.
+
+```powershell
+# Store the key once; the value is prompted and masked, never printed
+.\\.venv\\Scripts\\python.exe -m vulnscan.cli.main env set DEEPSEEK_API_KEY
+
+# Start a session. --mode ask (default) asks at every gate; --mode auto
+# approves G1-G4 and G7 automatically, but never G0, G5 or G6.
+.\\.venv\\Scripts\\python.exe -m vulnscan.cli.main chat --target 'C:\path\to\JVA-bookstore' --provider deepseek --model deepseek-chat --mode ask
+
+# Local model, no key and no code leaving the machine
+.\\.venv\\Scripts\\python.exe -m vulnscan.cli.main chat --target JVA-bookstore --provider ollama --model llama3
+
+# One prompt, then exit
+.\\.venv\\Scripts\\python.exe -m vulnscan.cli.main chat --target JVA-bookstore --provider deepseek -p "scan the admin servlets for missing authorization"
+```
+
+Providers: `anthropic`, `openai`, `openrouter`, `deepseek`, `ollama` (`http://127.0.0.1:11434/v1`)
+and `lmstudio` (`http://127.0.0.1:1234/v1`). A file in `.providers/<id>.json`
+overrides a built-in profile; it stores the environment variable name, never the
+key. Other options: `--mode ask|auto`, `--budget 50` (USD), `--sessions-dir`,
+`--laya-config`, `--resume <session.jsonl>`.
+
+Slash commands: `/help`, `/model <provider> [model]` (a move to a cloud provider
+asks G0 consent again), `/mode ask|auto`, `/cost`, `/review` (settles findings
+awaiting a human), `/export [dir]`, `/resume <file>`, `/clear`, `/quit`.
+
+What it writes, all under the working directory:
+
+| Path | Contents |
+| --- | --- |
+| `.devsec/sessions/<stamp>-<hex>.jsonl` | every message, tool call, gate decision and usage record |
+| `.devsec/worktrees/<finding_id>` | the worktree for an approved fix, on branch `devsec/fix-<finding_id>` |
+| `.devsec/reports/<id>/report.md`, `report.json` | finding cards with the decision log |
+
+The harness never commits, pushes or merges in the target repository. Only an
+approved G6 writes anything, and only inside that worktree. `scan-run` stays the
+baseline runner for Semgrep, SpotBugs/FindSecBugs, Dependency-Check and Gitleaks;
+its results are the comparison arm, not part of the harness.
+
 ## 5. Install tools before an actual scan
 
 | Profile | Additional tools |
