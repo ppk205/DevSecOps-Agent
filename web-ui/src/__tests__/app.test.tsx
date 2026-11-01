@@ -31,8 +31,8 @@ describe("App shell (mock mode, no backend)", () => {
 
   it("renders home with the mock scan once loaded", async () => {
     renderAt("/");
-    expect(await screen.findByText("Mission control")).toBeInTheDocument();
-    expect(await screen.findByText("Gate posture", {}, { timeout: 5000 })).toBeInTheDocument();
+    expect(await screen.findByText("FIND. VERIFY. SHIP SECURE.")).toBeInTheDocument();
+    expect(await screen.findByText("Scan history", {}, { timeout: 5000 })).toBeInTheDocument();
     const runCells = await screen.findAllByText(
       (_, el) => el?.textContent === "#7",
       {},
