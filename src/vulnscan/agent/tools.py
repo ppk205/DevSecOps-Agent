@@ -120,6 +120,60 @@ TOOL_SCHEMAS: list[dict[str, Any]] = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "list_files",
+            "description": (
+                "List files in the scan snapshot matching a glob. "
+                "Read-only, jailed to the snapshot, no shell. "
+                "max_hits capped at 50 server-side."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "dir": {
+                        "type": "string",
+                        "description": "Directory inside the snapshot to list (repo-relative, default '.').",
+                    },
+                    "glob": {
+                        "type": "string",
+                        "description": "Filename glob to match (default '*.java').",
+                    },
+                },
+                "required": [],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "grep_code",
+            "description": (
+                "Search snapshot source with a regex, returning file:line hits. "
+                "Read-only, jailed to the snapshot, no shell. "
+                "max_hits capped at 50 server-side."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "pattern": {
+                        "type": "string",
+                        "description": "Regular expression to search for.",
+                    },
+                    "glob": {
+                        "type": "string",
+                        "description": "Filename glob to restrict the search (default '*.java').",
+                    },
+                    "max_hits": {
+                        "type": "integer",
+                        "description": "Maximum hits to return (default 20, capped at 50).",
+                    },
+                },
+                "required": ["pattern"],
+            },
+        },
+    },
 ]
 
 TOOL_NAME_SET: set[str] = {t["function"]["name"] for t in TOOL_SCHEMAS}
