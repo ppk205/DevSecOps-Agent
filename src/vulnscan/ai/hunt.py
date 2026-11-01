@@ -174,7 +174,7 @@ def hunt_vulns(
                         ),
                     ],
                     model=model,
-                    max_tokens=2000,
+                    max_tokens=4000,
                 )
                 rounds += 1
                 if opening.usage:
@@ -326,7 +326,7 @@ def hunt_vulns(
                         ),
                     ],
                     model=model,
-                    max_tokens=2000,
+                    max_tokens=4000,
                 )
                 if closing.usage:
                     try:
@@ -353,7 +353,7 @@ def hunt_vulns(
                                 ),
                             ],
                             model=model,
-                            max_tokens=2000,
+                            max_tokens=4000,
                         )
                         if retry.usage:
                             try:
