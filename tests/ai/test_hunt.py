@@ -196,6 +196,28 @@ class TestHunt:
         assert result["candidates"][0]["cwe"] == "CWE-89"
         assert client.saw_no_tools_call is True
 
+    def test_closing_call_includes_sink_sweep(self, tmp_path):
+
+        from vulnscan.ai.hunt import hunt_vulns
+        from vulnscan.providers.client import ChatResponse
+
+        _snapshot(tmp_path)
+        seen_prompts: list[str] = []
+        script = [
+            ChatResponse(content="", tool_calls=[], usage={"total_tokens": 10}),
+            ChatResponse(content="[]", tool_calls=[], usage={"total_tokens": 20}),
+        ]
+
+        class _ScriptedClient:
+            def chat(self, messages, **kwargs):
+                if "tools" not in kwargs:
+                    seen_prompts.append(messages[-1].content)
+                return script.pop(0)
+
+        hunt_vulns(snapshot_root=str(tmp_path), client=_ScriptedClient(), model="m")
+        assert seen_prompts and "Sink sweep" in seen_prompts[0]
+        assert "src/LoginServlet.java" in seen_prompts[0]
+
     def test_provider_error_returns_failed(self, tmp_path):
         from vulnscan.ai.hunt import hunt_vulns
         from vulnscan.providers.client import ProviderError

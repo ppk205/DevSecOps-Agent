@@ -34,10 +34,28 @@ _HUNT_SYSTEM = (
 )
 
 _HUNT_USER = (
-    "Hunt for vulnerabilities in this snapshot. Start with list_files to "
-    "discover sources, use grep_code to find dangerous sinks, use "
-    "inspect_code to confirm each tainted flow, then end with the JSON "
-    "array and nothing else."
+    "Hunt for vulnerabilities in this snapshot. Start with list_files "
+    "to discover sources, then you MUST call grep_code at least twice "
+    "with different sink patterns (e.g. executeQuery, getWriter, exec, "
+    "Runtime, decode, deserialize) before finishing, and use inspect_code "
+    "to confirm each tainted flow. Never end with an empty exploration: "
+    "if tools stop yielding, end with your best JSON array from what "
+    "you have seen, then the JSON array and nothing else."
+)
+
+_SINK_SEEDS = (
+    "executeQuery",
+    "executeUpdate",
+    "execute(",
+    "getWriter",
+    "getOutputStream",
+    "Runtime.getRuntime",
+    ".exec(",
+    "ProcessBuilder",
+    "deserialize",
+    "readObject",
+    "XMLDecoder",
+    "eval(",
 )
 
 _HUNT_SEVERITIES = frozenset({"critical", "high", "medium", "low", "info"})
@@ -191,10 +209,37 @@ def hunt_vulns(
             }
         candidates = parse_hunt_list(last_content, max_findings)
         detail = f"loop ended with {len(candidates)} candidates"
-        if not candidates and tool_evidence:
+        if not candidates:
             # Reasoning-only gateways return no usable content when tools are
             # attached: one final no-tools call over the gathered evidence.
+            # A deterministic sink sweep tops up the evidence map so the
+            # verdict still has sinks to judge; the MODEL decides what is a
+            # vuln, the sweep only points at lines.
             try:
+                sweep_handlers = build_tool_handlers(snapshot_root, [])
+                sweep_lines: list[str] = []
+                for seed in _SINK_SEEDS:
+                    try:
+                        out = sweep_handlers["grep_code"](
+                            {"pattern": seed, "glob": "*.java", "max_hits": 5}
+                        )
+                    except Exception as exc:  # noqa: BLE001 - one bad seed never matters
+                        logger.debug("sink seed %r failed: %s", seed, exc)
+                        continue
+                    if isinstance(out, dict) and out.get("hits"):
+                        for hit in out["hits"][:3]:
+                            sweep_lines.append(
+                                f"{hit.get('file')}:{hit.get('line')}: "
+                                f"{str(hit.get('text', ''))[:200]}"
+                            )
+                    if len(sweep_lines) >= 20:
+                        break
+                evidence_text = "\n".join(tool_evidence[:12])[:4000]
+                if sweep_lines:
+                    evidence_text += (
+                        "\nSink sweep (context only, judge each line yourself):\n"
+                        + "\n".join(sweep_lines[:20])
+                    )
                 closing = client.chat(
                     [
                         ChatMessage(role="system", content=_HUNT_SYSTEM),
@@ -202,7 +247,7 @@ def hunt_vulns(
                             role="user",
                             content=(
                                 "Read-only exploration found:\n"
-                                + "\n".join(tool_evidence[:12])[:6000]
+                                + evidence_text[:6000]
                                 + "\n\nNow output the JSON array and nothing else."
                             ),
                         ),
