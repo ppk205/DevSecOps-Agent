@@ -85,7 +85,7 @@ export const en = {
     fast: "FAST",
     fastDetail: "Semgrep + Gitleaks · minutes",
     deep: "DEEP",
-    deepDetail: "Full isolated pipeline · coming in a later phase",
+    deepDetail: "Semgrep + Gitleaks + SpotBugs + ODC · slower, needs Java + NVD data",
     scanners: "Scanners",
     aiReview: "AI review",
     aiOff: "Off — deterministic",

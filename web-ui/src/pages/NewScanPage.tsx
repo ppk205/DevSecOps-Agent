@@ -153,11 +153,9 @@ export function NewScanPage() {
               <button
                 type="button"
                 role="radio"
-                aria-checked={false}
-                aria-disabled="true"
-                disabled
-                title={en.newScan.deepDetail}
-                className="cursor-not-allowed border border-hairline p-4 text-left opacity-40"
+                aria-checked={profile === "full"}
+                onClick={() => setProfile("full")}
+                className={`border p-4 text-left ${profile === "full" ? "border-ink" : "border-hairline"}`}
               >
                 <div className="label-m text-sm text-ink">{en.newScan.deep}</div>
                 <div className="mt-1 text-xs text-muted">{en.newScan.deepDetail}</div>

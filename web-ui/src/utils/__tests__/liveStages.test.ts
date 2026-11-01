@@ -31,6 +31,15 @@ describe("liveStages mapping", () => {
     expect(statuses.final_report).toBe("pending");
   });
 
+  it("surfaces partial (yellow) instead of collapsing to pending", () => {
+    const statuses = aggregateNodeStatuses([
+      stage("targeted_deep_analysis", "partial"),
+      stage("independent_validation", "completed"),
+    ]);
+    expect(statuses.targeted_deep_analysis).toBe("partial");
+    expect(statuses.independent_validation).toBe("completed");
+  });
+
   it("prefers the running message for node detail", () => {
     const message = nodeMessage("scanners", [
       stage("semgrep", "completed", "semgrep ok"),

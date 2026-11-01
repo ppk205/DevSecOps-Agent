@@ -358,7 +358,15 @@ export function LivePage() {
                 <div
                   aria-hidden
                   className={`mt-2 h-1 w-full ${nodeStatus === "running" ? "stage-running" : "bg-hairline"}`}
-                  style={nodeStatus === "completed" ? { background: "#0fa336" } : nodeStatus === "failed" ? { background: "#e22718" } : undefined}
+                  style={
+                    nodeStatus === "completed"
+                      ? { background: "#0fa336" }
+                      : nodeStatus === "partial"
+                        ? { background: "#f59e0b" }
+                        : nodeStatus === "failed"
+                          ? { background: "#e22718" }
+                          : undefined
+                  }
                 />
               </button>
               </div>

@@ -35,14 +35,17 @@ describe("Phase 2 pages (mock mode, standalone)", () => {
     expect(screen.getByText("Ready to ship secure?")).toBeInTheDocument();
   });
 
-  it("new scan renders TUI-mirror form, disabled DEEP, review panel, CLI command", async () => {
+  it("new scan renders TUI-mirror form, selectable DEEP, hunt switch, review panel, CLI command", async () => {
     renderAt("/scans/new");
     expect(await screen.findByText("Scan profile", {}, { timeout: 5000 })).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/github\.com\/org/)).toBeInTheDocument();
     expect(screen.getAllByText("Scanners").length).toBeGreaterThan(0);
     const deep = screen.getByRole("radio", { name: /DEEP/ });
-    expect(deep).toBeDisabled();
+    expect(deep).not.toBeDisabled();
+    fireEvent.click(deep);
+    expect(deep).toHaveAttribute("aria-checked", "true");
     expect(screen.getByRole("switch", { name: "AI review" })).toBeInTheDocument();
+    expect(screen.getByRole("switch", { name: "Model hunt" })).toBeInTheDocument();
     expect(screen.getByText("Equivalent CLI command")).toBeInTheDocument();
     expect(screen.getByText(/devsecops-agent scan/)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Start scan" })).toBeInTheDocument();

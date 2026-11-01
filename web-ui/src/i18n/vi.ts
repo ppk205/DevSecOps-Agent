@@ -87,7 +87,7 @@ export const vi: Strings = {
     fast: "NHANH",
     fastDetail: "Semgrep + Gitleaks · vài phút",
     deep: "SÂU",
-    deepDetail: "Pipeline cô lập đầy đủ · ra mắt ở giai đoạn sau",
+    deepDetail: "Semgrep + Gitleaks + SpotBugs + ODC · chậm hơn, cần Java + dữ liệu NVD",
     scanners: "Scanner",
     aiReview: "Đánh giá AI",
     aiOff: "Tắt — đơn định",

@@ -45,16 +45,17 @@ export function mapRawStage(raw: string): string {
   return RAW_TO_NODE[raw] ?? "scanners";
 }
 
-export type NodeStatus = "pending" | "running" | "completed" | "failed" | "skipped";
+export type NodeStatus = "pending" | "running" | "completed" | "failed" | "skipped" | "partial";
 
 /** Aggregate raw stage rows onto the 8 nodes: worst-status-wins. */
 export function aggregateNodeStatuses(stages: StageSummary[]): Record<string, NodeStatus> {
   const rank: Record<NodeStatus, number> = {
     failed: 0,
     running: 1,
-    pending: 2,
-    skipped: 3,
-    completed: 4,
+    partial: 2,
+    pending: 3,
+    skipped: 4,
+    completed: 5,
   };
   const out: Record<string, NodeStatus> = {};
   for (const node of LIVE_NODES) out[node.key] = "pending";
@@ -92,13 +93,13 @@ export function nodeMessage(nodeKey: string, stages: StageSummary[]): string {
   return (running ?? relevant[relevant.length - 1]).message;
 }
 
-/** Rail progress 0..1 across the 8 nodes (completed counts, running half). */
+/** Rail progress 0..1 across the 8 nodes (completed counts, running/partial half). */
 export function railProgress(statuses: Record<string, NodeStatus>): number {
   let score = 0;
   for (const node of LIVE_NODES) {
     const status = statuses[node.key];
     if (status === "completed") score += 1;
-    else if (status === "running") score += 0.5;
+    else if (status === "running" || status === "partial") score += 0.5;
     else if (status === "failed") score += 0.75;
   }
   return score / LIVE_NODES.length;
