@@ -248,11 +248,42 @@ def create_app(
         if run is None:
             raise HTTPException(404, "Run not found")
         items = _findings_for_run(session, run_id)
+        snapshot = json.loads(run.result_json or "{}")
         return {
             "run_id": run.id,
             "status": run.status,
+            "gate": snapshot.get("gate"),
             "counts": ReportGenerator.counts(items).model_dump(mode="json"),
+            "stages": [
+                {
+                    "name": s.name,
+                    "status": s.status,
+                    "ordinal": s.ordinal,
+                    "message": s.error_message or "",
+                    "started_at": s.started_at.isoformat() if s.started_at else None,
+                    "completed_at": (
+                        s.completed_at.isoformat() if s.completed_at else None
+                    ),
+                }
+                for s in sorted(run.stages, key=lambda s: s.ordinal)
+            ],
+            "reports": snapshot.get("reports", {}),
         }
+
+    @app.get("/runs/{run_id}/report")
+    def final_report(run_id: int, session: SessionDep) -> Response:
+        run = session.get(RunORM, run_id)
+        if run is None:
+            raise HTTPException(404, "Run not found")
+        snapshot = json.loads(run.result_json or "{}")
+        path = (snapshot.get("reports") or {}).get("final-report", "")
+        if not path or not Path(path).is_file():
+            raise HTTPException(404, "Final report not generated for this run")
+        return Response(
+            content=Path(path).read_bytes(),
+            media_type="text/markdown",
+            headers={"Content-Disposition": 'attachment; filename="final-report.md"'},
+        )
 
     def _find_finding(session: Session, finding_id: str) -> Finding:
         for row in session.query(FindingORM).order_by(FindingORM.id).all():

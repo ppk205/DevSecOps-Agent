@@ -1,7 +1,70 @@
 {% extends "base.html" %}{% block title %}Run {{ run.id }} · DevSecOps Agent{% endblock %}
 {% block content %}
-<h1>Run progress</h1><p class="muted">Run #{{ run.id }} · {{ target.repository_url }} · <code>{{ target.commit_sha }}</code></p><div class="rule"></div>
-<div class="stats"><div class="stat"><b>{{ run.status|upper }}</b>Run status</div><div class="stat"><b>{{ stages|length }}</b>Stages</div><div class="stat"><b>{{ finding_count if finding_count is defined else findings|length }}</b>Findings</div><div class="stat"><b>{{ run.attempt }}</b>Attempt</div></div>
-<section class="panel"><h2>Tool status</h2>{% if stages %}<table><thead><tr><th>#</th><th>Stage</th><th>Status</th><th>Started</th><th>Completed</th><th>Error</th></tr></thead><tbody>{% for stage in stages %}<tr><td>{{ stage.ordinal }}</td><td>{{ stage.name }}</td><td>{{ stage.status }}</td><td>{{ stage.started_at or "—" }}</td><td>{{ stage.completed_at or "—" }}</td><td>{{ stage.error_message or "—" }}</td></tr>{% endfor %}</tbody></table>{% else %}<p class="muted">No stages recorded.</p>{% endif %}</section>
-<div class="actions"><a class="button" href="/runs/{{ run.id }}/findings">Inspect findings</a>{% for fmt in ['json','sarif','html','markdown'] %}<a class="button" href="/runs/{{ run.id }}/export/{{ fmt }}">Export {{ fmt|upper }}</a>{% endfor %}</div>
+<div class="hero"><div class="hero-inner">
+<h1>Run progress</h1>
+<p>Run #{{ run.id }} · {{ target.repository_url }} · <code>{{ target.commit_sha }}</code> · Attempt {{ run.attempt }}</p>
+<p><span id="live-dot" class="live-dot"></span><span id="live-label">Connecting live pipeline…</span></p>
+</div></div>
+<div class="stats">
+  <div class="stat"><b id="st-status">{{ run.status|upper }}</b><span>Run status</span></div>
+  <div class="stat"><b id="st-gate">—</b><span>Gate</span></div>
+  <div class="stat"><b id="st-findings">{{ finding_count if finding_count is defined else findings|length }}</b><span>Findings</span></div>
+  <div class="stat"><b>{{ stages|length }}</b><span>Stages</span></div>
+</div>
+<section class="panel"><h2>Live pipeline</h2>
+<ol class="pipeline" id="pipeline">
+{% for stage in stages %}<li data-stage="{{ stage.name }}" class="{% if stage.status in ['completed','skipped'] %}ok{% elif stage.status in ['running'] %}run{% elif stage.status in ['failed'] %}fail{% endif %}"><span class="st-name">{{ stage.name }}</span> <span class="status">{{ stage.status }}</span><br><span class="st-msg">{{ stage.error_message or "—" }}</span></li>{% endfor %}
+</ol>
+<p class="muted" id="pipeline-note">Auto-refreshing every 2s while the run is active.</p>
+</section>
+<section class="panel"><h2>Inspect</h2>
+<div class="actions"><a class="button" href="/runs/{{ run.id }}/findings">Inspect findings</a></div>
+</section>
+<section class="panel"><h2>Download reports</h2>
+<div class="actions"><span class="dl-label">Evidence</span><span class="dl-group">{% for fmt in ['json','sarif','html','markdown','txt','docx'] %}<a href="/runs/{{ run.id }}/export/{{ fmt }}">{{ fmt|upper }}</a>{% endfor %}</span></div>
+<div class="actions"><span class="dl-label">AI narrative</span><span class="dl-group"><a href="/runs/{{ run.id }}/report">FINAL-REPORT.MD</a></span></div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+(function(){
+  var runId = {{ run.id }};
+  var dot = document.getElementById('live-dot');
+  var label = document.getElementById('live-label');
+  var TERMINAL = {completed:1, failed:1, cancelled:1, done:1};
+  function cls(s){
+    if(s==='completed'||s==='skipped') return 'ok';
+    if(s==='running') return 'run';
+    if(s==='failed') return 'fail';
+    return '';
+  }
+  function tick(){
+    fetch('/api/runs/'+runId).then(function(r){return r.json();}).then(function(d){
+      document.getElementById('st-status').textContent = String(d.status||'').toUpperCase();
+      document.getElementById('st-gate').textContent = String(d.gate||'—').toUpperCase();
+      var total = 0, counts = d.counts||{};
+      for(var k in counts){ if(k!=='total' && typeof counts[k]==='number') total += counts[k]; }
+      document.getElementById('st-findings').textContent = d.counts && d.counts.total != null ? d.counts.total : total;
+      var ol = document.getElementById('pipeline');
+      ol.innerHTML = '';
+      (d.stages||[]).forEach(function(s){
+        var li = document.createElement('li');
+        li.className = cls(s.status);
+        li.setAttribute('data-stage', s.name);
+        var name = document.createElement('span'); name.className='st-name'; name.textContent=s.name;
+        var st = document.createElement('span'); st.className='status'; st.textContent=' '+s.status;
+        var br = document.createElement('br');
+        var msg = document.createElement('span'); msg.className='st-msg'; msg.textContent=s.message||'—';
+        li.appendChild(name); li.appendChild(st); li.appendChild(br); li.appendChild(msg);
+        ol.appendChild(li);
+      });
+      var done = TERMINAL[d.status];
+      label.textContent = done ? 'Pipeline finished · '+d.status : 'Live · updating every 2s · '+d.status;
+      if(done){ dot.classList.add('done'); return; }
+      setTimeout(tick, 2000);
+    }).catch(function(){ label.textContent='Live feed interrupted — retrying…'; setTimeout(tick, 5000); });
+  }
+  tick();
+})();
+</script>
 {% endblock %}
