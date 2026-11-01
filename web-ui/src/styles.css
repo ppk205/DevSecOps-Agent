@@ -115,7 +115,8 @@ body {
   }
 }
 
-/* Phase 3: RUNNING stripe animation for the live stage rail. */
+/* Phase 3→6: RUNNING stripe sweeps ONCE (200ms ease-out), then rests static.
+ * No loops, no animated gradient fills — flat blocks only. */
 @keyframes pitwall-scan {
   from {
     background-position: 0 0;
@@ -136,5 +137,5 @@ body {
     var(--m-red) 75%
   );
   background-size: 32px 4px;
-  animation: pitwall-scan 0.9s linear infinite;
+  animation: pitwall-scan 200ms ease-out 1;
 }

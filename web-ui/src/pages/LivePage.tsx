@@ -580,7 +580,7 @@ export function LivePage() {
               </button>
             </span>
           </div>
-          <div ref={dockRef} data-testid="log-dock" className="max-h-64 overflow-y-auto px-4 py-2">
+          <div ref={dockRef} data-testid="log-dock" className="max-h-64 overflow-auto px-4 py-2">
             {stageFiltered.slice(-100).map((event) => (
               <div key={event.seq} className="flex gap-3 border-b border-hairline py-1.5 text-[13px] last:border-0">
                 <span className="w-10 shrink-0 font-mono text-xs text-muted">#{event.seq}</span>

@@ -14,7 +14,10 @@ interface CodeViewerProps {
 export function CodeViewer({ blocks, taintPath }: CodeViewerProps) {
   const en = useStrings();
   const jumpTo = useCallback((blockKey: string) => {
-    document.getElementById(`code-${blockKey}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    document
+      .getElementById(`code-${blockKey}`)
+      ?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
   }, []);
 
   if (blocks.length === 0) {

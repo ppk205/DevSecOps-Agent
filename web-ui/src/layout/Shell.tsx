@@ -22,7 +22,7 @@ export function Shell() {
   return (
     <div className="flex min-h-screen flex-col bg-canvas">
       <header className="bg-canvas">
-        <nav aria-label="Primary" className="mx-auto flex h-16 max-w-pitwall items-center gap-2 px-6">
+        <nav aria-label="Primary" className="mx-auto flex h-16 max-w-pitwall items-center gap-2 overflow-x-auto px-6">
           <NavLink to="/" className="label-m mr-8 text-sm text-ink no-underline">
             PIT&nbsp;WALL
           </NavLink>
