@@ -27,6 +27,31 @@ async function postJson<T>(path: string, body: unknown): Promise<T> {
   return (await response.json()) as T;
 }
 
+async function putJson<T>(path: string, body: unknown): Promise<T> {
+  const csrf = await get<{ csrf_token: string }>(`/api/csrf`);
+  const response = await fetch(`${BASE}${path}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Contract-Version": "1",
+      "X-CSRF-Token": csrf.csrf_token,
+    },
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) throw new Error(`PUT ${path} → ${response.status}`);
+  return (await response.json()) as T;
+}
+
+async function deleteJson<T>(path: string): Promise<T> {
+  const csrf = await get<{ csrf_token: string }>(`/api/csrf`);
+  const response = await fetch(`${BASE}${path}`, {
+    method: "DELETE",
+    headers: { "X-Contract-Version": "1", "X-CSRF-Token": csrf.csrf_token },
+  });
+  if (!response.ok) throw new Error(`DELETE ${path} → ${response.status}`);
+  return (await response.json()) as T;
+}
+
 export const api = {
   get health() {
     return isMock ? mockApi.health : () => get<{ status: string; version: string }>(`/api/health`);
@@ -147,6 +172,82 @@ export function openLogsStream(
 export async function fetchEventsHistory(scanId: number) {
   if (isMock) return mockApi.eventsHistory(scanId);
   return get<import("../api/types").EventsHistory>(`/api/scans/${scanId}/events/history`);
+}
+
+/** ---- Phase 2: Home / New Scan / Keys (mock-aware) ---- */
+
+export async function fetchTools(
+  verify = false,
+): Promise<{ tools: import("../api/types").ToolHealth[] }> {
+  if (isMock) return mockApi.tools(verify);
+  const query = verify ? "?verify=true" : "";
+  return get<{ tools: import("../api/types").ToolHealth[] }>(`/api/tools${query}`);
+}
+
+export async function fetchGeneralSettings(): Promise<
+  import("../api/types").GeneralSettings
+> {
+  if (isMock) return (await mockApi.settings()).general;
+  return (await get<{ general: import("../api/types").GeneralSettings }>(`/api/settings`)).general;
+}
+
+export async function updateGeneralSettings(
+  patch: Partial<import("../api/types").GeneralSettings>,
+): Promise<import("../api/types").GeneralSettings> {
+  if (isMock) return (await mockApi.updateSettings(patch)).general;
+  return (await putJson<{ general: import("../api/types").GeneralSettings }>(`/api/settings`, patch))
+    .general;
+}
+
+export async function fetchKeys(): Promise<import("../api/types").KeyEntry[]> {
+  if (isMock) return (await mockApi.keys()).keys;
+  return (await get<{ keys: import("../api/types").KeyEntry[] }>(`/api/settings/keys`)).keys;
+}
+
+export async function saveKey(
+  profile: string,
+  body: { api_key: string; base_url?: string; label?: string },
+): Promise<import("../api/types").KeyEntry> {
+  if (isMock) return mockApi.saveKey(profile, body);
+  return putJson<import("../api/types").KeyEntry>(
+    `/api/settings/keys/${encodeURIComponent(profile)}`,
+    body,
+  );
+}
+
+export async function deleteKey(profile: string): Promise<{ deleted: boolean }> {
+  if (isMock) return mockApi.deleteKey(profile);
+  return deleteJson<{ deleted: boolean }>(`/api/settings/keys/${encodeURIComponent(profile)}`);
+}
+
+export async function testKeyConnection(
+  profile: string,
+): Promise<{ ok: boolean; profile: string; model: string; error?: string }> {
+  if (isMock) return mockApi.testKey(profile);
+  return postJson<{ ok: boolean; profile: string; model: string; error?: string }>(
+    `/api/settings/keys/${encodeURIComponent(profile)}/test`,
+    {},
+  );
+}
+
+export async function fetchUsage(): Promise<import("../api/types").UsageSummary> {
+  if (isMock) return mockApi.usage();
+  return get<import("../api/types").UsageSummary>(`/api/usage`);
+}
+
+export async function createScan(body: {
+  repository_url: string;
+  profile?: string;
+  tools?: string[];
+  ai_review?: boolean;
+  provider_profile?: string | null;
+  provider_model?: string | null;
+  max_ai_findings?: number;
+  timeout?: number;
+  max_files?: number;
+}): Promise<{ run_id: number; status: string; profile: string }> {
+  if (isMock) return mockApi.createScan(body);
+  return postJson<{ run_id: number; status: string; profile: string }>(`/api/scans`, body);
 }
 
 /** SSE tail with graceful fallback: caller polls when the stream closes. */

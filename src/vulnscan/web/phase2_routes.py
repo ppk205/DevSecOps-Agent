@@ -83,7 +83,14 @@ class ScanCreateIn(BaseModel):
     max_files: int | None = None
 
 
-def _scan_to_summary(run: Any, repo: str, commit: str, counts: dict[str, int]) -> dict[str, Any]:
+def _scan_to_summary(
+    run: Any,
+    repo: str,
+    commit: str,
+    counts: dict[str, int],
+    severity: dict[str, int] | None = None,
+    top_cwe: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
     from vulnscan.storage.models import RunORM  # noqa: F401  (typing aid)
 
     snapshot: dict[str, Any] = {}
@@ -98,14 +105,18 @@ def _scan_to_summary(run: Any, repo: str, commit: str, counts: dict[str, int]) -
         "status": run.status,
         "gate": snapshot.get("gate", "unknown"),
         "counts": counts,
+        "severity": severity or {},
+        "top_cwe": top_cwe or [],
         "created_at": run.created_at.isoformat() if run.created_at else None,
     }
 
 
-def _counts_for_run(session: Session, run_id: int) -> dict[str, int]:
+def _tallies_for_run(session: Session, run_id: int) -> tuple[dict[str, int], dict[str, int], list[dict[str, Any]]]:
     from vulnscan.storage.models import FindingORM
 
     counts = {"total": 0, "confirmed": 0, "rejected": 0, "unresolved": 0, "unprocessed": 0}
+    severity: dict[str, int] = {}
+    cwe: dict[str, int] = {}
     rows = session.query(FindingORM).filter(FindingORM.run_id == run_id).all()
     for row in rows:
         try:
@@ -118,7 +129,13 @@ def _counts_for_run(session: Session, run_id: int) -> dict[str, int]:
             counts[status] += 1
         else:
             counts["unprocessed"] += 1
-    return counts
+        sev = str(summary.get("severity", "info")).lower()
+        severity[sev] = severity.get(sev, 0) + 1
+        cwe_name = str(summary.get("cwe_category", "") or "")
+        if cwe_name:
+            cwe[cwe_name] = cwe.get(cwe_name, 0) + 1
+    top = [{"cwe": name, "count": n} for name, n in sorted(cwe.items(), key=lambda kv: kv[1], reverse=True)[:8]]
+    return counts, severity, top
 
 
 @router.get("/api/tools")
@@ -292,7 +309,8 @@ def api_scans(
             target = run.target
             repo = target.repository_url if target is not None else ""
             commit = target.commit_sha if target is not None else ""
-            items.append(_scan_to_summary(run, repo, commit, _counts_for_run(session, run.id)))
+            counts, severity, top_cwe = _tallies_for_run(session, run.id)
+            items.append(_scan_to_summary(run, repo, commit, counts, severity, top_cwe))
         return {"scans": items, "total": len(items)}
     finally:
         session.close()
