@@ -81,6 +81,7 @@ class ScanCreateIn(BaseModel):
     max_ai_findings: int | None = 10
     timeout: int | None = None
     max_files: int | None = None
+    mode: str | None = "deterministic"
 
 
 def _scan_to_summary(
@@ -366,6 +367,7 @@ def api_scans_create(
         "max_ai_findings": body.max_ai_findings or 10,
         "timeout": body.timeout,
         "max_files": body.max_files,
+        "mode": (body.mode or "deterministic").strip(),
     }
     session = _session(request)
     try:
@@ -447,6 +449,11 @@ def _execute_web_scan(
             pass
 
     try:
+        mode = (params.get("mode") or "deterministic").strip()
+        if mode not in ("deterministic", "hunt"):
+            raise ValueError(f"Unknown scan mode: {mode}")
+        if mode == "hunt" and not params.get("provider_profile"):
+            raise ValueError("Hunt mode needs a provider profile (it calls the model)")
         config = resolve_config(
             params.get("profile") or "fast",
             None,
@@ -454,12 +461,13 @@ def _execute_web_scan(
             output_dir=output_dir,
             timeout=params.get("timeout"),
             max_files=params.get("max_files"),
-            ai_review=params.get("ai_review"),
+            ai_review=params.get("ai_review") or mode == "hunt",
             provider_profile=params.get("provider_profile"),
             provider_model=params.get("provider_model"),
             ai_report=bool(params.get("provider_profile")),
             max_ai_findings=params.get("max_ai_findings") or 10,
             tools=params.get("tools") or None,
+            mode=mode,
         )
     except Exception as exc:  # noqa: BLE001 - record config errors on the run, never raise from worker
         _fail(f"Invalid scan configuration: {exc}")

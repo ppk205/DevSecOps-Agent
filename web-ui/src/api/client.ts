@@ -448,6 +448,7 @@ export async function createScan(body: {
   max_ai_findings?: number;
   timeout?: number;
   max_files?: number;
+  mode?: string;
 }): Promise<{ run_id: number; status: string; profile: string }> {
   if (isMock) return mockApi.createScan(body);
   return postJson<{ run_id: number; status: string; profile: string }>(`/api/scans`, body);

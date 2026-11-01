@@ -29,6 +29,7 @@ export function NewScanPage() {
     "owasp-dependency-check": false,
   });
   const [aiReview, setAiReview] = useState(false);
+  const [hunt, setHunt] = useState(false);
   const [providerProfile, setProviderProfile] = useState("");
   const [providerModel, setProviderModel] = useState("");
   const [maxAi, setMaxAi] = useState(10);
@@ -52,6 +53,7 @@ export function NewScanPage() {
         max_ai_findings: maxAi,
         timeout,
         max_files: maxFiles,
+        mode: hunt ? "hunt" : "deterministic",
       }),
   });
 
@@ -82,6 +84,7 @@ export function NewScanPage() {
     if (commit.trim()) parts.push(`--commit ${shellQuote(commit.trim())}`);
     if (timeout !== 600) parts.push(`--timeout ${timeout}`);
     if (maxFiles !== 100000) parts.push(`--max-files ${maxFiles}`);
+    if (hunt) parts.push("--mode hunt");
     if (aiReview) {
       parts.push("--ai-review");
       if (providerProfile) parts.push(`--provider ${shellQuote(providerProfile)}`);
@@ -89,7 +92,7 @@ export function NewScanPage() {
       parts.push(`--max-ai-findings ${maxAi}`);
     }
     return parts.join(" ");
-  }, [repo, profile, tools, commit, timeout, maxFiles, aiReview, providerProfile, providerModel, maxAi]);
+  }, [repo, profile, tools, commit, timeout, maxFiles, hunt, aiReview, providerProfile, providerModel, maxAi]);
 
   return (
     <div>
@@ -204,16 +207,33 @@ export function NewScanPage() {
           <section className="card p-6">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="label-m text-xs text-muted">{en.newScan.aiReview}</h2>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={aiReview}
-                aria-label={en.newScan.aiReview}
-                onClick={() => setAiReview((v) => !v)}
-                className={`label-m border px-3 py-1.5 text-[11px] ${aiReview ? "border-ink text-ink" : "border-hairline text-muted"}`}
-              >
-                {aiReview ? en.newScan.aiOn : en.newScan.aiOff}
-              </button>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={hunt}
+                  aria-label={en.newScan.hunt}
+                  title={en.newScan.huntDetail}
+                  onClick={() => {
+                    const next = !hunt;
+                    setHunt(next);
+                    if (next) setAiReview(true);
+                  }}
+                  className={`label-m border px-3 py-1.5 text-[11px] ${hunt ? "border-ink text-ink" : "border-hairline text-muted"}`}
+                >
+                  {hunt ? en.newScan.huntOn : en.newScan.huntOff}
+                </button>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={aiReview}
+                  aria-label={en.newScan.aiReview}
+                  onClick={() => setAiReview((v) => !v)}
+                  className={`label-m border px-3 py-1.5 text-[11px] ${aiReview ? "border-ink text-ink" : "border-hairline text-muted"}`}
+                >
+                  {aiReview ? en.newScan.aiOn : en.newScan.aiOff}
+                </button>
+              </div>
             </div>
             {aiReview && (
               <div className="grid gap-3 sm:grid-cols-2">
