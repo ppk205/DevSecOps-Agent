@@ -73,3 +73,83 @@ class TestExploreHandlers:
         result = handlers["grep_code"]({"pattern": "executeQuery", "max_hits": 500})
         assert "error" not in result
         assert len(result["hits"]) == 50
+
+
+class TestHunt:
+    def test_fake_client_two_vuln_hunt(self, tmp_path):
+        import json as _json
+
+        from vulnscan.ai.hunt import hunt_vulns
+        from vulnscan.providers.client import ChatResponse
+
+        _snapshot(tmp_path)
+        vulns = [
+            {
+                "title": "SQL injection in login",
+                "file": "src/LoginServlet.java",
+                "line": 5,
+                "cwe": "CWE-89",
+                "severity": "high",
+                "rationale": "request input concatenated into query",
+                "evidence": "stmt.executeQuery(q);",
+            },
+            {
+                "title": "Empty POST handler lacks auth check",
+                "file": "src/Safe.java",
+                "line": 1,
+                "cwe": "CWE-862",
+                "severity": "medium",
+                "rationale": "no authorization check present",
+                "evidence": "public class Safe {}",
+            },
+        ]
+
+        def _call(name, args, call_id):
+            return {
+                "id": call_id,
+                "type": "function",
+                "function": {"name": name, "arguments": _json.dumps(args)},
+            }
+
+        script = [
+            ChatResponse(
+                content="",
+                tool_calls=[_call("list_files", {"dir": "src", "glob": "*.java"}, "c1")],
+                usage={"total_tokens": 10},
+            ),
+            ChatResponse(
+                content="",
+                tool_calls=[_call("inspect_code", {"file_path": "src/LoginServlet.java"}, "c2")],
+                usage={"total_tokens": 20},
+            ),
+            ChatResponse(content=_json.dumps(vulns), tool_calls=[], usage={"total_tokens": 30}),
+        ]
+
+        class _ScriptedClient:
+            def __init__(self):
+                self.calls = 0
+
+            def chat(self, messages, **kwargs):
+                self.calls += 1
+                return script.pop(0)
+
+        result = hunt_vulns(snapshot_root=str(tmp_path), client=_ScriptedClient(), model="m")
+        assert result["status"] == "completed"
+        assert len(result["candidates"]) == 2
+        for cand in result["candidates"]:
+            for field in ("title", "file", "line", "cwe", "severity", "rationale", "evidence"):
+                assert field in cand
+        assert result["candidates"][0]["file"] == "src/LoginServlet.java"
+        assert result["rounds"] == 3
+
+    def test_provider_error_returns_failed(self, tmp_path):
+        from vulnscan.ai.hunt import hunt_vulns
+        from vulnscan.providers.client import ProviderError
+
+        class _BoomClient:
+            def chat(self, messages, **kwargs):
+                raise ProviderError("gateway down")
+
+        result = hunt_vulns(snapshot_root=str(tmp_path), client=_BoomClient(), model="m")
+        assert result["status"] == "failed"
+        assert result["candidates"] == []
