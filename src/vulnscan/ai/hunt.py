@@ -138,6 +138,80 @@ def hunt_vulns(
     tool_evidence: list[str] = []
     trace: list[dict[str, Any]] = []
     try:
+        # Fast path first: file tree + sink sweep up front in a single
+        # no-tools call. Reasoning-only gateways answer these reliably
+        # (proven live), tool-capable models can still drive the loop below.
+        tree_out = handlers["list_files"]({"dir": ".", "glob": "*.java"})
+        tree_files = tree_out.get("files", []) if isinstance(tree_out, dict) else []
+        sweep_lines: list[str] = []
+        for seed in _SINK_SEEDS:
+            try:
+                out = handlers["grep_code"]({"pattern": seed, "glob": "*.java", "max_hits": 5})
+            except Exception as exc:  # noqa: BLE001 - one bad seed never matters
+                logger.debug("sink seed %r failed: %s", seed, exc)
+                continue
+            if isinstance(out, dict) and out.get("hits"):
+                for hit in out["hits"][:3]:
+                    sweep_lines.append(
+                        f"{hit.get('file')}:{hit.get('line')}: {str(hit.get('text', ''))[:200]}"
+                    )
+            if len(sweep_lines) >= 20:
+                break
+        if tree_files or sweep_lines:
+            try:
+                opening = client.chat(
+                    [
+                        ChatMessage(role="system", content=_HUNT_SYSTEM),
+                        ChatMessage(
+                            role="user",
+                            content=(
+                                "Snapshot file tree (Java files):\n"
+                                + "\n".join(str(f)[:200] for f in tree_files[:100])
+                                + "\n\nSink sweep (context only, judge each line yourself):\n"
+                                + "\n".join(sweep_lines[:20])
+                                + "\n\nNow output the JSON array and nothing else."
+                            ),
+                        ),
+                    ],
+                    model=model,
+                    max_tokens=2000,
+                )
+                rounds += 1
+                if opening.usage:
+                    try:
+                        total_tokens += int(opening.usage.get("total_tokens", 0))
+                    except (TypeError, ValueError):
+                        pass
+                trace.append(
+                    {
+                        "turn": 0,
+                        "content": (opening.content or "")[:1000],
+                        "tool_calls": [],
+                        "fast_path": True,
+                    }
+                )
+                if opening.tool_calls:
+                    messages.append(
+                        ChatMessage(
+                            role="assistant",
+                            content=opening.content or "",
+                            tool_calls=opening.tool_calls,
+                        )
+                    )
+                else:
+                    candidates = parse_hunt_list(opening.content or "", max_findings)
+                    if candidates:
+                        return {
+                            "candidates": candidates,
+                            "rounds": rounds,
+                            "usage": {"total_tokens": total_tokens},
+                            "status": "completed",
+                            "detail": f"fast path parsed {len(candidates)} candidates",
+                            "trace": trace,
+                        }
+                    last_content = opening.content or ""
+            except Exception as exc:  # noqa: BLE001 - fast path is best-effort
+                logger.warning("hunt fast path failed: %s", exc)
         for _ in range(max(1, max_rounds)):
             resp = client.chat(messages, model=model, tools=TOOL_SCHEMAS, tool_choice="auto")
             rounds += 1
@@ -216,11 +290,10 @@ def hunt_vulns(
             # verdict still has sinks to judge; the MODEL decides what is a
             # vuln, the sweep only points at lines.
             try:
-                sweep_handlers = build_tool_handlers(snapshot_root, [])
-                sweep_lines: list[str] = []
+                closing_sweep: list[str] = []
                 for seed in _SINK_SEEDS:
                     try:
-                        out = sweep_handlers["grep_code"](
+                        out = handlers["grep_code"](
                             {"pattern": seed, "glob": "*.java", "max_hits": 5}
                         )
                     except Exception as exc:  # noqa: BLE001 - one bad seed never matters
@@ -228,17 +301,17 @@ def hunt_vulns(
                         continue
                     if isinstance(out, dict) and out.get("hits"):
                         for hit in out["hits"][:3]:
-                            sweep_lines.append(
+                            closing_sweep.append(
                                 f"{hit.get('file')}:{hit.get('line')}: "
                                 f"{str(hit.get('text', ''))[:200]}"
                             )
-                    if len(sweep_lines) >= 20:
+                    if len(closing_sweep) >= 20:
                         break
                 evidence_text = "\n".join(tool_evidence[:12])[:4000]
-                if sweep_lines:
+                if closing_sweep:
                     evidence_text += (
                         "\nSink sweep (context only, judge each line yourself):\n"
-                        + "\n".join(sweep_lines[:20])
+                        + "\n".join(closing_sweep[:20])
                     )
                 closing = client.chat(
                     [

@@ -196,6 +196,44 @@ class TestHunt:
         assert result["candidates"][0]["cwe"] == "CWE-89"
         assert client.saw_no_tools_call is True
 
+    def test_fast_path_parses_opening_json_without_tools(self, tmp_path):
+        import json as _json
+
+        from vulnscan.ai.hunt import hunt_vulns
+        from vulnscan.providers.client import ChatResponse
+
+        _snapshot(tmp_path)
+        vuln = {
+            "title": "SQL injection in login",
+            "file": "src/LoginServlet.java",
+            "line": 5,
+            "cwe": "CWE-89",
+            "severity": "high",
+            "rationale": "request input concatenated into query",
+            "evidence": "stmt.executeQuery(q);",
+        }
+
+        class _ScriptedClient:
+            def __init__(self):
+                self.calls = 0
+                self.used_tools = False
+
+            def chat(self, messages, **kwargs):
+                self.calls += 1
+                if "tools" in kwargs:
+                    self.used_tools = True
+                return ChatResponse(
+                    content=_json.dumps([vuln]), tool_calls=[], usage={"total_tokens": 10}
+                )
+
+        client = _ScriptedClient()
+        result = hunt_vulns(snapshot_root=str(tmp_path), client=client, model="m")
+        assert result["status"] == "completed"
+        assert result["rounds"] == 1
+        assert len(result["candidates"]) == 1
+        assert client.used_tools is False
+        assert client.calls == 1
+
     def test_closing_call_includes_sink_sweep(self, tmp_path):
 
         from vulnscan.ai.hunt import hunt_vulns
