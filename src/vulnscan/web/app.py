@@ -773,6 +773,16 @@ def create_app(
     def api_health() -> dict[str, Any]:
         return {"status": "ok", "version": APP_VERSION, "contract": 1}
 
+    @app.get("/api/csrf")
+    def api_csrf(request: Request) -> dict[str, Any]:
+        """Expose the double-submit CSRF token to the same-origin SPA.
+
+        The ``vulnscan_csrf`` cookie is httponly so JS cannot read it; the
+        SPA fetches it here before POST calls. Same-origin only (no CORS is
+        configured) on a localhost-bound, single-user console.
+        """
+        return {"csrf_token": request.state.csrf_token}
+
     def _event_to_dict(row: ScanEventORM) -> dict[str, Any]:
         # Phase 5: server-side secret redaction on the Phase 1 surface too.
         return {
@@ -1297,7 +1307,7 @@ def create_app(
         run = session.get(RunORM, scan_id)
         if run is None:
             raise HTTPException(404, "Run not found")
-        lines, cursor = _filtered_logs(session, run, level, source, q, -1, 2000)
+        lines, _cursor = _filtered_logs(session, run, level, source, q, -1, 2000)
         status = run.status
 
         async def generator() -> AsyncIterator[dict[str, Any]]:

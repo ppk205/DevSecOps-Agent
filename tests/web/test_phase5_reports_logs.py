@@ -167,8 +167,8 @@ def _seeded_client(tmp_path: Path) -> TestClient:
         run1_pk, run2_pk = run1.id, run2.id
     app = create_app(engine=engine, export_dir=tmp_path / "exports")
     with TestClient(app) as test_client:
-        test_client.run1 = run1_pk  # type: ignore[attr-defined]
-        test_client.run2 = run2_pk  # type: ignore[attr-defined]
+        test_client.run1 = run1_pk
+        test_client.run2 = run2_pk
         return test_client
 
 
@@ -298,6 +298,22 @@ class TestLogs:
         assert "event: hello" in body
         assert "event: live" in body
         assert FAKE_KEY not in body
+
+
+class TestCsrfToken:
+    def test_csrf_endpoint_issues_token_for_spa_posts(self, tmp_path: Path) -> None:
+        client = _seeded_client(tmp_path)
+        response = client.get("/api/csrf")
+        assert response.status_code == 200
+        assert response.headers["X-Contract-Version"] == "1"
+        token = response.json()["csrf_token"]
+        assert isinstance(token, str) and len(token) > 16
+        created = client.post(
+            f"/api/scans/{client.run1}/reports",
+            json={"format": "txt"},
+            headers={"X-CSRF-Token": token},
+        )
+        assert created.status_code == 201
 
 
 class TestSecretLeak:
