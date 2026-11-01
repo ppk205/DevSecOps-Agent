@@ -118,10 +118,25 @@ def hunt_vulns(
     total_tokens = 0
     last_content = ""
     tool_evidence: list[str] = []
+    trace: list[dict[str, Any]] = []
     try:
         for _ in range(max(1, max_rounds)):
             resp = client.chat(messages, model=model, tools=TOOL_SCHEMAS, tool_choice="auto")
             rounds += 1
+            trace.append(
+                {
+                    "turn": rounds,
+                    "content": (resp.content or "")[:1000],
+                    "tool_calls": [
+                        {
+                            "name": (tc.get("function", {}) or {}).get("name"),
+                            "args": str((tc.get("function", {}) or {}).get("arguments", ""))[:300],
+                        }
+                        for tc in (resp.tool_calls or [])
+                        if isinstance(tc, dict)
+                    ],
+                }
+            )
             if resp.usage:
                 try:
                     total_tokens += int(resp.usage.get("total_tokens", 0))
@@ -248,6 +263,7 @@ def hunt_vulns(
             "usage": {"total_tokens": total_tokens},
             "status": "completed" if candidates else "partial",
             "detail": detail,
+            "trace": trace,
         }
     except Exception as exc:  # noqa: BLE001 - provider/budget errors fail soft
         logger.warning("hunt_vulns failed: %s", exc)
@@ -257,4 +273,5 @@ def hunt_vulns(
             "candidates": [],
             "rounds": rounds,
             "usage": {"total_tokens": total_tokens},
+            "trace": trace,
         }

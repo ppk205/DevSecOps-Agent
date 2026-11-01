@@ -594,6 +594,7 @@ class ScanService:
             )
             persist("intake", "completed", f"Verified commit {manifest['commit']}")
             hunt_candidates: list[dict[str, Any]] = []
+            hunt_out: dict[str, Any] = {}
             hunt_status = "skipped"
             hunt_detail = "deterministic mode"
             verified: list[dict[str, Any]] = []
@@ -967,6 +968,8 @@ class ScanService:
                             "candidates": summary.get("model_candidates", []),
                             "verification": summary.get("laya_verification", []),
                             "comparison": summary.get("comparison", {}),
+                            "trace": sanitize(hunt_out.get("trace", [])),
+                            "detail": sanitize(hunt_out.get("detail", "")),
                         },
                         indent=2,
                     ),
