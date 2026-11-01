@@ -113,3 +113,25 @@ class FindingORM(Base):
     created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=_utcnow)
 
     run: Mapped[RunORM] = relationship("RunORM", back_populates="findings")
+
+
+class ScanEventORM(Base):
+    """A persisted pipeline/log event for one scan run (Phase 1 skeleton).
+
+    Kinds: ``log`` | ``stage`` | ``ai_step`` | ``ai_proposal`` |
+    ``verification_result``. Ordering key is (run_id, seq); ``payload_json``
+    holds the optional structured payload. Rows are append-only.
+    """
+
+    __tablename__ = "scan_events"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    run_id: Mapped[int] = mapped_column(ForeignKey("runs.id"))
+    seq: Mapped[int] = mapped_column(Integer, default=0)
+    kind: Mapped[str] = mapped_column(String(32), default="log")
+    stage: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    message: Mapped[str] = mapped_column(Text, default="")
+    payload_json: Mapped[str] = mapped_column(Text, default="{}")
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=_utcnow)
+
+    run: Mapped[RunORM] = relationship("RunORM")
