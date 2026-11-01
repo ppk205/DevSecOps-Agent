@@ -321,29 +321,29 @@ def extract_candidates(
             continue
         if wanted is not None and "CWE-862" not in wanted:
             continue
-        text = texts.get(relative)
-        if text is None:
+        servlet_text = texts.get(relative)
+        if servlet_text is None:
             try:
-                text = (root / relative).read_text(encoding="utf-8", errors="replace")
+                servlet_text = (root / relative).read_text(encoding="utf-8", errors="replace")
             except OSError:
                 continue
-            texts[relative] = text
-        if ROLE_CHECK.search(text):
+            texts[relative] = servlet_text
+        if ROLE_CHECK.search(servlet_text):
             continue
-        line = _line_of(text, _WEB_SERVLET)
-        key = (relative, line, "missing_role_check")
+        servlet_line = _line_of(servlet_text, _WEB_SERVLET)
+        key = (relative, servlet_line, "missing_role_check")
         if key in found:
             continue
-        lines = text.splitlines()
+        servlet_lines = servlet_text.splitlines()
         found[key] = Candidate(
-            id=_candidate_id(relative, line, "missing_role_check"),
+            id=_candidate_id(relative, servlet_line, "missing_role_check"),
             cwe="CWE-862",
             kind="missing_role_check",
             file=relative,
-            line=line,
-            snippet=_snippet(lines, line),
+            line=servlet_line,
+            snippet=_snippet(servlet_lines, servlet_line),
             route=url_pattern,
-            has_source=SOURCE_READ.search(text) is not None,
+            has_source=SOURCE_READ.search(servlet_text) is not None,
             has_auth_check=False,
         )
 
@@ -379,8 +379,8 @@ def lookup_route(ws: Workspace, query: str) -> dict[str, object]:
     ]
 
     auth_check = False
-    for servlet in servlets:
-        relative = str(servlet["file"])
+    for servlet_entry in servlets:
+        relative = str(servlet_entry["file"])
         if not relative:
             continue
         try:
