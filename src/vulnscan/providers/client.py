@@ -110,6 +110,10 @@ class ProviderClient:
             "Authorization": f"Bearer {self._get_key()}",
             "Content-Type": "application/json",
         }
+        for key, value in (self.profile.headers or {}).items():
+            if key.lower() in ("authorization", "content-type"):
+                continue
+            headers[key] = value
 
         url = f"{self.profile.base_url.rstrip('/')}/chat/completions"
 
