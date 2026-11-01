@@ -1,7 +1,32 @@
 {% extends "base.html" %}{% block title %}Findings · Run {{ run.id }}{% endblock %}
 {% block content %}
 <h1>Findings</h1><p class="muted">Statuses are evidence decisions, not AI claims. Unresolved and unprocessed remain visible.</p><div class="rule"></div>
+<div class="chips" id="status-chips" role="group" aria-label="Filter by status">
+  <button type="button" class="chip active" data-filter="all">ALL</button>
+  <button type="button" class="chip" data-filter="confirmed">CONFIRMED</button>
+  <button type="button" class="chip" data-filter="rejected">REJECTED</button>
+  <button type="button" class="chip" data-filter="unresolved">UNRESOLVED</button>
+  <button type="button" class="chip" data-filter="unprocessed">UNPROCESSED</button>
+</div>
 {% if page_total is defined %}<form method="get"><label for="query">Search findings</label><input id="query" name="query" value="{{ query }}"><button type="submit">Search</button></form><p>{{ page_total }} matching findings</p><div class="actions">{% if has_previous %}<a class="button" href="?offset={{ previous_offset }}&amp;query={{ query|urlencode }}">Previous</a>{% endif %}{% if has_next %}<a class="button" href="?offset={{ next_offset }}&amp;query={{ query|urlencode }}">Next</a>{% endif %}</div>{% endif %}
 <div class="stats"><div class="stat confirmed"><b>{{ counts.confirmed }}</b>Confirmed</div><div class="stat rejected"><b>{{ counts.rejected }}</b>Rejected</div><div class="stat unresolved"><b>{{ counts.unresolved }}</b>Unresolved</div><div class="stat unprocessed"><b>{{ counts.unprocessed }}</b>Unprocessed</div></div>
-{% if findings %}<table><thead><tr><th>Severity</th><th>Finding</th><th>CWE</th><th>Status</th><th>Location</th></tr></thead><tbody>{% for finding in findings %}<tr><td>{{ finding.severity.value }}</td><td><a href="/runs/{{ run.id }}/findings/{{ finding.finding_id }}">{{ finding.title }}</a></td><td>{{ finding.cwe_category.value if finding.cwe_category else "Unclassified" }}</td><td><span class="status {{ finding.status.value }}">{{ finding.status.value }}</span></td><td>{% if finding.observations and finding.observations[0].location %}<code>{{ finding.observations[0].location.file_path }}:{{ finding.observations[0].location.line_start }}</code>{% else %}—{% endif %}</td></tr>{% endfor %}</tbody></table>{% else %}<p class="muted">No findings recorded for this run.</p>{% endif %}
+{% if findings %}<table id="findings-table"><thead><tr><th>Severity</th><th>Finding</th><th>CWE</th><th>Status</th><th>Location</th></tr></thead><tbody>{% for finding in findings %}<tr data-status="{{ finding.status.value }}"><td>{{ finding.severity.value }}</td><td><a href="/runs/{{ run.id }}/findings/{{ finding.finding_id }}">{{ finding.title }}</a></td><td>{{ finding.cwe_category.value if finding.cwe_category else "Unclassified" }}</td><td><span class="status {{ finding.status.value }}">{{ finding.status.value }}</span></td><td>{% if finding.observations and finding.observations[0].location %}<code>{{ finding.observations[0].location.file_path }}:{{ finding.observations[0].location.line_start }}</code>{% else %}—{% endif %}</td></tr>{% endfor %}</tbody></table>{% else %}<p class="muted">No findings recorded for this run.</p>{% endif %}
+{% endblock %}
+{% block scripts %}
+<script>
+(function(){
+  var chips = document.querySelectorAll('#status-chips .chip');
+  var rows = document.querySelectorAll('#findings-table tbody tr');
+  chips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      chips.forEach(function(c){ c.classList.remove('active'); });
+      chip.classList.add('active');
+      var f = chip.getAttribute('data-filter');
+      rows.forEach(function(r){
+        r.style.display = (f === 'all' || r.getAttribute('data-status') === f) ? '' : 'none';
+      });
+    });
+  });
+})();
+</script>
 {% endblock %}

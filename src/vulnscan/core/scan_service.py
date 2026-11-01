@@ -553,6 +553,28 @@ class ScanService:
         token = _cancel_check.set(cancelled)
         was_cancelled = False
         routing: list[dict[str, Any]] = []
+        review: dict[str, Any] = {
+            "enabled": False,
+            "stage": "targeted_deep_analysis",
+            "status": "skipped",
+            "detail": "scan ended before AI review",
+            "targets": [],
+            "assessments": [],
+            "decisions": [],
+            "usage": {},
+            "model": "",
+            "provider": "",
+        }
+        decisions: list[dict[str, Any]] = []
+        final: dict[str, Any] = {
+            "stage": "final_report",
+            "status": "skipped",
+            "detail": "scan ended before final report",
+            "model": "",
+            "provider": "",
+            "markdown": "",
+            "ai_written": False,
+        }
         try:
             persist("intake", "running")
             runtime = self.runtime_paths(config) + [output]
@@ -571,6 +593,55 @@ class ScanService:
                 update={"repository_checkout_path": str(snapshot_root)}
             )
             persist("intake", "completed", f"Verified commit {manifest['commit']}")
+            hunt_candidates: list[dict[str, Any]] = []
+            hunt_out: dict[str, Any] = {}
+            hunt_status = "skipped"
+            hunt_detail = "deterministic mode"
+            verified: list[dict[str, Any]] = []
+            comparison: dict[str, Any] = {
+                "agreed": [],
+                "model_only": [],
+                "scanner_only": [],
+                "counts": {"agreed": 0, "model_only": 0, "scanner_only": 0},
+            }
+            if config.mode == "hunt":
+                persist("model_hunt", "running", "Model exploring snapshot for vulnerabilities")
+                if not config.provider_profile:
+                    hunt_detail = "no provider profile configured"
+                    persist("model_hunt", "skipped", hunt_detail)
+                else:
+                    try:
+                        from vulnscan.ai.hunt import hunt_vulns
+                        from vulnscan.providers.budget import BudgetManager
+                        from vulnscan.providers.client import ProviderClient
+                        from vulnscan.providers.profile_store import load_profile
+
+                        hunt_profile = load_profile(config.provider_profile)
+                        hunt_client = ProviderClient(hunt_profile, BudgetManager())
+                        hunt_out = hunt_vulns(
+                            snapshot_root=str(snapshot_root),
+                            client=hunt_client,
+                            model=config.provider_model,
+                        )
+                        hunt_candidates = [dict(c) for c in hunt_out.get("candidates", [])]
+                        hunt_status = str(hunt_out.get("status", "partial"))
+                        hunt_detail = (
+                            f"{len(hunt_candidates)} candidates "
+                            f"in {hunt_out.get('rounds', 0)} rounds "
+                            f"({hunt_out.get('detail', '')})"
+                        )[:400]
+                    except Exception as exc:  # noqa: BLE001 — hunt stage never fails a run
+                        hunt_status = "failed"
+                        hunt_detail = f"{type(exc).__name__}"
+                        hunt_candidates = []
+                if hunt_status not in {"skipped"}:
+                    persist(
+                        "model_hunt",
+                        hunt_status
+                        if hunt_status in {"completed", "partial", "failed"}
+                        else "partial",
+                        hunt_detail,
+                    )
             from dataclasses import replace
 
             from vulnscan.decisions.config import load_config
@@ -693,12 +764,95 @@ class ScanService:
             if cancelled():
                 raise ScanCancelled()
             persist(stage.name, stage.status, stage.detail)
-            persist("targeted_deep_analysis", "unavailable", "Deep analysis is not implemented")
-            persist(
-                "independent_validation",
-                "skipped",
-                "No assessment evidence supplied; findings remain unprocessed",
+            hunt_active = (
+                config.mode == "hunt"
+                and hunt_status not in {"skipped", "failed"}
+                and bool(hunt_candidates)
             )
+            if hunt_active:
+                from vulnscan.ai.compare import compare_hunt_vs_scanners
+                from vulnscan.ai.laya_verify import laya_verify_candidates
+
+                persist("laya_verification", "running", "Verifying model candidates with Laya")
+                verified = laya_verify_candidates(
+                    hunt_candidates,
+                    snapshot_root=str(snapshot_root),
+                    laya_config=advisory,
+                )
+                n_verified = sum(1 for v in verified if v.get("laya_status") == "completed")
+                n_skipped = sum(1 for v in verified if v.get("laya_status") == "skipped")
+                persist(
+                    "laya_verification",
+                    "completed" if verified else "partial",
+                    f"{len(verified)} verified: {n_verified} completed, {n_skipped} skipped",
+                )
+                comparison = compare_hunt_vs_scanners(verified, findings)
+                counts = comparison.get("counts", {})
+                persist(
+                    "model_scanner_compare",
+                    "completed",
+                    f"agreed={counts.get('agreed', 0)} "
+                    f"model-only={counts.get('model_only', 0)} "
+                    f"scanner-only={counts.get('scanner_only', 0)}",
+                )
+            # Hunt mode focuses the bounded AI lane on scanner findings the
+            # model independently corroborated. Model-only candidates have no
+            # scanner Finding to validate (synthesizing one would fabricate
+            # evidence), so they flow to human review via hunt.json + report.
+            agreed_findings = (
+                [pair["finding"] for pair in comparison.get("agreed", [])]
+                if hunt_active and comparison.get("counts", {}).get("agreed")
+                else []
+            )
+            review_findings = agreed_findings or findings
+            from vulnscan.ai.review import run_ai_review
+            from vulnscan.reporting.final_report import run_final_report
+
+            review_profile = (
+                config.provider_profile if (config.ai_review or config.mode == "hunt") else None
+            )
+            review = run_ai_review(
+                review_findings,
+                routing,
+                snapshot_root=str(snapshot_root),
+                coverage_summary={
+                    r.tool.value: [c.model_dump(mode="json") for c in r.coverage_records]
+                    for r in results
+                },
+                profile_id=review_profile,
+                model=config.provider_model,
+                max_findings=config.max_ai_findings,
+            )
+            persist("targeted_deep_analysis", review["status"], review["detail"])
+            decisions = review["decisions"]
+            if decisions:
+                confirmed = sum(1 for d in decisions if d["new_status"] == "confirmed")
+                rejected = sum(1 for d in decisions if d["new_status"] == "rejected")
+                persist(
+                    "independent_validation",
+                    "completed" if confirmed or rejected else "partial",
+                    f"{len(decisions)} validated: {confirmed} confirmed, {rejected} rejected",
+                )
+            else:
+                persist(
+                    "independent_validation",
+                    "skipped",
+                    review["detail"] or "no assessment evidence supplied",
+                )
+            final = run_final_report(
+                findings,
+                decisions,
+                {
+                    "target": spec.target_repository_url,
+                    "commit": manifest["commit"],
+                    "gate": "pending",
+                    "status": "pending",
+                },
+                profile_id=config.provider_profile if config.ai_report else None,
+                model=config.provider_model,
+                comparison=comparison if hunt_active else None,
+            )
+            persist("final_report", final["status"], final["detail"] or "narrative ready")
         except (ScanCancelled, KeyboardInterrupt):
             was_cancelled = True
             persist("execution", "cancelled", "Scan cancelled; partial evidence retained")
@@ -739,10 +893,42 @@ class ScanService:
                 },
                 "stages": events,
                 "routing": routing,
+                "assessments": review["assessments"],
+                "validation_decisions": decisions,
+                "ai_usage": review["usage"],
+                "final_report": {
+                    "status": final["status"],
+                    "ai_written": final["ai_written"],
+                    "model": final["model"],
+                    "provider": final["provider"],
+                    "detail": final["detail"],
+                },
                 **policy,
                 "reports": {},
             }
         )
+        if config.mode == "hunt" and hunt_status != "skipped":
+            summary["model_candidates"] = sanitize(hunt_candidates)
+            summary["laya_verification"] = sanitize(verified)
+            summary["comparison"] = sanitize(
+                {
+                    "agreed": [
+                        {
+                            "candidate": pair.get("candidate"),
+                            "finding": pair.get("finding").model_dump(mode="json")
+                            if hasattr(pair.get("finding"), "model_dump")
+                            else pair.get("finding"),
+                        }
+                        for pair in comparison.get("agreed", [])
+                    ],
+                    "model_only": list(comparison.get("model_only", [])),
+                    "scanner_only": [
+                        f.model_dump(mode="json") if hasattr(f, "model_dump") else f
+                        for f in comparison.get("scanner_only", [])
+                    ],
+                    "counts": dict(comparison.get("counts", {})),
+                }
+            )
         generator = ReportGenerator(
             run_id,
             findings,
@@ -764,10 +950,34 @@ class ScanService:
                 summary["errors"].append(sanitize(f"{fmt.value} export failed: {exc}"))
                 if not was_cancelled:
                     summary.update(status="failed", exit_code=2, gate="failed")
+        try:
+            (output / "final-report.md").write_text(final["markdown"], encoding="utf-8")
+            summary["reports"]["final-report"] = str(output / "final-report.md")
+            summary["final_report"]["ai_written"] = final["ai_written"]
+        except OSError as exc:
+            summary["errors"].append(sanitize(f"final-report export failed: {exc}"))
             with get_session(self.db_path) as session:
                 saved = session.get(RunORM, pk)
                 assert saved is not None
                 saved.result_json = json.dumps(summary)
+        if config.mode == "hunt" and hunt_status != "skipped":
+            try:
+                (output / "hunt.json").write_text(
+                    json.dumps(
+                        {
+                            "candidates": summary.get("model_candidates", []),
+                            "verification": summary.get("laya_verification", []),
+                            "comparison": summary.get("comparison", {}),
+                            "trace": sanitize(hunt_out.get("trace", [])),
+                            "detail": sanitize(hunt_out.get("detail", "")),
+                        },
+                        indent=2,
+                    ),
+                    encoding="utf-8",
+                )
+                summary["reports"]["hunt"] = str(output / "hunt.json")
+            except OSError as exc:
+                summary["errors"].append(sanitize(f"hunt export failed: {exc}"))
         summary["summary_path"] = str(output / "summary.json")
         try:
             (output / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")

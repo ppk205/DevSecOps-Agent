@@ -1,18 +1,27 @@
-"""FastAPI dashboard for scan intake, progress, findings, and evidence."""
+"""FastAPI dashboard for scan intake, progress, findings, and evidence.
+
+LEGACY NOTE (Phase 1): the Jinja pages below (``/``, ``/runs/*``,
+``/findings/*``) are the legacy server-rendered UI and stay working.
+The new React SPA ("PIT WALL") is served at ``/app/*`` with an SPA
+fallback once ``web-ui/dist`` has been built (see static mount at the
+bottom of :func:`create_app`). New JSON surface lives under ``/api``.
+"""
 
 import hmac
 import json
 import logging
 import secrets
-from collections.abc import Generator
+from collections.abc import AsyncIterator, Generator
 from pathlib import Path
 from typing import Annotated, Any, cast
 
 from fastapi import Depends, FastAPI, Form, HTTPException, Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import Engine
 from sqlalchemy.orm import Session, sessionmaker
+from sse_starlette.sse import EventSourceResponse
 
 from vulnscan.contracts.enums import ExportFormat, FindingStatus
 from vulnscan.contracts.finding import Finding
@@ -21,7 +30,7 @@ from vulnscan.core.finding_view import project_finding
 from vulnscan.core.scan_service import ScanService
 from vulnscan.reporting.reporter import ReportGenerator
 from vulnscan.storage.database import get_engine, migrate
-from vulnscan.storage.models import FindingORM, RunORM
+from vulnscan.storage.models import FindingORM, RunORM, ScanEventORM
 from vulnscan.version import APP_VERSION
 
 _TEMPLATES = Path(__file__).with_name("templates")
@@ -104,11 +113,22 @@ def create_app(
         return cast(Response, response)
 
     def render(request: Request, name: str, **context: Any) -> HTMLResponse:
-        return templates.TemplateResponse(
+        response = templates.TemplateResponse(
             request=request,
             name=name,
             context={"csrf_token": request.state.csrf_token, **context},
         )
+        # LEGACY Jinja UI marker (Phase 1): lets the SPA and tests tell the
+        # legacy server-rendered pages apart from the new /app/* surface.
+        response.headers["X-Pitwall-Legacy"] = "true"
+        return response
+
+    @app.middleware("http")
+    async def contract_version(request: Request, call_next: Any) -> Response:
+        response = await call_next(request)
+        if request.url.path.startswith("/api/"):
+            response.headers["X-Contract-Version"] = "1"
+        return cast(Response, response)
 
     @app.get("/", response_class=HTMLResponse)
     def target_registration(request: Request, session: SessionDep) -> HTMLResponse:
@@ -248,11 +268,40 @@ def create_app(
         if run is None:
             raise HTTPException(404, "Run not found")
         items = _findings_for_run(session, run_id)
+        snapshot = json.loads(run.result_json or "{}")
         return {
             "run_id": run.id,
             "status": run.status,
+            "gate": snapshot.get("gate"),
             "counts": ReportGenerator.counts(items).model_dump(mode="json"),
+            "stages": [
+                {
+                    "name": s.name,
+                    "status": s.status,
+                    "ordinal": s.ordinal,
+                    "message": s.error_message or "",
+                    "started_at": s.started_at.isoformat() if s.started_at else None,
+                    "completed_at": (s.completed_at.isoformat() if s.completed_at else None),
+                }
+                for s in sorted(run.stages, key=lambda s: s.ordinal)
+            ],
+            "reports": snapshot.get("reports", {}),
         }
+
+    @app.get("/runs/{run_id}/report")
+    def final_report(run_id: int, session: SessionDep) -> Response:
+        run = session.get(RunORM, run_id)
+        if run is None:
+            raise HTTPException(404, "Run not found")
+        snapshot = json.loads(run.result_json or "{}")
+        path = (snapshot.get("reports") or {}).get("final-report", "")
+        if not path or not Path(path).is_file():
+            raise HTTPException(404, "Final report not generated for this run")
+        return Response(
+            content=Path(path).read_bytes(),
+            media_type="text/markdown",
+            headers={"Content-Disposition": 'attachment; filename="final-report.md"'},
+        )
 
     def _find_finding(session: Session, finding_id: str) -> Finding:
         for row in session.query(FindingORM).order_by(FindingORM.id).all():
@@ -260,6 +309,106 @@ def create_app(
             if finding.finding_id == finding_id:
                 return finding
         raise HTTPException(404, "Finding not found")
+
+    # ---- Phase 1 JSON surface (skeleton) -----------------------------------
+
+    @app.get("/api/health")
+    def api_health() -> dict[str, Any]:
+        return {"status": "ok", "version": APP_VERSION, "contract": 1}
+
+    def _event_to_dict(row: ScanEventORM) -> dict[str, Any]:
+        return {
+            "id": row.id,
+            "seq": row.seq,
+            "kind": row.kind,
+            "stage": row.stage,
+            "message": row.message,
+            "payload": json.loads(row.payload_json or "{}"),
+            "created_at": row.created_at.isoformat() if row.created_at else None,
+        }
+
+    @app.get("/api/scans/{run_id}/events/history")
+    def events_history(run_id: int, session: SessionDep) -> dict[str, Any]:
+        run = session.get(RunORM, run_id)
+        if run is None:
+            raise HTTPException(404, "Run not found")
+        rows = (
+            session.query(ScanEventORM)
+            .filter(ScanEventORM.run_id == run_id)
+            .order_by(ScanEventORM.seq, ScanEventORM.id)
+            .all()
+        )
+        items = [_event_to_dict(r) for r in rows]
+        return {"run_id": run_id, "events": items, "next_cursor": len(items)}
+
+    @app.get("/api/scans/{run_id}/events")
+    async def events_stream(
+        run_id: int, request: Request, session: SessionDep
+    ) -> EventSourceResponse:
+        """Phase 1 SSE skeleton: hello + persisted events + live hint.
+
+        Emits stored ``scan_events`` rows newer than ``Last-Event-ID`` (or
+        ``?last_event_id=``), then a ``{"type": "live"}`` hint describing what
+        the Phase 3 live tail will stream. Closes after the burst — the client
+        falls back to polling ``/api/runs/{id}`` (see WEBUI-NOTES §A6).
+        """
+        run = session.get(RunORM, run_id)
+        if run is None:
+            raise HTTPException(404, "Run not found")
+        raw_cursor = request.headers.get("last-event-id") or request.query_params.get(
+            "last_event_id"
+        )
+        try:
+            cursor = int(raw_cursor) if raw_cursor is not None else -1
+        except ValueError:
+            cursor = -1
+        rows = (
+            session.query(ScanEventORM)
+            .filter(ScanEventORM.run_id == run_id, ScanEventORM.seq > cursor)
+            .order_by(ScanEventORM.seq, ScanEventORM.id)
+            .all()
+        )
+        payload = [_event_to_dict(r) for r in rows]
+        status = run.status
+
+        async def generator() -> AsyncIterator[dict[str, Any]]:
+            yield {
+                "event": "hello",
+                "id": str(cursor),
+                "data": json.dumps({"run_id": run_id, "status": status}),
+            }
+            for item in payload:
+                yield {
+                    "event": item["kind"],
+                    "id": str(item["seq"]),
+                    "data": json.dumps(item),
+                }
+            yield {
+                "event": "live",
+                "data": json.dumps({"type": "live", "run_id": run_id, "status": status}),
+            }
+
+        return EventSourceResponse(generator())
+
+    # ---- Phase 1 SPA static mount (React build, optional) -------------------
+    # web-ui/dist is copied to src/vulnscan/web/static/app at build/packaging
+    # time; in a source checkout we also accept web-ui/dist in place so that
+    # `npm run build && uvicorn` just works. Absence is fine (API + Jinja
+    # still serve) — only mount when the directory exists.
+    _dist = Path(__file__).with_name("static") / "app"
+    _dev_dist = Path(__file__).resolve().parents[3] / "web-ui" / "dist"
+    _spa_dir = _dist if _dist.is_dir() else (_dev_dist if _dev_dist.is_dir() else None)
+    if _spa_dir is not None:
+        _assets = _spa_dir / "assets"
+        if _assets.is_dir():
+            app.mount("/app/assets", StaticFiles(directory=_assets), name="spa-assets")
+
+        @app.get("/app/{full_path:path}", include_in_schema=False)
+        def spa_fallback(full_path: str) -> Response:
+            candidate = _spa_dir / full_path
+            if full_path and candidate.is_file():
+                return Response(content=candidate.read_bytes())
+            return Response(content=(_spa_dir / "index.html").read_bytes(), media_type="text/html")
 
     return app
 
