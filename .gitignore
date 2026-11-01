@@ -22,6 +22,7 @@ env/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.playwright-mcp/
 .coverage
 .coverage.*
 htmlcov/
@@ -102,7 +103,8 @@ reports/
 # OS
 $RECYCLE.BIN/
 ehthumbs.db
-harness/
+# Root-anchored: src/vulnscan/harness and tests/harness are source, not build output.
+/harness/
 
 .venv-linux/
 .uv-cache-linux/
@@ -131,6 +133,9 @@ bin/
 # Logs and temporary Office documents
 *.log
 ~$*
+
+# Harness runtime data: sessions, worktrees and reports
+.devsec/
 
 # Local thesis working documents
 /essay/
