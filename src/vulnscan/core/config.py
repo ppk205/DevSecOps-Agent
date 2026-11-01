@@ -35,6 +35,11 @@ class ScanConfig(BaseModel):
     ci: bool = False
     laya: bool = True
     laya_config_path: str | None = None
+    ai_review: bool = False
+    provider_profile: str | None = None
+    provider_model: str | None = None
+    ai_report: bool = False
+    max_ai_findings: int = Field(default=10, ge=1, le=500)
 
     @field_validator("timezone")
     @classmethod

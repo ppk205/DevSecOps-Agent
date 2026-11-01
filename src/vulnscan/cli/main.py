@@ -106,6 +106,19 @@ def scan_run(
     laya_config_path: str | None = typer.Option(None, "--laya-config"),
     workdir: str = typer.Option("harness", "--workdir", help="Clone cache folder."),
     run_id: str | None = typer.Option(None, "--run-id"),
+    ai_review: bool | None = typer.Option(
+        None,
+        "--ai-review/--no-ai-review",
+        help="Model review of routed findings (needs --provider).",
+    ),
+    provider: str | None = typer.Option(None, "--provider", help="Provider profile id (BYOK)."),
+    model: str | None = typer.Option(None, "--model", help="Model override for AI stages."),
+    ai_report: bool | None = typer.Option(
+        None, "--ai-report/--no-ai-report", help="AI-written final report (needs --provider)."
+    ),
+    max_ai_findings: int | None = typer.Option(
+        None, "--max-ai-findings", help="Cap on model-reviewed findings per run."
+    ),
 ) -> None:
     """Scan any repository (URL or local path) and enforce policy."""
     from pathlib import Path
@@ -126,6 +139,11 @@ def scan_run(
             timeout=timeout,
             laya=laya,
             laya_config_path=laya_config_path,
+            ai_review=ai_review,
+            provider_profile=provider,
+            provider_model=model,
+            ai_report=ai_report,
+            max_ai_findings=max_ai_findings,
         )
         if not json_output:
             typer.echo(f"Resolving target: {checkout}")
@@ -263,6 +281,34 @@ def env_unset(
     removed = len(kept) != len(path.read_text(encoding="utf-8").splitlines(keepends=True))
     path.write_text("".join(kept), encoding="utf-8")
     typer.echo(f"{target}: removed" if removed else f"{target}: not stored")
+
+
+@app.command("provider-add")
+def provider_add(
+    profile_id: str = typer.Option(..., "--id", help="Stable profile slug, e.g. 'kios-free'."),
+    base_url: str = typer.Option(..., "--base-url", help="Chat Completions endpoint."),
+    api_key_env: str = typer.Option(..., "--api-key-env", help="Env var holding the key (BYOK)."),
+    label: str = typer.Option("", "--label", help="Human-readable label."),
+    models: str = typer.Option("", "--models", help="Comma-separated allowed model ids."),
+    default_model: str | None = typer.Option(None, "--default-model"),
+) -> None:
+    """Register a BYOK provider profile (key stays in env, never on disk)."""
+    from ..contracts.enums import ProviderProtocol
+    from ..contracts.provider import ProviderProfile
+    from ..providers.profile_store import save_profile
+
+    model_list = [m.strip() for m in models.split(",") if m.strip()]
+    profile = ProviderProfile(
+        id=profile_id,
+        label=label or profile_id,
+        protocol=ProviderProtocol.OPENAI_COMPATIBLE,
+        base_url=base_url,
+        api_key_env=api_key_env,
+        models=model_list,
+        default_model=default_model or (next(iter(model_list), None)),
+    )
+    path = save_profile(profile)
+    typer.echo(f"provider profile saved: {path} (set {api_key_env} in env before scanning)")
 
 
 @app.command("serve")

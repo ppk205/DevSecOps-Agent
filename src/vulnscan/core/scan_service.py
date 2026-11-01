@@ -553,6 +553,28 @@ class ScanService:
         token = _cancel_check.set(cancelled)
         was_cancelled = False
         routing: list[dict[str, Any]] = []
+        review: dict[str, Any] = {
+            "enabled": False,
+            "stage": "targeted_deep_analysis",
+            "status": "skipped",
+            "detail": "scan ended before AI review",
+            "targets": [],
+            "assessments": [],
+            "decisions": [],
+            "usage": {},
+            "model": "",
+            "provider": "",
+        }
+        decisions: list[dict[str, Any]] = []
+        final: dict[str, Any] = {
+            "stage": "final_report",
+            "status": "skipped",
+            "detail": "scan ended before final report",
+            "model": "",
+            "provider": "",
+            "markdown": "",
+            "ai_written": False,
+        }
         try:
             persist("intake", "running")
             runtime = self.runtime_paths(config) + [output]
@@ -693,12 +715,51 @@ class ScanService:
             if cancelled():
                 raise ScanCancelled()
             persist(stage.name, stage.status, stage.detail)
-            persist("targeted_deep_analysis", "unavailable", "Deep analysis is not implemented")
-            persist(
-                "independent_validation",
-                "skipped",
-                "No assessment evidence supplied; findings remain unprocessed",
+            from vulnscan.ai.review import run_ai_review
+            from vulnscan.reporting.final_report import run_final_report
+
+            review_profile = config.provider_profile if config.ai_review else None
+            review = run_ai_review(
+                findings,
+                routing,
+                snapshot_root=str(snapshot_root),
+                coverage_summary={
+                    r.tool.value: [c.model_dump(mode="json") for c in r.coverage_records]
+                    for r in results
+                },
+                profile_id=review_profile,
+                model=config.provider_model,
+                max_findings=config.max_ai_findings,
             )
+            persist("targeted_deep_analysis", review["status"], review["detail"])
+            decisions = review["decisions"]
+            if decisions:
+                confirmed = sum(1 for d in decisions if d["new_status"] == "confirmed")
+                rejected = sum(1 for d in decisions if d["new_status"] == "rejected")
+                persist(
+                    "independent_validation",
+                    "completed" if confirmed or rejected else "partial",
+                    f"{len(decisions)} validated: {confirmed} confirmed, {rejected} rejected",
+                )
+            else:
+                persist(
+                    "independent_validation",
+                    "skipped",
+                    review["detail"] or "no assessment evidence supplied",
+                )
+            final = run_final_report(
+                findings,
+                decisions,
+                {
+                    "target": spec.target_repository_url,
+                    "commit": manifest["commit"],
+                    "gate": "pending",
+                    "status": "pending",
+                },
+                profile_id=config.provider_profile if config.ai_report else None,
+                model=config.provider_model,
+            )
+            persist("final_report", final["status"], final["detail"] or "narrative ready")
         except (ScanCancelled, KeyboardInterrupt):
             was_cancelled = True
             persist("execution", "cancelled", "Scan cancelled; partial evidence retained")
@@ -739,6 +800,16 @@ class ScanService:
                 },
                 "stages": events,
                 "routing": routing,
+                "assessments": review["assessments"],
+                "validation_decisions": decisions,
+                "ai_usage": review["usage"],
+                "final_report": {
+                    "status": final["status"],
+                    "ai_written": final["ai_written"],
+                    "model": final["model"],
+                    "provider": final["provider"],
+                    "detail": final["detail"],
+                },
                 **policy,
                 "reports": {},
             }
@@ -764,6 +835,12 @@ class ScanService:
                 summary["errors"].append(sanitize(f"{fmt.value} export failed: {exc}"))
                 if not was_cancelled:
                     summary.update(status="failed", exit_code=2, gate="failed")
+        try:
+            (output / "final-report.md").write_text(final["markdown"], encoding="utf-8")
+            summary["reports"]["final-report"] = str(output / "final-report.md")
+            summary["final_report"]["ai_written"] = final["ai_written"]
+        except OSError as exc:
+            summary["errors"].append(sanitize(f"final-report export failed: {exc}"))
             with get_session(self.db_path) as session:
                 saved = session.get(RunORM, pk)
                 assert saved is not None

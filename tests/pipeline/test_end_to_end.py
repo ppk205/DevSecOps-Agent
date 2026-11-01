@@ -122,7 +122,7 @@ def test_pipeline_runs_deterministic_evidence_to_report(tmp_path: Path) -> None:
         "targeted_deep_analysis",
         STAGE_VALIDATION,
     ]
-    assert set(result.reports) == {"json", "sarif", "markdown", "html"}
+    assert set(result.reports) == {"json", "sarif", "markdown", "html", "txt", "docx"}
     for path in result.reports.values():
         assert Path(path).exists()
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Wire the AI stages end to end: `scan-run --ai-review` sends Laya-routed findings through the bounded model loop with read-only snapshot tools, `IndependentValidator` owns every status change, and `--ai-report` produces an AI-written `final-report.md` per run (deterministic template fallback without a provider).
+- Add single-shot verdict fallback for reasoning-only gateways that emit no tool calls: one bounded call with embedded evidence, parsed by a shared verdict parser.
+- Add `provider-add` (BYOK profiles, key in env only), 429 retry with `Retry-After`, txt/docx exports from the same report source, and TUI toggles for the AI stages.
+- Verified live on KiosAPI `beam-free`: 2/2 routed, 1 confirmed at 0.99, AI report written.
+
 ## 0.3.0
 
 - Expand the Java ruleset from 3 to 13 rules (SQL concatenation, command execution, XSS taint, XXE, weak cryptography, insecure deserialization, security misconfiguration) with fixtures and regression tests.

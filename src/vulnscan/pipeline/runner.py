@@ -112,6 +112,8 @@ class PipelineResult:
     coverage: dict[str, Any] = field(default_factory=dict)
     routing_payloads: list[dict[str, Any]] = field(default_factory=list)
     reports: dict[str, str] = field(default_factory=dict)
+    assessments: list[dict[str, Any]] = field(default_factory=list)
+    decisions: list[dict[str, Any]] = field(default_factory=list)
 
     @property
     def laya_routes(self) -> dict[str, str]:
@@ -272,33 +274,77 @@ class ScanPipeline:
     # ------------------------------------------------------------------ #
     def run_deep_analysis(
         self, findings: Sequence[Finding], routing: Sequence[dict[str, Any]]
-    ) -> StageRecord:
-        """Target only the findings Laya routed to deep analysis, when an agent exists."""
+    ) -> tuple[StageRecord, list[dict[str, Any]], list[dict[str, Any]]]:
+        """Investigate routed findings when an agent exists; never raises.
+
+        Returns (stage, assessments, decisions). Without an agent the stage
+        is skipped and the deterministic baseline stands.
+        """
+        from vulnscan.ai.review import build_tool_handlers, evidence_for, pick_review_targets
+        from vulnscan.assessment.validator import IndependentValidator
+
         if self.agent is None:
-            return StageRecord(
-                name=STAGE_DEEP_ANALYSIS,
-                status="skipped",
-                detail="no AI agent configured (deterministic mode)",
-                finished_at=_utcnow(),
+            return (
+                StageRecord(
+                    name=STAGE_DEEP_ANALYSIS,
+                    status="skipped",
+                    detail="no AI agent configured (deterministic mode)",
+                    finished_at=_utcnow(),
+                ),
+                [],
+                [],
             )
-        targets = [
-            p["finding_id"]
-            for p in routing
-            if p["route"]
-            in {"cross_file_analysis", "jsp_context_analysis", "authorization_analysis"}
-        ]
+        targets = pick_review_targets(
+            findings,
+            routing,
+            getattr(self.spec, "max_ai_findings", 10)
+            if isinstance(getattr(self.spec, "max_ai_findings", 10), int)
+            else 10,
+        )
         if not targets:
-            return StageRecord(
-                name=STAGE_DEEP_ANALYSIS,
-                status="skipped",
-                detail="no findings routed to deep analysis",
-                finished_at=_utcnow(),
+            return (
+                StageRecord(
+                    name=STAGE_DEEP_ANALYSIS,
+                    status="skipped",
+                    detail="no findings routed to deep analysis",
+                    finished_at=_utcnow(),
+                ),
+                [],
+                [],
             )
-        return StageRecord(
-            name=STAGE_DEEP_ANALYSIS,
-            status="unavailable",
-            detail="targeted deep analysis is not implemented",
-            finished_at=_utcnow(),
+        handlers = build_tool_handlers(self.spec.repository_checkout_path or ".", findings)
+        if hasattr(self.agent, "tool_handlers"):
+            try:
+                self.agent.tool_handlers.update(handlers)
+            except (AttributeError, TypeError):
+                pass
+        validator = IndependentValidator()
+        assessments: list[dict[str, Any]] = []
+        decisions: list[dict[str, Any]] = []
+        failures = 0
+        for finding in targets:
+            try:
+                assessment = self.agent.investigate(finding, {"policy": {}, "source_index": {}})
+            except Exception as exc:  # noqa: BLE001 — one bad target never fails the run
+                _LOGGER.warning("deep analysis failed for %s: %s", finding.finding_id, exc)
+                failures += 1
+                continue
+            records = evidence_for(finding, assessment, finding.run_id)
+            decision = validator.validate(finding.finding_id, finding.status, assessment, records)
+            assessment.validation_outcome = decision.outcome
+            assessment.validation_decision_id = decision.decision_id
+            finding.status = decision.new_status
+            assessments.append(assessment.model_dump(mode="json"))
+            decisions.append(decision.model_dump(mode="json"))
+        return (
+            StageRecord(
+                name=STAGE_DEEP_ANALYSIS,
+                status="completed" if not failures else "partial",
+                detail=f"{len(targets)} investigated, {failures} failed",
+                finished_at=_utcnow(),
+            ),
+            assessments,
+            decisions,
         )
 
     # ------------------------------------------------------------------ #
@@ -311,7 +357,7 @@ class ScanPipeline:
         results, evidence_stage = self.run_scanners()
         findings = self.build_findings(results, run_id)
         routing, routing_stage = self.run_routing(findings)
-        deep_stage = self.run_deep_analysis(findings, routing)
+        deep_stage, assessments, decisions = self.run_deep_analysis(findings, routing)
 
         # Validation is mechanical: with no assessment/verification input every
         # finding stays UNPROCESSED and final status remains validator-owned.
@@ -340,4 +386,6 @@ class ScanPipeline:
             stages=[evidence_stage, routing_stage, deep_stage, validation_stage],
             routing_payloads=routing,
             reports=reports,
+            assessments=assessments,
+            decisions=decisions,
         )
