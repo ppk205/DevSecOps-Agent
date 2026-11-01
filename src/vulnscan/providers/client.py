@@ -127,10 +127,10 @@ class ProviderClient:
 
                     retry_after = exc.response.headers.get("retry-after")
                     try:
-                        wait = float(retry_after) if retry_after else 2.0 * (attempt + 1)
+                        wait = float(retry_after) if retry_after else 20.0 * (attempt + 1)
                     except (TypeError, ValueError):
-                        wait = 2.0 * (attempt + 1)
-                    _time.sleep(min(wait, 60.0))
+                        wait = 20.0 * (attempt + 1)
+                    _time.sleep(min(wait, 120.0))
                     continue
                 raise ProviderError(
                     f"HTTP {exc.response.status_code} from {self.profile.id}: {exc.response.text[:500]}"

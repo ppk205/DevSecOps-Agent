@@ -142,6 +142,60 @@ class TestHunt:
         assert result["candidates"][0]["file"] == "src/LoginServlet.java"
         assert result["rounds"] == 3
 
+    def test_closing_call_fallback_when_tools_yield_no_content(self, tmp_path):
+        import json as _json
+
+        from vulnscan.ai.hunt import hunt_vulns
+        from vulnscan.providers.client import ChatResponse
+
+        _snapshot(tmp_path)
+        vuln = {
+            "title": "SQL injection in login",
+            "file": "src/LoginServlet.java",
+            "line": 5,
+            "cwe": "CWE-89",
+            "severity": "high",
+            "rationale": "request input concatenated into query",
+            "evidence": "stmt.executeQuery(q);",
+        }
+
+        def _call(name, args, call_id):
+            return {
+                "id": call_id,
+                "type": "function",
+                "function": {"name": name, "arguments": _json.dumps(args)},
+            }
+
+        script = [
+            ChatResponse(
+                content="",
+                tool_calls=[_call("list_files", {"dir": "src", "glob": "*.java"}, "c1")],
+                usage={"total_tokens": 10},
+            ),
+            # Reasoning-only gateway: empty content, no tool calls -> loop ends.
+            ChatResponse(content="", tool_calls=[], usage={"total_tokens": 20}),
+            # Closing no-tools call returns the JSON list.
+            ChatResponse(content=_json.dumps([vuln]), tool_calls=[], usage={"total_tokens": 30}),
+        ]
+
+        class _ScriptedClient:
+            def __init__(self):
+                self.calls = 0
+                self.saw_no_tools_call = False
+
+            def chat(self, messages, **kwargs):
+                self.calls += 1
+                if "tools" not in kwargs:
+                    self.saw_no_tools_call = True
+                return script.pop(0)
+
+        client = _ScriptedClient()
+        result = hunt_vulns(snapshot_root=str(tmp_path), client=client, model="m")
+        assert result["status"] == "completed"
+        assert len(result["candidates"]) == 1
+        assert result["candidates"][0]["cwe"] == "CWE-89"
+        assert client.saw_no_tools_call is True
+
     def test_provider_error_returns_failed(self, tmp_path):
         from vulnscan.ai.hunt import hunt_vulns
         from vulnscan.providers.client import ProviderError

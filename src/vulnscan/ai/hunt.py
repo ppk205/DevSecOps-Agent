@@ -117,6 +117,7 @@ def hunt_vulns(
     rounds = 0
     total_tokens = 0
     last_content = ""
+    tool_evidence: list[str] = []
     try:
         for _ in range(max(1, max_rounds)):
             resp = client.chat(messages, model=model, tools=TOOL_SCHEMAS, tool_choice="auto")
@@ -156,10 +157,12 @@ def hunt_vulns(
                     except Exception as exc:  # noqa: BLE001 - tool boundary
                         logger.warning("Hunt tool %s failed: %s", name, exc)
                         result = {"error": str(exc)[:500]}
+                result_json = json.dumps(result)
+                tool_evidence.append(f"{name} -> {result_json[:1500]}")
                 messages.append(
                     ChatMessage(
                         role="tool",
-                        content=json.dumps(result),
+                        content=result_json,
                         tool_call_id=tc.get("id") if isinstance(tc, dict) else None,
                     )
                 )
@@ -172,11 +175,49 @@ def hunt_vulns(
                 "status": "partial",
             }
         candidates = parse_hunt_list(last_content, max_findings)
+        detail = f"loop ended with {len(candidates)} candidates"
+        if not candidates and tool_evidence:
+            # Reasoning-only gateways return no usable content when tools are
+            # attached: one final no-tools call over the gathered evidence.
+            try:
+                closing = client.chat(
+                    [
+                        ChatMessage(role="system", content=_HUNT_SYSTEM),
+                        ChatMessage(
+                            role="user",
+                            content=(
+                                "Read-only exploration found:\n"
+                                + "\n".join(tool_evidence[:12])[:6000]
+                                + "\n\nNow output the JSON array and nothing else."
+                            ),
+                        ),
+                    ],
+                    model=model,
+                    max_tokens=2000,
+                )
+                if closing.usage:
+                    try:
+                        total_tokens += int(closing.usage.get("total_tokens", 0))
+                    except (TypeError, ValueError):
+                        pass
+                candidates = parse_hunt_list(closing.content or "", max_findings)
+                detail = (
+                    f"closing call parsed {len(candidates)} candidates "
+                    f"(reply {len(closing.content or '')} chars)"
+                )
+            except Exception as exc:  # noqa: BLE001 - fallback is best-effort
+                logger.warning("hunt closing call failed: %s", exc)
+                detail = f"closing call failed: {type(exc).__name__}"
+        elif not candidates:
+            detail = (
+                f"no tool calls made and empty reply; last content: {(last_content or '')[:200]}"
+            )
         return {
             "candidates": candidates,
             "rounds": rounds,
             "usage": {"total_tokens": total_tokens},
-            "status": "completed",
+            "status": "completed" if candidates else "partial",
+            "detail": detail,
         }
     except Exception as exc:  # noqa: BLE001 - provider/budget errors fail soft
         logger.warning("hunt_vulns failed: %s", exc)

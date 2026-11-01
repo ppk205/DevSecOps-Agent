@@ -626,8 +626,9 @@ class ScanService:
                         hunt_status = str(hunt_out.get("status", "partial"))
                         hunt_detail = (
                             f"{len(hunt_candidates)} candidates "
-                            f"in {hunt_out.get('rounds', 0)} rounds"
-                        )
+                            f"in {hunt_out.get('rounds', 0)} rounds "
+                            f"({hunt_out.get('detail', '')})"
+                        )[:400]
                     except Exception as exc:  # noqa: BLE001 — hunt stage never fails a run
                         hunt_status = "failed"
                         hunt_detail = f"{type(exc).__name__}"
@@ -806,7 +807,9 @@ class ScanService:
             from vulnscan.ai.review import run_ai_review
             from vulnscan.reporting.final_report import run_final_report
 
-            review_profile = config.provider_profile if config.ai_review else None
+            review_profile = (
+                config.provider_profile if (config.ai_review or config.mode == "hunt") else None
+            )
             review = run_ai_review(
                 review_findings,
                 routing,
