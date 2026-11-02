@@ -454,6 +454,31 @@ export async function createScan(body: {
   return postJson<{ run_id: number; status: string; profile: string }>(`/api/scans`, body);
 }
 
+/** ---- AI fix: propose / list / apply (mock-aware) ---- */
+
+export async function requestFix(
+  runId: number,
+  body: import("../api/types").FixRequestBody,
+): Promise<{ accepted: boolean; run_id: number }> {
+  if (isMock) return mockApi.requestFix(runId, body);
+  return postJson<{ accepted: boolean; run_id: number }>(`/api/scans/${runId}/fix`, body);
+}
+
+export async function fetchFixes(
+  runId: number,
+): Promise<import("../api/types").FixesResponse> {
+  if (isMock) return mockApi.fetchFixes(runId);
+  return get<import("../api/types").FixesResponse>(`/api/scans/${runId}/fixes`);
+}
+
+export async function applyFix(
+  runId: number,
+  proposalId: string,
+): Promise<{ id: string; status: string; overlay_path: string | null; verification: import("../api/types").FixVerification | null }> {
+  if (isMock) return mockApi.applyFix(runId, proposalId);
+  return postJson(`/api/scans/${runId}/fixes/${encodeURIComponent(proposalId)}/apply`, {});
+}
+
 /** SSE tail with graceful fallback: caller polls when the stream closes. */
 export function openEventsStream(
   scanId: number,

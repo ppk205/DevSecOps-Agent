@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { fetchFindings, fetchScans } from "../api/client";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchFindings, fetchKeys, fetchScans, requestFix } from "../api/client";
 import type { FindingListItem, FindingsQuery } from "../api/types";
 import { downloadCsv, findingsToCsv } from "../api/findingsQuery";
 import { DataTable } from "../components/DataTable";
 import { EmptyState } from "../components/EmptyState";
 import { FindingDrawer } from "../components/FindingDrawer";
+import { FixProposals } from "../components/FixProposals";
 import { StatusBadge } from "../components/FindingDetailView";
 import { onTabListKeyDown } from "../components/Tabs";
 import { SeverityBadge } from "../components/SeverityBadge";
@@ -54,6 +55,24 @@ export function FindingsPage() {
 
   const scansQuery = useQuery({ queryKey: ["scans"], queryFn: fetchScans });
   const scanId = scansQuery.data?.[0]?.run_id ?? 7;
+  const queryClient = useQueryClient();
+  const [fixAllFeedback, setFixAllFeedback] = useState<string | null>(null);
+  const fixAllMutation = useMutation({
+    mutationFn: async () => {
+      const keys = await fetchKeys();
+      const provider_profile = keys.length > 0 ? keys[0].profile : null;
+      return requestFix(scanId, { finding_ids: null, provider_profile });
+    },
+    onSuccess: () => {
+      setFixAllFeedback(en.fix.requested);
+      void queryClient.invalidateQueries({ queryKey: ["fixes", scanId] });
+    },
+    onError: (err) => {
+      setFixAllFeedback(
+        `${en.fix.requestFailed} ${err instanceof Error ? err.message : String(err)}`,
+      );
+    },
+  });
 
   const findingsQuery = useQuery({
     queryKey: ["findings", scanId, query],
@@ -148,6 +167,20 @@ export function FindingsPage() {
   return (
     <div>
       <PageHeader title={en.findings.title} subtitle={en.findings.subtitle} />
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        <button
+          onClick={() => fixAllMutation.mutate()}
+          disabled={fixAllMutation.isPending}
+          className="label-m border border-hairline px-3 py-1.5 text-[11px] text-body transition-colors hover:border-ink hover:text-ink disabled:opacity-40"
+        >
+          {fixAllMutation.isPending ? en.fix.fixingAll : en.fix.fixAll}
+        </button>
+        {fixAllFeedback && <span className="text-xs text-muted">{fixAllFeedback}</span>}
+      </div>
+      <section aria-label={en.fix.proposals} className="card mb-4 p-5">
+        <div className="label-m mb-3 text-xs text-ink">{en.fix.proposals}</div>
+        <FixProposals runId={scanId} />
+      </section>
 
       <div className="mb-4 flex flex-wrap gap-2" role="tablist" aria-label="Origin">
         {(

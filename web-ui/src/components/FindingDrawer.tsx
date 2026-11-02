@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { fetchFindingDetail } from "../api/client";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchFindingDetail, requestFix } from "../api/client";
 import { useStrings } from "../i18n/lang";
 import { Drawer } from "./Drawer";
 import { FindingDetailView } from "./FindingDetailView";
+import { FixProposals } from "./FixProposals";
 
 interface FindingDrawerProps {
   findingId: string | null;
@@ -28,14 +29,31 @@ export function FindingDrawer({
 }: FindingDrawerProps) {
   const en = useStrings();
   const [showRaw, setShowRaw] = useState(false);
+  const [fixFeedback, setFixFeedback] = useState<string | null>(null);
+  const queryClient = useQueryClient();
   const { data: detail, isLoading } = useQuery({
     queryKey: ["finding", runId, findingId],
     queryFn: () => fetchFindingDetail(findingId ?? "", runId),
     enabled: findingId !== null,
   });
 
+  const fixMutation = useMutation({
+    mutationFn: () =>
+      requestFix(runId, { finding_ids: findingId ? [findingId] : null }),
+    onSuccess: () => {
+      setFixFeedback(en.fix.requested);
+      void queryClient.invalidateQueries({ queryKey: ["fixes", runId] });
+    },
+    onError: (err) => {
+      setFixFeedback(
+        `${en.fix.requestFailed} ${err instanceof Error ? err.message : String(err)}`,
+      );
+    },
+  });
+
   useEffect(() => {
     setShowRaw(false);
+    setFixFeedback(null);
   }, [findingId]);
 
   const toggleRaw = useCallback(() => setShowRaw((v) => !v), []);
@@ -92,7 +110,21 @@ export function FindingDrawer({
               Full page →
             </Link>
           </div>
+          <div className="mb-4 flex items-center gap-2">
+            <button
+              onClick={() => fixMutation.mutate()}
+              disabled={fixMutation.isPending}
+              className="label-m border border-hairline px-3 py-1.5 text-[11px] text-body transition-colors hover:border-ink hover:text-ink disabled:opacity-40"
+            >
+              {fixMutation.isPending ? en.fix.proposing : en.fix.proposeFix}
+            </button>
+            {fixFeedback && <span className="text-xs text-muted">{fixFeedback}</span>}
+          </div>
           <FindingDetailView detail={detail} showRaw={showRaw} onToggleRaw={toggleRaw} />
+          <section aria-label={en.fix.proposals} className="card mt-4 p-5">
+            <div className="label-m mb-3 text-xs text-ink">{en.fix.proposals}</div>
+            <FixProposals runId={runId} findingId={findingId} />
+          </section>
         </div>
       )}
     </Drawer>

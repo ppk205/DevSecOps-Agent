@@ -231,6 +231,36 @@ export interface LogsResponse {
   granularity: string;
 }
 
+/** Phase 6: AI-fix proposal for one finding. */
+export type FixProposalStatus = "proposed" | "applied" | "verified" | "failed";
+
+export interface FixVerification {
+  fixed: boolean;
+  detail: string;
+}
+
+export interface FixProposal {
+  id: string;
+  finding_id: string;
+  status: FixProposalStatus;
+  diff: string;
+  model: string | null;
+  error: string | null;
+  overlay_path: string | null;
+  verification: FixVerification | null;
+}
+
+export interface FixesResponse {
+  run_id: number;
+  proposals: FixProposal[];
+}
+
+export interface FixRequestBody {
+  finding_ids: string[] | null;
+  provider_profile?: string | null;
+  provider_model?: string | null;
+}
+
 /** Phase 4: one row of the findings table (scanner vs AI severities). */
 export interface FindingListItem {
   id: string;
