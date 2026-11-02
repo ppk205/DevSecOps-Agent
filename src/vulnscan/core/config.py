@@ -40,7 +40,7 @@ class ScanConfig(BaseModel):
     provider_model: str | None = None
     ai_report: bool = False
     max_ai_findings: int = Field(default=10, ge=1, le=500)
-    mode: Literal["deterministic", "hunt"] = "deterministic"
+    mode: Literal["deterministic", "hunt"] = "hunt"
     tools: list[str] | None = Field(
         default=None,
         description="Optional scanner subset override (ToolName values); defaults to profile set.",

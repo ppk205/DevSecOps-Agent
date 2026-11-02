@@ -7,6 +7,7 @@ DB + cwd are isolated per-test via ``tmp_path`` + ``monkeypatch.chdir``.
 
 from __future__ import annotations
 
+import subprocess
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -184,15 +185,18 @@ class TestScans:
         assert ok.status_code == 200
         assert seen and seen[0]["mode"] == "hunt"
 
-    def test_execute_hunt_without_provider_fails_fast(
+    def test_execute_hunt_without_key_skips_with_reason(
         self,
         tmp_path: Path,  # type: ignore[no-untyped-def]
+        monkeypatch,  # type: ignore[no-untyped-def]
     ) -> None:
+        import vulnscan.providers.profile_store as store
         from vulnscan.storage.database import get_session
         from vulnscan.storage.models import RunORM, TargetORM
         from vulnscan.web.phase2_routes import _execute_web_scan as real
 
-        db = str(tmp_path / "huntfail.db")
+        monkeypatch.setattr(store, "default_profile", lambda base=None: None)
+        db = str(tmp_path / "huntskip.db")
         engine = create_engine(f"sqlite:///{db}")
         migrate(engine)
         with get_session(db) as session:
@@ -201,16 +205,25 @@ class TestScans:
             session.flush()
             session.add(RunORM(target_id=target.id, public_id="web-hunt1", status="queued"))
             session.flush()
+        repo = tmp_path / "tiny"
+        repo.mkdir()
+        (repo / "Example.java").write_text("class Example {}")
+        for args in (
+            ["init"],
+            ["add", "."],
+            ["-c", "user.name=T", "-c", "user.email=t@e", "commit", "-m", "x"],
+        ):
+            subprocess.run(["git", *args], cwd=repo, check=True, capture_output=True)
         real(
             db,
             str(tmp_path / "out"),
             "web-hunt1",
-            {"checkout": "local", "repo": "local", "profile": "fast", "mode": "hunt"},
+            {"checkout": str(repo), "repo": "local", "profile": "fast", "mode": "hunt"},
         )
         with get_session(db) as session:
             row = session.query(RunORM).filter_by(public_id="web-hunt1").first()
-            assert row is not None and row.status == "failed"
-            assert "provider" in (row.result_json or "")
+            assert row is not None and row.status == "completed"
+            assert "no provider key" in (row.result_json or "")
 
     def test_execute_marks_failed_on_bad_checkout(
         self,

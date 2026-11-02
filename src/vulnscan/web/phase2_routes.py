@@ -449,11 +449,11 @@ def _execute_web_scan(
             pass
 
     try:
-        mode = (params.get("mode") or "deterministic").strip()
+        mode = (params.get("mode") or "hunt").strip()
         if mode not in ("deterministic", "hunt"):
             raise ValueError(f"Unknown scan mode: {mode}")
-        if mode == "hunt" and not params.get("provider_profile"):
-            raise ValueError("Hunt mode needs a provider profile (it calls the model)")
+        # Hunt without an explicit provider auto-resolves the default keyed
+        # profile inside the service; without any key it skips with a reason.
         config = resolve_config(
             params.get("profile") or "fast",
             None,

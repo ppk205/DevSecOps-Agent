@@ -10,6 +10,9 @@
   SQL-error signatures, allowlist + request caps) as opt-in DAST evidence.
 - Narrow secret redaction to key formats + loaded env values
   (`token.isEmpty()`, diff lines and JSON pass through).
+- Every scan runs model hunt by default (deterministic + model in one
+  pass); without a provider key the hunt stages skip with a reason instead
+  of failing. Pass `--mode deterministic` to opt out.
 
 - Scan any web language, not just Java: new Semgrep rulesets `javascript.yml` (JS/TS), `python.yml`, `php.yml` (10 rules each, two-direction fixtures, batched tests), `LanguageKind` extended + `language_from_extension` hub, inventory covers `.js/.ts/.py/.php/...`, default Semgrep load is every bundled `rules/*.yml`. Live-verified: CWE-78 JS, CWE-89 PY, CWE-79 PHP, safe code silent.
 

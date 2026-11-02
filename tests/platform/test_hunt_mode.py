@@ -122,13 +122,16 @@ def _profile():
     )
 
 
-def test_default_mode_has_no_hunt_path(service, checkout, tmp_path):
+def test_default_mode_runs_hunt_path_skipped_without_key(
+    service, checkout, tmp_path, monkeypatch
+):
+    import vulnscan.providers.profile_store as store_mod
+
+    monkeypatch.setattr(store_mod, "default_profile", lambda base=None: None)
     result = service.run(str(checkout), settings(tmp_path))
     assert "model_candidates" not in result
-    assert "laya_verification" not in result
-    assert "comparison" not in result
-    stages = {e["stage"] for e in result["stages"]}
-    assert not (stages & HUNT_STAGES)
+    stages = {e["stage"]: e["status"] for e in result["stages"]}
+    assert stages.get("model_hunt") == "skipped"
     for core in (
         "intake",
         "targeted_deep_analysis",

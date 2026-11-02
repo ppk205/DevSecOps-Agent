@@ -33,7 +33,7 @@ export function NewScanPage() {
     "owasp-dependency-check": false,
   });
   const [aiReview, setAiReview] = useState(false);
-  const [hunt, setHunt] = useState(false);
+  const [hunt, setHunt] = useState(true);
   const [providerProfile, setProviderProfile] = useState("");
   const [providerModel, setProviderModel] = useState("");
   const [maxAi, setMaxAi] = useState(10);

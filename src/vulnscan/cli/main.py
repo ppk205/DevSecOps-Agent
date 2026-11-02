@@ -120,7 +120,7 @@ def scan_run(
         None, "--max-ai-findings", help="Cap on model-reviewed findings per run."
     ),
     mode: str | None = typer.Option(
-        None, "--mode", help="Scan mode: deterministic (default) or hunt."
+        None, "--mode", help="Scan mode: hunt (default) or deterministic."
     ),
 ) -> None:
     """Scan any repository (URL or local path) and enforce policy."""

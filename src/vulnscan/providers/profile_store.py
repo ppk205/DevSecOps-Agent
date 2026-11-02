@@ -63,3 +63,24 @@ def delete_profile(profile_id: str, base: Path | None = None) -> bool:
         path.unlink()
         return True
     return False
+
+
+def default_profile(base: Path | None = None) -> ProviderProfile | None:
+    """First profile whose API-key env var is set.
+
+    Used to auto-enable model hunt on every scan: an explicitly chosen
+    profile always wins; this is only the fallback when the caller did
+    not pick one. Returns None when no key is configured anywhere, in
+    which case hunt stages skip with a reason instead of failing.
+    """
+    import os
+
+    keyed = [
+        p
+        for p in list_profiles(base)
+        if p.api_key_env and os.environ.get(p.api_key_env, "").strip()
+    ]
+    if not keyed:
+        return None
+    keyed.sort(key=lambda p: (0 if p.id == "opencode-free" else 1, p.id))
+    return keyed[0]

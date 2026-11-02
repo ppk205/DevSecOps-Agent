@@ -710,9 +710,18 @@ class ScanService:
             if config.mode == "hunt":
                 persist("model_hunt", "running", "Model exploring snapshot for vulnerabilities")
                 if not config.provider_profile:
-                    hunt_detail = "no provider profile configured"
-                    persist("model_hunt", "skipped", hunt_detail)
-                else:
+                    from vulnscan.providers.profile_store import default_profile as _default_profile
+
+                    _auto = _default_profile()
+                    if _auto is not None:
+                        config.provider_profile = _auto.id
+                        if not config.provider_model:
+                            config.provider_model = _auto.default_model or None
+                        hunt_detail = f"auto provider {_auto.id}"
+                    else:
+                        hunt_detail = "no provider key configured — set a key to enable the model"
+                        persist("model_hunt", "skipped", hunt_detail)
+                if config.provider_profile:
                     try:
                         from vulnscan.ai.hunt import hunt_vulns
                         from vulnscan.providers.budget import BudgetManager
