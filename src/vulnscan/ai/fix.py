@@ -37,7 +37,7 @@ Vulnerable code:
 ```
 {snippet}
 ```
-
+{context_section}
 Write the minimal unified diff fixing this {cwe} issue."""
 
 
@@ -49,8 +49,20 @@ class FixProposal:
     model: str
 
 
-def build_fix_prompt(finding: dict[str, Any]) -> str:
-    """Render the user prompt for one finding dict (Finding dump)."""
+def build_fix_prompt(finding: dict[str, Any], code_context: str = "") -> str:
+    """Render the user prompt for one finding dict (Finding dump).
+
+    ``code_context`` is wider surrounding source from the local checkout.
+    Without it the model reconstructs plausible-but-wrong context lines and
+    the strict applier rightly rejects the patch.
+    """
+    section = ""
+    if code_context.strip():
+        section = (
+            "Full surrounding code for exact context lines:\n```\n"
+            + code_context[:4000]
+            + "\n```\n"
+        )
     obs = (finding.get("observations") or [{}])[0]
     loc = obs.get("location", {})
     return FIX_USER_TEMPLATE.format(
@@ -61,6 +73,7 @@ def build_fix_prompt(finding: dict[str, Any]) -> str:
         line=loc.get("line_start", "?"),
         severity=finding.get("severity", ""),
         snippet=(loc.get("snippet") or "")[:2000],
+        context_section=section,
     )
 
 
@@ -81,6 +94,7 @@ def propose_fix(
     profile_id: str,
     model: str | None = None,
     max_tokens: int = 2000,
+    code_context: str = "",
 ) -> FixProposal:
     """Ask the model for a unified diff fixing one finding."""
     profile = load_profile(profile_id)
@@ -88,7 +102,7 @@ def propose_fix(
     response = client.chat(
         [
             ChatMessage(role="system", content=FIX_SYSTEM),
-            ChatMessage(role="user", content=build_fix_prompt(finding)),
+            ChatMessage(role="user", content=build_fix_prompt(finding, code_context)),
         ],
         model=model or profile.default_model,
         temperature=0.0,

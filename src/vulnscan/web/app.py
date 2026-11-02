@@ -12,6 +12,7 @@ import hmac
 import io
 import json
 import logging
+import os
 import re
 import secrets
 from collections.abc import AsyncIterator, Generator
@@ -1105,6 +1106,28 @@ def create_app(
             422, "No provider profile: pass provider_profile or rerun with AI review"
         )
 
+    def _fix_context(checkout: str, file_path: str, line: int | None) -> str:
+        """Read ~60 lines around the finding from the local checkout (if any).
+
+        The finding snippet is only ±1 line, which makes the model invent
+        context. wider real context lets the strict applier accept the patch.
+        """
+        if not checkout or not os.path.isdir(checkout):
+            return ""
+        if not file_path or ".." in file_path.split("/"):
+            return ""
+        target = os.path.join(checkout, file_path)
+        if not os.path.isfile(target):
+            return ""
+        try:
+            with open(target, encoding="utf-8", errors="replace") as handle:
+                numbered = list(enumerate(handle.read().splitlines(), start=1))
+        except OSError:
+            return ""
+        center = line or 1
+        window = [text for number, text in numbered if abs(number - center) <= 30]
+        return "\n".join(window)
+
     def _execute_fixes(
         db_path: str,
         run_pk: int,
@@ -1118,6 +1141,7 @@ def create_app(
             run = session.get(RunORM, run_pk)
             if run is None:
                 return
+            checkout = ((run.target.repository_url if run.target else "") or "").strip()
             findings = _run_findings(session, run)
             if finding_ids:
                 wanted = set(finding_ids)
@@ -1133,7 +1157,14 @@ def create_app(
                 if existing is not None and existing.status == "proposed":
                     continue
                 try:
-                    proposal = propose_fix(finding, profile_id, model)
+                    obs = (finding.get("observations") or [{}])[0]
+                    loc = obs.get("location", {})
+                    context = _fix_context(
+                        checkout,
+                        str(loc.get("file_path", "")),
+                        loc.get("line_start"),
+                    )
+                    proposal = propose_fix(finding, profile_id, model, code_context=context)
                     session.add(
                         FixProposalORM(
                             run_id=run_pk,
@@ -1244,9 +1275,8 @@ def create_app(
         loc = obs.get("location", {})
         file_path = str(loc.get("file_path", ""))
         checkout = ((run.target.repository_url if run.target else "") or "").strip()
-        import os as _os
 
-        if not checkout or not _os.path.isdir(checkout):
+        if not checkout or not os.path.isdir(checkout):
             proposal.status = "failed"
             proposal.error = "Run target is not a local checkout; cannot stage overlay"
             session.commit()

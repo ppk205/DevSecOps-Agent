@@ -26,7 +26,7 @@ def _finding_json(fid: str) -> str:
                     "location": {
                         "file_path": "src/app.py",
                         "line_start": 8,
-                        "snippet": "cur.execute(\"SELECT * FROM x WHERE n = '\" + n + \"'\")",
+                        "snippet": 'cur.execute("SELECT * FROM x WHERE n = \'" + n + "\'")',
                     },
                 }
             ],
@@ -65,16 +65,17 @@ def _csrf(client: TestClient) -> dict[str, str]:
 def test_fix_flow_propose_list_apply(tmp_path: Path, monkeypatch) -> None:  # type: ignore[no-untyped-def]
     import vulnscan.ai.fix as fixmod
 
-    def fake_propose(finding, profile_id, model=None, max_tokens=2000):
+    def fake_propose(finding, profile_id, model=None, max_tokens=2000, **kwargs):
         assert profile_id == "opencode-free"
+        assert "code_context" in kwargs
         return fixmod.FixProposal(
             finding_id=finding["finding_id"],
             file_path="src/app.py",
             diff_text=(
                 "--- a/src/app.py\n+++ b/src/app.py\n"
                 "@@ -8 +8 @@\n"
-                "-    cur.execute(\"SELECT * FROM x WHERE n = '\" + n + \"'\")\n"
-                "+    cur.execute(\"SELECT * FROM x WHERE n = ?\", (n,))\n"
+                '-    cur.execute("SELECT * FROM x WHERE n = \'" + n + "\'")\n'
+                '+    cur.execute("SELECT * FROM x WHERE n = ?", (n,))\n'
             ),
             model="iceman-contributor-free",
         )
@@ -98,7 +99,9 @@ def test_fix_flow_propose_list_apply(tmp_path: Path, monkeypatch) -> None:  # ty
     assert "SELECT * FROM x WHERE n = ?" in listed["proposals"][0]["diff"]
 
     # Re-queue skips already-proposed rows (no duplicates).
-    client.post(f"/api/scans/{rid}/fix", json={"provider_profile": "opencode-free"}, headers=headers)
+    client.post(
+        f"/api/scans/{rid}/fix", json={"provider_profile": "opencode-free"}, headers=headers
+    )
     assert len(client.get(f"/api/scans/{rid}/fixes").json()["proposals"]) == 2
 
     # Apply needs a local checkout; this run has none -> honest 422.
