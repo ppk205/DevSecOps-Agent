@@ -17,7 +17,7 @@ import httpx
 
 from vulnscan.contracts.enums import ProviderProtocol
 from vulnscan.contracts.provider import ProviderProfile
-from vulnscan.providers.credentials import CredentialError, load_api_key, redact
+from vulnscan.providers.credentials import CredentialError, load_api_key, redact, redact_value
 from vulnscan.providers.profile_store import list_profiles
 
 from .messages import Message, ProviderError, Reply, ToolCall, Transport, Usage
@@ -179,7 +179,7 @@ class _HttpTransport:
         return headers
 
     def _post(self, url: str, payload: dict[str, Any], headers: dict[str, str]) -> dict[str, Any]:
-        payload = json.loads(redact(json.dumps(payload)))
+        payload = redact_value(payload)
         last_error = "no attempt was made"
         for attempt in range(self.profile.max_retries + 1):
             try:
@@ -199,9 +199,10 @@ class _HttpTransport:
                     redact(f"HTTP {response.status_code} from {self.profile.id}: {response.text}")
                 )
             try:
-                raw: Any = json.loads(redact(response.text))
+                decoded = response.json()
             except ValueError as exc:
                 raise ProviderError(f"Invalid JSON from {self.profile.id}: {exc}") from exc
+            raw: Any = redact_value(decoded)
             if not isinstance(raw, dict):
                 raise ProviderError(f"Invalid response from {self.profile.id}: expected an object")
             return cast("dict[str, Any]", raw)

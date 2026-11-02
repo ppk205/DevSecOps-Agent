@@ -7,14 +7,13 @@ model API, or writes outside the fix worktree.
 
 from __future__ import annotations
 
-import json
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
 from vulnscan.decisions.config import LayaConfig
-from vulnscan.providers.credentials import redact
+from vulnscan.providers.credentials import redact_json
 
 from .audit import SessionLog
 from .evidence import check_citations, score_cvss4
@@ -564,4 +563,4 @@ def run_tool(ctx: ToolContext, call: ToolCall) -> str:
             except Exception as exc:  # noqa: BLE001 - a tool must never break the loop
                 result = {"error": f"{type(exc).__name__}: {exc}"}
     ctx.log.append({"type": "tool_result", "tool": call.name, "id": call.id, "result": result})
-    return redact(json.dumps(result, default=str))
+    return redact_json(result)

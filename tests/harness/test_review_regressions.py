@@ -128,7 +128,7 @@ def test_provider_redacts_normal_request_and_response(protocol: str) -> None:
 
 
 def test_logs_reports_and_display_redact_normal_content(tmp_path: Path) -> None:
-    sentinel = "tok_" + "syntheticfixture123456"
+    sentinel = "sk-ant-" + "syntheticfixture123456"
     ctx, _ = make_ctx(tmp_path, [])
     ctx.log.append({"type": "message", "message": Message("tool", sentinel).to_dict()})
     ctx.log.append({"type": "gate", "payload": {"nested": [sentinel]}, "reason": sentinel})

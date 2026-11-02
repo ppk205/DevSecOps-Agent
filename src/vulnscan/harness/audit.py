@@ -12,7 +12,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from vulnscan.providers.credentials import redact
+from vulnscan.providers.credentials import redact_json
 
 from .messages import Message
 
@@ -43,7 +43,7 @@ class SessionLog:
         payload = dict(event)
         payload.setdefault("at", _now_iso())
         with self.path.open("a", encoding="utf-8") as handle:
-            handle.write(redact(json.dumps(payload, default=str)) + "\n")
+            handle.write(redact_json(payload) + "\n")
             handle.flush()
 
     def events(self) -> list[dict[str, Any]]:

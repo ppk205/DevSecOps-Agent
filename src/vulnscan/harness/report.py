@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-import json
 from collections import Counter
 from pathlib import Path
 from typing import Any
 
-from vulnscan.providers.credentials import redact
+from vulnscan.providers.credentials import redact, redact_json
 
 from .audit import SessionLog
 from .workspace import ProposedFinding, Workspace
@@ -178,5 +177,5 @@ def export(ws: Workspace, log: SessionLog, out_dir: Path) -> dict[str, Path]:
         "totals": log.totals(),
     }
     json_path = out / "report.json"
-    json_path.write_text(redact(json.dumps(payload, indent=2, default=str)), encoding="utf-8")
+    json_path.write_text(redact_json(payload, indent=2), encoding="utf-8")
     return {"markdown": markdown, "json": json_path}
