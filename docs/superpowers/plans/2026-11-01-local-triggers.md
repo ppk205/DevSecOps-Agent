@@ -94,9 +94,15 @@
   - The git queue is `<repo>/.git/devsec/pending.jsonl`.
   - The watch queue and the state marks go to `<harness cwd>/.devsec/pending/<sha1(str(target.resolve()))[:12]>.jsonl`.
 - The git commands have fixed argument lists:
-  - `git diff-tree --no-commit-id --name-only -r HEAD` for a commit;
-  - `git diff --name-only ORIG_HEAD HEAD` for a merge;
-  - `git rev-parse HEAD` and `git rev-parse --abbrev-ref HEAD`.
+   - `git diff-tree --root --no-commit-id --name-only -z -r HEAD` for a commit;
+   - `git diff --name-only -z ORIG_HEAD HEAD` for a merge;
+   - `git rev-parse HEAD` and `git rev-parse --abbrev-ref HEAD`.
+
+Owner-approved correction (2026-11-02): include root commits and use NUL
+delimiters to preserve filenames. Hook operations query
+`git config -z --get core.hooksPath` and refuse a configured override rather
+than claim installation in a directory Git will ignore. Fixed `rev-parse`
+commands resolve Git/common directories for linked worktrees.
 
 - [ ] **Step 1: Write the failing tests** on a temporary git repo, using the `ws` fixture pattern from `tests/harness/conftest.py`.
   - `test_record_commit_lists_changed_files`.

@@ -108,7 +108,7 @@ the ordinary local build uses the filename that the launcher discovers.
 
 ## 4. Run the application
 
-### Native Go TUI, including the API-key input fixes
+### Chat-first Go TUI
 
 Launch the freshly compiled executable directly:
 
@@ -117,56 +117,40 @@ $env:DEVSECOPS_PYTHON = (Resolve-Path .\.venv\Scripts\python.exe).Path
 .\bin\devsecops-agent-go.exe tui
 ```
 
-Or select Go through the Python launcher, which sets the bridge interpreter
-automatically:
+Or use the Python launcher, which sets the bridge interpreter automatically:
 
 ```powershell
-$env:DEVSECOPS_NATIVE = 'go'
 .\.venv\Scripts\python.exe -m vulnscan.cli.main tui
 ```
 
 For Linux/macOS:
 
 ```sh
-DEVSECOPS_NATIVE=go .venv/bin/python -m vulnscan.cli.main tui
+.venv/bin/python -m vulnscan.cli.main tui
 ```
 
-The native Workspace accepts a local checkout. To use repository URLs, pinned
-commit and clone-cache controls, choose the Python interface below.
-
-### Python TUI
-
-```powershell
-$env:DEVSECOPS_NATIVE = 'python'
-.\.venv\Scripts\python.exe -m vulnscan.cli.main tui
-```
-
-Without an explicit Go override, `tui` defaults to Python even if the native
-binary exists. No Go compilation is needed to run the Python interface.
+`tui` requires the native binary, including when `DEVSECOPS_NATIVE=python`
+selects Python for baseline computation. A missing binary produces
+`chat needs the native binary: run ci/build_native.py` and exit code 2.
+The Python Textual TUI is removed; `devsec chat` is the Python console.
 The installed `devsecops-agent` and `devsec` console scripts are aliases for
 this launcher; on Windows they are in `.venv\Scripts`.
 
 ### First terminal workflow
 
-1. Press **Ctrl+N** to open Workspace and focus the checkout field. This also
-   makes typing work if the Python interface initially focuses its tab bar.
-2. Enter the path to a local Java Servlet/JSP Git checkout and select **fast**.
-   Tab moves between controls; in the native interface, Enter starts editing
-   a text field and Left/Right selects a choice.
-3. Press **Ctrl+E** to review the checkout and effective settings.
-4. Press **Ctrl+S** to start after the review succeeds and required scanners
-   are available. Scan errors and missing dependencies remain visible.
-5. Use **Ctrl+1** through **Ctrl+5** to switch native views. Press **Ctrl+Q**
-   to quit; an active scan offers a cancellation choice.
+1. Add a model or choose an existing alias on the start screen. Key entry is masked.
+2. Enter a local target path and choose `ask` or `auto` mode.
+3. Start the session and answer G0 when requested.
+4. Type a review request. `/` opens the command menu; the hint bar shows
+   available keys. Esc interrupts the running turn.
+5. Use **Baseline** for comparison scans and **Keys** to manage added models.
 
-In the native Workspace, **Ctrl+K** with an empty variable name enters API-key
-entry. Type the variable name, press Tab, enter the hidden value, and press
-**Ctrl+K** again to save it to the project `.env`. Esc leaves entry; Ctrl+N
-returns typing to checkout. Outside Workspace, native Ctrl+K opens the action
-menu. The Python interface provides a separate **API Keys** tab and uses
-Ctrl+K for its action menu. API keys are optional for opening the application.
+Permission dialogs start with no selected button. Use the displayed letter,
+a mouse click, or arrows then Enter. Enter alone does not approve. Rejection
+asks for a reason; G6 buttons unlock only after the entire diff has been shown.
+The status line identifies provider/model, mode, tokens and recorded cost.
 
-### Command-line scan and local dashboard
+### Baseline scanners (testing and comparison only)
 
 These examples explicitly select Python so URL handling and the `--no-laya`
 option are available:
@@ -200,6 +184,9 @@ installing from a shipped requirements lock supports `chat` with `--no-deps`.
 
 Investigation requires both G3 selection and a recorded Laya route. A Laya
 failure records `human_review` and still allows the human to select a batch.
+The S1 experiment uses `--laya-config` with an explicit `mode: "off"` config;
+this records skipped triage and does not load Laya. The baseline `enabled`
+flag alone does not disable harness triage.
 Direct reads and enumerated files pass through the same path confinement and
 credential exclusion; `.env.example` remains readable. Provider messages,
 console output, JSONL events and exported reports pass through redaction.
@@ -216,27 +203,31 @@ pauses for a human at every gate. It needs Python 3.11 and, for a cloud
 provider, one API key.
 
 ```powershell
-# Store the key once; the value is prompted and masked, never printed
-.\\.venv\\Scripts\\python.exe -m vulnscan.cli.main env set DEEPSEEK_API_KEY
+# Add a model alias; the wizard prompts for a masked key when needed
+.\.venv\Scripts\python.exe -m vulnscan.cli.main model add --template deepseek
+.\.venv\Scripts\python.exe -m vulnscan.cli.main model list
 
 # Start a session. --mode ask (default) asks at every gate; --mode auto
-# approves G1-G4 and G7 automatically, but never G0, G5 or G6.
-.\\.venv\\Scripts\\python.exe -m vulnscan.cli.main chat --target 'C:\path\to\JVA-bookstore' --provider deepseek --model deepseek-chat --mode ask
+# approves G1-G4 and G7 automatically. Local G0 may auto-approve only
+# with an interactive human client attached. G5 and G6 remain human-only.
+.\.venv\Scripts\python.exe -m vulnscan.cli.main chat --target 'C:\path\to\JVA-bookstore' --model my-model --mode ask
 
 # Local model, no key and no code leaving the machine
-.\\.venv\\Scripts\\python.exe -m vulnscan.cli.main chat --target JVA-bookstore --provider ollama --model llama3
+.\.venv\Scripts\python.exe -m vulnscan.cli.main chat --target JVA-bookstore --model local-model
 
 # One prompt, then exit
-.\\.venv\\Scripts\\python.exe -m vulnscan.cli.main chat --target JVA-bookstore --provider deepseek -p "scan the admin servlets for missing authorization"
+.\.venv\Scripts\python.exe -m vulnscan.cli.main chat --target JVA-bookstore --model my-model -p "scan the admin servlets for missing authorization"
 ```
 
-Providers: `anthropic`, `openai`, `openrouter`, `deepseek`, `ollama` (`http://127.0.0.1:11434/v1`)
-and `lmstudio` (`http://127.0.0.1:1234/v1`). A file in `.providers/<id>.json`
-overrides a built-in profile; it stores the environment variable name, never the
-key. Other options: `--mode ask|auto`, `--budget 50` (USD), `--sessions-dir`,
-`--laya-config`, `--resume <session.jsonl>`.
+Replace the example aliases with names you added. Templates are `anthropic`,
+`openai`, `openrouter`, `deepseek`, `ollama` and `lmstudio`, or choose Custom.
+Each `.providers/<alias>.json` stores a key reference, never its value. Use
+`model key <alias>` to change the key and `model remove <alias>` to remove it.
+`--model alias:model-id` overrides the default id; legacy `--provider` remains
+supported for one release. Other chat options: `--mode ask|auto`, `--budget 50`
+(USD), `--sessions-dir`, `--laya-config`, `--resume <session.jsonl>`.
 
-Slash commands: `/help`, `/model <provider> [model]` (a move to a cloud provider
+Slash commands: `/help`, `/model <alias>[:model-id]` (a move to a cloud provider
 asks G0 consent again), `/mode ask|auto`, `/cost`, `/review` (settles findings
 awaiting a human), `/export [dir]`, `/resume <file>`, `/clear`, `/quit`.
 
@@ -249,9 +240,58 @@ What it writes, all under the working directory:
 | `.devsec/reports/<id>/report.md`, `report.json` | finding cards with the decision log |
 
 The harness never commits, pushes or merges in the target repository. Only an
-approved G6 writes anything, and only inside that worktree. `scan-run` stays the
+approved G6 writes a fix, inside that worktree or as a patch for a non-git
+target. `scan-run` stays the
 baseline runner for Semgrep, SpotBugs/FindSecBugs, Dependency-Check and Gitleaks;
 its results are the comparison arm, not part of the harness.
+
+### Remote control from a browser
+
+In the Go TUI, `/remote on` prints a single-use browser link. `/remote off`
+stops the listener. For a standalone session:
+
+```powershell
+.\.venv\Scripts\python.exe -m vulnscan.cli.main remote --target 'C:\path\to\project' --model my-model --mode ask
+```
+
+Open the printed link. Login establishes an HttpOnly, SameSite=Strict cookie;
+mutations need the CSRF token. A disconnected browser reconnects from its last
+event sequence. The first valid client response settles a pending gate. Web
+G0/G6 approvals also need the typed word `send`/`apply`, checked by the host.
+With no attached human client, the host cannot auto-approve local G0.
+
+Loopback is the default. Prefer an SSH tunnel to a remote machine:
+
+```sh
+ssh -L 8765:127.0.0.1:<port> user@host
+```
+
+Binding another address requires `--remote-host <address> --remote-allow-lan`
+and prints a warning. Build the SPA with the web commands below before opening
+`/app/remote`; the wheel does not yet bundle SPA assets.
+
+### Automatic local reviews
+
+```powershell
+.\.venv\Scripts\python.exe -m vulnscan.cli.main hooks install --target 'C:\path\to\project'
+.\.venv\Scripts\python.exe -m vulnscan.cli.main hooks status --target 'C:\path\to\project'
+.\.venv\Scripts\python.exe -m vulnscan.cli.main hooks uninstall --target 'C:\path\to\project'
+```
+
+Hooks append pending reviews and exit; they do not run a model or block git.
+Foreign hooks are preserved. A session host watches non-git folders and queues
+a review after changes settle. Review now and Dismiss are available in both
+clients. Auto-start requires an idle host, an attached client, auto mode and a
+local model. G5/G6 remain human-only. Pipes, hooks and CI cannot approve G0.
+
+The initial commit is included, and filenames are read from NUL-delimited Git
+output. Hook operations support linked worktrees but refuse a configured
+`core.hooksPath`; integrate the printed command into your own hook manager.
+
+For non-git targets, G6 exports `.devsec/patches/<finding_id>.patch` without
+changing the target. Re-scan reports `unavailable: target is not a git repository`.
+The [experiment runbook](EXPERIMENT-RUNBOOK.md) covers S1/S2 configuration,
+baseline normalisation, metrics and scratch-clone fix evaluation.
 
 ## 5. Install tools before an actual scan
 
@@ -344,13 +384,13 @@ reviewed stable releases listed in `docs/CI-INTEGRATION.md`.
 The `CI required` job depends on quality, harness, native, full Python tests,
 package smoke and real fast baseline fixtures. Harness tests use fakes on all
 supported operating systems. Native jobs build the binary before running the
-platform, CLI and Python TUI suites. Full baseline integration remains scheduled,
+platform and CLI suites. Full baseline integration remains scheduled,
 manual and a release prerequisite. See [CI integration](CI-INTEGRATION.md).
 
 ```powershell
 go vet ./...
 go test ./...
-.\.venv\Scripts\python.exe -m pytest tests/cli tests/tui
+.\.venv\Scripts\python.exe -m pytest tests/cli tests/harness
 ```
 
 Use `.\.tools\go\bin\go.exe` instead of `go` when using the workspace SDK.

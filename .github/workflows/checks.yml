@@ -105,8 +105,8 @@ jobs:
       - run: go vet ./...
       - run: go test ./...
       - run: uv run --no-sync python ci/build_native.py
-      - name: Test the built native binary, CLI, bridge and Python TUI
-        run: uv run --no-sync python -m pytest tests/platform tests/cli tests/tui -q --junitxml=native-junit.xml --cov=vulnscan --cov-report=xml:native-coverage.xml --cov-report=term-missing
+      - name: Test the built native binary, CLI and bridge
+        run: uv run --no-sync python -m pytest tests/platform tests/cli -q --junitxml=native-junit.xml --cov=vulnscan --cov-report=xml:native-coverage.xml --cov-report=term-missing
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         if: always()
         with:

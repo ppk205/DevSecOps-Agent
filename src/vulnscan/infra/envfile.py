@@ -68,18 +68,20 @@ class EnvFile:
         stored = self.get(name)
         return bool(stored and stored.strip())
 
-    def set(self, name: str, value: str) -> Path:
+    def set(self, name: str, value: str, *, update_environ: bool = False) -> Path:
         name = name.strip().upper().replace("-", "_")
         if not name.replace("_", "").isalnum() or not name:
             raise ValueError(f"Invalid environment variable name: {name!r}")
         value = value.strip()
         if not value:
             raise ValueError("Refusing to store an empty secret")
+        if any(ord(char) < 32 or ord(char) == 127 for char in value):
+            raise ValueError("Invalid secret characters")
         lines = self._read_lines()
         rendered = f"{name}={_quote(value)}"
         for index, line in enumerate(lines):
             if _split_pair(line)[0] == name:
-                lines[index] = rendered
+                lines[index] = rendered + ("\n" if line.endswith("\n") else "")
                 break
         else:
             if lines and not lines[-1].endswith("\n"):
@@ -89,7 +91,22 @@ class EnvFile:
         self.path.write_text("".join(lines), encoding="utf-8")
         if os.name == "posix":
             os.chmod(self.path, 0o600)
+        if update_environ:
+            os.environ.pop(name, None)
+            self.load_into_environ()
         return self.path
+
+    def remove(self, name: str) -> bool:
+        """Remove every matching assignment and its live value; preserve other lines."""
+        lines = self._read_lines()
+        kept = [line for line in lines if _split_pair(line)[0] != name]
+        removed = len(kept) != len(lines)
+        if removed:
+            self.path.write_text("".join(kept), encoding="utf-8")
+            if os.name == "posix":
+                os.chmod(self.path, 0o600)
+        os.environ.pop(name, None)
+        return removed
 
     def load_into_environ(self) -> list[str]:
         """Copy stored keys into ``os.environ`` without overriding it."""

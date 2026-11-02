@@ -1,6 +1,6 @@
 # Chat client, web remote control and local triggers — design
 
-Status: **design only, not implemented.** Written 2026-11-01. It covers projects 2–4 of the agreed order:
+Status: **implemented in code and automated tests**, with manual acceptance and publication tracked in [the execution record](../../PLAN-EXECUTION-2026-11-02.md). Written 2026-11-01. It covers projects 2–4 of the agreed order:
 
 1. Stabilize and merge `main`. Plan: `docs/superpowers/plans/2026-11-01-stabilize-and-merge-main.md`.
 2. **Go chat TUI.** This spec, Part A.
@@ -8,6 +8,10 @@ Status: **design only, not implemented.** Written 2026-11-01. It covers projects
 4. **Local triggers.** This spec, Part C.
 
 Each project gets its own plan and PR, and each starts only after the previous one has merged.
+
+Owner override (2026-11-02): implement dependent work before merge checkpoints
+and deliver the remaining software in one feature-branch PR. Merging stays
+with the owner.
 
 Parent documents:
 - `docs/ARCHITECTURE-MODIFICATION.md`, the spec. This document implements decision D9 and phase 6.
@@ -161,7 +165,7 @@ API keys belong to the **model the user added**, not to a provider. The user nev
 - **Backward compatibility:** `--provider` keeps working for one release, mapped to the template of the same name, and existing key variables such as `DEEPSEEK_API_KEY` are still read if set. **[default]** The docs show only the add-model flow.
 - **Protocol changes (§2.3):**
   - The `profiles` event becomes `models{items:[{alias, protocol, base_url, models, default_model, local, key_set}]}`. No `key_env` field is sent to clients.
-  - New client commands: `model_add{alias, template, protocol, base_url, models, key}`, `model_remove{alias}` and `model_key{alias, key}`.
+- New client commands: `model_add{alias, template, model_protocol, base_url, models, key}`, `model_remove{alias}` and `model_key{alias, key}`. Owner-approved correction (2026-11-02): `model_protocol` carries the model API protocol because top-level `protocol` is reserved for `devsec-chat/1`.
   - The key travels only over the local stdio pipe (or the authenticated remote POST in Part B). It is never written to the session log, and `redact_value` runs on every event.
 
 ### 2.6 Layout

@@ -6,9 +6,9 @@ reconciliation, policy decisions and local HTTP handlers. Scanner adapters,
 container isolation, report/template rendering, model inference and research
 utilities use the Python implementations through an owned child process.
 
-These libraries retain the existing scan and report contracts. Python remains
-usable as a complete fallback. No detached service is started. Closing the
-owned bridge requests cancellation and waits for evidence persistence.
+The scan libraries retain the baseline scan/report contracts. The chat client
+uses a separate `devsec-chat/1` Python session host; the Baseline tab retains
+the scan bridge. `devsec chat` is the console alternative to the Go UI.
 
 ## Build and launch
 
@@ -31,10 +31,9 @@ This workspace also has a local SDK under `.tools/go`; its build command is:
 
 The build creates `bin/devsecops-agent-go.exe` on Windows or
 `bin/devsecops-agent-go` elsewhere. Existing console commands discover that
-binary automatically for operations with native parity. The default `tui` and
-`scan-run` launch through Python to preserve the newer repository URL and
-credential workflows. Set `DEVSECOPS_NATIVE=go` to select the native local
-checkout interface explicitly. Native `scan-run`, history, cancel, retry, export and
+binary automatically for operations with native parity. `tui` always opens
+the Go chat client and prints a build hint if the binary is missing.
+`scan-run` remains a Python-handled baseline command. Native history, cancel, retry, export and
 `serve` use the same SQLite database and retained report data.
 
 For a released binary, rename the platform asset to `devsecops-agent-go`
@@ -43,11 +42,10 @@ For a released binary, rename the platform asset to `devsecops-agent-go`
 to its own interpreter automatically. `DEVSECOPS_GO_BINARY` selects a specific
 native binary.
 
-To use Python throughout a session:
+To use the Python console without a native binary:
 
 ```powershell
-$env:DEVSECOPS_NATIVE = 'python'
-.venv/Scripts/devsecops-agent.exe tui
+.venv/Scripts/devsecops-agent.exe chat --target C:/path/to/project --model my-model
 ```
 
 The native application keeps the existing command names and exit statuses:
@@ -55,24 +53,33 @@ The native application keeps the existing command names and exit statuses:
 cancelled. Scanner and coverage failures take precedence over threshold
 results. Missing tools remain explicit.
 
-## Keyboard workflow
+## Chat workflow
 
-The application opens in Workspace with checkout/profile controls and an
+The start screen selects a target, added model and mode. Add-model and key
+entry forms mask secrets. The chat transcript labels model replies as AI
+support. The hint bar shows available keys; `/` opens a filterable command
+menu. Chat, Baseline and Keys are separate tabs.
+
+Gate dialogs start with no highlighted button. Use the shown letter, click,
+or select with arrows then Enter. G0/G6 are marked dangerous; the full diff
+must be shown before answering G6. Esc interrupts; Ctrl+C twice quits.
+Broken host connections disable input and offer restart from the session log.
+
+## Baseline-tab keyboard workflow
+
+The embedded baseline interface has Workspace checkout/profile controls and an
 expandable Advanced section containing all scan options. History, Activity,
 Findings and Reports remain views of the same run workflow. Review presents
 effective values and a verified commit before starting. Details use retained
 source excerpts and recorded status; unavailable evidence remains explicit.
-The Python workspace also retains repository URLs, pinned commit and clone-cache
-controls in Advanced options, and a separate API Keys tab with hidden values.
 
 The native interface focuses controls with Tab and uses Enter to edit text or
-activate a control. Left/Right or Enter cycles typed choices. The Python
-fallback uses Textual inputs, Select widgets and a collapsible Advanced section.
+activate a control. Left/Right or Enter cycles typed choices.
 
 | Key | Operation |
 | --- | --- |
 | Ctrl+N | Open Workspace and focus the checkout |
-| Ctrl+K | Native Workspace: enter/save an API key; elsewhere (and in Python): open the action menu |
+| Ctrl+K | Baseline Workspace: enter/save an API key; elsewhere: open the action menu |
 | Tab / Shift+Tab | Move between visible fields and actions |
 | Enter / Esc | Begin/end text editing or activate/back out of a reader |
 | Ctrl+Space | Complete checkout directory names without blocking navigation |
@@ -98,7 +105,7 @@ cannot overwrite the current view. Refreshing preserves the cursor.
 
 Historical Activity reads saved events, report failures and artifact paths for
 that run. Live activity remains separate when a historical run is inspected.
-The native frame stays within the terminal bounds; both interfaces show a
+The native frame stays within the terminal bounds; the chat client shows a
 resize message below 60 columns or 18 rows. Cancellation and quit still work
 at smaller sizes.
 
@@ -130,7 +137,7 @@ go test ./internal/tui -run '^$' -bench BenchmarkQR21Navigation -benchmem
 
 Native parity tests compare findings, policy, stage order, history and retry
 across Go and Python. Dashboard tests exercise routes, CSRF, status updates
-and all exports. Python tests still cover the fallback interface. CI runs Go
+and all exports. Python tests cover the console and session host. CI runs Go
 checks on Windows, Linux and macOS and builds native release binaries alongside
 the wheel and source distribution. Model downloads, GPU training and paid
 calls are excluded from those checks.

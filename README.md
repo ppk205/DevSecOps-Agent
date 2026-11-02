@@ -1,23 +1,14 @@
 # DevSecOps-Agent
 
-The application now supports a native Go TUI and service implementation with a
-Python compatibility backend. Start with [compile, build, and run instructions](docs/BUILD-AND-RUN.md),
-then see [native architecture and keyboard instructions](docs/NATIVE-MIGRATION.md)
-and [the Laya review and training guide](docs/LAYA-TRAINING.md).
+Review Java Servlet/JSP source with the Go chat client (`devsec tui`), the
+Python console (`devsec chat`), or a browser attached to the session host.
+The harness's static tools find candidates. AI supports investigation and
+explanation; a human decides finding status and whether to apply a fix.
 
-The terminal opens in **Workspace**. Choose a checkout and profile, expand
-Advanced options when needed, then press **Ctrl+E** to review and **Ctrl+S** to
-start. **Ctrl+K** opens the action menu in Python; in the native Workspace it
-enters or saves an API key. Review and finding details scroll with
-arrow/page keys; **V** shows raw details. See the
-[TUI review and remediation](docs/TUI-REVIEW.md) for the implemented fixes.
-
-The default Textual workspace retains repository URL input, pinned commits,
-clone-cache settings and the API Keys tab. Set `DEVSECOPS_NATIVE=go` to use the
-native TUI for local checkouts; `DEVSECOPS_NATIVE=python` selects Python for
-all commands. The `devsec` alias is also available.
-
-Automated vulnerability scanning and severity assessment for Java Servlet/JSP source code, powered by a multi-scanner pipeline with Agentic AI analysis and independent mechanical verification.
+Start with [compile, build, and run](docs/BUILD-AND-RUN.md),
+[native architecture and keys](docs/NATIVE-MIGRATION.md), and the
+[Laya guide](docs/LAYA-TRAINING.md). Baseline scanners are available behind
+the **Baseline** tab and through `scan-run` for testing and comparison.
 
 ## Overview
 
@@ -28,21 +19,27 @@ local Laya model, investigates only what a human approved, writes finding cards
 with code evidence, and proposes fixes. A human decides at every gate; the model
 proposes and never decides.
 
-The harness is provider-agnostic: `anthropic`, `openai`, `openrouter`,
-`deepseek`, `ollama`, `lmstudio`, plus user profiles in `.providers/*.json`.
-Keys are read from environment variables only, never from a profile file.
+Add a model with `devsec model add`: choose a template or Custom, an alias,
+base URL, model ids and a masked key. Built-ins are templates for Anthropic,
+OpenAI, OpenRouter, DeepSeek, Ollama and LM Studio. Profiles in `.providers/`
+store only the key's environment-variable reference; the UI shows set/missing.
 
 Gate modes are `ask` (default) and `auto`. `auto` approves the routine scanning
 gates (G1–G4) and the re-scan gate (G7) and logs each approval as person `auto`.
-G0 (session start: code leaves the machine, cost) and G6 (writing code) always
-wait for a human in every mode, and G5 (a finding's final status) is never
-decided by code or by auto mode.
+G0 (session start: code leaves the machine, cost) waits for a human except in
+local `auto` sessions with an interactive human client attached. Locality comes
+from the loopback base URL. Unattended runs cannot pass G0. G6 (writing code)
+always waits for a human, and G5 (a finding's final status) is human-only.
 
 Investigation batches require a recorded Laya route, including `human_review`
 when Laya is unavailable. Reads, inventory, extraction and route indexing
 validate enumerated paths and exclude credential files (`.env`, `.env.*` and
 `.secrets`, with `.env.example` allowed). Normal provider messages, console
 output, session logs and reports pass through secret redaction.
+
+For experiment S1, a separate Laya config with `mode: "off"` records skipped
+triage without loading the backend; G3/G4 still apply. See the
+[experiment runbook](docs/EXPERIMENT-RUNBOOK.md) for configuration and evaluation.
 
 The console shows the full fix diff before asking for G6. Invalid JSON edits
 leave a gate undecided. Fix worktree paths are resolved from the caller's
@@ -167,33 +164,36 @@ The Go executable still requires the Python application environment.
 
 ### Configuration
 
-No API key or `.env` file is required to open the TUI. Use Workspace to choose
-the checkout, profile, output directory, and advanced options, then review the
-effective settings. Optional secrets can be entered through the Python API Keys
-tab, native Workspace controls, or `devsecops-agent env set VARIABLE_NAME`, which
-prompts for a hidden value. Put scanner executables on `PATH` or in the
-application virtual environment. Scan history defaults to `vulnscan.db` in the
-working directory; select another file with `--db-path`.
+No key is needed to open the TUI. Add a model on the start screen or with
+`devsec model add`, then choose the target and mode. A loopback model needs
+no key. Put baseline scanner executables on `PATH` or in the application
+environment. Baseline history defaults to `vulnscan.db`; harness sessions
+use append-only JSONL logs under `.devsec/sessions/`.
 
 ## Usage
 
 ### AI harness: `devsec chat`
 
 ```bash
-# Store a key for a cloud provider (value is prompted, never printed)
-devsec env set DEEPSEEK_API_KEY
+# Add a model; the wizard asks for its alias and a masked key
+devsec model add --template deepseek
+devsec model list
 
 # Start a review session; ask the human at every gate
-devsec chat --target /path/to/JVA-bookstore --provider deepseek --model deepseek-chat --mode ask
+devsec chat --target /path/to/JVA-bookstore --model my-model --mode ask
 
 # Same session, routine gates auto-approved and logged as person "auto"
-devsec chat --target /path/to/JVA-bookstore --provider ollama --model llama3 --mode auto
+devsec chat --target /path/to/JVA-bookstore --model local-model --mode auto
 
 # Send one prompt and exit
-devsec chat --target JVA-bookstore --provider deepseek -p "scan the admin servlets for missing authorization"
+devsec chat --target JVA-bookstore --model my-model -p "scan the admin servlets for missing authorization"
 ```
 
-Slash commands inside the session: `/help`, `/model <provider> [model]`,
+Replace `my-model` and `local-model` with aliases you added. Use
+`alias:model-id` to select another model id in a profile. The legacy
+`--provider` form remains supported for one release.
+
+Slash commands inside the session: `/help`, `/model <alias>[:model-id]`,
 `/mode ask|auto`, `/cost`, `/review`, `/export [dir]`, `/resume <file>`,
 `/clear`, `/quit`.
 
@@ -201,6 +201,50 @@ Sessions are written to `.devsec/sessions/<id>.jsonl`, approved fixes to
 `.devsec/worktrees/<finding_id>` on branch `devsec/fix-<finding_id>`, and
 reports to `.devsec/reports/<id>/report.md` with a matching `report.json`.
 The harness never commits, pushes or merges.
+
+### Chat TUI and browser remote
+
+`devsec tui` starts the native chat client. Build it with `python
+ci/build_native.py`; without the binary, the launcher prints that build hint
+and exits. The Python Textual TUI has been replaced by this client. The
+console `devsec chat` remains available without a native binary.
+
+Use the start screen to add/select a model and target. The hint bar shows
+available keys. Gate buttons support letters, mouse clicks, or arrows and
+Enter with no initial selection. G6 requires viewing the full diff.
+
+In the TUI, `/remote on` prints a one-time browser link; `/remote off` stops
+the listener. Start a standalone host with:
+
+```bash
+devsec remote --target /path/to/project --model my-model --mode ask
+```
+
+Open the printed link to attach to the same session. The browser and TUI
+share the transcript and pending gate; the first reply wins. Web approvals
+at G0/G6 require `send`/`apply`. Loopback is the default; LAN binding requires
+`--remote-allow-lan`. Build `web-ui/dist` to serve the remote page from a
+source checkout. SPA assets are not bundled into the Python wheel.
+
+### Automatic local reviews
+
+```bash
+devsec hooks install --target /path/to/project
+devsec hooks status --target /path/to/project
+devsec hooks uninstall --target /path/to/project
+```
+
+Hooks queue reviews after commits/merges and preserve foreign hooks. A
+session on a non-git target watches for settled file changes. The clients
+show pending reviews with Review now and Dismiss actions. Auto-start requires
+a local model, auto mode, an attached human client, and an idle host. Cloud
+reviews wait for the user. G5/G6 still require a human.
+
+Root commits and linked worktrees are supported. A configured
+`core.hooksPath` is refused rather than silently installing an unused hook.
+
+For a non-git target, approved G6 exports `.devsec/patches/<finding_id>.patch`;
+it does not apply the patch. Re-scan is reported unavailable for that target.
 
 ### Baseline scans (`scan-run`)
 

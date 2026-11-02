@@ -29,6 +29,7 @@ class DecisionStatus(str, Enum):
     """Lifecycle of a decision-backend invocation."""
 
     COMPLETED = "completed"
+    SKIPPED = "skipped"
     UNAVAILABLE = "unavailable"
     INCOMPLETE = "incomplete"
     FAILED = "failed"

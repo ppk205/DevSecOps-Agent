@@ -106,3 +106,107 @@ def test_hook_body_is_pinned() -> None:
     assert hook_body("post-commit", Path("/usr/bin/python3")).startswith(
         "#!/bin/sh\n# devsec-hook v1\n"
     )
+
+
+def test_worktree_hooks_queue_review(repo: Path, tmp_path: Path) -> None:
+    worktree = tmp_path / "linked"
+    subprocess.run(GIT + ["worktree", "add", "-qb", "linked", str(worktree)], cwd=repo, check=True)
+    assert (worktree / ".git").is_file()
+    assert install(worktree, current_python()) == list(HOOK_NAMES)
+    assert status(worktree) == {name: "installed" for name in HOOK_NAMES}
+    (worktree / "B.java").write_text("class B {}\n")
+    subprocess.run(GIT + ["add", "B.java"], cwd=worktree, check=True)
+    subprocess.run(GIT + ["commit", "-qm", "linked"], cwd=worktree, check=True)
+    reviews = read_pending(worktree, tmp_path / "pending.jsonl")
+    assert len(reviews) == 1 and reviews[0].files == ["B.java"]
+    assert uninstall(worktree) == list(HOOK_NAMES)
+
+
+def test_symlink_hook_is_foreign_and_not_followed(repo: Path, tmp_path: Path) -> None:
+    outside = tmp_path / "outside-hook"
+    outside.write_text(hook_body("post-commit", current_python()))
+    original = outside.read_text()
+    try:
+        os.symlink(outside, repo / ".git/hooks/post-commit")
+    except OSError:
+        pytest.skip("symlinks not permitted")
+    assert status(repo)["post-commit"] == "foreign"
+    with pytest.raises(HookError):
+        install(repo, current_python())
+    assert uninstall(repo) == []
+    assert outside.read_text() == original
+
+
+def test_status_does_not_create_hooks_directory(repo: Path) -> None:
+    import shutil
+
+    hooks = repo / ".git/hooks"
+    shutil.rmtree(hooks)
+    assert status(repo) == {name: "absent" for name in HOOK_NAMES}
+    assert not hooks.exists()
+
+
+def test_hook_interpreter_path_is_absolute_and_shell_literal(tmp_path: Path) -> None:
+    path = tmp_path / 'python$HOME`id`"fake'
+    body = hook_body("post-commit", path)
+    assert 'python\\$HOME\\`id\\`\\"fake' in body
+    assert Path("python").absolute().as_posix() in hook_body("post-commit", Path("python"))
+
+
+@pytest.mark.parametrize("command", ["install", "uninstall", "status"])
+@pytest.mark.parametrize("configured", ["custom-hooks", ""])
+def test_custom_hooks_path_is_refused_without_touching_hooks(
+    repo: Path, command: str, configured: str
+) -> None:
+    install(repo, current_python())
+    original = {name: (repo / ".git/hooks" / name).read_bytes() for name in HOOK_NAMES}
+    custom = repo / "custom-hooks"
+    custom.mkdir()
+    foreign = custom / "post-commit"
+    foreign.write_text("#!/bin/sh\necho custom\n", encoding="utf-8")
+    subprocess.run(GIT + ["config", "core.hooksPath", configured], cwd=repo, check=True)
+    with pytest.raises(HookError, match="core.hooksPath"):
+        if command == "install":
+            install(repo, current_python())
+        elif command == "uninstall":
+            uninstall(repo)
+        else:
+            status(repo)
+    assert original == {name: (repo / ".git/hooks" / name).read_bytes() for name in HOOK_NAMES}
+    assert foreign.read_text() == "#!/bin/sh\necho custom\n"
+
+
+def test_global_hooks_path_is_refused(
+    repo: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    config = tmp_path / "synthetic.gitconfig"
+    config.write_text("[core]\n\thooksPath = custom-hooks\n", encoding="utf-8")
+    monkeypatch.setenv("GIT_CONFIG_GLOBAL", str(config))
+    with pytest.raises(HookError, match="core.hooksPath"):
+        install(repo, current_python())
+    assert not (repo / ".git/hooks/post-commit").exists()
+
+
+def test_worktree_custom_hooks_path_is_refused(repo: Path, tmp_path: Path) -> None:
+    worktree = tmp_path / "linked"
+    subprocess.run(GIT + ["worktree", "add", "-qb", "linked", str(worktree)], cwd=repo, check=True)
+    subprocess.run(GIT + ["config", "core.hooksPath", "custom-hooks"], cwd=repo, check=True)
+    with pytest.raises(HookError, match="core.hooksPath"):
+        install(worktree, current_python())
+    assert not (repo / ".git/hooks/post-commit").exists()
+
+
+def test_hooks_config_query_failure_refuses_install(
+    repo: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    run = subprocess.run
+
+    def fail_config(args, **kwargs):
+        if "config" in args:
+            return subprocess.CompletedProcess(args, 2, stdout=b"", stderr=b"config error")
+        return run(args, **kwargs)
+
+    monkeypatch.setattr("vulnscan.harness.pending.subprocess.run", fail_config)
+    with pytest.raises(HookError, match="config"):
+        install(repo, current_python())
+    assert not (repo / ".git/hooks/post-commit").exists()

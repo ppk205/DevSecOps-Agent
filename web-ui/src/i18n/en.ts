@@ -1,5 +1,21 @@
 /** EN strings dictionary (Phase 1). VI lands in Phase 6. */
 export const en = {
+  remote: {
+    title: "Remote session", subtitle: "Harness review · AI support · human decisions",
+    connecting: "Connecting…", connected: "Connected", reconnecting: "Reconnecting — replies paused", loginFailed: "Open a new link from the TUI (/remote on). The login link may have expired or already been used.",
+    failed: "Request failed. Reconnect and check the session state before trying again.", retry: "Reconnect", unknown: "Unknown",
+    transcript: "Chat transcript", empty: "Send a message to begin a review.", ai: "AI support · proposal", you: "You", toolCall: "Tool call", toolResult: "Tool result", completed: "Turn ended", remoteOff: "Remote control is off", remoteOn: "Remote control is available",
+    target: "Target folder", provider: "Provider", model: "Model", mode: "Mode", tokens: "Tokens", cost: "Cost (USD)", commit: "Commit", dirty: "Modified working tree", local: "Local", cloud: "Cloud", start: "Start session", starting: "Starting session…", noModels: "Add a model to start a session.",
+    message: "Message", send: "Send", interrupt: "Interrupt", hints: "Enter sends · Shift+Enter new line · / commands · Esc interrupts · ? help", busy: "Turn running", idle: "Ready",
+    commands: "Commands", filter: "Filter commands", commandHint: "Choose a command, then add any arguments and send.",
+    commandDescriptions: { model: "List or switch added models", mode: "Show or change gate mode", cost: "Show token and cost totals", review: "Review finding proposals", export: "Export the session report", resume: "Resume a saved session", clear: "Clear session context", help: "Show session help", quit: "Close the session", baseline: "Baseline comparison (testing only)", keys: "Manage added model keys", remote: "Manage browser access" },
+    autoConfirm: "Switch to auto mode? Routine gates may run automatically. G5 and G6 still require you.", confirmAuto: "Use auto mode", cancel: "Cancel",
+    gate: "Gate", dangerous: "DANGEROUS", payload: "Full request payload", recommendation: "AI recommendation", diff: "Full proposed diff", diffHint: "Read and scroll the full diff to the end before answering.", diffRead: "Diff viewed to end", noDiff: "No diff supplied. This request cannot be answered here.",
+    confirmSend: 'Type "send" to confirm', confirmApply: 'Type "apply" to confirm', reason: "Reason", reasonRequired: "Provide a reason for rejecting this request.", edits: "Edited payload (JSON object)", invalidEdits: "Edits must be a valid JSON object. The gate is still undecided.", closeGate: "Leave undecided", undecided: "Left undecided", gateHints: "Click or letter key · ← → select · Enter answers only a selected action · Esc leaves undecided",
+    choices: { approve: "Approve", edit: "Edit", reject: "Reject", confirm: "Confirm", need_more: "Need more evidence", apply: "Apply", defer: "Defer" }, answered: "already answered by",
+    pending: "Pending reviews", reviewNow: "Review now", dismiss: "Dismiss", files: "files", folderChange: "Folder changes",
+    addModel: "Add model", modelsTitle: "Added models", alias: "Model alias", template: "Template", custom: "Custom", protocol: "Protocol", baseUrl: "Base URL", modelIds: "Model IDs (one per line)", key: "API key", keySet: "Key set", keyMissing: "Key missing", replaceKey: "Replace key", removeModel: "Remove model", saveModel: "Save model", savedModel: "Model request accepted", keyHint: "The key belongs to this model alias. Leave empty for a local model.", modelHint: "Choose a template to prefill settings, then edit any field. Custom keeps your entered settings.",
+  },
   app: {
     name: "PIT WALL",
     tagline: "Local vulnerability scan console",

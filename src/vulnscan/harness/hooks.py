@@ -11,6 +11,8 @@ import os
 import stat
 from pathlib import Path
 
+from vulnscan.harness.pending import hooks_directory, plain_path
+
 MARKER = "# devsec-hook v1"
 HOOK_NAMES = ("post-commit", "post-merge")
 MANUAL_LINE = (
@@ -25,21 +27,39 @@ class HookError(Exception):
 
 def hook_body(name: str, python: Path) -> str:
     """The exact hook text, with LF endings so git can run it."""
-    return (
-        "#!/bin/sh\n"
-        f"{MARKER}\n"
-        f'"{python}" -m vulnscan.harness.pending record --hook {name} '
-        '>/dev/null 2>&1 || echo "devsec: could not queue review" >&2\n'
-        "exit 0\n"
-    )
+    if name not in HOOK_NAMES:
+        raise HookError("unknown hook name")
+    line = _manual_line(name, python)
+    return f"#!/bin/sh\n{MARKER}\n{line}\nexit 0\n"
+
+
+def _manual_line(name: str, python: Path) -> str:
+    value = python.absolute().as_posix()
+    if "\n" in value or "\r" in value or "\x00" in value:
+        raise HookError("invalid interpreter path")
+    for char in ("\\", '"', "$", "`"):
+        value = value.replace(char, "\\" + char)
+    return MANUAL_LINE.format(python=value, name=name)
 
 
 def _hooks_dir(repo: Path) -> Path:
-    hooks = Path(repo) / ".git" / "hooks"
-    if not (Path(repo) / ".git").exists():
-        raise HookError(f"{repo} is not a git checkout")
-    hooks.mkdir(parents=True, exist_ok=True)
-    return hooks
+    try:
+        return hooks_directory(Path(repo))
+    except (ValueError, OSError) as exc:
+        raise HookError(str(exc)) from exc
+
+
+def _hook_status(target: Path) -> str:
+    try:
+        plain_path(target)
+    except (ValueError, OSError):
+        return "foreign"
+    if not target.exists():
+        return "absent"
+    if not target.is_file():
+        return "foreign"
+    text = target.read_text(encoding="utf-8", errors="replace")
+    return "installed" if MARKER in text.splitlines() else "foreign"
 
 
 def install(repo: Path, python: Path) -> list[str]:
@@ -48,11 +68,12 @@ def install(repo: Path, python: Path) -> list[str]:
     written: list[str] = []
     for name in HOOK_NAMES:
         target = hooks / name
-        if target.exists() and MARKER not in target.read_text(encoding="utf-8", errors="replace"):
+        if _hook_status(target) == "foreign":
             raise HookError(
                 f"{target} exists and was not written by devsec. Add this line to it:\n"
-                + MANUAL_LINE.format(python=python, name=name)
+                + _manual_line(name, python)
             )
+    hooks.mkdir(parents=True, exist_ok=True)
     for name in HOOK_NAMES:
         target = hooks / name
         target.write_text(hook_body(name, python), encoding="utf-8", newline="\n")
@@ -67,9 +88,7 @@ def uninstall(repo: Path) -> list[str]:
     removed: list[str] = []
     for name in HOOK_NAMES:
         target = hooks / name
-        if not target.exists():
-            continue
-        if MARKER in target.read_text(encoding="utf-8", errors="replace"):
+        if _hook_status(target) == "installed":
             target.unlink()
             removed.append(name)
     return removed
@@ -81,11 +100,7 @@ def status(repo: Path) -> dict[str, str]:
     result: dict[str, str] = {}
     for name in HOOK_NAMES:
         target = hooks / name
-        if not target.exists():
-            result[name] = "absent"
-            continue
-        text = target.read_text(encoding="utf-8", errors="replace")
-        result[name] = "installed" if MARKER in text else "foreign"
+        result[name] = _hook_status(target)
     return result
 
 

@@ -61,7 +61,8 @@ def test_qr23_required_gate_covers_every_job_and_preserves_platform_matrix():
 def test_qr23_harness_and_native_have_explicit_suites_and_failure_artifacts():
     jobs = workflow("checks.yml")["jobs"]
     assert "tests/harness" in commands(jobs["harness"])
-    assert "tests/platform tests/cli tests/tui" in commands(jobs["native"])
+    assert "tests/platform tests/cli" in commands(jobs["native"])
+    assert "tests/tui" not in commands(jobs["native"])
     for name in ("harness", "native", "tests"):
         assert "--junitxml=" in commands(jobs[name])
         uploads = [s for s in jobs[name]["steps"] if "upload-artifact@" in s.get("uses", "")]

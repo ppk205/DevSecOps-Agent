@@ -1,9 +1,10 @@
 # Architecture modification: human-gated AI harness
 
-Status: phases 1–5 implemented in `src/vulnscan/harness/` and `devsec chat`
-(console). Not implemented: phase 6 (Go chat TUI, dashboard session pages),
-streaming, prompt caching, `/compact`, `check_dependency` (open question Q2) and
-the experiment of section 8. Written 2026-11-01 against agent 0.3.0 (commit
+Status: phases 1–6 implemented, including the Go chat client, remote session
+page, added models, local triggers and snapshot-backed resume. Experiment
+tooling is implemented; measured trials and the essay update are pending.
+Provider token streaming, prompt caching, `/compact` and `check_dependency`
+(open question Q2) remain unimplemented. Written 2026-11-01 against agent 0.3.0 (commit
 `f7d4fc7`) and essay `essay/DeCuongChiTiet_v6_HinhMoi.docx`; implemented the same
 day on branch `feat/human-gated-harness`, and section 13 is the change record.
 Supersedes `docs/HARNESS-TUI-PLAN.md` where the two disagree (section 9).
@@ -48,7 +49,7 @@ harness in the experiment (section 8).
 | D2 | The model is not fixed. A provider layer (section 4.1, the Hermes pattern from `HARNESS-TUI-PLAN.md`) supports native Anthropic and any OpenAI-compatible endpoint: OpenAI, OpenRouter, DeepSeek, Ollama, LM Studio, custom. `/model` switches provider and model during a session. Every turn records provider, model id, tokens and cost. |
 | D3 | The harness scans code with its own tools (section 5). Existing scanners are baselines only. |
 | D4 | Laya runs inside the loop, before the LLM, to decide which candidates need deep reasoning and which kind. Its purpose is to reduce LLM tokens and time. It is on by default. |
-| D5 | Two gate modes. `ask` (default): every gate waits for a human. `auto`: routine scanning gates (G1–G4, G7) are approved automatically and logged as person `auto`; **dangerous gates still wait for a human in every mode**: G0 (code leaves the machine, cost) and G6 (writing code). Nothing is approved by timeout or by a closed prompt. |
+| D5 | Two gate modes. `ask` (default): every gate waits for a human. `auto`: routine scanning gates (G1–G4, G7) are approved automatically and logged as person `auto`. G0 may auto-approve only for a local provider with an interactive human client attached; cloud and unattended G0 wait. G6 always waits. Nothing is approved by timeout or by a closed prompt. |
 | D6 | Only a human sets a finding's final status (confirmed / rejected / needs more evidence). The AI and the validator only propose and check. In `auto` mode G5 does not block: the finding stays `proposed` and the human settles it later with `/review`. |
 | D7 | The AI may propose code fixes as diffs. A fix is a suggestion limited to the vulnerability's cited code (hop files, ±15 lines, ≤ 80 changed lines); it is shown at G6 and applied only to a worktree, never to the target. A fix is written only after a human approves it, only to a separate git branch, and is never committed, pushed or merged by the harness. |
 | D10 | AI is a supporting tool (owner, 2026-11-02, following `special_requirements.txt`). The object of study is vulnerabilities in Java Servlet/JSP source code. The harness's static tools find candidates. The model may only investigate candidates in a batch opened at G3/G4, and `propose_finding` refuses anything else (`harness/tools.py`). The model never originates or decides a finding. Docs, the essay and the UI describe the model as "AI hỗ trợ" (AI support), never as the scanner or the core. |
@@ -92,7 +93,7 @@ Gate behaviour by mode:
 
 | Gate | `ask` | `auto` |
 |---|---|---|
-| G0 session, consent | human | **human** (dangerous) |
+| G0 session, consent | human | **human** for cloud or unattended runs; local sessions may auto-approve only with an interactive human client attached |
 | G1 plan, G2 scan, G3 triage, G4 investigate | human | approved, logged as `auto` |
 | G5 finding status | human | deferred: finding stays `proposed` until `/review` |
 | G6 apply fix | human | **human** (dangerous) |
@@ -101,6 +102,18 @@ Gate behaviour by mode:
 The mode is chosen at session start (`--mode ask|auto`) or with `/mode`.
 Switching to `auto` is itself logged.
 
+Owner-approved changes (2026-11-02): G0 may be auto-approved only when the
+keeper is interactive, the mode is `auto`, and the payload explicitly says
+`local: true` and `code_leaves_machine: false`. Locality is determined from
+the loopback base URL, not profile metadata. The log records person `auto`
+and reason `local provider, auto mode`. G5 and G6 remain human-only; pipes,
+CI and hooks cannot pass G0. G7 accepts an explicit edit as well as approve
+or reject. Dialog arrows and Enter require an explicit button selection;
+the initial selection is empty.
+
+Explicit undecided decisions retain their reason in the audit log, including
+missing web confirmation words. Invalid choices still become undecided.
+
 Gate rules:
 
 - A rejected step is not retried by the AI without a new human message.
@@ -108,8 +121,8 @@ Gate rules:
 - Read-only reads (`read_file`, `grep`) inside an **approved** G4 batch run
   without a prompt each, so the human approves the batch, not every line read.
   Each read is still logged and shown.
-- CI or non-interactive runs cannot pass a scanning gate. They may only replay
-  a recorded session for testing.
+- CI and non-interactive runs cannot pass G0 or G6. Scripted askers may
+  exercise the gates against fixtures in tests.
 - Each decision is stored: gate, AI recommendation, human choice, reason,
   person, timestamp. The report includes this log.
 
@@ -146,15 +159,21 @@ to a transport. The existing `ProviderProfile` (`protocol`, `base_url`,
 | `lmstudio` | `openai_compatible` | none | local |
 | `custom` | `openai_compatible` | user-supplied `base_url` and variable name | either |
 
-Profiles are JSON files under `.providers/`; keys are referenced by
-environment variable name only and entered through the existing `/keys` view.
+Built-in profiles are templates. `devsec model add` creates an alias with a
+protocol, base URL and one or more model ids in `.providers/<alias>.json`.
+The masked key belongs to that alias and is stored through `EnvFile`; the
+profile contains only its generated `api_key_env`. Clients see key set/missing,
+not the value or variable name. `--model alias[:model-id]` and `/model` select
+added models. Legacy `--provider` remains supported for one release.
+Loopback base URLs determine locality; a template's name or metadata cannot
+make a cloud endpoint local.
 
-Transports, one interface `stream(messages, tools) → events`:
+Transports implement `complete(system, messages, tools) → Reply`:
 
-- `AnthropicTransport`: Messages API, SSE streaming, `tool_use` and
-  `tool_result` blocks, prompt caching on the system prompt and tool definitions.
-- `ChatCompletionsTransport`: extends `providers/client.py` with `stream=true`
-  and assembles streamed tool-call fragments into whole calls.
+- `AnthropicTransport`: Messages API with `tool_use` and `tool_result` blocks.
+- `ChatCompletionsTransport`: Chat Completions requests with complete tool calls.
+
+SSE token streaming and Anthropic prompt caching are planned, not implemented.
 
 One internal message format is converted to each provider's format at the
 transport edge, so sessions, gates, telemetry and the TUI never depend on the
@@ -166,9 +185,13 @@ new provider is a cloud one), `/cost`, `/resume`, `/clear`, `/compact`,
 `/export`, `/help`. Not taken from Hermes: OAuth logins, provider plugins,
 key rotation.
 
-Events harness → TUI: `text_delta`, `tool_call`, `tool_result`,
-`permission_request`, `usage`, `error`, `done`. Messages TUI → harness:
+The client protocol is `devsec-chat/1`, separate from the baseline scan bridge.
+Harness → client: `models`, `ready`, `text_delta`, `tool_call`, `tool_result`,
+`permission_request`, `gate_result`, `usage`, `error`, `done`, `remote`, `pending`, `findings`.
+Client → harness: `hello`, `start`, `model_add`, `model_remove`, `model_key`,
 `user_message`, `permission_reply`, `interrupt`, `command`.
+Whole model replies are delivered as `text_delta`; provider token streaming
+and prompt caching remain unimplemented. Browser SSE carries host events.
 
 ## 5. Tools
 
@@ -268,6 +291,11 @@ Same target (JVA-bookstore at `dd48d12`), same labelled ground truth.
 | S2 | Harness with Laya |
 | S3 | S2 repeated on other provider profiles (for example one Anthropic, one OpenAI-compatible cloud, one local model) |
 
+S1 uses a separate configuration with `mode: "off"`; its routing result is
+`skipped` with reason `Laya disabled for S1`, and candidates remain available
+through G3/G4. The `enabled` field continues to control baseline scans only.
+The shipped `shadow` configuration runs Laya in the harness by default.
+
 B1, B2, B4 and B5 can reuse today's `scan-run --profile full --no-laya`; the
 run on 2026-11-01 (`evidence/jva-fullscan-2026-11-01/run-4c67cbbd…`) is a
 baseline result. B3 needs the CodeQL adapter finished or CodeQL run through
@@ -334,15 +362,15 @@ the target architecture.
 
 ## 12. Phases
 
-| # | Delivers | Done when | State on 2026-11-01 |
+| # | Delivers | Done when | Latest recorded state |
 |---|---|---|---|
 | 1 | Provider layer (both transports, built-in profiles, `/model`), session loop, gate manager, audit store | The same 3-turn tool-calling session passes on Anthropic and on an OpenAI-compatible provider, against recorded replies in CI and once live; every gate decision is in the log | **Done except the live call.** `harness/providers.py`, `messages.py`, `session.py`, `gates.py`, `audit.py`; both transports tested against recorded HTTP replies; no live provider call was made (no key and no local model on the build machine). |
 | 2 | Scan tools (`inventory`, `extract_candidates`, `lookup_route`, `read_file`, `grep`) | Candidates for JVA-bookstore cover the 5 manual cases in `HARNESS-TUI-PLAN.md` §10 | **Done.** 612 candidates on JVA-bookstore at `dd48d12`; the five manual cases are candidates, tested. |
 | 3 | Laya on candidates (new input format, 300 s) | Laya routes every candidate; G3 override works | **Done.** `harness/triage.py` with `candidate_state`; `triage_many_batched(..., to_state=)`; `config/laya.json` timeout 300. Without the optional `laya` package every candidate falls back to `human_review` (tested). |
 | 4 | Finding cards, evidence checker, CVSS v4.0 scoring | Every card's citations verified; vector scores match the FIRST calculator | **Done.** `harness/evidence.py`, `harness/report.py`; the score comes from `cvss` 3.6, never from a model or a person. |
 | 5 | Fix proposal, worktree apply, re-scan | One confirmed finding fixed on a branch and re-scanned, all through gates | **Done in code and tests.** `harness/fixes.py` plus the `propose_fix` and `rescan` tools, exercised on a throwaway git fixture, not on JVA-bookstore. |
-| 6 | Chat TUI (streaming, tool-call blocks, permission dialog, status line, slash commands) and dashboard session pages | A full session runs from the TUI; after a restart `/resume` continues it with costs intact | **Console only.** `devsec chat` runs sessions with text prompts and slash commands. Streaming, the Go TUI dialogs and the dashboard pages are **not implemented**; `/resume` loads history, not worktrees. |
-| 7 | Experiment B1–S3 and essay update | Section 8 metrics filled; essay sections in section 10 rewritten | **Not implemented.** |
+| 6 | Chat TUI, tool-call blocks, permission dialogs, status, commands and remote session page | A session runs from the TUI; resume retains history, review state and recorded costs | **Implemented in code and tests.** Go uses the dedicated stdio host; browser clients use its authenticated SSE relay. Replies are delivered whole; provider token streaming remains planned. |
+| 7 | Experiment B1–S3 and essay update | Section 8 metrics filled; essay sections in section 10 rewritten | **Tooling implemented; measurements pending.** B6, normalisers, evaluator and scratch-clone fix evaluation are tested. Live runs need labellers, models and applicable consent. Essay work was excluded from this implementation request. |
 
 ## 13. Implementation record (2026-11-01)
 
@@ -459,7 +487,7 @@ CWE-89 6, CWE-601 4, CWE-22 3, CWE-306 3, CWE-330 2.
     cloud key configured and nothing listens on `127.0.0.1:11434` (Ollama). The
     transport path is covered by recorded HTTP replies only.
 
-### 13.5 Not implemented
+### 13.5 Not implemented at the initial implementation
 
 Phase 6 and 7 of section 12; plus, from the plan's "not in this plan" table:
 the Go chat view and permission dialog, SSE streaming and Anthropic prompt
@@ -602,3 +630,39 @@ the JSON API and the Jinja pages, not the SPA); the shared test helpers and
 `filter_match` export; the Go chat TUI, local triggers, web remote control and
 the experiment harness in `docs/superpowers/plans/`.
 
+### 13.10 Remaining-plan implementation (2026-11-02)
+
+The owner approved the documented rule changes, dependent implementation
+before merge checkpoints, parallel coding work, and a combined feature-branch
+delivery. The scope is software and experiment tooling, excluding the essay.
+
+- Added models own their masked keys. Templates come from the existing profile
+  table. Locality uses the endpoint URL. A cloud endpoint change under the same
+  alias requires fresh G0; a refused switch leaves the active model unchanged.
+- `SessionHost`, `rpc` and `remote` supply durable sequenced events, client
+  attribution, first-reply-wins gates, interruption, replay and snapshot-backed
+  resume. Console review decisions are saved immediately. Restoring data never
+  replays past tool actions.
+- The Go client provides chat, model forms, gate dialogs, a full-diff viewer,
+  restart and an embedded Baseline tab. The Textual TUI is removed. `chat`,
+  `model`, `hooks` and `remote` stay Python-handled.
+- The remote page shares the host session. Login is single-use and expires;
+  authenticated mutations use CSRF. Web G0/G6 approvals need typed words
+  checked by Python. The SPA is served from a built source checkout; packaging
+  it into the wheel remains unimplemented.
+- Hooks and the non-git watcher queue reviews. Root commits, linked worktrees,
+  filename delimiters and repeated saves are covered. Custom `core.hooksPath`
+  settings are refused. Automatic review requires an idle, local, auto-mode
+  host with a human client attached. Run from a separate harness directory when
+  using a non-git target so its queue and patch output stay outside that target.
+- Fix proposals use validated unified text patches and cited-code scope.
+  Unversioned targets export patches under `.devsec/patches`; G7 reports that
+  re-scan is unavailable. Binary/mode-only patches, renames and quoted Git paths
+  are explicitly unsupported.
+- Experiment tooling and its operator requirements are in
+  [EXPERIMENT-RUNBOOK.md](EXPERIMENT-RUNBOOK.md). S1 uses explicit `mode: "off"`.
+  Public-source comparison is in `experiment/related-work.md`; no project
+  detection result is inferred from that literature.
+
+Verification, remaining operator steps and plan coverage are recorded in
+[PLAN-EXECUTION-2026-11-02.md](PLAN-EXECUTION-2026-11-02.md).

@@ -4,8 +4,11 @@ from __future__ import annotations
 
 from typing import Any
 
+import pytest
+
 from tests.harness.fakes import BatchAgent
-from vulnscan.decisions.config import load_config
+from vulnscan.contracts.decision import DecisionStatus
+from vulnscan.decisions.config import LayaConfig, load_config
 from vulnscan.harness.triage import candidate_state, triage_candidates
 from vulnscan.harness.workspace import Candidate
 
@@ -40,3 +43,19 @@ def test_laya_failure_sends_everything_to_human_review() -> None:
 
 def test_shipped_laya_timeout_is_300() -> None:
     assert load_config("config/laya.json").timeout_seconds == 300
+
+
+def test_explicit_off_mode_records_skip_without_loading_laya(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def forbidden(**kwargs: Any) -> None:
+        pytest.fail("S1 must not construct a Laya backend")
+
+    monkeypatch.setattr("vulnscan.harness.triage.LayaDecisionBackend", forbidden)
+    candidate = Candidate("s1", "CWE-89", "sql_concat", "A.java", 1, "query")
+    routes = triage_candidates([candidate], LayaConfig(mode="off"))
+    assert routes["s1"].status is DecisionStatus.SKIPPED
+    assert routes["s1"].reasons == ["Laya disabled for S1"]
+    assert routes["s1"].affects_finding_status is False
+    assert candidate.laya_route == "human_review"
+    assert candidate.laya_confidence is None

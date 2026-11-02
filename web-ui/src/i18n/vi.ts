@@ -2,6 +2,22 @@ import type { Strings } from "./en";
 
 /** VI strings dictionary — mirrors `en` key-for-key (checked by test). */
 export const vi: Strings = {
+  remote: {
+    title: "Phiên điều khiển từ xa", subtitle: "Rà soát bằng harness · AI hỗ trợ · con người quyết định",
+    connecting: "Đang kết nối…", connected: "Đã kết nối", reconnecting: "Đang kết nối lại — tạm dừng gửi", loginFailed: "Mở liên kết mới từ TUI (/remote on). Liên kết đăng nhập có thể đã hết hạn hoặc đã được dùng.",
+    failed: "Yêu cầu thất bại. Kết nối lại và kiểm tra trạng thái phiên trước khi thử lại.", retry: "Kết nối lại", unknown: "Chưa rõ",
+    transcript: "Hội thoại", empty: "Gửi tin nhắn để bắt đầu rà soát.", ai: "AI hỗ trợ · đề xuất", you: "Bạn", toolCall: "Lời gọi công cụ", toolResult: "Kết quả công cụ", completed: "Đã kết thúc lượt", remoteOff: "Đã tắt điều khiển từ xa", remoteOn: "Có thể điều khiển từ xa",
+    target: "Thư mục đích", provider: "Nhà cung cấp", model: "Mô hình", mode: "Chế độ", tokens: "Token", cost: "Chi phí (USD)", commit: "Commit", dirty: "Cây làm việc có thay đổi", local: "Cục bộ", cloud: "Đám mây", start: "Bắt đầu phiên", starting: "Đang mở phiên…", noModels: "Thêm mô hình để bắt đầu phiên.",
+    message: "Tin nhắn", send: "Gửi", interrupt: "Ngắt lượt", hints: "Enter gửi · Shift+Enter xuống dòng · / lệnh · Esc ngắt lượt · ? trợ giúp", busy: "Đang xử lý lượt", idle: "Sẵn sàng",
+    commands: "Lệnh", filter: "Lọc lệnh", commandHint: "Chọn lệnh, thêm tham số nếu cần rồi gửi.",
+    commandDescriptions: { model: "Liệt kê hoặc đổi mô hình đã thêm", mode: "Xem hoặc đổi chế độ cổng", cost: "Xem tổng token và chi phí", review: "Rà soát đề xuất phát hiện", export: "Xuất báo cáo phiên", resume: "Tiếp tục phiên đã lưu", clear: "Xóa ngữ cảnh phiên", help: "Xem trợ giúp", quit: "Đóng phiên", baseline: "So sánh baseline (chỉ để thử nghiệm)", keys: "Quản lý khóa của mô hình đã thêm", remote: "Quản lý truy cập qua trình duyệt" },
+    autoConfirm: "Chuyển sang chế độ auto? Các cổng thông thường có thể chạy tự động. G5 và G6 vẫn cần bạn quyết định.", confirmAuto: "Dùng chế độ auto", cancel: "Hủy",
+    gate: "Cổng", dangerous: "NGUY HIỂM", payload: "Toàn bộ nội dung yêu cầu", recommendation: "Khuyến nghị của AI", diff: "Toàn bộ diff đề xuất", diffHint: "Đọc và cuộn hết diff trước khi trả lời.", diffRead: "Đã xem đến cuối diff", noDiff: "Không có diff. Chưa thể trả lời yêu cầu này tại đây.",
+    confirmSend: 'Nhập "send" để xác nhận', confirmApply: 'Nhập "apply" để xác nhận', reason: "Lý do", reasonRequired: "Hãy nhập lý do từ chối yêu cầu.", edits: "Nội dung chỉnh sửa (đối tượng JSON)", invalidEdits: "Nội dung chỉnh sửa phải là đối tượng JSON hợp lệ. Cổng vẫn chưa được quyết định.", closeGate: "Để chưa quyết định", undecided: "Chưa quyết định", gateHints: "Nhấp hoặc phím chữ · ← → chọn · Enter chỉ trả lời lựa chọn đã chọn · Esc để chưa quyết định",
+    choices: { approve: "Chấp thuận", edit: "Chỉnh sửa", reject: "Từ chối", confirm: "Xác nhận", need_more: "Cần thêm bằng chứng", apply: "Áp dụng", defer: "Hoãn" }, answered: "đã được trả lời bởi",
+    pending: "Rà soát đang chờ", reviewNow: "Rà soát ngay", dismiss: "Bỏ qua", files: "tệp", folderChange: "Thư mục thay đổi",
+    addModel: "Thêm mô hình", modelsTitle: "Mô hình đã thêm", alias: "Tên mô hình", template: "Mẫu cấu hình", custom: "Tùy chỉnh", protocol: "Giao thức", baseUrl: "URL cơ sở", modelIds: "ID mô hình (mỗi dòng một ID)", key: "Khóa API", keySet: "Đã có khóa", keyMissing: "Chưa có khóa", replaceKey: "Thay khóa", removeModel: "Xóa mô hình", saveModel: "Lưu mô hình", savedModel: "Đã tiếp nhận yêu cầu mô hình", keyHint: "Khóa thuộc về tên mô hình này. Để trống nếu dùng mô hình cục bộ.", modelHint: "Chọn mẫu để điền sẵn cấu hình, rồi chỉnh sửa các trường nếu cần. Tùy chỉnh giữ nguyên nội dung đã nhập.",
+  },
   app: {
     name: "PIT WALL",
     tagline: "Bảng điều khiển quét bảo mật cục bộ",

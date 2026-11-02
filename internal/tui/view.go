@@ -33,12 +33,18 @@ func (m Model) footer() string {
 		hint = "Tab: next · Enter: edit/choose · Ctrl+O: export named run"
 	}
 	global := "Ctrl+K: save key / actions · Ctrl+N: new scan · Ctrl+Q: quit"
+	if m.embedded {
+		global = "1: History · 2: Workspace · 3: Activity · 4: Findings · 5: Reports"
+	}
 	if m.scanning {
 		global += " · Ctrl+X: cancel"
 	}
 	return ansi.Wrap(hint+"\n"+global, max(1, m.width), "")
 }
 func (m Model) header() string {
+	if m.embedded {
+		return ""
+	}
 	name := "DevSecOps Agent · " + tabs[m.tab]
 	if m.tab == 2 && m.activityID != "" {
 		name += " · " + m.runLabel(m.activityID)
@@ -140,7 +146,7 @@ func (m Model) formView() string {
 	if m.tab == 4 {
 		lines = append(lines, "", "Export target: "+m.runLabel(m.target()))
 	}
-	if m.tab == 1 {
+	if m.tab == 1 && !m.embedded {
 		// API keys (values never shown): entry lives on the Workspace tab
 		// next to the scan configuration it authorizes. Ctrl+K saves from
 		// here (or whenever a key entry is in progress); elsewhere Ctrl+K
@@ -202,7 +208,7 @@ func (m Model) View() tea.View {
 		v.AltScreen = true
 		return v
 	}
-	if m.width < 60 || m.height < 18 {
+	if !m.embedded && (m.width < 60 || m.height < 18) {
 		text := fmt.Sprintf("Terminal is %dx%d.\nUse at least 60 columns and 18 rows.\nResize to continue; Ctrl+Q quits.", m.width, m.height)
 		v := tea.NewView(bounded(ansi.Wrap(text, max(1, m.width), ""), m.width, max(1, m.height)))
 		v.AltScreen = true
@@ -253,7 +259,11 @@ func (m Model) View() tea.View {
 			body = m.formView()
 		}
 	}
-	v := tea.NewView(m.header() + "\n\n" + bounded(body, m.width, height) + "\n\n" + m.statusView() + "\n" + m.footer())
+	content := m.header() + "\n\n" + bounded(body, m.width, height) + "\n\n" + m.statusView() + "\n" + m.footer()
+	if m.embedded {
+		content = bounded(body, m.width, height) + "\n\n" + m.statusView() + "\n" + m.footer()
+	}
+	v := tea.NewView(content)
 	v.AltScreen = true
 	return v
 }

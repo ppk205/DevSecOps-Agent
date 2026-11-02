@@ -27,7 +27,7 @@ class ProviderProfile(VersionedModel):
     id: str = Field(
         ...,
         description="Stable provider slug, e.g. 'openai-main'.",
-        pattern=r"^[a-z][a-z0-9-]{2,63}$",
+        pattern=r"^(?:[a-z0-9-]{1,32}|[a-z][a-z0-9-]{2,63})$",
     )
     label: str = Field(
         ...,

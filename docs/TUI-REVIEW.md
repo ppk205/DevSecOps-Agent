@@ -1,5 +1,9 @@
 # TUI review
 
+Historical review of the baseline Workspace interfaces. The Python Textual
+TUI described below has been replaced by the Go chat client. See
+[BUILD-AND-RUN.md](BUILD-AND-RUN.md) for current launch and gate controls.
+
 Reviewed commit `88e21d62a4ddab688d6e0ea20ba612347c91484b` on 2026-10-02.
 Reference requested by the user: the interaction experience of Codex or Claude
 Code. This review uses that as a design preference for a clear task workspace;

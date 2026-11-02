@@ -17,7 +17,7 @@ from vulnscan.providers.credentials import redact_json
 
 from .audit import SessionLog
 from .evidence import check_citations, score_cvss4
-from .fixes import FixError, apply_fix, changed_lines, diff_hunks, rescan_fix
+from .fixes import FixError, _validate_id, apply_fix, changed_lines, diff_hunks, rescan_fix
 from .gates import Gate, GateDecision, GateKeeper, GateRequest
 from .messages import ToolCall
 from .scanning import extract_candidates, inventory, lookup_route
@@ -195,16 +195,27 @@ def _laya_triage(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
         ctx,
         Gate.G2_SCAN,
         "Run Laya triage",
-        f"{len(cands)} candidate(s) will be routed by the local Laya model on the CPU.",
+        (
+            f"Skip Laya for {len(cands)} candidate(s): Laya disabled for S1."
+            if ctx.laya_config.mode == "off"
+            else f"{len(cands)} candidate(s) will be routed by the local Laya model on the CPU."
+        ),
         {"candidate_ids": ids},
         "Laya narrows what the model reads; it never sets a finding's status.",
     )
     if not decision.approved:
         return _refusal(Gate.G2_SCAN, decision)
+    chosen = _ids(decision.edits.get("candidate_ids", ids))
+    cands = [_candidate(ctx, candidate_id) for candidate_id in chosen]
     routes = triage_candidates(cands, ctx.laya_config, ctx.laya_agent)
     return {
         "routes": {
-            candidate_id: {"route": route.route, "confidence": route.confidence}
+            candidate_id: {
+                "route": route.route,
+                "confidence": route.confidence,
+                "status": route.status.value,
+                "reasons": route.reasons,
+            }
             for candidate_id, route in routes.items()
         }
     }
@@ -367,23 +378,26 @@ def _check_fix_scope(finding: ProposedFinding, diff: str) -> None:
     """
     hops = finding.path
     files = {hop.file for hop in hops}
+    hunks = diff_hunks(diff)
     changed = changed_lines(diff)
     if changed > MAX_FIX_LINES:
+        locations = ", ".join(f"{file}:{start}-{end}" for file, start, end in hunks)
         raise ValueError(
-            f"fix changes {changed} lines; the limit is {MAX_FIX_LINES} (finding {finding.id})"
+            f"fix changes {changed} lines in {locations}; the limit is {MAX_FIX_LINES} "
+            f"(finding {finding.id})"
         )
-    for file, start, end in diff_hunks(diff):
+    for file, start, end in hunks:
         if file not in files:
             raise ValueError(f"fix touches {file}, which is not cited by finding {finding.id}")
-        nearest = min(
-            (
-                abs(start - hop.line) if start > hop.line else abs(hop.line - end)
-                for hop in hops
-                if hop.file == file
-            ),
-            default=None,
-        )
-        if nearest is None or nearest > FIX_WINDOW:
+        uncovered = start
+        for low, high in sorted(
+            (hop.line - FIX_WINDOW, hop.line + FIX_WINDOW) for hop in hops if hop.file == file
+        ):
+            if low > uncovered:
+                break
+            if high >= uncovered:
+                uncovered = high + 1
+        if uncovered <= end:
             raise ValueError(
                 f"fix touches {file}:{start}-{end}, more than {FIX_WINDOW} lines "
                 f"from any cited line of finding {finding.id}"
@@ -392,6 +406,7 @@ def _check_fix_scope(finding: ProposedFinding, diff: str) -> None:
 
 def _propose_fix(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
     finding_id = str(args["finding_id"])
+    _validate_id(finding_id)
     finding = ctx.ws.findings.get(finding_id)
     if finding is None:
         raise ValueError(f"unknown finding: {finding_id}")
@@ -399,6 +414,8 @@ def _propose_fix(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
         raise ValueError(f"finding {finding_id} is not confirmed; a fix needs a human confirmation")
 
     _check_fix_scope(finding, str(args["diff"]))
+    for file, _, _ in diff_hunks(str(args["diff"])):
+        ctx.ws.resolve(file)
 
     fix = FixProposal(
         id="X" + finding_id,
@@ -424,7 +441,11 @@ def _propose_fix(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
             )
         ),
         {"fix_id": fix.id, "finding_id": finding_id, "diff": fix.diff},
-        "The harness writes only inside .devsec/worktrees and never commits.",
+        (
+            "The harness exports to .devsec/patches; the target is never modified."
+            if unversioned
+            else "The harness writes only inside .devsec/worktrees and never commits."
+        ),
     )
     if decision.choice == "apply":
         apply_fix(ctx.ws, fix, ctx.worktrees)
@@ -437,12 +458,21 @@ def _propose_fix(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
 
 
 def _rescan(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
-    finding_id = str(args["finding_id"])
-    fix = ctx.ws.fixes.get("X" + finding_id)
-    if fix is None:
-        raise ValueError(f"no fix proposed for {finding_id}")
-    if fix.status != "applied":
-        raise ValueError(f"fix for {finding_id} is {fix.status}, not applied")
+    def eligible(finding_id: Any) -> FixProposal:
+        if not isinstance(finding_id, str) or not finding_id:
+            raise ValueError("finding_id must be a non-empty string")
+        _validate_id(finding_id)
+        fix = ctx.ws.fixes.get("X" + finding_id)
+        if fix is None or fix.finding_id != finding_id:
+            raise ValueError(f"no fix proposed for {finding_id}")
+        if fix.status != "applied" and not (
+            fix.status == "exported" and ctx.ws.commit == "unversioned"
+        ):
+            raise ValueError(f"fix for {finding_id} is {fix.status}, not applied")
+        return fix
+
+    finding_id = args["finding_id"]
+    fix = eligible(finding_id)
     decision = _ask(
         ctx,
         Gate.G7_RESCAN,
@@ -453,6 +483,7 @@ def _rescan(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
     )
     if not decision.approved:
         return _refusal(Gate.G7_RESCAN, decision)
+    fix = eligible(decision.edits.get("finding_id", finding_id))
     return {"result": rescan_fix(ctx.ws, fix, ctx.worktrees)}
 
 

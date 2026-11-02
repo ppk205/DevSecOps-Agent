@@ -8,11 +8,13 @@ import { KeysPage } from "./pages/KeysPage";
 import { LogsPage } from "./pages/LogsPage";
 import { NewScanPage } from "./pages/NewScanPage";
 import { ReportsPage } from "./pages/ReportsPage";
+import { RemoteSessionPage } from "./pages/RemoteSessionPage";
 import { StyleguidePage } from "./pages/StyleguidePage";
 
 export function App() {
   return (
     <Routes>
+      <Route path="remote" element={<RemoteSessionPage />} />
       <Route element={<Shell />}>
         <Route index element={<HomePage />} />
         <Route path="scans/new" element={<NewScanPage />} />

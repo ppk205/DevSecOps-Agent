@@ -10,8 +10,9 @@ from pathlib import Path
 
 _INSTALLED_CHECK = """\
 from importlib.resources import files
-from vulnscan.tui.app import ScanApp
 from vulnscan.harness.console import ChatConsole
+from vulnscan.harness.host import SessionHost
+from vulnscan.harness.models import models_event
 from vulnscan.harness.evidence import score_cvss4
 from vulnscan.harness.gates import Gate, GateKeeper, GateRequest, refuse_all
 assert files('vulnscan.web').joinpath('templates/base.html').is_file()
@@ -19,6 +20,7 @@ assert files('vulnscan.scanners').joinpath('rules/java.yml').is_file()
 assert score_cvss4('CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N') == 9.3
 keeper = GateKeeper(refuse_all, lambda event: None, mode='auto')
 assert not keeper.ask(GateRequest(Gate.G0_SESSION, 'session', '')).approved
+assert not keeper.ask(GateRequest(Gate.G0_SESSION, 'session', '', {'local': True, 'code_leaves_machine': False})).approved
 assert not keeper.ask(GateRequest(Gate.G6_FIX, 'fix', '')).approved
 """
 

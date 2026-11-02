@@ -244,7 +244,7 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 		return m, tea.Quit
 	}
 	if key == "ctrl+k" {
-		if m.tab == 1 || m.keyInput {
+		if !m.embedded && (m.tab == 1 || m.keyInput) {
 			// Save one API key to the project-local .env. Only the variable
 			// NAME is ever shown or listed again; the value is passed through
 			// once and dropped (EchoPassword on the value field).

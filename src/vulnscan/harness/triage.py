@@ -66,6 +66,19 @@ def triage_candidates(
     if not cands:
         return routes
 
+    if config.mode == "off":
+        for candidate in cands:
+            candidate.laya_route = "human_review"
+            candidate.laya_confidence = None
+            routes[candidate.id] = DecisionRoute(
+                route="human_review",
+                confidence=None,
+                affects_finding_status=False,
+                status=DecisionStatus.SKIPPED,
+                reasons=["Laya disabled for S1"],
+            )
+        return routes
+
     backend = agent
     reason = "no route returned"
     outcomes = []

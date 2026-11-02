@@ -162,7 +162,8 @@
   def resolve_model(spec: str) -> tuple[ProviderProfile, str]   # "alias" or "alias:model-id"
   def models_event(entries: list[ModelEntry]) -> dict           # spec §2.3 `models`
   ```
-  - The alias must match `^[a-z0-9-]{1,32}$`.
+   - The alias must match `^[a-z0-9-]{1,32}$`.
+   - Owner-approved wire correction (2026-11-02): `model_add` uses `model_protocol` for the API protocol; top-level `protocol` remains `devsec-chat/1`. The Python `add_model(..., protocol=...)` API is unchanged. The `models` event also carries public `templates` metadata from the built-in profile table for client form prefills.
   - `api_key_env` is generated as `DEVSEC_KEY_` plus the upper-case alias with `-` replaced by `_`.
   - A key is required unless `is_local_base_url(base_url)` is true.
   - Neither the key nor the variable name ever appears in a return value, an event, a log line or an error message.

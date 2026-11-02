@@ -16,6 +16,7 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"devsecops-agent/internal/analysis"
 	"devsecops-agent/internal/bridge"
+	"devsecops-agent/internal/chat"
 	"devsecops-agent/internal/dashboard"
 	"devsecops-agent/internal/service"
 	"devsecops-agent/internal/tui"
@@ -111,11 +112,19 @@ func run(args []string) int {
 	backend := &service.Backend{Client: client, DBPath: *db}
 	defer backend.Close()
 	if command == "tui" {
-		model := tui.New(backend)
 		var program *tea.Program
-		model.Send = func(msg tea.Msg) { program.Send(msg) }
+		model, chatErr := newChatModel(backend, func(msg tea.Msg) { program.Send(msg) })
+		if chatErr != nil {
+			fmt.Fprintln(os.Stderr, chatErr)
+			return 2
+		}
+		defer model.Close()
 		program = tea.NewProgram(model)
-		_, err = program.Run()
+		var final tea.Model
+		final, err = program.Run()
+		if current, ok := final.(chat.Model); ok {
+			current.Close()
+		}
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			return 2
@@ -237,6 +246,18 @@ func run(args []string) int {
 		return code
 	}
 	return 2
+}
+
+func newChatModel(backend tui.API, send func(tea.Msg)) (chat.Model, error) {
+	host, err := bridge.StartChat(pythonExecutable(), pythonEnvironment())
+	if err != nil {
+		return chat.Model{}, err
+	}
+	baseline := tui.NewEmbedded(backend)
+	baseline.Send = send
+	model := chat.New(host, baseline)
+	model.Restart = func() (chat.Host, error) { return bridge.StartChat(pythonExecutable(), pythonEnvironment()) }
+	return model, nil
 }
 func failureSummary(directory string, err error) int {
 	result := map[string]any{"status": "failed", "gate": "failed", "exit_code": 2, "errors": []string{err.Error()}, "run_id": nil}

@@ -64,7 +64,8 @@ def _loaded_key_values() -> list[str]:
     values = [
         value
         for name, value in os.environ.items()
-        if name.endswith(_SECRET_ENV_SUFFIXES) and len(value) >= _MIN_ENV_SECRET_LENGTH
+        if (name.startswith("DEVSEC_KEY_") and value)
+        or (name.endswith(_SECRET_ENV_SUFFIXES) and len(value) >= _MIN_ENV_SECRET_LENGTH)
     ]
     return sorted(set(values), key=len, reverse=True)
 
