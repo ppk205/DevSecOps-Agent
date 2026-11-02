@@ -327,7 +327,25 @@ class SpotBugsAdapter(ScannerAdapter):
         manifest = (spec.metadata or {}).get("manifest") or {}
         classes_dir = Path(workdir) / "target" / "classes"
         for name in manifest.get("inventory", []) or []:
-            if not name.endswith(".java") or name in recorded:
+            if name in recorded:
+                continue
+            if not name.endswith(".java"):
+                # SpotBugs analyzes Java bytecode only — JS/CSS/resources are
+                # never its units. Record unsupported so reconcile() stays silent.
+                coverage_records.append(
+                    CoverageRecord(
+                        run_id=spec.run_id or "unassigned",
+                        tool=self.tool,
+                        tool_version=cap.version or "unknown",
+                        source_snapshot=spec.target_commit_sha,
+                        unit_path=name,
+                        unit_language=LanguageKind.OTHER,
+                        eligible=True,
+                        status=CoverageUnitStatus.UNSUPPORTED,
+                        limitation_reason="SpotBugs analyzes Java bytecode only",
+                        analyzed_at=finished,
+                    )
+                )
                 continue
             rel = name
             for prefix in ("src/main/java/", "src/test/java/", "src/"):
@@ -356,6 +374,24 @@ class SpotBugsAdapter(ScannerAdapter):
                         unresolved_calls=[],
                         cwe_capabilities=[],
                         cwe_limitations=[],
+                        analyzed_at=finished,
+                    )
+                )
+            else:
+                # Source with no compiled class (e.g. build wrappers excluded
+                # from compilation): SpotBugs cannot analyze it. Record why
+                # instead of leaving a false "missing coverage".
+                coverage_records.append(
+                    CoverageRecord(
+                        run_id=spec.run_id or "unassigned",
+                        tool=self.tool,
+                        tool_version=cap.version or "unknown",
+                        source_snapshot=spec.target_commit_sha,
+                        unit_path=name,
+                        unit_language=LanguageKind.JAVA,
+                        eligible=True,
+                        status=CoverageUnitStatus.UNSUPPORTED,
+                        limitation_reason="no compiled class in target/classes",
                         analyzed_at=finished,
                     )
                 )

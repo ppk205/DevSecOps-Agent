@@ -44,6 +44,7 @@ def _spec(tmp_path: Path) -> ScanSpecification:
                 "src/main/java/org/example/Holder.java",
                 "src/main/java/org/example/Clean.java",
                 "src/main/java/org/example/NeverCompiled.java",
+                "src/main/resources/app.js",
             ]
         },
     }
@@ -88,5 +89,7 @@ def test_clean_compiled_files_marked_analyzed(tmp_path: Path, monkeypatch) -> No
     by_path = {c.unit_path: c.status for c in result.coverage_records}
     assert by_path.get("src/main/java/org/example/Holder.java") == CoverageUnitStatus.ANALYZED
     assert by_path.get("src/main/java/org/example/Clean.java") == CoverageUnitStatus.ANALYZED
-    # No compiled counterpart -> no fabricated record.
-    assert "src/main/java/org/example/NeverCompiled.java" not in by_path
+    # No compiled counterpart -> unsupported with reason, never "missing".
+    assert by_path.get("src/main/java/org/example/NeverCompiled.java") == CoverageUnitStatus.UNSUPPORTED
+    # Non-Java units are out of scope, recorded not missing.
+    assert by_path.get("src/main/resources/app.js") == CoverageUnitStatus.UNSUPPORTED
