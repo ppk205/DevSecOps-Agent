@@ -14,6 +14,38 @@ The baseline runner also supports JavaScript/TypeScript, Python and PHP
 through bundled Semgrep rules. The human-gated harness's detection tools
 remain focused on Java Servlet/JSP.
 
+## Quickstart
+
+Install Python, Git and uv as described in the build guide. Add a model using
+its masked-key wizard, then start a console review:
+
+```bash
+uv sync --locked --extra dev --extra scanners
+uv run --no-sync devsec model add
+uv run --no-sync devsec chat --target /path/to/java-project --model my-model --mode ask
+```
+
+Replace `my-model` with the alias you added. To use the Go chat UI, build the
+native binary with `ci/build_native.py`, then run `devsec tui`.
+
+For a baseline scan, provision Gitleaks alongside the locked Semgrep package:
+
+```bash
+uv run --no-sync devsec scan-run --checkout /path/to/repo --profile fast --no-laya --out artifacts/demo
+```
+
+The PIT WALL baseline dashboard uses the same stored runs. Build the web UI
+with Node and the committed npm lock, then serve it:
+
+```bash
+npm --prefix web-ui ci
+npm --prefix web-ui run build
+uv run --no-sync devsec serve --host 127.0.0.1 --port 8000
+```
+
+Open `http://127.0.0.1:8000/app/`. Configure a target under **New scan** and
+inspect progress and any failures in the **Live** view.
+
 ## Overview
 
 DevSecOps-Agent finds, explains and helps fix security vulnerabilities in Java
@@ -109,7 +141,7 @@ Dependency vulnerabilities (OWASP Dependency-Check) are evaluated separately fro
 
 - **Language**: Python 3.11+
 - **Web Framework**: FastAPI + Uvicorn
-- **Templating**: Jinja2
+- **Templating**: Jinja2 (legacy server pages; the PIT WALL SPA is React)
 - **Database**: SQLite via SQLAlchemy (sync sessions)
 - **CLI**: Typer
 - **HTTP Client**: httpx
@@ -123,18 +155,21 @@ Dependency vulnerabilities (OWASP Dependency-Check) are evaluated separately fro
 ```
 DevSecOps-Agent/
 ├── src/vulnscan/           # Application source code
-│   ├── agent/              # AI assessment agent
+│   ├── agent/              # Agentic loop + read-only code tools
+│   ├── ai/                 # Hunt, review, compare, fix proposals
 │   ├── assessment/         # CVSS v4.0 assessment logic
 │   ├── cli/                # CLI entry points (Typer)
-│   ├── context/            # Source context & call-graph analysis
-│   ├── core/               # Core domain models & configuration
+│   ├── contracts/          # Shared data contracts (findings, enums, providers)
+│   ├── core/               # Scan service, config, manifests, policy gate
+│   ├── decisions/          # Laya router, triage questions, calibration
 │   ├── normalization/      # Finding normalization & deduplication
-│   ├── providers/          # LLM provider abstraction
-│   ├── reporting/          # Report generation (HTML, CSV, JSON)
-│   ├── scanners/           # Scanner adapters (Semgrep, SpotBugs, ODG, etc.)
+│   ├── providers/          # LLM provider abstraction (BYOK profiles)
+│   ├── reporting/          # Report generation (JSON/SARIF/HTML/MD/CSV/TXT/DOCX)
+│   ├── scanners/           # Scanner adapters + bundled rulesets (java/js/py/php)
 │   ├── storage/            # Database models & repositories
+│   ├── training/           # Laya dataset / finetune / evaluate pipeline
 │   ├── verification/       # Independent verification engine
-│   └── web/                # FastAPI web dashboard & routes
+│   └── web/                # FastAPI backend + PIT WALL SPA contract
 ├── tests/                  # Test suite
 │   ├── ai/                 # AI agent tests
 │   ├── analysis/           # Analysis pipeline tests
@@ -154,6 +189,25 @@ DevSecOps-Agent/
 ├── LICENSE                 # MIT License
 └── .planning/              # Project planning documents
 ```
+
+## Scope — what it scans (and what it does not)
+
+| Area | Status |
+|------|--------|
+| Java Servlet | Harness candidate rules and baseline Semgrep/SpotBugs checks; coverage limits are reported |
+| JSP | Harness expression checks; baseline Semgrep reports JSP as unsupported |
+| JavaScript/TypeScript | Baseline rules for SQLi, XSS, exec, path traversal, SSRF, redirect, eval, weak random, secrets and prototype pollution |
+| Python | Baseline rules for SQLi, XSS bypass, command injection, eval, path traversal, SSRF, SSTI, deserialization, secrets and weak random |
+| PHP | Baseline rules for SQLi, reflected XSS, command injection, path traversal, SSRF, unserialize, weak hashing, loose comparison, extract and eval |
+| Secrets/credentials | Gitleaks, all languages and docs |
+| Java dependencies | OWASP Dependency-Check (DEEP profile) |
+| DAST / runtime attacks | **Not supported** — static analysis only |
+| Auto-remediation | **Not supported** — proposals only, you apply |
+| Other languages (Go, Ruby, C#…) | Hunt mode reads any text, but no dedicated rules yet |
+
+Every rule is tested both directions: it must fire on its `Vuln*` fixture
+and stay silent on its `Safe*` fixture (`tests/scanners/test_*_rules.py`,
+single batched Semgrep run per language, no cross-language false positives).
 
 ## Installation
 
@@ -284,19 +338,8 @@ is selected (`DEVSECOPS_NATIVE=python`). Replace `RUN_ID` with an ID from
 
 ### Web Dashboard
 
-```bash
-# Start the web server
-devsecops-agent serve --host 127.0.0.1 --port 8000
-
-# Open http://127.0.0.1:8000 in your browser
-```
-
-The web dashboard provides four screens:
-
-1. **Target Registration & Scan Configuration** — register projects and configure scan parameters
-2. **Run Progress & Tool Status** — monitor active scans, view coverage limitations
-3. **Findings & Evidence** — browse findings with source evidence, CVSS assumptions, and verification results
-4. **Settings & Reports** — configure AI providers, view usage, export reports, compare experiments
+The legacy Jinja pages (`/`, `/runs/...`). The main interface is the
+PIT WALL SPA below — the dashboard links there.
 
 ### Web UI (PIT WALL)
 
@@ -320,7 +363,7 @@ Live backend: `npm run build`, then serve via uvicorn — the SPA proxies
 | `/app/` | Home (mission control, KPIs, charts, history) |
 | `/app/scans/new` | New scan (FAST/DEEP profile, scanners, AI review, Hunt switch, CLI preview) |
 | `/app/live` | Live pipeline (8 stages, AI panel, results, log dock) |
-| `/app/findings` | Findings table, filters, drawer, detail, CSV export |
+| `/app/findings` | Findings table, filters, drawer + detail, CSV export, **Fix all** |
 | `/app/reports` | Report generate/preview/download + compare |
 | `/app/logs` | Log stream, filter, copy, .log/.jsonl download |
 | `/app/keys` | API keys (write-only), tools, usage, settings |
@@ -385,6 +428,18 @@ theme and summarized coverage; the other export formats remain available.
 Baseline results are the comparison arm of the experiment, not part of the
 harness.
 
+```text
+Baseline deterministic lane: scanners → normalize/deduplicate → report
+Baseline B7 lane: model hunt → scanners → compare → optional AI review → report
+Baseline fix utility: proposed diff → human apply → overlay → rule re-scan
+```
+
+The policy gate uses the configured severity threshold (`high` by default).
+Exit code 1 means findings exceed that threshold; exit code 2 reports a
+configuration or execution failure. The Live rail shows completed stages in
+green, partial stages in yellow, failed stages in red, and pending stages in
+gray. Per-tool details and errors remain in the feed and log dock.
+
 ### Baseline fix proposals
 
 The PIT WALL Findings drawer offers **Propose fix**, and the Findings page
@@ -398,6 +453,12 @@ Cloud proposals require consent for the selected profile. The same profile
 can reuse the run's explicit cloud consent; a different cloud profile needs
 explicit request consent. The UI's one-request checkbox resets after use.
 Missing scanners, malformed output and missing scan coverage remain failures.
+
+API: `POST /api/scans/{id}/fix` (`finding_ids` or `null` for all),
+`GET /api/scans/{id}/fixes`, and `POST /api/scans/{id}/fixes/{pid}/apply`.
+Requests can supply `provider_profile`, `provider_model` and explicit
+`allow_cloud_model`. Already-proposed rows are retained; failed proposals can
+be requested again.
 
 Set `LAYA_MODEL_DIR` to an existing trained-checkpoint directory to override
 the default Laya checkpoint. Explicitly selected model IDs remain unchanged,
@@ -413,47 +474,80 @@ human said:
 - **Missing evidence** is reported as "unknown", never as "safe"
 - **Status** (`confirmed`, `rejected`, `need_more`, `proposed`) is set only by a human answer at G5 or `/review`
 
+## Training Laya (teach it to route)
+
+The training tools live in `src/vulnscan/training/`: dataset export with
+leakage checks, fine-tuning and held-out evaluation/calibration. Follow
+[LAYA-TRAINING.md](docs/LAYA-TRAINING.md) for the locked environment and
+supported training setup. The application continues to run inference on CPU.
+
+The workflow is to export completed scans, obtain independent human route
+labels, build a leakage-checked dataset, compare the frozen checkpoint with a
+trained checkpoint, and retain the actual evaluation artifacts. Example
+commands, using your own scan and label files in that environment:
+
+```bash
+python -m vulnscan.training.dataset \
+  --scan scans-real.json --scan scans-synth.json \
+  --labels labels-all.json --out /path/to/dataset
+
+python -m vulnscan.training.evaluate \
+  --test /path/to/dataset/test.jsonl \
+  --model convaiinnovations/laya --out baseline.json
+
+python -m vulnscan.training.finetune --data /path/to/dataset \
+  --out /path/to/trained-model --mode validate
+
+python -m vulnscan.training.finetune --data /path/to/dataset \
+  --out /path/to/trained-model --mode train
+
+python -m vulnscan.training.evaluate --test /path/to/dataset/test.jsonl \
+  --model /path/to/trained-model --out trained.json
+```
+
+Keep datasets and weights outside the repository. Set `LAYA_MODEL_DIR` to the
+trained directory only after reviewing its held-out results. No training
+accuracy is claimed from a code merge or from fixture tests.
+
 ## Development
 
-### Running Tests
+```bash
+uv run --no-sync python -m pytest -q
+.venv/Scripts/python.exe -m ruff check src tests
+.venv/Scripts/python.exe -m ruff format --check src tests
+.venv/Scripts/python.exe -m mypy --platform win32 src/vulnscan
+npm --prefix web-ui run lint
+npm --prefix web-ui test
+npm --prefix web-ui run build
+```
 
 ```bash
-# Run the full test suite
-pytest
-
-# Run with coverage
-pytest --cov=vulnscan --cov-report=html
-
 # Run a specific test module
-pytest tests/analysis/
+uv run --no-sync python -m pytest tests/scanners/ -q
 ```
 
-### Code Quality
+Follow [AGENTS.md](AGENTS.md) for development rules. Keep keys, model weights,
+local datasets and generated artifacts out of commits. Design and execution
+plans are tracked under `docs/superpowers/`. Human-reviewed labels are the
+answer key for evaluation; models do not grade themselves. Database migrations
+are additive and covered by the retained-history tests.
 
-```bash
-# Lint
-ruff check src/ tests/
+### Adding a new scanner / language ruleset
 
-# Format
-ruff format src/ tests/
+1. Add a Semgrep ruleset in `src/vulnscan/scanners/rules/<lang>.yml`
+   (id prefix `<lang>-`, `cwe` + `version` metadata, taint mode where
+   dataflow matters).
+2. Add `Vuln*`/`Safe*` fixtures under `tests/scanners/fixtures/<lang>/`
+   plus SILENT boundary fixtures.
+3. Add `tests/scanners/test_<lang>_rules.py` mirroring `test_java_rules.py`
+   (single batched run, CASES + SILENT_FIXTURES).
+4. Extend `LanguageKind` + `WEB_SOURCE_EXTENSIONS` in
+   `src/vulnscan/contracts/enums.py` (the default Semgrep load picks up every
+   `rules/*.yml` automatically).
+5. Run `semgrep --validate`, the new test, and the full `tests/scanners/`
+   suite (guards against cross-language false positives).
 
-# Type check
-mypy src/
-```
-
-### Adding a New Scanner
-
-1. Create a new adapter in `src/vulnscan/scanners/`
-2. Implement the `ScannerAdapter` protocol
-3. Register the adapter in the scanner registry
-4. Add normalization rules for its output format
-5. Write tests in `tests/`
-
-### Custom Semgrep Rules
-
-Place custom Semgrep rules in the `rules/` directory. The scanner adapter loads rules from this path automatically.
-
-## Limitations
+## Limitations (honest)
 
 - **No hosted deployment**: The application runs locally only
 - **No multi-user accounts**: Single-user local mode
@@ -461,6 +555,10 @@ Place custom Semgrep rules in the `rules/` directory. The scanner adapter loads 
 - **No automatic target edits**: approved harness fixes use separate worktrees; baseline fixes use overlay copies
 - **No notifications**: Results are viewed on-demand via CLI or web
 - **CodeQL is experimental**: Cross-function/cross-file analysis is evaluated but not guaranteed
+- Providers can rate-limit requests or omit usable responses; the app reports
+  failures and retains session history.
+- Dependency-Check needs an available advisory database. Full scans require
+  the documented WSL/Docker setup.
 
 ## Budget and Timeline
 

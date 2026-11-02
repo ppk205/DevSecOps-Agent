@@ -733,3 +733,9 @@ case because Semgrep is installed. The Go source copy avoids the pre-existing
 ignored scratch probe; the real bridge test also runs in the source checkout.
 No live-provider or full WSL experiment result is claimed. Logs are under
 `.tools/ci-logs/main-merge-2026-11-02/`.
+
+Remote main advanced to `f49365a` during verification with a README-only
+rewrite. That documentation update is also merged, retaining the baseline
+scope, fix API and training instructions while keeping the current harness
+architecture and evidence requirements. The final follow-up merge changes
+documentation only; the tested application and test files are unchanged.
