@@ -1233,6 +1233,45 @@ def create_app(
         )
         return {"run_id": run_id, "accepted": len(findings), "status": "queued"}
 
+    @app.get("/api/scans/{run_id}/hunt")
+    def scan_hunt(run_id: int, session: SessionDep) -> dict[str, Any]:
+        """Model hunt candidates for a run: agreed + model-only, slimmed for UI."""
+        run = session.get(RunORM, run_id)
+        if run is None:
+            raise HTTPException(404, "Run not found")
+        snapshot = _snapshot_of(run)
+        comparison = snapshot.get("comparison") if isinstance(snapshot, dict) else None
+
+        def slim(candidate: dict[str, Any]) -> dict[str, Any]:
+            return {
+                "title": str(candidate.get("title", "")),
+                "file": str(candidate.get("file", "")),
+                "line": candidate.get("line", 0),
+                "cwe": str(candidate.get("cwe", "")),
+                "severity": str(candidate.get("severity", "")),
+                "rationale": str(candidate.get("rationale", ""))[:300],
+            }
+
+        items: list[dict[str, Any]] = []
+        if isinstance(comparison, dict):
+            for pair in comparison.get("agreed", []) or []:
+                if not isinstance(pair, dict):
+                    continue
+                cand = pair.get("candidate")
+                found = pair.get("finding")
+                if isinstance(cand, dict):
+                    entry = slim(cand)
+                    entry["verdict"] = "agreed"
+                    if isinstance(found, dict) and found.get("finding_id"):
+                        entry["finding_id"] = str(found["finding_id"])
+                    items.append(entry)
+            for cand in comparison.get("model_only", []) or []:
+                if isinstance(cand, dict):
+                    entry = slim(cand)
+                    entry["verdict"] = "model_only"
+                    items.append(entry)
+        return {"run_id": run_id, "total": len(items), "candidates": items}
+
     @app.get("/api/scans/{run_id}/fixes")
     def scan_fixes(run_id: int, session: SessionDep) -> dict[str, Any]:
         """List fix proposals for a run (diffs included for review)."""
@@ -1609,6 +1648,35 @@ def create_app(
             "status": str(data.get("status", "")),
         }
 
+    def _ai_summary(session: SessionDep, run_id: int) -> dict[str, Any]:
+        """AI lane summary for cross-run comparison: hunt + validation."""
+        run = session.get(RunORM, run_id)
+        try:
+            snapshot = json.loads((run.result_json if run else None) or "{}")
+        except json.JSONDecodeError:
+            snapshot = {}
+        comparison = snapshot.get("comparison") if isinstance(snapshot, dict) else None
+        counts: dict[str, int] = {}
+        if isinstance(comparison, dict) and isinstance(comparison.get("counts"), dict):
+            counts = {str(k): int(v) for k, v in comparison["counts"].items()}
+        confirmed = rejected = 0
+        decisions = snapshot.get("validation_decisions") if isinstance(snapshot, dict) else []
+        if isinstance(decisions, list):
+            for dec in decisions:
+                if isinstance(dec, dict):
+                    if dec.get("new_status") == "confirmed":
+                        confirmed += 1
+                    elif dec.get("new_status") == "rejected":
+                        rejected += 1
+        return {
+            "run_id": run_id,
+            "candidates": sum(counts.get(k, 0) for k in ("agreed", "model_only")),
+            "agreed": counts.get("agreed", 0),
+            "model_only": counts.get("model_only", 0),
+            "confirmed": confirmed,
+            "rejected": rejected,
+        }
+
     @app.get("/api/compare")
     def compare_scans(
         request: Request,
@@ -1689,6 +1757,7 @@ def create_app(
                 }
                 for run_id in ordered
             ],
+            "ai": [_ai_summary(session, run_id) for run_id in ordered],
             "by_scanner": [
                 {"tool": tool, "counts": counts} for tool, counts in sorted(by_scanner.items())
             ],

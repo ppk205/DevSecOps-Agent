@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   cancelScan,
   fetchFindings,
+  fetchHuntCandidates,
   fetchLiveEventsHistory,
   fetchLiveScan,
   fetchScans,
@@ -11,6 +12,7 @@ import {
 } from "../api/client";
 import type {
   FindingListItem,
+  HuntCandidate,
   LiveConnection,
   ScanEvent,
 } from "../api/types";
@@ -180,6 +182,13 @@ export function LivePage() {
     () => visible.filter((e) => e.kind === "verification_result"),
     [visible],
   );
+  const huntQuery = useQuery({
+    queryKey: ["hunt", active],
+    queryFn: () => fetchHuntCandidates(Number(active)),
+    enabled: active != null,
+    staleTime: 15000,
+  });
+  const huntCandidates: HuntCandidate[] = huntQuery.data ?? [];
   const nowAnalyzing = [...aiSteps].reverse()[0] ?? null;
 
   const items: FindingListItem[] = useMemo(() => {
@@ -509,6 +518,35 @@ export function LivePage() {
                 )}
               </div>
             ))}
+            <h3 className="label-m mb-2 mt-6 text-[11px] text-muted">{en.live.modelCandidates}</h3>
+            {huntCandidates.length === 0 ? (
+              <p className="text-sm text-muted">{en.live.noModelCandidates}</p>
+            ) : (
+              <ul className="max-h-64 space-y-2 overflow-y-auto">
+                {huntCandidates.map((cand, i) => (
+                  <li key={`${cand.file}:${cand.line}:${i}`} className="border border-hairline p-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[13px] text-body">{cand.title}</span>
+                      <span
+                        className={`label-m shrink-0 border px-1.5 py-0.5 text-[10px] ${
+                          cand.verdict === "agreed"
+                            ? "border-success text-success"
+                            : "border-warning text-warning"
+                        }`}
+                      >
+                        {cand.verdict === "agreed" ? "AI ✓" : "AI ONLY"}
+                      </span>
+                    </div>
+                    <p className="mt-1 font-mono text-xs text-muted">
+                      {cand.file}:{cand.line} · {cand.cwe} · {cand.severity}
+                    </p>
+                    {cand.rationale && (
+                      <p className="mt-1 text-[13px] text-body">{cand.rationale}</p>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
             <h3 className="label-m mb-2 mt-6 text-[11px] text-muted">{en.live.claimVsCheck}</h3>
             <div className="overflow-x-auto">
               <table className="w-full text-[13px]">

@@ -118,6 +118,16 @@ export async function fetchCompare(
   );
 }
 
+export async function fetchHuntCandidates(
+  scanId: number,
+): Promise<import("../api/types").HuntCandidate[]> {
+  if (isMock) return [];
+  const data = await get<{ candidates: import("../api/types").HuntCandidate[] }>(
+    `/api/scans/${scanId}/hunt`,
+  );
+  return data.candidates ?? [];
+}
+
 export function compareHtmlUrl(scanIds: number[]): string {
   if (isMock) return `#/compare?scan_ids=${scanIds.join(",")}`;
   return `/api/compare?scan_ids=${scanIds.join(",")}&export=html`;

@@ -203,11 +203,32 @@ export interface CompareEntry {
 export interface CompareResult {
   baseline: number;
   scans: CompareScanRow[];
+  ai?: CompareAiRow[];
   by_scanner: { tool: string; counts: Record<string, number> }[];
   by_cwe: { cwe: string; counts: Record<string, number> }[];
   new: CompareEntry[];
   fixed: CompareEntry[];
   changed: CompareEntry[];
+}
+
+export interface CompareAiRow {
+  run_id: number;
+  candidates: number;
+  agreed: number;
+  model_only: number;
+  confirmed: number;
+  rejected: number;
+}
+
+export interface HuntCandidate {
+  title: string;
+  file: string;
+  line: number;
+  cwe: string;
+  severity: string;
+  rationale: string;
+  verdict: "agreed" | "model_only";
+  finding_id?: string;
 }
 
 export type LogLevel = "debug" | "info" | "warn" | "error";

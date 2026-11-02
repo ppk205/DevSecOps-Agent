@@ -249,6 +249,29 @@ function ComparePanel({ scanIds }: { scanIds: number[] }) {
               />
             </div>
           </div>
+          <div className="mt-6 grid gap-6 lg:grid-cols-2">
+            <div className="card p-6">
+              <div className="label-m mb-3 text-xs text-muted">{en.reports.perAi}</div>
+              <DataTable
+                columns={[
+                  { key: "metric", header: "AI", render: (r: { metric: string }) => r.metric },
+                  ...(compare.data.ai ?? []).map((s) => ({
+                    key: `run-${s.run_id}`,
+                    header: `#${s.run_id}`,
+                    render: (r: { counts: Record<string, number> }) => String(r.counts[String(s.run_id)] ?? 0),
+                  })),
+                ]}
+                rows={[
+                  { metric: "candidates", counts: Object.fromEntries((compare.data.ai ?? []).map((s) => [String(s.run_id), s.candidates])) },
+                  { metric: "agreed ✓", counts: Object.fromEntries((compare.data.ai ?? []).map((s) => [String(s.run_id), s.agreed])) },
+                  { metric: "AI only", counts: Object.fromEntries((compare.data.ai ?? []).map((s) => [String(s.run_id), s.model_only])) },
+                  { metric: "confirmed", counts: Object.fromEntries((compare.data.ai ?? []).map((s) => [String(s.run_id), s.confirmed])) },
+                  { metric: "rejected", counts: Object.fromEntries((compare.data.ai ?? []).map((s) => [String(s.run_id), s.rejected])) },
+                ]}
+                rowKey={(r) => r.metric}
+              />
+            </div>
+          </div>
           <div className="mt-6 grid gap-6 lg:grid-cols-3">
             {(
               [
