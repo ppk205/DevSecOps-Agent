@@ -34,13 +34,13 @@ export function NotificationsBell() {
         aria-label={t.notifications.title}
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
-        className="label-m relative px-2 py-1.5 text-[11px] text-muted transition-colors duration-150 ease-out hover:text-body"
+        className="label-m relative inline-flex h-8 w-8 items-center justify-center text-base leading-none text-muted transition-colors duration-150 ease-out hover:text-body"
       >
-        🔔
+        <span aria-hidden className="leading-none">🔔</span>
         {unread > 0 && (
           <span
             data-testid="notifications-unread"
-            className="absolute -right-1 -top-1 border border-hairline bg-elevated px-1 text-[10px] text-ink"
+            className="absolute right-0 top-0 border border-hairline bg-elevated px-1 text-[10px] leading-tight text-ink"
           >
             {unread}
           </span>

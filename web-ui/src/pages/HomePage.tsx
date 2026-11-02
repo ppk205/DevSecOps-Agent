@@ -26,21 +26,24 @@ function ToolHealthStrip() {
   if (toolsQuery.isLoading) return <p className="text-body">{en.common.loading}</p>;
   if (toolsQuery.isError || !toolsQuery.data) return null;
   return (
-    <div className="flex flex-wrap gap-2" role="list" aria-label={en.home.toolHealth}>
+    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2" role="list" aria-label={en.home.toolHealth}>
       {toolsQuery.data.tools.map((tool) => (
         <span
           key={tool.tool}
           role="listitem"
           title={tool.available ? (tool.version ?? tool.binary) : (tool.hint ?? tool.binary)}
-          className="label-m flex items-center gap-2 border border-hairline px-3 py-2 text-[11px] text-body"
+          className="label-m flex items-center gap-2.5 rounded-md border border-hairline bg-elevated px-3 py-2.5 text-[11px] text-body"
         >
           <span
             aria-hidden
-            className="inline-block h-2 w-2"
-            style={{ background: tool.available ? tokens.color.success : tokens.color.mRed }}
+            className="inline-block h-2 w-2 shrink-0 rounded-full"
+            style={{
+              background: tool.available ? tokens.color.success : tokens.color.mRed,
+              boxShadow: `0 0 6px ${tool.available ? tokens.color.success : tokens.color.mRed}`,
+            }}
           />
-          {tool.tool}
-          <span className="text-muted">{tool.available ? (tool.version ?? "ready") : "missing"}</span>
+          <span className="truncate">{tool.tool}</span>
+          <span className="ml-auto shrink-0 text-muted">{tool.available ? (tool.version ?? "ready") : "missing"}</span>
         </span>
       ))}
     </div>
@@ -162,8 +165,8 @@ export function HomePage() {
           <div className="label-m mb-4 text-xs text-muted">{en.home.toolHealth}</div>
           <ToolHealthStrip />
           <div className="mt-4">
-            <Link to="/keys" className="label-m text-[11px] text-ink no-underline">
-              {en.home.manageScanners}
+            <Link to="/keys" className="label-m inline-block rounded-md border border-hairline px-3 py-2 text-[11px] text-body no-underline transition-colors hover:border-ink hover:text-ink">
+              {en.home.manageScanners} →
             </Link>
           </div>
         </div>

@@ -677,11 +677,29 @@ class ScanService:
             execution_spec = spec.model_copy(
                 update={"repository_checkout_path": str(snapshot_root)}
             )
+            # SpotBugs needs bytecode: carry over compiled classes when the
+            # checkout already has them (build output of the same sources).
+            checkout_classes = Path(checkout).resolve() / "target" / "classes"
+            if checkout_classes.is_dir():
+                import shutil as _shutil
+
+                _shutil.copytree(
+                    checkout_classes, snapshot_root / "target" / "classes", dirs_exist_ok=True
+                )
+                manifest["classes_included"] = True
+            checkout_deps = Path(checkout).resolve() / "target" / "dependency"
+            if checkout_deps.is_dir():
+                _shutil.copytree(
+                    checkout_deps, snapshot_root / "target" / "dependency", dirs_exist_ok=True
+                )
+                manifest["dependencies_included"] = True
             persist("intake", "completed", f"Verified commit {manifest['commit']}")
             hunt_candidates: list[dict[str, Any]] = []
             hunt_out: dict[str, Any] = {}
             hunt_status = "skipped"
-            hunt_detail = "deterministic mode"
+            hunt_detail = "deterministic mode — enable Hunt + a provider profile to run the model"
+            if config.mode != "hunt":
+                persist("model_hunt", "skipped", hunt_detail)
             verified: list[dict[str, Any]] = []
             comparison: dict[str, Any] = {
                 "agreed": [],

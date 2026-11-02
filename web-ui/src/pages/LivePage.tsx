@@ -590,10 +590,10 @@ export function LivePage() {
           </div>
           <div ref={dockRef} data-testid="log-dock" className="max-h-64 overflow-auto px-4 py-2">
             {stageFiltered.slice(-100).map((event) => (
-              <div key={event.seq} className="flex gap-3 border-b border-hairline py-1.5 text-[13px] last:border-0">
-                <span className="w-10 shrink-0 font-mono text-xs text-muted">#{event.seq}</span>
-                <span className="w-24 shrink-0 uppercase text-muted">{event.kind}</span>
-                <span className="w-32 shrink-0 truncate text-muted">{event.stage ?? ""}</span>
+              <div key={event.seq} className="grid grid-cols-[2.5rem_minmax(0,11rem)_minmax(0,9rem)_minmax(0,1fr)] gap-3 border-b border-hairline py-1.5 text-[13px] last:border-0">
+                <span className="font-mono text-xs text-muted">#{event.seq}</span>
+                <span className="truncate uppercase text-muted" title={event.kind}>{event.kind}</span>
+                <span className="truncate text-muted" title={event.stage ?? ""}>{event.stage ?? ""}</span>
                 <span className="break-words text-body">{redactSecrets(event.message)}</span>
               </div>
             ))}

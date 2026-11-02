@@ -245,6 +245,7 @@ class SpotBugsAdapter(ScannerAdapter):
                     (),
                     {
                         "timed_out": False,
+                        "succeeded": False,
                         "returncode": 1,
                         "stdout": "",
                         "stderr": "",
@@ -270,7 +271,13 @@ class SpotBugsAdapter(ScannerAdapter):
 
         dependency_jars = sorted((Path(workdir) / "target/dependency").glob("*.jar"))
         if dependency_jars:
-            argv[-1:-1] = ["-auxclasspath", os.pathsep.join(str(p) for p in dependency_jars)]
+            # 243+ jars exceed the Windows command-line limit: pass them via
+            # a file instead of inline -auxclasspath.
+            auxclasspath_file = Path(workdir) / "target" / "auxclasspath.txt"
+            auxclasspath_file.write_text(
+                os.linesep.join(str(p) for p in dependency_jars), encoding="utf-8"
+            )
+            argv[-1:-1] = ["-auxclasspathFromFile", str(auxclasspath_file)]
         output_file = Path(workdir) / "target" / "spotbugs-report.xml"
         output_file.unlink(missing_ok=True)
 

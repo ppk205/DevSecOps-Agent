@@ -322,6 +322,9 @@ class SemgrepAdapter(ScannerAdapter):
                 argv += ["--config", str(rules_file)]
         argv += ["--json"]
         argv += ["--no-git-ignore"]
+        # Build output copied into the snapshot (target/classes, jars) is not
+        # source: keep semgrep out or big vendored .js times out rules.
+        argv += ["--exclude", "target"]
         if tool_cfg and tool_cfg.rule_paths:
             for rp in tool_cfg.rule_paths:
                 argv += ["--config", rp]
