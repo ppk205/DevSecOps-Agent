@@ -189,6 +189,22 @@ working directory; use the same `--db-path` when sharing history across commands
 
 ## 4a. Run the AI harness
 
+The runtime, build and scanner dependency exports include `cvss==3.6`, so
+installing from a shipped requirements lock supports `chat` with `--no-deps`.
+
+Investigation requires both G3 selection and a recorded Laya route. A Laya
+failure records `human_review` and still allows the human to select a batch.
+Direct reads and enumerated files pass through the same path confinement and
+credential exclusion; `.env.example` remains readable. Provider messages,
+console output, JSONL events and exported reports pass through redaction.
+
+The G6 console prompt displays the full diff before accepting a decision.
+Malformed JSON edits leave the gate undecided; retry with a JSON object.
+Relative worktree paths are resolved from the directory running `chat`, even
+when `--target` points elsewhere. Re-scans include the original candidate file
+alongside the changed files. Route lookup checks applicable exact, prefix and
+extension filter mappings and includes authorization checks in filter source.
+
 `devsec chat` is the harness: it talks to a model, calls the gated tools and
 pauses for a human at every gate. It needs Python 3.11 and, for a cloud
 provider, one API key.
@@ -276,6 +292,37 @@ Go executable is a separate artifact. Install the matching Python package when
 moving the Go binary to another machine.
 
 ## 7. Verify a development build
+
+Required CI checks use uv 0.12.17 and `uv sync --locked`. Commands after the
+sync use `uv run --no-sync` so installed dev and scanner extras remain present.
+The quality job includes `ci/`, checks dependency exports and runs strict mypy
+for Linux, macOS and Windows. Run the same local checks after installing the
+`dev` and `scanners` extras:
+
+```powershell
+.\.venv\Scripts\python.exe -m ruff check src tests ci
+.\.venv\Scripts\python.exe -m ruff format --check src tests ci
+.\.venv\Scripts\python.exe -m mypy src/vulnscan
+.\.venv\Scripts\python.exe ci/check_lock_exports.py
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe ci/package_smoke.py
+```
+
+The package smoke test builds a wheel and source archive, installs the wheel
+with hash-locked runtime dependencies into a fresh environment, checks assets
+and CVSS, then checks both CLI aliases. Non-interactive chat must refuse G0;
+the installed gatekeeper must also refuse unattended G6. It makes no provider
+calls. The Action installer and scanner image use the same installed smoke
+check. Dependency installation requires network access or a populated cache.
+Archive selection uses the exact current project version, so older local
+`dist/` files cannot replace the current wheel. Official Actions are pinned to
+reviewed stable releases listed in `docs/CI-INTEGRATION.md`.
+
+The `CI required` job depends on quality, harness, native, full Python tests,
+package smoke and real fast baseline fixtures. Harness tests use fakes on all
+supported operating systems. Native jobs build the binary before running the
+platform, CLI and Python TUI suites. Full baseline integration remains scheduled,
+manual and a release prerequisite. See [CI integration](CI-INTEGRATION.md).
 
 ```powershell
 go vet ./...

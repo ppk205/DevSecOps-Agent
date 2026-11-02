@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- Rebuild required CI checks around the current harness, locked dependency exports, full Python matrix, native platform suites, installed-package chat refusal and real baseline fixtures.
+- Add a `CI required` aggregate check that rejects failed, skipped or cancelled prerequisite jobs, and retain harness/native JUnit and coverage on failure.
+- Preserve installed extras with `uv run --no-sync`, test the wheel, Action and scanner image with the same offline chat smoke check, and select Python explicitly in release jobs.
+- Select the exact current-version package archives and refresh official Action revisions to reviewed full commit SHAs across workflows, the composite Action and examples.
+
+- Validate enumerated harness paths, including source-index inputs, and exclude credential files while preserving `.env.example`.
+- Redact normal provider messages, tool output, console display, audit events and both report formats.
+- Display the full fix diff before G6 and leave malformed JSON gate edits undecided.
+- Require recorded Laya triage before opening investigation batches, including edited candidate lists.
+- Resolve fix worktrees to absolute paths and re-scan the original candidate alongside changed files.
+- Include applicable exact, path-prefix and extension filters and their authorization checks in route lookup.
+- Refresh runtime, build and scanner requirements exports with the required `cvss==3.6` dependency.
+
 - Add `devsec chat`, the hand-written AI harness: a provider layer with two transports (Anthropic Messages, OpenAI-compatible Chat Completions) and built-in profiles for Anthropic, OpenAI, OpenRouter, DeepSeek, Ollama and LM Studio, plus user profiles in `.providers/*.json`.
 - Add a session loop with non-streaming tool calling, `/model` switching, budget checks, provider-error recovery and resume from the append-only `.devsec/sessions/*.jsonl` log.
 - Add human permission gates G0–G7 with `ask` and `auto` modes: only G1–G4 and G7 may be approved automatically (logged as person `auto`), G0 and G6 always wait for a human, and G5 is never decided by code. No gate offers "always", and a closed or invalid prompt is `undecided`.

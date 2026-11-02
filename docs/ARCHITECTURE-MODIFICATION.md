@@ -15,7 +15,11 @@ Gitleaks, SpotBugs/FindSecBugs and Dependency-Check in a fixed order. Laya is
 optional and off by default, and the LLM agent is never called
 (`targeted_deep_analysis` always reports "Deep analysis is not implemented").
 
-The target system is the reverse: a **hand-written AI harness** is the core.
+The target system is a **hand-written, human-gated harness**. Detection comes
+from the harness's own static tools: source–sink rules and route lookup in
+`harness/scanning.py`. **The AI is a supporting tool, not the detector** (D10).
+It investigates the candidates those tools found, explains them, proposes
+CVSS vectors and fixes. Laya narrows the work, and a human decides.
 
 ```
 Human ⇄ Harness (hand-written session loop, permission gates, audit log)
@@ -47,6 +51,7 @@ harness in the experiment (section 8).
 | D5 | Two gate modes. `ask` (default): every gate waits for a human. `auto`: routine scanning gates (G1–G4, G7) are approved automatically and logged as person `auto`; **dangerous gates still wait for a human in every mode**: G0 (code leaves the machine, cost) and G6 (writing code). Nothing is approved by timeout or by a closed prompt. |
 | D6 | Only a human sets a finding's final status (confirmed / rejected / needs more evidence). The AI and the validator only propose and check. In `auto` mode G5 does not block: the finding stays `proposed` and the human settles it later with `/review`. |
 | D7 | The AI may propose code fixes as diffs. A fix is written only after a human approves it, only to a separate git branch, and is never committed, pushed or merged by the harness. |
+| D10 | AI is a supporting tool (owner, 2026-11-02, following `special_requirements.txt`). The object of study is vulnerabilities in Java Servlet/JSP source code. The harness's static tools find candidates. The model may only investigate candidates in a batch opened at G3/G4, and `propose_finding` refuses anything else (`harness/tools.py`). The model never originates or decides a finding. Docs, the essay and the UI describe the model as "AI hỗ trợ" (AI support), never as the scanner or the core. |
 | D8 | With a cloud provider, code excerpts leave the machine. The user must consent at session start and again after `/model` switches to a different provider; local providers (Ollama, LM Studio) need no consent. The report states which provider and model saw which files. |
 | D9 | Chat is the main screen, as in `HARNESS-TUI-PLAN.md` §3: the user types a request, the answer streams, tool calls appear as blocks, permission dialogs pause the loop, the status line shows model, tokens and cost. Old views move behind `/scan`, `/history`, `/findings`, `/keys`. |
 
@@ -291,7 +296,7 @@ the target architecture.
 
 | Section | Now says | Change to |
 |---|---|---|
-| Mở đầu §2 Mục tiêu | "Agentic AI chỉ hỗ trợ phân tích ngữ cảnh"; goal 5 compares the system with each tool used alone | AI harness is the core; the system detects, explains, proposes fixes; a human decides at every step. Keep the comparison goal, with the tools as baselines |
+| Mở đầu §2 Mục tiêu | "Agentic AI chỉ hỗ trợ phân tích ngữ cảnh"; goal 5 compares the system with each tool used alone | Keep "AI chỉ hỗ trợ" (AI only assists; D10). Static analysis by the harness's own tools detects candidates; AI supports investigation, explanation, CVSS vectors and fixes; a human decides at every step. Keep the comparison goal, with the tools as baselines |
 | §3 Câu hỏi và giả thuyết | Q1 and H1: "thêm lớp hỗ trợ Agentic AI sau chuỗi công cụ tất định" | Q1: harness (S1/S2) against baseline tools. New: how much does Laya reduce tokens and time, and at what recall cost? How many human decisions does one scan need? How many proposed fixes are accepted and pass re-scan? |
 | §4 Đối tượng và phạm vi | "hệ thống chỉ dùng phân tích tĩnh, gồm bốn công cụ" | The system uses its own static analysis tools driven by the LLM; the four tools and CodeQL are baselines. The model is chosen per session from several providers. The survey criterion "không gửi mã nguồn ra ngoài" holds only with a local model; with a cloud provider, state that excerpts leave the machine with user consent |
 | §5 Giới hạn | "Một phần thành phần AI chưa nối vào luồng quét" | Replace with the real limits of the new design: cloud model, Laya quality before fine-tuning, human time cost, one target app |
@@ -386,15 +391,18 @@ Modified:
 | `extract_candidates` | G2 | yes | needs `ws.plan`; defaults from the plan |
 | `laya_triage` | G2 | yes | runs Laya on the CPU; a failure sends every candidate to `human_review` |
 | `select_candidates` | G3 | yes | `edit` replaces the chosen ids; sets `selected` |
-| `begin_investigation` | G4 | yes | only G3-selected candidates; opens the batch and resets its token counter |
+| `begin_investigation` | G4 | yes | only G3-selected candidates with a recorded Laya route, including `human_review`; validates edited ids too; opens the batch and resets its token counter |
 | `read_file`, `grep`, `lookup_route` | — | yes | require an open batch; output is wrapped in `<untrusted_code>` |
 | `propose_finding` | G5 | yes | checks citations, scores the vector, records the human's status |
 | `propose_fix` | G6 | until apply | requires a `confirmed` finding; apply writes only in the worktree |
-| `rescan` | G7 | yes | requires an applied fix; reports `candidate gone` or `still present` |
+| `rescan` | G7 | yes | requires an applied fix; checks the original candidate file and changed files; reports `candidate gone` or `still present` |
 
 There is no `apply_fix`, `shell`, `exec`, `write_file` or `run_command` tool.
 
 ### 13.3 Verification run
+
+This table records the initial implementation run, before the review fixes
+described in section 13.6.
 
 | Command | Result |
 |---|---|
@@ -456,4 +464,82 @@ Phase 6 and 7 of section 12; plus, from the plan's "not in this plan" table:
 the Go chat view and permission dialog, SSE streaming and Anthropic prompt
 caching, `/compact`, `check_dependency` with OSV, Laya fine-tuning, the
 B1–S6/S1–S3 experiment and the essay rewrite.
+
+### 13.6 Review corrections
+
+- `Workspace.files` validates every enumerated path through `Workspace.resolve`
+  before reading it. Inventory, grep, extraction and route indexing share this
+  enumeration. The shared source index accepts the harness's confined file list.
+- Direct and enumerated reads exclude `.env`, `.env.*` and `.secrets`, including
+  aliases resolving to them. `.env.example` is allowed. Parent path components
+  and Windows drive-relative paths are rejected.
+- Normal provider request and response bodies, tool results, console output,
+  JSONL events and Markdown/JSON reports pass through `credentials.redact`.
+  Redaction does not alter the in-memory diff used by git.
+- The console displays request payloads and the complete fix diff before
+  accepting G6. Malformed or non-object JSON edits leave the gate undecided.
+  These corrections enforce the existing gate rules; gate authority is unchanged.
+- Investigation batches require a recorded Laya outcome for every selected id,
+  including human-edited ids. An unavailable Laya outcome routes to `human_review`.
+- Fix worktree paths become absolute relative to the caller before invoking git
+  and use the same resolution for re-scans. Verification includes the original
+  candidate file, so changes confined to an unrelated file cannot remove it.
+- Route lookup includes filters applicable to the servlet URL using exact,
+  path-prefix and extension mappings. Authorization checks in those filter
+  files contribute to `auth_check`. This is static evidence, not proof that
+  the guard is effective at runtime.
+- All shipped dependency exports include the required `cvss==3.6` from `uv.lock`.
+
+Requirements trace: SRS FR-16 (route/filter mapping), QR-01/QR-04 (honest
+verification), QR-12 (secrets), QR-20 (platform support), and AGENTS A5, H5,
+S2, T5, K1–K3.
+
+### 13.7 Review-fix verification (2026-11-01)
+
+| Check | Result |
+|---|---|
+| Ruff check `src tests` | All checks passed |
+| Ruff format check `src tests` | 206 files already formatted |
+| Strict mypy `src/vulnscan` | No issues in 122 source files |
+| Harness tests | 113 passed |
+| Full pytest suite | 530 passed, 1 skipped, 2 warnings |
+
+The skip is `tests/analysis/test_adapter_unavailable.py`: the Semgrep binary
+is installed, so its unavailable-binary case does not apply. The warnings
+concern Starlette's httpx deprecation and terminal echo control in an existing
+empty-key test. Provider tests used mock HTTP replies; live-provider smoke
+testing was skipped. The unimplemented features remain listed in section 13.5.
+
+The first sandbox full-suite run produced 32 scanner setup errors because
+Semgrep exited with `ca_certs_iter_on_anchors: CertOpenSystemStore returned NULL`.
+Host access resolved that error. A host run using a temporary directory inside
+the checkout then failed two root-discovery tests because they found the parent
+repository. The final passing run used host access and a fresh temporary
+directory outside the checkout, with a separate pytest cache. No tests were
+disabled to obtain the passing run.
+
+### 13.8 CI alignment
+
+Required checks now include a dedicated mocked harness suite on Linux, Windows
+and macOS. All offline Python test areas still run on Linux Python 3.11–3.13
+and Windows/macOS Python 3.11. Native jobs run Go vet/tests, build the binary,
+then run the platform, CLI and Python TUI suites. JUnit and Python coverage
+artifacts are retained when tests fail.
+
+The quality job checks the three shipped requirements exports against `uv.lock`
+and lints `ci/` alongside application code and tests. CI syncs with `--locked`
+and then uses `uv run --no-sync` to preserve the requested extras. The wheel,
+Action and scanner-image installations check packaged assets, CVSS and both
+chat aliases; unattended G0 and G6 stay refused. No provider keys are supplied
+and model downloads are disabled. These are scripted checks, not a live model run.
+
+The `CI required` aggregate job fails for any failed, skipped or cancelled
+prerequisite. Full baseline integration remains scheduled/manual and a release
+prerequisite. Release jobs select Python explicitly and continue using the
+frozen commit and the package job's distribution artifact. Publishing still
+requires maintainer dispatch. See `docs/CI-INTEGRATION.md` for the workflow map.
+
+Package smoke selects the exact current-version wheel and source archive,
+preserving older local builds. Official Action revisions are refreshed to
+reviewed stable releases and pinned by full SHA throughout the delivery paths.
 

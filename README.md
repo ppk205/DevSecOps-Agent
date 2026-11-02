@@ -38,6 +38,18 @@ G0 (session start: code leaves the machine, cost) and G6 (writing code) always
 wait for a human in every mode, and G5 (a finding's final status) is never
 decided by code or by auto mode.
 
+Investigation batches require a recorded Laya route, including `human_review`
+when Laya is unavailable. Reads, inventory, extraction and route indexing
+validate enumerated paths and exclude credential files (`.env`, `.env.*` and
+`.secrets`, with `.env.example` allowed). Normal provider messages, console
+output, session logs and reports pass through secret redaction.
+
+The console shows the full fix diff before asking for G6. Invalid JSON edits
+leave a gate undecided. Fix worktree paths are resolved from the caller's
+directory before invoking git. Re-scans check the original candidate file as
+well as changed files. Route lookup includes applicable exact, path-prefix
+and extension filters and checks their source for authorization guards.
+
 Third-party scanners — Semgrep, SpotBugs/FindSecBugs, OWASP Dependency-Check,
 Gitleaks and GitHub CodeQL — are **baselines** for comparison. They run through
 `scan-run` and are not part of the harness pipeline.
@@ -45,6 +57,12 @@ Gitleaks and GitHub CodeQL — are **baselines** for comparison. They run throug
 The experimental target is [JVA-bookstore](https://github.com/Moseyuh333/JVA-bookstore) (commit `dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5`): 97 Java source files, 38 JSP files, Java 11, Maven WAR packaging, PostgreSQL, `javax.servlet`.
 
 ## Architecture
+
+CI checks the current harness with fake providers and Laya backends on Linux,
+Windows and macOS. The full Python matrix, native Go checks, dependency-export
+consistency, installed chat smoke tests and real baseline fixtures feed the
+`CI required` job. Full baseline integration also runs before releases. See
+[CI integration](docs/CI-INTEGRATION.md) for the jobs and local commands.
 
 ```
 Human ⇄ harness (src/vulnscan/harness: session loop, gates, audit log)

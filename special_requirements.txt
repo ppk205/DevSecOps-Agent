@@ -1,0 +1,22 @@
+Cái này chủ đề về hệ thống phát hiện phân loại mức độ nghiêm trọng
+- Đầu tiên: chủ đề là gì, đang quá chung chung, đối tượng nghiên cứu phải cụ thể hơn -> lỗ hổng bảo mật ứng dụng (ứng dụng có đặc điểm, cấu trúc gì, lỗ hổng nào), phải khai thác AI sao cho rõ đối tượng.
++Lỗ hổng của ứng dụng là gì -> bộ chuẩn của những lỗ hổng đó (vòng đời, dạng/loại,…) (tìm hiểu rõ)
+  + Tìm hiểu các kỹ thuật làm sao phát hiện được nó, quy trình là gì.
+- Tìm hiểu công cụ hỗ trợ/kỹ thuật giúp mình phát hiện ra nó (chương 2)
+- Chương 3 không ghi chi tiết kịch bản (nó có nhiều thứ: ứng dụng, ngôn ngữ, công cụ, lưu nguồn, lỗ hổng, môi trường,…) nói rõ những thứ liên quan đến quá trình thực nghiệm. (đề mục hiện tại không phù hợp.)
+Sau khi thực nghiệm xong -> kết quả và đánh giá -> so sánh với những công cụ đã có, xem nó hoàn thiện thế nào, kết quả so với những công cụ khác ra sao
+Khi mà rõ đối tượng rồi -> công cụ
+Nói đối tượng của mình lên trước -> AI (công cụ hỗ trợ)
+ *AI chỉ là công cụ hỗ trợ, không phải đối tượng nghiên cứu chính, nhưng phải biết rõ nó dùng thế nào
+
+Các cái dạng lỗ hổng, tìm hiểu từng lỗ hổng được sinh ra từ điểm yếu nào, làm rõ, đặc biệt là owasp top 10, các khai thác nó làm sao, đi vào cụ thể hơn, đưa ra rõ các dạng
+Tên đề tài giữ nguyên, web java sẽ đưa vào phạm vi nghiên cứu, giới hạn nghiên cứu của đề tài
+Các kỹ thuật, vân vân, nó đang rất chung chung, bản thân nhóm sử dụng AI ở mức độ nào, kiểm soát nó trong mức cho phép, tập trung vào mục tiêu đề ra, sửa lại cách hành văn, thật đơn giản, giàu tính kỹ thuật.
+Các công cụ được so sánh phải được giới hạn
+Phân tích tĩnh sử dụng công cụ gì
+Phân tích động thì ra thế nào
+Các lỗ hổng phải đi sâu, nắm thật rõ, thật kỹ
+Agentic AI trong app dùng ở mức độ nào, kiểm soát ra sao
+
+làm rõ hơn phần phát hiện + kết nối với AI agent
+thử từng cái cơ bản: đưa vào một chương trình bất kỳ, xem nng dung đưa vào có lỗ hổng nào (tĩnh hoặc động) sau đó sử dung AI để hỗ trợ thêm
