@@ -263,6 +263,7 @@ Same target (JVA-bookstore at `dd48d12`), same labelled ground truth.
 | B4 | OWASP Dependency-Check (dependency findings only) |
 | B5 | Gitleaks (secrets only) |
 | B6 | The same model as S1/S2, one prompt per file, no tools |
+| B7 | `scan-run` model paths without harness gates: `--mode hunt`, `--ai-review`, `--ai-report`; cloud providers need `--allow-cloud-model` |
 | S1 | Harness without Laya |
 | S2 | Harness with Laya |
 | S3 | S2 repeated on other provider profiles (for example one Anthropic, one OpenAI-compatible cloud, one local model) |
@@ -542,4 +543,62 @@ requires maintainer dispatch. See `docs/CI-INTEGRATION.md` for the workflow map.
 Package smoke selects the exact current-version wheel and source archive,
 preserving older local builds. Official Action revisions are refreshed to
 reviewed stable releases and pinned by full SHA throughout the delivery paths.
+
+### 13.9 Merge with main and stabilization (2026-11-02)
+
+`origin/main` (`8d9eeb4c13793375699bbb7226c14a0fc56b06f6`, 41 commits) was merged
+into `feat/human-gated-harness` with `--no-ff`; the merge commit is `b19b84e`.
+Two files conflicted. `pyproject.toml` keeps both `cvss==3.6` (this branch) and
+`python-docx>=1.1.0` (main), with `sse-starlette` merged automatically; `uv.lock`
+and the three requirement exports were regenerated and `ci/check_lock_exports.py`
+reports a match for each. `CHANGELOG.md` became one `Unreleased` section, branch
+entries first.
+
+The merge exposed two real incompatibilities, both fixed rather than papered
+over:
+
+- `base.html` now reads `request.url.path`, but the native dashboard renders
+  through `core/rpc.py` `render_page` with a plain dict. `render_page` supplies a
+  request stub and `internal/dashboard/server.go` passes `r.URL.Path`, so nav
+  highlighting matches the Python dashboard.
+- The Python `ScanService` always writes `final-report.md`, so native runs failed
+  the parity test. `core/rpc.py` now generates the same artifact in its `reports`
+  helper, and `internal/service/scan.go` records the aggregate `scanners` stage
+  and the `final_report` stage, so native and Python stage histories match.
+
+Stabilization changes in this section:
+
+- **B7 consent.** `core/model_consent.py` decides whether a model may be used.
+  Loopback base URLs (`localhost`, `127.0.0.1`, `::1`) are allowed because no
+  code leaves the machine; anything else needs `allow_cloud_model`. `scan-run`
+  exposes `--allow-cloud-model`, the web New Scan form carries the same checkbox
+  (unticked by default), and `ScanService` checks consent once before any
+  `ProviderClient` exists. A refusal is recorded on `model_hunt`,
+  `targeted_deep_analysis` and `final_report` as `skipped` with the
+  `--allow-cloud-model` reason; it is not raised as an error.
+- **Redaction.** `providers.credentials` matches key *formats* and the literal
+  values of loaded `*_API_KEY`/`*_TOKEN`/`*_SECRET` variables instead of a broad
+  `sk|pk|tok|api` prefix. `redact_value`/`redact_json` replace
+  `redact(json.dumps(...))` at every structured call site — both directions of
+  the provider boundary, the session log, tool results and report exports — so
+  model output, audit lines and reports stay valid JSON and code such as
+  `token.isEmpty()` is preserved.
+- **Web UI in CI.** A `web-ui` job (Node 24, committed lock file) runs `npm ci`,
+  `npm run lint`, `npm test` and `npm run build`, and is part of the
+  `CI required` needs list. `tests/platform/test_ci_contract.py` enforces it.
+
+Verification actually run, in order: pre-merge `547 passed, 1 skipped`; after the
+merge `649 passed, 1 skipped`; after B7 `662 passed, 1 skipped`; after redaction
+`676 passed, 1 skipped`. `ruff check`, `ruff format --check` and strict `mypy`
+(131 files) are clean. `go vet ./...` is clean and `go test ./cmd/... ./internal/...`
+passes; `go test ./...` additionally collects the gitignored scratch probe in
+`artifacts/tui-verification/`, which is injected with `-overlay` and is not
+source. In `web-ui`: `npm ci`, `npm run lint`, `npm test` (17 files, 71 tests) and
+`npm run build` pass. `ci/package_smoke.py` passes and still reports that an
+installed `devsec chat` refuses G0 unattended.
+
+Still not implemented: copying `web-ui/dist` into the wheel (a pip install serves
+the JSON API and the Jinja pages, not the SPA); the shared test helpers and
+`filter_match` export; the Go chat TUI, local triggers, web remote control and
+the experiment harness in `docs/superpowers/plans/`.
 
