@@ -135,3 +135,28 @@ class ScanEventORM(Base):
     created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=_utcnow)
 
     run: Mapped[RunORM] = relationship("RunORM")
+
+
+class FixProposalORM(Base):
+    """An AI-generated fix proposal for one finding.
+
+    The model only writes the unified diff — it never touches source.
+    ``status``: proposed → applied → verified (or failed). ``overlay_path``
+    points at the patched copy under artifacts (never the user checkout).
+    ``verification_json`` records the rescan proof (rule refired or not).
+    """
+
+    __tablename__ = "fix_proposals"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    run_id: Mapped[int] = mapped_column(ForeignKey("runs.id"))
+    finding_id: Mapped[str] = mapped_column(String(80))
+    diff_text: Mapped[str] = mapped_column(Text, default="")
+    status: Mapped[str] = mapped_column(String(16), default="proposed")
+    model: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    error: Mapped[str | None] = mapped_column(Text, nullable=True)
+    overlay_path: Mapped[str | None] = mapped_column(Text, nullable=True)
+    verification_json: Mapped[str] = mapped_column(Text, default="{}")
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=_utcnow)
+
+    run: Mapped[RunORM] = relationship("RunORM")
