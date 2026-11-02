@@ -206,7 +206,7 @@ class DependencyCheckAdapter(ScannerAdapter):
             "--out",
             str(report_path.parent),
             "--data",
-            "/tmp/dependency-check-data",
+            str(Path("D:/dev/odc/data")),
             "--kevURL",
             "https://raw.githubusercontent.com/cisagov/kev-data/main/known_exploited_vulnerabilities.json",
         ]
@@ -226,16 +226,28 @@ class DependencyCheckAdapter(ScannerAdapter):
         finished = datetime.now(UTC)
 
         if not result.succeeded or not report_path.exists():
-            return self._fatal(
-                spec, started, finished, result, note="dependency-check produced no report"
-            )
+            # ODC failed (missing NVD DB, no network, no key): OSV.dev covers
+            # manifests instead of failing the whole scan.
+            try:
+                from .osv_adapter import OSVAdapter
+
+                return OSVAdapter().run(spec, workdir=workdir)
+            except Exception as exc:  # noqa: BLE001 - fallback must never break the scan
+                return self._fatal(
+                    spec, started, finished, result, note=f"dependency-check produced no report; osv fallback: {exc}"
+                )
 
         try:
             report = json.loads(report_path.read_text(encoding="utf-8", errors="replace"))
         except (OSError, json.JSONDecodeError) as exc:
-            return self._fatal(
-                spec, started, finished, result, note=f"unreadable dependency-check report: {exc}"
-            )
+            try:
+                from .osv_adapter import OSVAdapter
+
+                return OSVAdapter().run(spec, workdir=workdir)
+            except Exception as fallback_exc:  # noqa: BLE001 - fallback must never break the scan
+                return self._fatal(
+                    spec, started, finished, result, note=f"unreadable dependency-check report: {exc}; osv fallback: {fallback_exc}"
+                )
 
         if not isinstance(report, dict) or not isinstance(report.get("dependencies"), list):
             return self._fatal(

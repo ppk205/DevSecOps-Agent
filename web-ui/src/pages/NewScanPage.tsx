@@ -13,6 +13,10 @@ import { Button } from "../components/Button";
 import { useStrings } from "../i18n/lang";
 
 const SCANNERS = ["semgrep", "gitleaks", "spotbugs", "owasp-dependency-check"] as const;
+const PROFILE_SCANNERS: Record<"fast" | "full", readonly string[]> = {
+  fast: ["semgrep", "gitleaks"],
+  full: SCANNERS,
+};
 
 function shellQuote(value: string): string {
   return /[^A-Za-z0-9_@%+=:,./-]/.test(value) ? `'${value.replace(/'/g, `'\\''`)}'` : value;
@@ -144,7 +148,10 @@ export function NewScanPage() {
                 type="button"
                 role="radio"
                 aria-checked={profile === "fast"}
-                onClick={() => setProfile("fast")}
+                onClick={() => {
+                  setProfile("fast");
+                  setTools({ semgrep: true, gitleaks: true, spotbugs: false, "owasp-dependency-check": false });
+                }}
                 className={`border p-4 text-left ${profile === "fast" ? "border-ink" : "border-hairline"}`}
               >
                 <div className="label-m text-sm text-ink">{en.newScan.fast}</div>
@@ -154,7 +161,10 @@ export function NewScanPage() {
                 type="button"
                 role="radio"
                 aria-checked={profile === "full"}
-                onClick={() => setProfile("full")}
+                onClick={() => {
+                  setProfile("full");
+                  setTools({ semgrep: true, gitleaks: true, spotbugs: true, "owasp-dependency-check": true });
+                }}
                 className={`border p-4 text-left ${profile === "full" ? "border-ink" : "border-hairline"}`}
               >
                 <div className="label-m text-sm text-ink">{en.newScan.deep}</div>
@@ -167,7 +177,7 @@ export function NewScanPage() {
           <section className="card p-6">
             <h2 className="label-m mb-4 text-xs text-muted">{en.newScan.scanners}</h2>
             <div className="grid gap-3 sm:grid-cols-2">
-              {SCANNERS.map((name) => {
+              {PROFILE_SCANNERS[profile].map((name) => {
                 const status = toolStatus.get(name);
                 const on = tools[name] ?? false;
                 return (
