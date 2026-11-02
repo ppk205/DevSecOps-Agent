@@ -7,30 +7,11 @@ from pathlib import Path
 
 import pytest
 
+from tests.harness.conftest import DIFF
 from vulnscan.harness.fixes import FixError, apply_fix, rescan_fix
-from vulnscan.harness.workspace import Candidate, FixProposal, ProposedFinding, Workspace
+from vulnscan.harness.workspace import FixProposal, Workspace
 
 GIT = ["git", "-c", "user.email=t@t", "-c", "user.name=t"]
-DIFF = """--- a/A.java
-+++ b/A.java
-@@ -1 +1 @@
--class A { int r(){ return new Random().nextInt(); } }
-+class A { int r(){ return new java.security.SecureRandom().nextInt(); } }
-"""
-
-
-@pytest.fixture
-def ws(tmp_path: Path) -> Workspace:
-    repo = tmp_path / "repo"
-    repo.mkdir()
-    (repo / "A.java").write_text("class A { int r(){ return new Random().nextInt(); } }\n")
-    subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
-    subprocess.run(GIT + ["add", "."], cwd=repo, check=True)
-    subprocess.run(GIT + ["commit", "-qm", "i"], cwd=repo, check=True)
-    w = Workspace.open(repo)
-    w.candidates["c1"] = Candidate("c1", "CWE-330", "weak_random", "A.java", 1, "")
-    w.findings["f1"] = ProposedFinding("f1", "c1", "t", "CWE-330", [], "", "", status="confirmed")
-    return w
 
 
 def heads(ws: Workspace) -> str:

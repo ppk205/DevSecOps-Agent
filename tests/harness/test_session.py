@@ -5,8 +5,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
+from tests.harness.conftest import make_ctx
 from tests.harness.fakes import ScriptedTransport
-from tests.harness.test_tools import make_ctx
 from vulnscan.harness.audit import SessionLog
 from vulnscan.harness.messages import Message, ProviderError, Reply, ToolCall, Usage
 from vulnscan.harness.providers import BUILTIN_PROFILES

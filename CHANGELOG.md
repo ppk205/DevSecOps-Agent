@@ -17,6 +17,7 @@
 - Require recorded Laya triage before opening investigation batches, including edited candidate lists.
 - Resolve fix worktrees to absolute paths and re-scan the original candidate alongside changed files.
 - Include applicable exact, path-prefix and extension filters and their authorization checks in route lookup.
+- `lookup_route` reports `filter_match` (`request_url` when the query was a URL, `servlet_pattern` when it was a class name), so a caller can see which basis matched.
 - Refresh runtime, build and scanner requirements exports with the required `cvss==3.6` dependency.
 
 - Add `devsec chat`, the hand-written AI harness: a provider layer with two transports (Anthropic Messages, OpenAI-compatible Chat Completions) and built-in profiles for Anthropic, OpenAI, OpenRouter, DeepSeek, Ollama and LM Studio, plus user profiles in `.providers/*.json`.

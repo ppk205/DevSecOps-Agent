@@ -405,7 +405,12 @@ def lookup_route(ws: Workspace, query: str) -> dict[str, object]:
             auth_check = True
             break
 
-    return {"servlets": servlets, "filters": filters, "auth_check": auth_check}
+    return {
+        "servlets": servlets,
+        "filters": filters,
+        "auth_check": auth_check,
+        "filter_match": "request_url" if query.startswith("/") else "servlet_pattern",
+    }
 
 
 def _url_matches(pattern: str, url: str, *, default: bool = False) -> bool:

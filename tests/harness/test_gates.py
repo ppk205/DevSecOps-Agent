@@ -6,7 +6,7 @@ from typing import Any
 
 import pytest
 
-from tests.harness.test_console import scripted
+from tests.harness.conftest import scripted
 from vulnscan.harness.console import console_asker
 from vulnscan.harness.gates import CHOICES, Gate, GateDecision, GateKeeper, GateRequest
 

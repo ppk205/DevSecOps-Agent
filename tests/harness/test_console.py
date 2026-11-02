@@ -3,22 +3,16 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
 
 from typer.testing import CliRunner
 
+from tests.harness.conftest import make_ctx, scripted
 from tests.harness.fakes import ScriptedTransport
-from tests.harness.test_tools import make_ctx
 from vulnscan.cli.main import app
 from vulnscan.harness.console import ChatConsole, console_asker
 from vulnscan.harness.gates import Gate, GateRequest
 from vulnscan.harness.session import Session
 from vulnscan.harness.workspace import ProposedFinding
-
-
-def scripted(lines: list[str]) -> Any:
-    it = iter(lines)
-    return lambda prompt="": next(it)
 
 
 def test_asker_keys_and_empty_line_is_not_yes() -> None:

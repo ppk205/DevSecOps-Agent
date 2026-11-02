@@ -10,10 +10,8 @@ from typing import Any
 import httpx
 import pytest
 
+from tests.harness.conftest import DIFF, call, make_ctx, scripted
 from tests.harness.fakes import ScriptedTransport
-from tests.harness.test_console import scripted
-from tests.harness.test_fixes import DIFF
-from tests.harness.test_tools import call, make_ctx
 from vulnscan.harness.audit import SessionLog
 from vulnscan.harness.console import ChatConsole, console_asker
 from vulnscan.harness.fixes import apply_fix, rescan_fix
@@ -28,8 +26,6 @@ from vulnscan.harness.report import export, render_markdown
 from vulnscan.harness.scanning import extract_candidates, inventory, lookup_route
 from vulnscan.harness.session import Session
 from vulnscan.harness.workspace import FixProposal, Hop, PathEscape, ProposedFinding, Workspace
-
-pytest_plugins = ["tests.harness.test_fixes"]
 
 
 @pytest.mark.parametrize("operation", ["grep", "inventory", "extract", "route"])
