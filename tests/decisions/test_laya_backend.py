@@ -170,3 +170,28 @@ def test_router_falls_back_on_unavailable() -> None:
     assert decision.route == "baseline_fallback"
     assert decision.affects_finding_status is False
     assert decision.final_status == "unresolved"
+
+
+def test_laya_backend_env_dir_overrides_default_checkpoint(
+    tmp_path, monkeypatch  # type: ignore[no-untyped-def]
+) -> None:
+    """LAYA_MODEL_DIR points the backend at a trained local checkpoint."""
+    from vulnscan.decisions.protocol import MODEL_ID, MODEL_REVISION
+
+    monkeypatch.setenv("LAYA_MODEL_DIR", str(tmp_path))
+    backend = LayaDecisionBackend()
+    assert backend.model_id == str(tmp_path)
+    assert backend.model_revision is None
+    monkeypatch.delenv("LAYA_MODEL_DIR")
+    backend = LayaDecisionBackend()
+    assert backend.model_id == MODEL_ID
+    assert backend.model_revision == MODEL_REVISION
+
+
+def test_laya_backend_ignores_missing_env_dir(monkeypatch) -> None:  # type: ignore[no-untyped-def]
+    """A stale LAYA_MODEL_DIR falls back to the hub checkpoint, never crashes."""
+    from vulnscan.decisions.protocol import MODEL_ID
+
+    monkeypatch.setenv("LAYA_MODEL_DIR", "/definitely/not/here")
+    backend = LayaDecisionBackend()
+    assert backend.model_id == MODEL_ID

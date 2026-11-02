@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import atexit
 import importlib.util
+import os
 import sys
 import time
 from collections.abc import Callable, Mapping
+from pathlib import Path
 from typing import Any
 
 from vulnscan.contracts.decision import (
@@ -131,6 +133,10 @@ class LayaDecisionBackend:
     ) -> None:
         if max_input_chars < 1 or max_input_tokens < 1:
             raise ValueError("input limits must be positive")
+        local_dir = os.environ.get("LAYA_MODEL_DIR", "").strip()
+        if local_dir and model_id == MODEL_ID and Path(local_dir).is_dir():
+            model_id = local_dir
+            model_revision = None
         self._agent_loader = agent_loader
         self._agent: Any | None = None
         self.model_id = model_id
