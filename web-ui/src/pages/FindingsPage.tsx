@@ -391,6 +391,14 @@ export function FindingsPage() {
                       className="block text-left text-ink underline-offset-4 hover:underline"
                     >
                       {f.title}
+                      {f.model_corroborated && (
+                        <span
+                          title="Model hunt independently flagged the same issue"
+                          className="label-m ml-2 inline-block border border-success px-1.5 py-0.5 text-[10px] text-success"
+                        >
+                          AI ✓
+                        </span>
+                      )}
                     </button>
                     <span className="font-mono text-[10px] text-muted">{f.id}</span>
                   </span>
