@@ -29,6 +29,7 @@ GT_FIELDS = (
 )
 
 _TRUE = {"1", "true", "yes", "y"}
+_FALSE = {"0", "false", "no", "n", ""}
 
 
 @dataclass(frozen=True)
@@ -90,8 +91,27 @@ def load_gt(path: Path) -> list[GTItem]:
         missing = set(GT_FIELDS) - set(reader.fieldnames or ())
         if missing:
             raise ValueError(f"{path}: missing columns {sorted(missing)}")
+        if tuple(reader.fieldnames or ()) != GT_FIELDS:
+            raise ValueError(f"{path}: header must contain exactly GT_FIELDS in order")
         items: list[GTItem] = []
         for raw in reader:
+            if None in raw or any(value is None for value in raw.values()):
+                raise ValueError(f"{path}: malformed CSV row {reader.line_num}")
+            agreement = raw["agreed"].strip().lower()
+            if agreement not in _TRUE | _FALSE:
+                raise ValueError(f"{path}: invalid agreement at row {reader.line_num}")
+            if agreement in _TRUE and (
+                not raw["labeller_a"].strip() or not raw["labeller_b"].strip()
+            ):
+                raise ValueError(f"{path}: agreed rows require both labellers")
+            if raw["kind"].strip().lower() not in {"safe", "vuln"}:
+                raise ValueError(f"{path}: invalid kind")
+            if raw["origin"].strip().lower() not in {"builtin", "injected"}:
+                raise ValueError(f"{path}: invalid origin")
+            if not raw["id"].strip() or any(i.id == raw["id"].strip() for i in items):
+                raise ValueError(f"{path}: empty or duplicate id")
+            if int(raw["line_start"]) < 1 or int(raw["line_end"]) < int(raw["line_start"]):
+                raise ValueError(f"{path}: invalid line range")
             items.append(
                 GTItem(
                     id=raw["id"].strip(),
@@ -145,9 +165,12 @@ def match(
     vulnerable = [item for item in agreed if item.kind == "vuln"]
     safe = [item for item in agreed if item.kind == "safe"]
 
-    groups: dict[tuple[str, int], list[Row]] = {}
+    groups: dict[tuple[str, int, str], list[Row]] = {}
     for row in rows:
-        groups.setdefault((row.config, row.run), []).append(row)
+        groups.setdefault((row.config, row.run, row.stage), []).append(row)
+
+    if not groups:
+        return MatchResult(fn=vulnerable, tn=safe)
 
     result = MatchResult()
     for group_rows in groups.values():

@@ -13,7 +13,7 @@ from vulnscan.experiment.normalize import (
 )
 
 
-def test_from_scan_run_reads_observations_and_hunt(tmp_path: Path) -> None:
+def test_from_scan_run_selects_only_its_baseline(tmp_path: Path) -> None:
     run_dir = tmp_path / "run"
     run_dir.mkdir()
     (run_dir / "scanner-gitleaks.json").write_text(
@@ -48,13 +48,13 @@ def test_from_scan_run_reads_observations_and_hunt(tmp_path: Path) -> None:
         ),
         encoding="utf-8",
     )
-    rows = from_scan_run(run_dir, "B7")
+    rows = from_scan_run(run_dir, "B5")
     assert [(r.file, r.line, r.cwe) for r in rows] == [
         ("src/A.java", 12, "CWE-798"),
         ("src/B.java", 3, "CWE-unknown"),
-        ("src/C.java", 7, "CWE-89"),
     ]
     assert {r.stage for r in rows} == {"baseline"}
+    assert [(r.file, r.line) for r in from_scan_run(run_dir, "B7")] == [("src/C.java", 7)]
 
 
 def test_from_sarif_reads_rule_tags(tmp_path: Path) -> None:
@@ -185,3 +185,80 @@ def test_unknown_cwe_kept(tmp_path: Path) -> None:
 def test_broken_artifact_yields_no_rows(tmp_path: Path) -> None:
     (tmp_path / "scanner-semgrep.json").write_text("{not json", encoding="utf-8")
     assert from_scan_run(tmp_path, "B1") == []
+
+
+def test_harness_uses_sink_and_latest_g5_not_first_hop(tmp_path: Path) -> None:
+    report = tmp_path / "report.json"
+    report.write_text(
+        json.dumps(
+            {
+                "findings": [
+                    {
+                        "id": "f",
+                        "cwe": "CWE-89",
+                        "path": [
+                            {"file": "Source.java", "line": 1},
+                            {"file": "Sink.java", "line": 90},
+                        ],
+                    }
+                ]
+            }
+        )
+    )
+    log = tmp_path / "session.jsonl"
+    log.write_text(
+        "\n".join(
+            json.dumps(
+                {"type": "gate", "gate": "G5", "choice": choice, "payload": {"finding_id": "f"}}
+            )
+            for choice in ["confirm", "reject"]
+        )
+    )
+    rows = from_harness(report, log, "S2", 1)
+    assert [(r.file, r.line, r.stage) for r in rows] == [("Sink.java", 90, "proposed")]
+
+
+def test_bare_cwe_number_kept(tmp_path: Path) -> None:
+    path = tmp_path / "b6.jsonl"
+    path.write_text(json.dumps({"file": "A.java", "line": 1, "cwe": 89}))
+    assert from_b6(path, "B6", 1)[0].cwe == "CWE-89"
+
+
+def test_sarif_rule_index_and_escaped_uri_with_malformed_neighbor(tmp_path: Path) -> None:
+    path = tmp_path / "codeql.sarif"
+    path.write_text(
+        json.dumps(
+            {
+                "runs": [
+                    {
+                        "tool": {
+                            "driver": {
+                                "rules": [
+                                    {
+                                        "id": "java/test",
+                                        "properties": {"tags": ["external/cwe/cwe-089"]},
+                                    }
+                                ]
+                            }
+                        },
+                        "results": [
+                            {
+                                "ruleIndex": 0,
+                                "locations": [
+                                    {
+                                        "physicalLocation": {
+                                            "artifactLocation": {"uri": "src/My%20File.java"},
+                                            "region": {"startLine": 2},
+                                        }
+                                    }
+                                ],
+                            },
+                            {"ruleId": "bad", "locations": ["not an object"]},
+                        ],
+                    }
+                ]
+            }
+        )
+    )
+    rows = from_sarif(path, "B3")
+    assert [(r.file, r.cwe) for r in rows] == [("src/My File.java", "CWE-89")]

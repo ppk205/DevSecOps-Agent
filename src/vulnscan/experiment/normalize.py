@@ -1,9 +1,8 @@
 """Turn every experiment source into one row format.
 
 Unknown CWEs are kept as ``CWE-unknown`` rather than dropped: a finding with a
-weak label is still a finding, and the ground-truth matcher decides whether it
-counts. Nothing here raises on malformed tool output; a broken artifact yields
-fewer rows, which the metrics report as missing coverage.
+weak label is still a finding. Artifact completeness is assessed separately by
+the evaluator; an unreadable artifact must not be treated as a clean scan.
 """
 
 from __future__ import annotations
@@ -12,11 +11,13 @@ import json
 import re
 from pathlib import Path
 from typing import Any
+from urllib.parse import unquote
 
 from vulnscan.experiment.groundtruth import Row
 
 _CWE_TAG = re.compile(r"external/cwe/cwe-(\d+)", re.IGNORECASE)
 _CWE_TEXT = re.compile(r"cwe[-_ ]?(\d+)", re.IGNORECASE)
+SCANNERS = {"B1": "semgrep", "B2": "spotbugs", "B4": "owasp-dependency-check", "B5": "gitleaks"}
 
 
 def _cwe(value: Any) -> str:
@@ -24,6 +25,8 @@ def _cwe(value: Any) -> str:
     if value is None:
         return "CWE-unknown"
     text = str(value)
+    if text.isdigit():
+        return f"CWE-{int(text)}"
     tag = _CWE_TAG.search(text) or _CWE_TEXT.search(text)
     if tag is not None:
         return f"CWE-{int(tag.group(1))}"
@@ -88,7 +91,8 @@ def _row(
 def from_scan_run(run_dir: Path, config: str) -> list[Row]:
     """Rows from ``scanner-*.json`` artifacts and the hunt output (B1–B5, B7)."""
     rows: list[Row] = []
-    for artifact in sorted(Path(run_dir).glob("scanner-*.json")):
+    artifacts = [Path(run_dir) / f"scanner-{SCANNERS[config]}.json"] if config in SCANNERS else []
+    for artifact in artifacts:
         payload = _read_json(artifact)
         if not isinstance(payload, dict):
             continue
@@ -96,6 +100,8 @@ def from_scan_run(run_dir: Path, config: str) -> list[Row]:
             if not isinstance(observation, dict):
                 continue
             location = observation.get("location") or {}
+            if not isinstance(location, dict):
+                continue
             row = _row(
                 config=config,
                 run=1,
@@ -110,7 +116,7 @@ def from_scan_run(run_dir: Path, config: str) -> list[Row]:
             if row is not None:
                 rows.append(row)
 
-    hunt = _read_json(Path(run_dir) / "hunt.json")
+    hunt = _read_json(Path(run_dir) / "hunt.json") if config == "B7" else None
     if isinstance(hunt, dict):
         for index, candidate in enumerate(hunt.get("candidates", []) or []):
             if not isinstance(candidate, dict):
@@ -140,32 +146,44 @@ def from_sarif(path: Path, config: str) -> list[Row]:
     for run in payload.get("runs", []) or []:
         if not isinstance(run, dict):
             continue
-        driver = (run.get("tool") or {}).get("driver") or {}
-        rules = {rule.get("id"): rule for rule in driver.get("rules", []) or [] if rule.get("id")}
+        driver = _object(_object(run.get("tool")).get("driver"))
+        rule_list = [rule for rule in driver.get("rules", []) or [] if isinstance(rule, dict)]
+        rules = {rule.get("id"): rule for rule in rule_list if rule.get("id")}
         for result in run.get("results", []) or []:
             if not isinstance(result, dict):
                 continue
             rule = rules.get(result.get("ruleId")) or {}
-            tags = (rule.get("properties") or {}).get("tags") or []
+            index = result.get("ruleIndex")
+            if not rule and isinstance(index, int) and 0 <= index < len(rule_list):
+                rule = rule_list[index]
+            tags = _object(rule.get("properties")).get("tags") or []
             cwe = next((tag for tag in tags if _CWE_TAG.search(str(tag))), None)
             locations = result.get("locations") or [{}]
-            physical = (locations[0] or {}).get("physicalLocation") or {}
-            artifact = (physical.get("artifactLocation") or {}).get("uri")
-            region = physical.get("region") or {}
+            physical = (
+                _object(_object(locations[0]).get("physicalLocation"))
+                if isinstance(locations, list)
+                else {}
+            )
+            artifact = _object(physical.get("artifactLocation")).get("uri")
+            region = _object(physical.get("region"))
             row = _row(
                 config=config,
                 run=1,
-                file=artifact,
+                file=unquote(str(artifact)) if artifact else None,
                 line=region.get("startLine"),
                 cwe=cwe,
                 severity=result.get("level"),
                 cvss_vector=None,
                 stage="baseline",
-                source_id=result.get("ruleId") or "",
+                source_id=result.get("ruleId") or rule.get("id") or "",
             )
             if row is not None:
                 rows.append(row)
     return rows
+
+
+def _object(value: Any) -> dict[str, Any]:
+    return value if isinstance(value, dict) else {}
 
 
 def from_harness(report_json: Path, session_jsonl: Path, config: str, run: int) -> list[Row]:
@@ -178,14 +196,19 @@ def from_harness(report_json: Path, session_jsonl: Path, config: str, run: int) 
     payload = _read_json(Path(report_json))
     if not isinstance(payload, dict):
         return []
-    confirmed = {
-        event.get("payload", {}).get("finding_id")
-        for event in _read_jsonl(Path(session_jsonl))
-        if isinstance(event, dict)
-        and event.get("type") == "gate"
-        and event.get("gate") == "G5"
-        and event.get("choice") == "confirm"
-    }
+    latest: dict[str, str] = {}
+    events = _read_jsonl(Path(session_jsonl)) or payload.get("decisions", [])
+    for event in events:
+        if not isinstance(event, dict) or event.get("type") != "gate" or event.get("gate") != "G5":
+            continue
+        data = event.get("payload")
+        # An undecided prompt does not revoke an earlier human decision.
+        if (
+            isinstance(data, dict)
+            and data.get("finding_id")
+            and event.get("choice") in {"confirm", "reject", "need_more"}
+        ):
+            latest[str(data["finding_id"])] = event["choice"]
     rows: list[Row] = []
     for finding in payload.get("findings", []) or []:
         if not isinstance(finding, dict):
@@ -193,9 +216,11 @@ def from_harness(report_json: Path, session_jsonl: Path, config: str, run: int) 
         hops = finding.get("path") or []
         if not hops:
             continue
-        hop = hops[0] or {}
+        hop = hops[-1] or {}
+        if not isinstance(hop, dict):
+            continue
         for stage in ("proposed", "after_g5"):
-            if stage == "after_g5" and finding.get("id") not in confirmed:
+            if stage == "after_g5" and latest.get(str(finding.get("id"))) != "confirm":
                 continue
             row = _row(
                 config=config,

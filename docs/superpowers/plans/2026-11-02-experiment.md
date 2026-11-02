@@ -314,7 +314,7 @@ Target: a clean clone of JVA-bookstore at `dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d5
   devsec chat --target <clone> --model <alias>[:<id>] --mode auto --sessions-dir evidence/…/s2/<alias>/run-<n>/sessions
   > Run a full review of this repository for the CWE classes in scope. Follow the tool order. Propose findings with CVSS v4.0 vectors.
   ```
-  - S1 uses a Laya config with Laya disabled. S2 uses `config/laya.json` (timeout ≥ 300).
+   - S1 uses a separate Laya config with `mode: "off"` (owner-approved correction, 2026-11-02). The baseline-only `enabled` flag does not disable harness triage. S1 records skipped triage and still requires G3/G4. S2 uses `config/laya.json` (timeout ≥ 300).
   - The operator answers G0 only. G5 is deferred, as `auto` mode does. Then `/export`.
 - [ ] **Step 7: The after-G5 stage and F1.**
   - Copy one S2 run per provider. In the copy, a labeller who has **not** seen the ground truth answers G5 through `/review`.

@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 import csv
+from dataclasses import replace
 from pathlib import Path
+
+import pytest
 
 from vulnscan.experiment.groundtruth import (
     GTItem,
@@ -143,3 +146,21 @@ def test_csv_module_round_trip(tmp_path: Path) -> None:
     path = write_gt(tmp_path / "gt.csv", ["g1,src/A.java,1,1,CWE-79,vuln,builtin,,A,B,no"])
     with path.open(newline="", encoding="utf-8") as handle:
         assert len(list(csv.DictReader(handle))) == 1
+
+
+def test_empty_run_has_false_negatives_and_true_negatives() -> None:
+    result = match([], [item(), item(item_id="s", kind="safe", start=50)], {})
+    assert [i.id for i in result.fn] == ["g1"]
+    assert [i.id for i in result.tn] == ["s"]
+
+
+def test_stages_are_independent_matching_groups() -> None:
+    result = match([row(), replace(row(), stage="after_g5")], [item()], {})
+    assert len(result.tp) == 2 and not result.duplicates
+
+
+@pytest.mark.parametrize("bad", ["maybe", "true"])
+def test_invalid_or_unattributed_agreement_is_rejected(tmp_path: Path, bad: str) -> None:
+    path = write_gt(tmp_path / "gt.csv", [f"g,src/A.java,1,1,CWE-89,vuln,builtin,,,B,{bad}"])
+    with pytest.raises(ValueError):
+        load_gt(path)
