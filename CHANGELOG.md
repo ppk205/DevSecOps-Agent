@@ -19,6 +19,7 @@
 - Include applicable exact, path-prefix and extension filters and their authorization checks in route lookup.
 - `lookup_route` reports `filter_match` (`request_url` when the query was a URL, `servlet_pattern` when it was a class name), so a caller can see which basis matched.
 - `propose_fix` refuses a diff that touches a file the finding does not cite, reaches further than 15 lines from every cited hop, or changes more than 80 lines. The refusal names the offending file and lines and never reaches G6.
+- Add the pending review queue (git hooks and a folder watcher) and `devsec hooks install|uninstall|status`. The hooks only append to the queue and always exit 0, and `install` refuses to overwrite a hook it did not write.
 - Refresh runtime, build and scanner requirements exports with the required `cvss==3.6` dependency.
 
 - Add `devsec chat`, the hand-written AI harness: a provider layer with two transports (Anthropic Messages, OpenAI-compatible Chat Completions) and built-in profiles for Anthropic, OpenAI, OpenRouter, DeepSeek, Ollama and LM Studio, plus user profiles in `.providers/*.json`.

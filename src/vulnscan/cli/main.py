@@ -443,6 +443,35 @@ def laya_evaluate(
     typer.echo(rendered)
 
 
+@app.command("hooks")
+def hooks(
+    action: str = typer.Argument("status", help="install, uninstall or status."),
+    repo: str = typer.Option(".", help="Target git checkout."),
+) -> None:
+    """Manage the opt-in git hooks that queue a review after a commit or merge."""
+    from pathlib import Path as _Path
+
+    from ..harness.hooks import HookError, current_python, install, status, uninstall
+
+    root = _Path(repo)
+    try:
+        if action == "install":
+            names = install(root, current_python())
+            typer.echo(f"installed {', '.join(names)} in {root / '.git' / 'hooks'}")
+        elif action == "uninstall":
+            names = uninstall(root)
+            typer.echo(f"removed {', '.join(names) if names else 'nothing'}")
+        elif action == "status":
+            for name, value in status(root).items():
+                typer.echo(f"{name}: {value}")
+        else:
+            typer.echo("usage: devsec hooks [install|uninstall|status]")
+            raise typer.Exit(2)
+    except HookError as exc:
+        typer.echo(str(exc))
+        raise typer.Exit(1)
+
+
 @app.command("evidence-manifest")
 def evidence_manifest(
     out: str = typer.Option("", "--out", help="Optional path to write the manifest."),
@@ -548,7 +577,7 @@ def main() -> None:
 
     binary = binary_path()
     arguments = sys.argv[1:]
-    source_surface = not arguments or arguments[0] in {"tui", "scan-run", "chat"}
+    source_surface = not arguments or arguments[0] in {"tui", "scan-run", "chat", "hooks"}
     if (
         binary
         and os.environ.get("DEVSECOPS_PYTHON_ONLY") != "1"
