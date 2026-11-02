@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from vulnscan.decisions.config import LayaConfig
+from vulnscan.providers.credentials import redact
 
 from .audit import SessionLog
 from .evidence import check_citations, score_cvss4
@@ -245,10 +246,16 @@ def _select_candidates(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]
 
 def _begin_investigation(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
     ids = _ids(args["candidate_ids"])
-    for candidate_id in ids:
-        candidate = _candidate(ctx, candidate_id)
-        if not candidate.selected:
-            raise ValueError(f"candidate {candidate_id} was not selected at G3")
+
+    def validate(candidate_ids: list[str]) -> None:
+        for candidate_id in candidate_ids:
+            candidate = _candidate(ctx, candidate_id)
+            if not candidate.selected:
+                raise ValueError(f"candidate {candidate_id} was not selected at G3")
+            if candidate.laya_route is None:
+                raise ValueError(f"candidate {candidate_id} needs Laya triage before investigation")
+
+    validate(ids)
     decision = _ask(
         ctx,
         Gate.G4_INVESTIGATE,
@@ -260,6 +267,7 @@ def _begin_investigation(ctx: ToolContext, args: dict[str, Any]) -> dict[str, An
     if not decision.approved:
         return _refusal(Gate.G4_INVESTIGATE, decision)
     chosen = _ids(decision.edits.get("candidate_ids", ids))
+    validate(chosen)
     ctx.ws.open_batch = set(chosen)
     ctx.ws.batch_tokens = 0
     return {"status": "approved", "candidate_ids": chosen}
@@ -556,4 +564,4 @@ def run_tool(ctx: ToolContext, call: ToolCall) -> str:
             except Exception as exc:  # noqa: BLE001 - a tool must never break the loop
                 result = {"error": f"{type(exc).__name__}: {exc}"}
     ctx.log.append({"type": "tool_result", "tool": call.name, "id": call.id, "result": result})
-    return json.dumps(result, default=str)
+    return redact(json.dumps(result, default=str))

@@ -8,6 +8,7 @@ authenticate/authorize). No reflection, no network.
 from __future__ import annotations
 
 import re
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 from pathlib import Path
 from xml.etree import ElementTree as ET
@@ -51,7 +52,7 @@ def _annotation_url_patterns(source: str) -> list[str]:
     patterns: list[str] = []
     for m in _ANNOT_BLOCK.finditer(source):
         for q in _QUOTED.finditer(m.group(1)):
-            if q.group(1).startswith("/"):
+            if q.group(1).startswith(("/", "*.")):
                 patterns.append(q.group(1))
     return patterns
 
@@ -113,15 +114,27 @@ def index_web_xml(web_xml: Path) -> tuple[list[ServletEntry], list[FilterEntry]]
     return servlets, filters
 
 
-def build_source_index(snapshot: Path) -> SourceIndex:
-    """Scan a snapshot root for entry points + auth helpers."""
+def build_source_index(snapshot: Path, *, files: Iterable[Path] | None = None) -> SourceIndex:
+    """Index entry points; callers may supply an already confined file list."""
     snapshot = Path(snapshot)
     idx = SourceIndex()
     if not snapshot.exists():
         return idx
 
+    paths = list(files) if files is not None else None
+    xml_paths = (
+        (p for p in paths if p.name == "web.xml")
+        if paths is not None
+        else snapshot.rglob("web.xml")
+    )
+    java_paths = (
+        [p for p in paths if p.suffix == ".java"]
+        if paths is not None
+        else list(snapshot.rglob("*.java"))
+    )
+
     # 1. web.xml (may be absent or split across fragments)
-    for web_xml in snapshot.rglob("web.xml"):
+    for web_xml in xml_paths:
         s, f = index_web_xml(web_xml)
         idx.servlets.extend(s)
         idx.filters.extend(f)
@@ -132,7 +145,7 @@ def build_source_index(snapshot: Path) -> SourceIndex:
             )
 
     # 2. annotation-based declarations
-    for java in snapshot.rglob("*.java"):
+    for java in java_paths:
         try:
             source = java.read_text(encoding="utf-8", errors="replace")
         except OSError:
@@ -159,7 +172,7 @@ def build_source_index(snapshot: Path) -> SourceIndex:
                 )
 
     # 3. auth helpers
-    for java in snapshot.rglob("*.java"):
+    for java in java_paths:
         try:
             source = java.read_text(encoding="utf-8", errors="replace")
         except OSError:

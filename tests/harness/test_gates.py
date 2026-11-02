@@ -6,6 +6,8 @@ from typing import Any
 
 import pytest
 
+from tests.harness.test_console import scripted
+from vulnscan.harness.console import console_asker
 from vulnscan.harness.gates import CHOICES, Gate, GateDecision, GateKeeper, GateRequest
 
 
@@ -84,3 +86,11 @@ def test_every_decision_is_recorded() -> None:
         "mode",
         "at",
     }
+
+
+def test_invalid_console_edit_is_logged_as_undecided() -> None:
+    log: list[dict[str, Any]] = []
+    k = GateKeeper(console_asker(scripted(["e", "{broken"]), lambda _: None), log.append)
+    decision = k.ask(GateRequest(Gate.G2_SCAN, "scan", "", {"globs": ["**/*"]}))
+    assert decision.choice == "undecided" and not decision.approved
+    assert log[0]["choice"] == "undecided" and log[0]["payload"] == {"globs": ["**/*"]}

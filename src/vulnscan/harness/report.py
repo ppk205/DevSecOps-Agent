@@ -7,6 +7,8 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+from vulnscan.providers.credentials import redact
+
 from .audit import SessionLog
 from .workspace import ProposedFinding, Workspace
 
@@ -125,7 +127,7 @@ def render_markdown(ws: Workspace, log: SessionLog) -> str:
         lines.extend(_card(ws, finding))
     lines.extend(_decision_log(log))
     lines.extend(_session(log))
-    return "\n".join(lines)
+    return redact("\n".join(lines))
 
 
 def export(ws: Workspace, log: SessionLog, out_dir: Path) -> dict[str, Path]:
@@ -176,5 +178,5 @@ def export(ws: Workspace, log: SessionLog, out_dir: Path) -> dict[str, Path]:
         "totals": log.totals(),
     }
     json_path = out / "report.json"
-    json_path.write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")
+    json_path.write_text(redact(json.dumps(payload, indent=2, default=str)), encoding="utf-8")
     return {"markdown": markdown, "json": json_path}

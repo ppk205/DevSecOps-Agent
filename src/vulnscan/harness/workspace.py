@@ -9,7 +9,7 @@ from __future__ import annotations
 import re
 import subprocess
 from dataclasses import dataclass, field
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 from typing import Any
 
 __all__ = [
@@ -134,13 +134,52 @@ class Workspace:
     def resolve(self, rel: str) -> Path:
         """Resolve *rel* inside the target or raise :class:`PathEscape`."""
         raw = Path(rel)
-        if raw.is_absolute() or raw.drive or rel.startswith(("/", "\\")):
+        windows = PureWindowsPath(rel)
+        if raw.is_absolute() or windows.drive or rel.startswith(("/", "\\")):
             raise PathEscape(f"{rel}: absolute paths are not allowed")
+        if ".." in windows.parts:
+            raise PathEscape(f"{rel}: parent path components are not allowed")
+        if self._excluded(raw):
+            raise PathEscape(f"{rel}: credential path is excluded")
         root = self.target.resolve()
         candidate = (root / raw).resolve()
         if candidate != root and not candidate.is_relative_to(root):
             raise PathEscape(f"{rel}: path leaves the target checkout")
+        if self._excluded(candidate.relative_to(root)):
+            raise PathEscape(f"{rel}: credential path is excluded")
         return candidate
+
+    @staticmethod
+    def _excluded(path: Path) -> bool:
+        return any(
+            name == ".secrets"
+            or name == ".env"
+            or (name.startswith(".env.") and name != ".env.example")
+            for name in (part.lower() for part in path.parts)
+        )
+
+    def files(self, globs: list[str] | None = None) -> list[Path]:
+        """Enumerate readable target files, validating each path before access."""
+        root = self.target.resolve()
+        found: dict[str, Path] = {}
+        for pattern in globs or ["**/*"]:
+            # Validate the glob too: an explicit linked directory must not
+            # allow globbing outside the checkout.
+            try:
+                self.resolve(pattern)
+            except PathEscape:
+                continue
+            for path in root.glob(pattern):
+                relative = path.relative_to(root).as_posix()
+                if ".git" in path.relative_to(root).parts:
+                    continue
+                try:
+                    resolved = self.resolve(relative)
+                except (PathEscape, OSError, RuntimeError):
+                    continue
+                if resolved.is_file():
+                    found[relative] = path
+        return [found[key] for key in sorted(found)]
 
     def read(self, rel: str, start: int = 1, end: int | None = None, max_lines: int = 400) -> str:
         """Numbered lines of a target file, capped at *max_lines*."""
@@ -163,11 +202,11 @@ class Workspace:
         regex = re.compile(pattern)
         root = self.target.resolve()
         hits: list[tuple[str, int, str]] = []
-        for path in sorted(root.glob(glob)):
-            if not path.is_file() or ".git" in path.parts:
-                continue
+        for path in self.files([glob]):
             try:
-                text = path.read_text(encoding="utf-8", errors="strict")
+                text = self.resolve(path.relative_to(root).as_posix()).read_text(
+                    encoding="utf-8", errors="strict"
+                )
             except (OSError, UnicodeDecodeError):
                 continue
             for number, line in enumerate(text.splitlines(), start=1):

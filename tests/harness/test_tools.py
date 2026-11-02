@@ -91,6 +91,7 @@ def test_auto_mode_leaves_finding_proposed(tmp_path: Path) -> None:
     ctx, asked = make_ctx(tmp_path, [], mode="auto")
     call(ctx, "propose_scan_plan", scope=["**/*.java"], classes=["CWE-89"])
     cid = call(ctx, "extract_candidates")["candidates"][0]["id"]
+    call(ctx, "laya_triage")
     call(ctx, "select_candidates", candidate_ids=[cid], reason="r")
     call(ctx, "begin_investigation", candidate_ids=[cid])
     r = call(

@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from vulnscan.contracts.provider import ProviderProfile
+from vulnscan.providers.credentials import redact
 
 from .audit import SessionLog
 from .gates import Asker, Gate, GateDecision, GateKeeper, GateRequest
@@ -49,32 +50,39 @@ def console_asker(
 ) -> Asker:
     """Ask in the terminal; an empty line re-prompts and never means yes."""
 
+    def emit(text: str) -> None:
+        write(redact(text))
+
     def ask(request: GateRequest) -> GateDecision:
-        write(f"[{request.gate.value}] {request.title}")
+        emit(f"[{request.gate.value}] {request.title}")
         if request.detail:
-            write(request.detail)
+            emit(request.detail)
         if request.ai_recommendation:
-            write(f"AI: {request.ai_recommendation}")
+            emit(f"AI: {request.ai_recommendation}")
+        if request.payload:
+            payload = {key: value for key, value in request.payload.items() if key != "diff"}
+            emit(json.dumps(payload, indent=2, default=str))
+            if "diff" in request.payload:
+                emit(str(request.payload["diff"]))
         options = _KEYMAP[request.gate]
-        write("  " + "  ".join(f"[{key}] {choice}" for key, choice in options.items()))
+        emit("  " + "  ".join(f"[{key}] {choice}" for key, choice in options.items()))
         while True:
             answer = read("choice: ").strip().lower()
             choice = options.get(answer)
             if choice is None:
-                write("Press one of: " + ", ".join(options))
+                emit("Press one of: " + ", ".join(options))
                 continue
             edits: dict[str, Any] = {}
             reason = ""
             if choice == "edit":
                 raw = read("edits (JSON): ").strip()
-                parsed: Any = {}
-                if raw:
-                    try:
-                        parsed = json.loads(raw)
-                    except ValueError:
-                        write("invalid JSON; keeping the original payload")
-                        parsed = {}
-                edits = parsed if isinstance(parsed, dict) else {}
+                try:
+                    parsed: Any = json.loads(raw)
+                except ValueError:
+                    return GateDecision(request.gate, "undecided", "invalid edit JSON")
+                if not isinstance(parsed, dict):
+                    return GateDecision(request.gate, "undecided", "edits must be a JSON object")
+                edits = parsed
             elif choice in _REASON_CHOICES:
                 reason = read("reason: ").strip()
             return GateDecision(request.gate, choice, reason, edits)
@@ -94,7 +102,7 @@ class ChatConsole:
     ) -> None:
         self.session = session
         self.read = read
-        self.write = write
+        self.write: Callable[[str], None] = lambda text: write(redact(text))
         self.profiles = profiles or all_profiles()
 
     # ------------------------------------------------------------------

@@ -179,6 +179,7 @@ class _HttpTransport:
         return headers
 
     def _post(self, url: str, payload: dict[str, Any], headers: dict[str, str]) -> dict[str, Any]:
+        payload = json.loads(redact(json.dumps(payload)))
         last_error = "no attempt was made"
         for attempt in range(self.profile.max_retries + 1):
             try:
@@ -198,7 +199,7 @@ class _HttpTransport:
                     redact(f"HTTP {response.status_code} from {self.profile.id}: {response.text}")
                 )
             try:
-                raw: Any = response.json()
+                raw: Any = json.loads(redact(response.text))
             except ValueError as exc:
                 raise ProviderError(f"Invalid JSON from {self.profile.id}: {exc}") from exc
             if not isinstance(raw, dict):

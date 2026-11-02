@@ -81,7 +81,7 @@ def apply_fix(ws: Workspace, fix: FixProposal, root: Path = Path(".devsec/worktr
     if _branch_exists(ws.target, branch):
         raise FixError(f"branch {branch} already exists; delete it or use another finding id")
 
-    worktree = Path(root) / fix.finding_id
+    worktree = (Path(root) / fix.finding_id).resolve()
     if worktree.exists():
         raise FixError(f"worktree path already exists: {worktree}")
     worktree.parent.mkdir(parents=True, exist_ok=True)
@@ -107,7 +107,7 @@ def apply_fix(ws: Workspace, fix: FixProposal, root: Path = Path(".devsec/worktr
 
 def rescan_fix(ws: Workspace, fix: FixProposal, root: Path = Path(".devsec/worktrees")) -> str:
     """Re-extract candidates on the fixed files; report if the candidate is gone."""
-    worktree = Path(root) / fix.finding_id
+    worktree = (Path(root) / fix.finding_id).resolve()
     if not worktree.is_dir():
         raise FixError(f"no worktree at {worktree}; apply the fix first")
     paths = _diff_paths(fix.diff)
@@ -116,6 +116,7 @@ def rescan_fix(ws: Workspace, fix: FixProposal, root: Path = Path(".devsec/workt
 
     result = "still present"
     if candidate is not None and paths:
+        paths = list(dict.fromkeys([*paths, candidate.file]))
         scan = Workspace(target=worktree, commit=ws.commit)
         remaining = extract_candidates(scan, paths=paths)
         if not any(item.kind == candidate.kind and item.file in paths for item in remaining):
