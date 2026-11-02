@@ -1125,7 +1125,7 @@ def create_app(
         except OSError:
             return ""
         center = line or 1
-        window = [text for number, text in numbered if abs(number - center) <= 30]
+        window = [f"{number:>5}| {text}" for number, text in numbered if abs(number - center) <= 30]
         return "\n".join(window)
 
     def _execute_fixes(

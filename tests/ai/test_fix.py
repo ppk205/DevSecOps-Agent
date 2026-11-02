@@ -39,6 +39,12 @@ def test_build_fix_prompt_contains_evidence() -> None:
     assert "cur.execute" in prompt
 
 
+def test_build_fix_prompt_numbers_context() -> None:
+    prompt = build_fix_prompt(_finding(), code_context="  8| foo()\n  9| bar()\n")
+    assert "8| foo()" in prompt
+    assert "strip the prefixes" in prompt
+
+
 def test_extract_diff_prefers_fenced_block() -> None:
     reply = (
         "Here is the fix:\n```diff\n--- a/src/app.py\n+++ b/src/app.py\n"

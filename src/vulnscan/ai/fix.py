@@ -59,7 +59,9 @@ def build_fix_prompt(finding: dict[str, Any], code_context: str = "") -> str:
     section = ""
     if code_context.strip():
         section = (
-            "Full surrounding code for exact context lines:\n```\n"
+            "Full surrounding code for exact context lines "
+            "(each line is prefixed `NN|` with its real number — "
+            "strip the prefixes, never renumber, copy context verbatim):\n```\n"
             + code_context[:4000]
             + "\n```\n"
         )
@@ -200,6 +202,7 @@ def verify_fixed(
     import json as _json
 
     rules_dir = Path(__file__).resolve().parent.parent / "scanners" / "rules"
+    rule_id = str(rule_id).split(".")[-1]
     rule_file = None
     for candidate in sorted(rules_dir.glob("*.yml")):
         text = candidate.read_text(encoding="utf-8")
