@@ -1,0 +1,195 @@
+rules:
+  # ─── Injection ──────────────────────────────────────────────────────
+  - id: php-sql-concatenation
+    languages: [php]
+    severity: ERROR
+    mode: taint
+    message: User input reaches a SQL query; use prepared statements with bound parameters.
+    metadata:
+      cwe: ['CWE-89: SQL Injection']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: $_GET
+      - pattern: $_POST
+      - pattern: $_REQUEST
+      - pattern: $_COOKIE
+    pattern-sinks:
+      - pattern: mysqli_query(...)
+      - pattern: mysql_query(...)
+      - pattern: $DB->query(...)
+      - pattern: $DB->exec(...)
+    pattern-sanitizers:
+      - pattern: $DB->prepare(...)
+      - pattern: mysqli_prepare(...)
+      - pattern: mysqli_real_escape_string(...)
+      - pattern: $DB->quote(...)
+      - pattern: intval(...)
+      - pattern: filter_var(...)
+
+  - id: php-reflected-xss
+    languages: [php]
+    severity: ERROR
+    mode: taint
+    message: Request data reaches page output without escaping; use htmlspecialchars.
+    metadata:
+      cwe: ['CWE-79: Cross-site Scripting (Reflected XSS)']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: $_GET
+      - pattern: $_POST
+      - pattern: $_REQUEST
+      - pattern: $_COOKIE
+    pattern-sinks:
+      - pattern: echo $X;
+      - pattern: print $X;
+      - pattern: printf(...)
+    pattern-sanitizers:
+      - pattern: htmlspecialchars(...)
+      - pattern: htmlentities(...)
+
+  - id: php-command-injection
+    languages: [php]
+    severity: ERROR
+    mode: taint
+    message: User input reaches a shell command; use escapeshellarg or avoid the shell.
+    metadata:
+      cwe: ['CWE-78: OS Command Injection']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: $_GET
+      - pattern: $_POST
+      - pattern: $_REQUEST
+      - pattern: $_COOKIE
+    pattern-sinks:
+      - pattern: exec(...)
+      - pattern: shell_exec(...)
+      - pattern: system(...)
+      - pattern: passthru(...)
+      - pattern: popen(...)
+      - pattern: proc_open(...)
+    pattern-sanitizers:
+      - pattern: escapeshellarg(...)
+      - pattern: escapeshellcmd(...)
+
+  - id: php-path-traversal
+    languages: [php]
+    severity: ERROR
+    mode: taint
+    message: User input reaches a filesystem path; validate against an allowlist.
+    metadata:
+      cwe: ['CWE-22: Path Traversal']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: $_GET
+      - pattern: $_POST
+      - pattern: $_REQUEST
+      - pattern: $_COOKIE
+    pattern-sinks:
+      - pattern: include $X
+      - pattern: include_once $X
+      - pattern: require $X
+      - pattern: require_once $X
+      - pattern: file_get_contents($X, ...)
+      - pattern: fopen($X, ...)
+      - pattern: readfile($X, ...)
+    pattern-sanitizers:
+      - pattern: basename(...)
+      - pattern: realpath(...)
+
+  - id: php-ssrf
+    languages: [php]
+    severity: ERROR
+    mode: taint
+    message: User input controls an outbound request URL; restrict to an allowlist.
+    metadata:
+      cwe: ['CWE-918: Server-Side Request Forgery']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: $_GET
+      - pattern: $_POST
+      - pattern: $_REQUEST
+      - pattern: $_COOKIE
+    pattern-sinks:
+      - pattern: curl_init($URL)
+      - pattern: curl_setopt($CH, CURLOPT_URL, $URL)
+    pattern-sanitizers:
+      - pattern: filter_var(...)
+
+  - id: php-unsafe-deserialization
+    languages: [php]
+    severity: ERROR
+    mode: taint
+    message: unserialize on user input enables object injection; use json_decode.
+    metadata:
+      cwe: ['CWE-502: Deserialization of Untrusted Data']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: $_GET
+      - pattern: $_POST
+      - pattern: $_REQUEST
+      - pattern: $_COOKIE
+    pattern-sinks:
+      - pattern: unserialize(...)
+
+  - id: php-dynamic-eval
+    languages: [php]
+    severity: ERROR
+    mode: taint
+    message: User input reaches eval; never execute dynamically built code.
+    metadata:
+      cwe: ['CWE-95: Code Injection']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: $_GET
+      - pattern: $_POST
+      - pattern: $_REQUEST
+      - pattern: $_COOKIE
+    pattern-sinks:
+      - pattern: eval($CODE)
+      - pattern: assert($CODE)
+
+  # ─── Cryptography / comparison ──────────────────────────────────────
+  - id: php-weak-password-hash
+    languages: [php]
+    severity: WARNING
+    message: md5/sha1 are unsuitable for passwords; use password_hash.
+    metadata:
+      cwe: ['CWE-328: Weak Hash']
+      version: '0.2.0'
+    pattern-either:
+      - pattern: md5(...)
+      - pattern: sha1(...)
+
+  - id: php-loose-comparison
+    languages: [php]
+    severity: WARNING
+    message: Loose == comparison with user input allows type juggling; use === or hash_equals.
+    metadata:
+      cwe: ['CWE-697: Insufficient Comparison']
+      version: '0.2.0'
+    pattern-either:
+      - pattern: $_GET[$X] == $Y
+      - pattern: $Y == $_GET[$X]
+      - pattern: $_POST[$X] == $Y
+      - pattern: $Y == $_POST[$X]
+      - pattern: $_REQUEST[$X] == $Y
+      - pattern: $Y == $_REQUEST[$X]
+      - pattern: $_COOKIE[$X] == $Y
+      - pattern: $Y == $_COOKIE[$X]
+
+  - id: php-dangerous-extract
+    languages: [php]
+    severity: WARNING
+    message: extract on user input overwrites variables; assign explicitly instead.
+    metadata:
+      cwe: ['CWE-915: Improperly Controlled Modification of Object Attributes']
+      version: '0.2.0'
+    pattern-either:
+      - pattern: extract($_GET)
+      - pattern: extract($_POST)
+      - pattern: extract($_REQUEST)
+      - pattern: extract($_COOKIE)
+      - pattern: extract($_GET[$X])
+      - pattern: extract($_POST[$X])
+      - pattern: extract($_REQUEST[$X])
+      - pattern: extract($_COOKIE[$X])

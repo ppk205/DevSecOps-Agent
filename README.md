@@ -10,6 +10,10 @@ Start with [compile, build, and run](docs/BUILD-AND-RUN.md),
 [Laya guide](docs/LAYA-TRAINING.md). Baseline scanners are available behind
 the **Baseline** tab and through `scan-run` for testing and comparison.
 
+The baseline runner also supports JavaScript/TypeScript, Python and PHP
+through bundled Semgrep rules. The human-gated harness's detection tools
+remain focused on Java Servlet/JSP.
+
 ## Overview
 
 DevSecOps-Agent finds, explains and helps fix security vulnerabilities in Java
@@ -79,7 +83,7 @@ Human ⇄ harness (src/vulnscan/harness: session loop, gates, audit log)
    → propose_finding (G5) → propose_fix (G6) → rescan (G7)
            │
            ▼
-   human decision → finding cards, decision log, report export
+    human decision → finding cards, decision log, report export
 ```
 
 ## Supported Vulnerability Groups (CWE)
@@ -106,11 +110,12 @@ Dependency vulnerabilities (OWASP Dependency-Check) are evaluated separately fro
 - **Language**: Python 3.11+
 - **Web Framework**: FastAPI + Uvicorn
 - **Templating**: Jinja2
-- **Database**: SQLite via SQLAlchemy (async with aiosqlite)
+- **Database**: SQLite via SQLAlchemy (sync sessions)
 - **CLI**: Typer
 - **HTTP Client**: httpx
 - **Scanners**: Semgrep CE, SpotBugs + FindSecBugs, OWASP Dependency-Check, Gitleaks, CodeQL (experimental)
-- **AI Provider**: Configurable LLM backend (OpenAI-compatible API)
+- **AI Provider**: Project-local profiles (`.providers/*.json`, OpenAI-compatible API) + BYOK env keys
+- **Web UI**: React SPA (PIT WALL) served by FastAPI; mock mode for frontend-only work
 - **Build**: Hatchling
 
 ## Project Structure
@@ -174,6 +179,14 @@ No key is needed to open the TUI. Add a model on the start screen or with
 no key. Put baseline scanner executables on `PATH` or in the application
 environment. Baseline history defaults to `vulnscan.db`; harness sessions
 use append-only JSONL logs under `.devsec/sessions/`.
+
+Baseline model stages also accept existing `provider-add` profiles. They
+reference a key by environment-variable name and can supply non-secret extra
+headers. Store keys with the masked `devsec env set VARIABLE_NAME` prompt.
+
+Scanner binaries resolve via `PATH` with a `sys.prefix` fallback; install them
+once (Semgrep: `pip install semgrep`, Gitleaks/SpotBugs/ODC from their
+upstream releases). Local dirty checkouts require `--allow-dirty`.
 
 ## Usage
 
@@ -305,7 +318,7 @@ Live backend: `npm run build`, then serve via uvicorn — the SPA proxies
 | Route | Page |
 |---|---|
 | `/app/` | Home (mission control, KPIs, charts, history) |
-| `/app/scans/new` | New scan (profile, scanners, AI review, CLI preview) |
+| `/app/scans/new` | New scan (FAST/DEEP profile, scanners, AI review, Hunt switch, CLI preview) |
 | `/app/live` | Live pipeline (8 stages, AI panel, results, log dock) |
 | `/app/findings` | Findings table, filters, drawer, detail, CSV export |
 | `/app/reports` | Report generate/preview/download + compare |
@@ -355,7 +368,7 @@ the human sends a new message.
 
 ### Baseline scanner pipeline (`scan-run`)
 
-1. **Intake**: Register a Java Servlet/JSP project; the system catalogs all `.java` and `.jsp` files
+1. **Intake**: Register a web project; the baseline inventory includes Java/JSP, JavaScript/TypeScript, Python and PHP source files
 2. **Source Parsing**: Java and JSP files are parsed; AST and call-graph analysis extracts security-relevant context
 3. **Static Scanning**: Each enabled scanner analyzes the source and produces findings
 4. **Normalization**: Findings from all scanners are normalized into a common schema, deduplicated, and tagged with CWE IDs
@@ -363,8 +376,32 @@ the human sends a new message.
 6. **Optional Laya triage**: advisory routing, off by default in `config/laya.json`
 7. **Reporting**: Results are persisted in SQLite and available via CLI, web dashboard, or exported reports
 
+Optional B7 model paths include `--mode hunt`, `--ai-review` and `--ai-report`.
+They add read-only model investigation, model/scanner comparison, targeted
+review and an AI-written final report to the baseline workflow. Cloud model
+use requires `--allow-cloud-model`. Baseline HTML exports use the PIT WALL
+theme and summarized coverage; the other export formats remain available.
+
 Baseline results are the comparison arm of the experiment, not part of the
 harness.
+
+### Baseline fix proposals
+
+The PIT WALL Findings drawer offers **Propose fix**, and the Findings page
+offers **Fix all** for the run. Proposals contain reviewable diffs. Applying
+one patches a separate overlay under the export directory and re-runs the
+matching Semgrep rule. The original checkout is preserved. A verified proposal
+means the rule no longer reports the issue in that file; it does not change a
+finding's status or establish runtime correctness.
+
+Cloud proposals require consent for the selected profile. The same profile
+can reuse the run's explicit cloud consent; a different cloud profile needs
+explicit request consent. The UI's one-request checkbox resets after use.
+Missing scanners, malformed output and missing scan coverage remain failures.
+
+Set `LAYA_MODEL_DIR` to an existing trained-checkpoint directory to override
+the default Laya checkpoint. Explicitly selected model IDs remain unchanged,
+and the runtime continues to use the CPU.
 
 ### Decision ownership
 
@@ -421,7 +458,7 @@ Place custom Semgrep rules in the `rules/` directory. The scanner adapter loads 
 - **No hosted deployment**: The application runs locally only
 - **No multi-user accounts**: Single-user local mode
 - **No DAST**: Only static analysis is supported
-- **No automatic remediation**: The system reports findings but does not fix them
+- **No automatic target edits**: approved harness fixes use separate worktrees; baseline fixes use overlay copies
 - **No notifications**: Results are viewed on-demand via CLI or web
 - **CodeQL is experimental**: Cross-function/cross-file analysis is evaluated but not guaranteed
 
@@ -459,7 +496,8 @@ navigate controls. UTC timestamps display in Asia/Saigon by default.
 Scanners must be installed separately. Fast scans require Semgrep and Gitleaks;
 missing tools produce an actionable failure and partial reports. Local dirty
 checkouts require `--allow-dirty` and retain a content-hash manifest. CI rejects
-dirty checkouts. AI/Laya default off. Deep analysis remains explicitly unavailable.
+dirty checkouts. AI stages (Laya routing, review, validation, AI report) run
+when a provider profile + key is configured; hunt mode requires one.
 The existing `serve` command keeps the local web interface available.
 
 See [consumer workflows, required checks and GitHub releases](docs/CI-INTEGRATION.md)

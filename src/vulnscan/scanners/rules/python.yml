@@ -1,0 +1,205 @@
+rules:
+  # ─── Injection ──────────────────────────────────────────────────────
+  - id: py-sql-injection
+    languages: [python]
+    severity: ERROR
+    message: SQL built with string formatting; use a parameterized query.
+    metadata:
+      cwe: ['CWE-89: SQL Injection']
+      version: '0.2.0'
+    pattern-either:
+      - pattern: $C.execute("..." % ...)
+      - pattern: $C.execute("..." + ...)
+      - pattern: $C.execute("...".format(...))
+      - pattern: $C.execute(f"...")
+
+  - id: py-xss-markup-bypass
+    languages: [python]
+    severity: ERROR
+    mode: taint
+    message: Request data reaches Markup() without escaping; use escape().
+    metadata:
+      cwe: ['CWE-79: Cross-site Scripting (XSS)']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: request.args.get(...)
+      - pattern: request.form.get(...)
+      - pattern: request.values.get(...)
+      - pattern: request.args[...]
+      - pattern: request.form[...]
+      - pattern: request.get_json(...)
+      - pattern: request.json
+      - pattern: request.data
+      - pattern: request.GET.get(...)
+      - pattern: request.POST.get(...)
+    pattern-sinks:
+      - pattern: Markup(...)
+      - pattern: markupsafe.Markup(...)
+      - pattern: flask.Markup(...)
+    pattern-sanitizers:
+      - pattern: markupsafe.escape(...)
+      - pattern: flask.escape(...)
+      - pattern: html.escape(...)
+      - pattern: escape(...)
+
+  - id: py-command-injection
+    languages: [python]
+    severity: ERROR
+    mode: taint
+    message: Request data reaches a shell command; use an argument list or shlex.quote().
+    metadata:
+      cwe: ['CWE-78: OS Command Injection']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: request.args.get(...)
+      - pattern: request.form.get(...)
+      - pattern: request.values.get(...)
+      - pattern: request.args[...]
+      - pattern: request.form[...]
+      - pattern: request.get_json(...)
+      - pattern: request.json
+      - pattern: request.data
+      - pattern: request.GET.get(...)
+      - pattern: request.POST.get(...)
+    pattern-sinks:
+      - pattern: os.system(...)
+      - pattern: os.popen(...)
+      - pattern: subprocess.call(..., shell=True, ...)
+      - pattern: subprocess.run(..., shell=True, ...)
+      - pattern: subprocess.Popen(..., shell=True, ...)
+      - pattern: subprocess.check_output(..., shell=True, ...)
+    pattern-sanitizers:
+      - pattern: shlex.quote(...)
+
+  - id: py-code-injection-eval
+    languages: [python]
+    severity: ERROR
+    mode: taint
+    message: Request data reaches eval()/exec(); never execute untrusted code.
+    metadata:
+      cwe: ['CWE-95: Eval Injection']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: request.args.get(...)
+      - pattern: request.form.get(...)
+      - pattern: request.values.get(...)
+      - pattern: request.args[...]
+      - pattern: request.form[...]
+      - pattern: request.get_json(...)
+      - pattern: request.json
+      - pattern: request.data
+      - pattern: request.GET.get(...)
+      - pattern: request.POST.get(...)
+    pattern-sinks:
+      - pattern: eval(...)
+      - pattern: exec(...)
+
+  - id: py-path-traversal-open
+    languages: [python]
+    severity: ERROR
+    mode: taint
+    message: File path includes externally controlled input; validate or confine it.
+    metadata:
+      cwe: ['CWE-22: Path Traversal']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: request.args.get(...)
+      - pattern: request.form.get(...)
+      - pattern: request.values.get(...)
+      - pattern: request.args[...]
+      - pattern: request.form[...]
+      - pattern: request.get_json(...)
+      - pattern: request.json
+      - pattern: request.data
+      - pattern: request.GET.get(...)
+      - pattern: request.POST.get(...)
+    pattern-sinks:
+      - pattern: open(...)
+    pattern-sanitizers:
+      - pattern: os.path.basename(...)
+      - pattern: werkzeug.utils.safe_join(...)
+      - pattern: safe_join(...)
+
+  - id: py-ssrf-requests
+    languages: [python]
+    severity: ERROR
+    mode: taint
+    message: Request data reaches an outbound HTTP call; restrict to an allowlist.
+    metadata:
+      cwe: ['CWE-918: Server-Side Request Forgery (SSRF)']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: request.args.get(...)
+      - pattern: request.form.get(...)
+      - pattern: request.values.get(...)
+      - pattern: request.args[...]
+      - pattern: request.form[...]
+      - pattern: request.get_json(...)
+      - pattern: request.json
+      - pattern: request.data
+      - pattern: request.GET.get(...)
+      - pattern: request.POST.get(...)
+    pattern-sinks:
+      - pattern: requests.get(...)
+      - pattern: requests.post(...)
+      - pattern: requests.put(...)
+      - pattern: requests.delete(...)
+      - pattern: requests.patch(...)
+      - pattern: requests.head(...)
+      - pattern: requests.request(...)
+      - pattern: urllib.request.urlopen(...)
+
+  # ─── Templates / Deserialization ────────────────────────────────────
+  - id: py-ssti-jinja2
+    languages: [python]
+    severity: ERROR
+    message: Rendering a template built from a string enables SSTI; use get_template().
+    metadata:
+      cwe: ['CWE-1336: Template Injection']
+      version: '0.2.0'
+    pattern-either:
+      - pattern: jinja2.Template(...).render(...)
+      - pattern: Template(...).render(...)
+      - pattern: $ENV.from_string(...).render(...)
+
+  - id: py-unsafe-deserialization
+    languages: [python]
+    severity: ERROR
+    message: Unsafe deserialization of untrusted data; use json or yaml.safe_load.
+    metadata:
+      cwe: ['CWE-502: Deserialization of Untrusted Data']
+      version: '0.2.0'
+    patterns:
+      - pattern-either:
+          - pattern: pickle.loads(...)
+          - pattern: pickle.load(...)
+          - pattern: marshal.loads(...)
+          - pattern: marshal.load(...)
+          - pattern: yaml.load(...)
+          - pattern: shelve.open(...)
+      - pattern-not: yaml.load(..., Loader=yaml.SafeLoader, ...)
+      - pattern-not: yaml.load(..., Loader=yaml.BaseLoader, ...)
+
+  # ─── Secrets / Randomness ───────────────────────────────────────────
+  - id: py-hardcoded-secret
+    languages: [python]
+    severity: WARNING
+    message: Hardcoded credential; load secrets from the environment or a vault.
+    metadata:
+      cwe: ['CWE-798: Use of Hard-coded Credentials']
+      version: '0.2.0'
+    pattern-regex: '(?i)(password|passwd|secret|api_key|apikey|access_token)\s*=\s*[''"][^''"]+[''"]'
+
+  - id: py-weak-random-token
+    languages: [python]
+    severity: WARNING
+    message: random is predictable in security contexts; use the secrets module.
+    metadata:
+      cwe: ['CWE-330: Use of Insufficiently Random Values']
+      version: '0.2.0'
+    pattern-either:
+      - pattern: random.random()
+      - pattern: random.randint(...)
+      - pattern: random.randrange(...)
+      - pattern: random.choice(...)
+      - pattern: random.uniform(...)

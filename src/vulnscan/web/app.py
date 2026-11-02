@@ -12,13 +12,14 @@ import hmac
 import io
 import json
 import logging
+import os
 import re
 import secrets
 from collections.abc import AsyncIterator, Generator
 from pathlib import Path
 from typing import Annotated, Any, cast
 
-from fastapi import Depends, FastAPI, Form, HTTPException, Query, Request, Response
+from fastapi import BackgroundTasks, Depends, FastAPI, Form, HTTPException, Query, Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -33,8 +34,8 @@ from vulnscan.core.config import ScanConfig
 from vulnscan.core.finding_view import project_finding
 from vulnscan.core.scan_service import ScanService
 from vulnscan.reporting.reporter import ReportGenerator
-from vulnscan.storage.database import get_engine, migrate
-from vulnscan.storage.models import FindingORM, RunORM, ScanEventORM, StageORM
+from vulnscan.storage.database import get_engine, get_session, migrate
+from vulnscan.storage.models import FindingORM, FixProposalORM, RunORM, ScanEventORM, StageORM
 from vulnscan.version import APP_VERSION
 
 _TEMPLATES = Path(__file__).with_name("templates")
@@ -1060,6 +1061,305 @@ def create_app(
             session.add(StageORM(run_id=clone.id, ordinal=ordinal, name=name, status="pending"))
         session.commit()
         return {"run_id": clone.id, "status": "queued", "retried_from": run_id}
+
+    # ---- AI fix proposals -------------------------------------------------
+    # The model writes unified diffs only. Applying patches a COPY under
+    # artifacts and rescans it; the user's checkout is never modified.
+
+    from pydantic import StrictBool
+
+    from vulnscan.core.model_consent import model_use_allowed
+    from vulnscan.providers.credentials import redact, redact_json, redact_value
+    from vulnscan.providers.profile_store import load_profile
+
+    class _FixIn(BaseModel):
+        finding_ids: list[str] | None = None
+        provider_profile: str | None = None
+        provider_model: str | None = None
+        allow_cloud_model: StrictBool | None = None
+
+    def _fixes_db(request: Request) -> str:
+        engine = request.app.state.db_engine
+        return str(engine.url.database)
+
+    def _run_findings(session: Session, run: RunORM) -> list[dict[str, Any]]:
+        rows = (
+            session.query(FindingORM)
+            .filter(FindingORM.run_id == run.id)
+            .order_by(FindingORM.id)
+            .all()
+        )
+        findings: list[dict[str, Any]] = []
+        for row in rows:
+            try:
+                raw = json.loads(row.finding_json or "{}")
+            except json.JSONDecodeError:
+                continue
+            if isinstance(raw, dict) and raw.get("finding_id"):
+                findings.append(raw)
+        return findings
+
+    def _fix_configuration(run: RunORM) -> dict[str, Any]:
+        try:
+            spec = json.loads(run.scan_spec_json or "{}")
+        except ValueError:
+            return {}
+        configuration = spec.get("configuration") if isinstance(spec, dict) else None
+        return configuration if isinstance(configuration, dict) else {}
+
+    def _fix_provider(run: RunORM, override: str | None) -> str:
+        configured = override or _fix_configuration(run).get("provider_profile")
+        if configured:
+            if not isinstance(configured, str) or not re.fullmatch(r"[a-z0-9-]{1,64}", configured):
+                raise HTTPException(422, "Invalid provider profile id")
+            return configured
+        raise HTTPException(
+            422, "No provider profile: pass provider_profile or rerun with AI review"
+        )
+
+    def _fix_consent(run: RunORM, profile_id: str, explicit: bool | None) -> bool:
+        configuration = _fix_configuration(run)
+        consent = (
+            explicit
+            if explicit is not None
+            else configuration.get("provider_profile") == profile_id
+            and configuration.get("allow_cloud_model") is True
+        )
+        try:
+            allowed, reason = model_use_allowed(load_profile(profile_id), consent)
+        except (OSError, ValueError) as exc:
+            raise HTTPException(422, redact(str(exc))) from None
+        if not allowed:
+            raise HTTPException(422, redact(reason))
+        return consent
+
+    def _fix_verification(raw: str | None) -> dict[str, Any]:
+        try:
+            value = json.loads(raw or "{}")
+        except ValueError:
+            value = None
+        if not isinstance(value, dict):
+            return {"fixed": False, "detail": "Stored verification is unavailable"}
+        return cast(dict[str, Any], redact_value(value))
+
+    def _fix_context(checkout: str, file_path: str, line: int | None) -> str:
+        """Read ~60 lines around the finding from the local checkout (if any).
+
+        The finding snippet is only ±1 line, which makes the model invent
+        context. wider real context lets the strict applier accept the patch.
+        """
+        from vulnscan.ai.fix import resolve_fix_file
+
+        if not checkout or not os.path.isdir(checkout):
+            return ""
+        try:
+            target = resolve_fix_file(Path(checkout), file_path)
+            numbered = list(
+                enumerate(
+                    target.read_text(encoding="utf-8", errors="replace").splitlines(), start=1
+                )
+            )
+        except (OSError, ValueError):
+            return ""
+        center = line or 1
+        window = [f"{number:>5}| {text}" for number, text in numbered if abs(number - center) <= 30]
+        return redact("\n".join(window))
+
+    def _execute_fixes(
+        db_path: str,
+        run_pk: int,
+        finding_ids: list[str] | None,
+        profile_id: str,
+        model: str | None,
+        allow_cloud_model: bool,
+    ) -> None:
+        from vulnscan.ai.fix import propose_fix
+
+        with get_session(db_path) as session:
+            run = session.get(RunORM, run_pk)
+            if run is None:
+                return
+            checkout = ((run.target.repository_url if run.target else "") or "").strip()
+            findings = _run_findings(session, run)
+            if finding_ids:
+                wanted = set(finding_ids)
+                findings = [f for f in findings if f["finding_id"] in wanted]
+            for finding in findings:
+                fid = str(finding["finding_id"])
+                existing = (
+                    session.query(FixProposalORM)
+                    .filter_by(run_id=run_pk, finding_id=fid)
+                    .order_by(FixProposalORM.id.desc())
+                    .first()
+                )
+                if existing is not None and existing.status == "proposed":
+                    continue
+                try:
+                    obs = (finding.get("observations") or [{}])[0]
+                    loc = obs.get("location", {})
+                    context = _fix_context(
+                        checkout,
+                        str(loc.get("file_path", "")),
+                        loc.get("line_start"),
+                    )
+                    proposal = propose_fix(
+                        finding,
+                        profile_id,
+                        model,
+                        code_context=context,
+                        allow_cloud_model=allow_cloud_model,
+                    )
+                    session.add(
+                        FixProposalORM(
+                            run_id=run_pk,
+                            finding_id=fid,
+                            diff_text=redact(proposal.diff_text),
+                            status="proposed",
+                            model=redact(proposal.model),
+                        )
+                    )
+                except Exception as exc:  # noqa: BLE001 - record per-finding failure, keep going
+                    session.add(
+                        FixProposalORM(
+                            run_id=run_pk,
+                            finding_id=fid,
+                            diff_text="",
+                            status="failed",
+                            model=redact(model or profile_id),
+                            error=redact(str(exc))[:500],
+                        )
+                    )
+            session.commit()
+
+    @app.post("/api/scans/{run_id}/fix", status_code=202)
+    def scan_fix(
+        run_id: int,
+        body: _FixIn,
+        request: Request,
+        background: BackgroundTasks,
+        session: SessionDep,
+    ) -> dict[str, Any]:
+        """Queue AI fix proposals for findings (diff only, never edits source)."""
+        run = session.get(RunORM, run_id)
+        if run is None:
+            raise HTTPException(404, "Run not found")
+        profile_id = _fix_provider(run, body.provider_profile)
+        allow_cloud_model = _fix_consent(run, profile_id, body.allow_cloud_model)
+        findings = _run_findings(session, run)
+        if body.finding_ids:
+            wanted = set(body.finding_ids)
+            findings = [f for f in findings if f["finding_id"] in wanted]
+            if not findings:
+                raise HTTPException(404, "No matching findings")
+        background.add_task(
+            _execute_fixes,
+            _fixes_db(request),
+            run_id,
+            [f["finding_id"] for f in findings] or None,
+            profile_id,
+            body.provider_model,
+            allow_cloud_model,
+        )
+        return {"run_id": run_id, "accepted": len(findings), "status": "queued"}
+
+    @app.get("/api/scans/{run_id}/fixes")
+    def scan_fixes(run_id: int, session: SessionDep) -> dict[str, Any]:
+        """List fix proposals for a run (diffs included for review)."""
+        run = session.get(RunORM, run_id)
+        if run is None:
+            raise HTTPException(404, "Run not found")
+        rows = (
+            session.query(FixProposalORM)
+            .filter(FixProposalORM.run_id == run_id)
+            .order_by(FixProposalORM.id)
+            .all()
+        )
+        return {
+            "run_id": run_id,
+            "proposals": [
+                {
+                    "id": row.id,
+                    "finding_id": redact(row.finding_id),
+                    "status": row.status,
+                    "diff": redact_value(row.diff_text),
+                    "model": redact_value(row.model),
+                    "error": redact_value(row.error),
+                    "overlay_path": redact_value(row.overlay_path),
+                    "verification": _fix_verification(row.verification_json),
+                }
+                for row in rows
+            ],
+        }
+
+    @app.post("/api/scans/{run_id}/fixes/{proposal_id}/apply")
+    def scan_fix_apply(
+        run_id: int,
+        proposal_id: int,
+        request: Request,
+        session: SessionDep,
+    ) -> dict[str, Any]:
+        """Apply a proposal to an overlay copy and rescan to verify the fix."""
+        from vulnscan.ai.fix import apply_unified_diff, prepare_overlay, verify_fixed
+
+        run = session.get(RunORM, run_id)
+        if run is None:
+            raise HTTPException(404, "Run not found")
+        proposal = session.get(FixProposalORM, proposal_id)
+        if proposal is None or proposal.run_id != run_id:
+            raise HTTPException(404, "Proposal not found")
+        if proposal.status not in ("proposed", "failed"):
+            return {
+                "id": proposal.id,
+                "status": proposal.status,
+                "verification": _fix_verification(proposal.verification_json),
+            }
+        findings = {f["finding_id"]: f for f in _run_findings(session, run)}
+        finding = findings.get(proposal.finding_id)
+        if finding is None:
+            raise HTTPException(404, "Finding no longer in run")
+        obs = (finding.get("observations") or [{}])[0]
+        loc = obs.get("location", {})
+        file_path = str(loc.get("file_path", ""))
+        checkout = ((run.target.repository_url if run.target else "") or "").strip()
+
+        if not checkout or not os.path.isdir(checkout):
+            proposal.status = "failed"
+            proposal.error = "Run target is not a local checkout; cannot stage overlay"
+            session.commit()
+            raise HTTPException(422, proposal.error)
+        try:
+            overlay_root = (
+                Path(request.app.state.export_dir) / f"fix-{run_id}" / f"proposal-{proposal.id}"
+            )
+            overlay = prepare_overlay(checkout, file_path, overlay_root)
+            apply_unified_diff(overlay, proposal.diff_text or "", expected_path=file_path)
+            verification = verify_fixed(
+                overlay,
+                file_path,
+                str(obs.get("rule_id", "")),
+                loc.get("line_start"),
+            )
+            proposal.overlay_path = redact(str(overlay))
+            proposal.verification_json = redact_json(verification)
+            proposal.status = "verified" if verification.get("fixed") is True else "failed"
+            proposal.error = (
+                None
+                if proposal.status == "verified"
+                else redact(str(verification.get("detail", "")))[:500]
+            )
+            session.commit()
+        except Exception as exc:  # noqa: BLE001 - apply/verify failure lands on the proposal
+            proposal.status = "failed"
+            proposal.error = redact(f"{type(exc).__name__}: {exc}")[:500]
+            proposal.verification_json = redact_json({"fixed": False, "detail": proposal.error})
+            session.commit()
+            raise HTTPException(422, proposal.error)
+        return {
+            "id": proposal.id,
+            "status": proposal.status,
+            "overlay_path": redact_value(proposal.overlay_path),
+            "verification": _fix_verification(proposal.verification_json),
+        }
 
     # ---- Phase 5 Reports + Logs -------------------------------------------
     # Log lines are DERIVED (no dedicated event/log table beyond the Phase 1

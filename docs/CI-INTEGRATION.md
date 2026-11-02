@@ -128,6 +128,9 @@ configuration files. Python, Go and frontend test files are classified as
 tests, with no source/test overlap. Generated output, installed dependencies,
 scan evidence, third-party fixtures, essay files, local state and credential
 files are excluded. No language is hardcoded as the sole analysis language.
+This includes the intentionally vulnerable rule samples under
+`tests/scanners/fixtures/`; the Python suite executes their positive and
+negative Semgrep rule checks separately.
 
 The check waits for the SonarCloud quality gate and fails if that gate fails.
 This workflow performs static analysis; it does not generate or fabricate test

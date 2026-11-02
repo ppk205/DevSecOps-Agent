@@ -98,8 +98,52 @@ export const mockApi = {
     status: string;
     profile: string;
   }> => delay({ run_id: 8, status: "queued", profile: body.profile ?? "fast" }),
+  // ---- AI fix (mock): in-memory proposals per run ----
+  requestFix: (
+    runId: number,
+    body: { finding_ids: string[] | null; provider_profile?: string | null; provider_model?: string | null },
+  ): Promise<{ accepted: boolean; run_id: number }> => {
+    const ids =
+      body.finding_ids ?? MOCK_FINDINGS.slice(0, 3).map((f) => f.id);
+    const runStore = mockFixesByRun.get(runId) ?? [];
+    for (const fid of ids) {
+      if (runStore.some((p) => p.finding_id === fid)) continue;
+      runStore.push({
+        id: `fix-${fid}`,
+        finding_id: fid,
+        status: "proposed",
+        diff: `--- a/finding/${fid}\n+++ b/finding/${fid}\n@@ remediate @@\n-// vulnerable: ${fid}\n+// remediated: ${fid} (profile ${body.provider_profile ?? "default"})`,
+        model: body.provider_model ?? "north-mini-code",
+        error: null,
+        overlay_path: null,
+        verification: null,
+      });
+    }
+    mockFixesByRun.set(runId, runStore);
+    return delay({ accepted: true, run_id: runId });
+  },
+  fetchFixes: (runId: number): Promise<{ run_id: number; proposals: import("../api/types").FixProposal[] }> =>
+    delay({ run_id: runId, proposals: (mockFixesByRun.get(runId) ?? []).map((p) => ({ ...p })) }),
+  applyFix: (
+    runId: number,
+    proposalId: string,
+  ): Promise<{ id: string; status: string; overlay_path: string | null; verification: import("../api/types").FixVerification | null }> => {
+    const runStore = mockFixesByRun.get(runId) ?? [];
+    const proposal = runStore.find((p) => p.id === proposalId);
+    if (!proposal) return delay({ id: proposalId, status: "failed", overlay_path: null, verification: null });
+    proposal.status = "applied";
+    proposal.overlay_path = `overlays/run-${runId}/${proposalId}.patch`;
+    proposal.verification = { fixed: true, detail: `Re-scan of ${proposal.finding_id}: taint path removed.` };
+    return delay({ id: proposal.id, status: proposal.status, overlay_path: proposal.overlay_path, verification: proposal.verification });
+  },
 };
 
 /** Mutable mock copies so the Keys/Settings pages feel interactive offline. */
+const mockFixesByRun = new Map<number, import("../api/types").FixProposal[]>();
+
+/** Test helper: clear in-memory fix proposals between tests. */
+export function resetMockFixes(): void {
+  mockFixesByRun.clear();
+}
 const mockGeneral: GeneralSettings = { ...MOCK_GENERAL };
 const mockKeys: KeyEntry[] = MOCK_KEYS.map((k) => ({ ...k }));

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Merge remote main's multilingual baseline rules, PIT WALL report/theme updates, local Laya checkpoint override, and baseline AI-fix UI into `dev` while retaining the human-gated chat clients and repository-wide SonarCloud configuration.
+- Keep baseline fix proposals consent-checked and redacted. Confine overlay writes and context reads, reject malformed/mismatched diffs, and report scanner failures or missing coverage instead of a verified fix. Resolve Semgrep from the installed environment and check shifted rule matches.
+
 - Replace the Maven-only SonarCloud job with the standard pinned scan action and repository-wide multi-language scope. Read project identity from Actions variables, classify tests separately, exclude generated/external/private data, and report the actual quality-gate result.
 
 - Merge the remaining chat and experiment implementation into `dev` for SonarCloud testing. Preserve its standalone SonarCloud workflow and align action pins and checkout credentials with the current CI contract.
@@ -52,6 +55,7 @@
 - Add the citation checker and CVSS v4.0 scoring through `cvss==3.6`; the harness verifies evidence and only a human sets a finding's status.
 - Add fix proposals applied only to a `devsec/fix-<finding_id>` worktree branch after a human G6, and a G7 re-scan that reports whether the candidate is gone.
 - Add finding-card reports (Markdown and JSON) with the gate decision log, and the console slash commands `/model`, `/mode`, `/cost`, `/review`, `/export`, `/resume`, `/clear`, `/quit`.
+- Extend baseline scanning to JavaScript/TypeScript, Python and PHP with bundled Semgrep rules, language-aware inventory and paired vulnerable/safe fixtures. Harness detection remains focused on Java Servlet/JSP.
 
 - Add `--mode hunt`: model-first pipeline where the model explores the snapshot with read-only tools (`hunt_vulns`), scanners run unchanged, Laya verifies each candidate (`laya_verification`), and `model_scanner_compare` buckets agreed/model-only/scanner-only; the AI lane focuses on agreed findings and `hunt.json` lands next to `final-report.md`. Default `deterministic` mode is byte-for-byte unchanged; without `--provider` hunt stages skip and the run falls back to deterministic.
 - Verify hunted vulnerabilities with Laya: each model candidate becomes a `DecisionRequest` with a code excerpt, attaching `laya_route`/`laya_confidence`/`laya_status` — Laya unavailable degrades to `skipped`, never fails a run.

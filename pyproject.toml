@@ -92,6 +92,11 @@ timeout = 300
 target-version = "py311"
 line-length = 100
 
+# Scanner rule fixtures are intentionally vulnerable by design; the paired
+# Safe* files prove the rules stay silent. Linting them is noise.
+[tool.ruff.lint.per-file-ignores]
+"tests/scanners/fixtures/python/*.py" = ["ALL"]
+
 # torch 2.14+ segfaults on Windows when laya 0.3.20 loads its safetensors;
 # 2.6.0 is the last build verified to work with this model revision.
 [tool.uv]

@@ -30,6 +30,7 @@ from vulnscan.contracts import (
     Severity,
     SourceCoordinate,
     ToolName,
+    language_from_extension,
 )
 
 from .base import AdapterCapability, ScannerAdapter
@@ -111,12 +112,7 @@ def _extract_from_sarif_v2(
                         break
 
             # Determine language
-            ext = Path(file_path).suffix.lower()
-            lang = (
-                LanguageKind.JAVA
-                if ext == ".java"
-                else (LanguageKind.JSP if ext in (".jsp", ".jspx") else LanguageKind.OTHER)
-            )
+            lang = language_from_extension(file_path)
 
             observations.append(
                 Observation(
@@ -147,12 +143,7 @@ def _extract_from_sarif_v2(
             art_locs = invocation.get("artifacts", [])
             for al in art_locs:
                 uri = al.get("location", {}).get("artifactLocation", {}).get("uri", "")
-                ext = Path(uri).suffix.lower()
-                lang = (
-                    LanguageKind.JAVA
-                    if ext == ".java"
-                    else (LanguageKind.JSP if ext in (".jsp", ".jspx") else LanguageKind.OTHER)
-                )
+                lang = language_from_extension(uri)
                 coverage.append(
                     CoverageRecord(
                         run_id=run_id,
@@ -197,12 +188,7 @@ def _extract_from_legacy_json(
         start_col = res.get("start", {}).get("col")
         end_col = res.get("end", {}).get("col")
 
-        ext = Path(path).suffix.lower()
-        lang = (
-            LanguageKind.JAVA
-            if ext == ".java"
-            else (LanguageKind.JSP if ext in (".jsp", ".jspx") else LanguageKind.OTHER)
-        )
+        lang = language_from_extension(path)
 
         # CWE extraction. The legacy ``--json`` schema puts CWE labels under
         # ``extra.metadata.cwe`` as a list of "CWE-89: description" strings;
@@ -244,12 +230,7 @@ def _extract_from_legacy_json(
 
     # Coverage from the ``scan_targets`` list
     for target in data.get("paths", {}).get("scanned", data.get("scan_info", {}).get("files", [])):
-        ext = Path(target).suffix.lower()
-        lang = (
-            LanguageKind.JAVA
-            if ext == ".java"
-            else (LanguageKind.JSP if ext in (".jsp", ".jspx") else LanguageKind.OTHER)
-        )
+        lang = language_from_extension(target)
         coverage.append(
             CoverageRecord(
                 run_id=run_id,
@@ -336,7 +317,9 @@ class SemgrepAdapter(ScannerAdapter):
         argv: list[str] = [self.binary_name]
         argv += ["--metrics", "off", "--disable-version-check"]
         if not (tool_cfg and tool_cfg.rule_paths):
-            argv += ["--config", str(Path(__file__).with_name("rules") / "java.yml")]
+            rules_dir = Path(__file__).with_name("rules")
+            for rules_file in sorted(rules_dir.glob("*.yml")):
+                argv += ["--config", str(rules_file)]
         argv += ["--json"]
         argv += ["--no-git-ignore"]
         if tool_cfg and tool_cfg.rule_paths:

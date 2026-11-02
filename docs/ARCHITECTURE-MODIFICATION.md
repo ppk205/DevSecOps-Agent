@@ -704,3 +704,32 @@ Local verification: the new workflow/scope tests failed against the old
 Maven setup and pass against the CLI configuration. Ruff lint and format,
 strict mypy and the full Python suite pass (980 passed, 1 skipped). A live
 analysis still requires the Actions variables and secret described above.
+
+### 13.13 Integrate remote main into dev
+
+The owner requested remote main `be36ea1` be merged into dev `ae09bb1` and
+fully tested before pushing. README and changelog conflicts preserve the
+current harness architecture and incorporate the incoming baseline features.
+
+Incoming functionality includes multilingual Semgrep rules and inventory,
+PIT WALL HTML report/theme changes, a trained local-checkpoint override, and
+baseline fix proposals backed by the additive `fix_proposals` migration.
+The harness retains its Java Servlet/JSP detection scope and human gates.
+
+Integration fixes apply existing cloud consent to the baseline proposal flow,
+confine context/overlay paths, redact provider and API data, and reject false
+verification on failed, malformed or incomplete scans. Verification checks
+same-rule matches throughout the patched file rather than only the old line.
+The real Semgrep overlay roundtrip exposed a PATH-only lookup; it now uses the
+same virtual-environment fallback as the scanner adapters. SonarCloud excludes
+the newly added rule fixtures from repository quality analysis.
+
+Verification actually run: Ruff check and format; strict mypy for Windows,
+Linux and macOS; all Python tests (1111 passed, 1 skipped); frontend typecheck,
+107 Vitest tests and production build; native build and Go vet/tests on a clean
+Go source copy; the recorded Go/Python session roundtrip; lock/export checks;
+and fresh-wheel package smoke. The skip is the existing unavailable-Semgrep
+case because Semgrep is installed. The Go source copy avoids the pre-existing
+ignored scratch probe; the real bridge test also runs in the source checkout.
+No live-provider or full WSL experiment result is claimed. Logs are under
+`.tools/ci-logs/main-merge-2026-11-02/`.

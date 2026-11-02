@@ -49,9 +49,11 @@ Gitleaks, GitHub CodeQL, SonarQube) are **baselines for comparison only**.
 - **A2.** MUST NOT add a provider SDK (`openai`, `anthropic`, `google-genai`, etc.). Model calls go through `harness/providers.py` transports using `httpx`.
 - **A3.** The harness is provider-agnostic. MUST NOT hardcode a vendor, model or endpoint outside the built-in profile table. New providers are profiles, not code paths.
 - **A4.** Scanners are baselines. MUST NOT call Semgrep, SpotBugs, Dependency-Check, Gitleaks, CodeQL or `ScanService` from the harness or its tools. `scan-run` stays the baseline runner and MUST keep working. `scan-run` model paths (`--mode hunt`, `--ai-review`, `--ai-report`) are baseline B7: off by default, cloud providers need `--allow-cloud-model`, and their output never reaches the harness.
+  Dashboard baseline fix proposals use the shared cloud-consent check. Applying them writes an isolated overlay, never the target; verification checks rule recurrence and MUST NOT change a finding's status or treat failed/incomplete scans as success.
 - **A5.** Detection in the harness comes from the harness's own static tools (`harness/scanning.py`). The model is a supporting tool. It investigates only candidates in a batch opened at G3/G4, explains them, and proposes CVSS vectors and fixes. It never originates or decides a finding (spec D10). Laya triages candidates **before** the model investigates them. Docs, the essay and the UI call the model "AI support", never the scanner or the core.
 - **A6.** Laya is advisory. Its output MUST NOT set or change a finding's status (`affects_finding_status` is always `False`).
 - **A7.** Laya runs on the CPU (`decisions/model_worker.py:32-35`, the 4 GB GPU runs out of memory). MUST NOT switch it to the GPU without the owner's approval. `config/laya.json` `timeout_seconds` MUST stay at least 300.
+  `LAYA_MODEL_DIR` may select an existing local checkpoint for the default model; it does not change the CPU requirement.
   For the owner-approved S1 experiment, explicit `mode: "off"` skips Laya and records that fact; G3/G4 still control investigation. The shipped configuration keeps harness triage enabled.
 
 ## 3. Human decision rules (gates)

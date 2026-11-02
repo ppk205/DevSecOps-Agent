@@ -177,6 +177,26 @@ loopback (`localhost`, `127.0.0.1`, `::1`), they stay skipped unless you pass
 `--allow-cloud-model`; the refusal is recorded on the run's stages, not raised
 as an error.
 
+The baseline inventory and bundled Semgrep rules also cover
+JavaScript/TypeScript, Python and PHP. Java-specific scanners keep their own
+coverage limits; the harness's detection tools remain Java Servlet/JSP-focused.
+
+In the PIT WALL Findings view, **Propose fix** requests a diff for one finding,
+and **Fix all** requests proposals for the run. The run needs a provider profile
+or the request must supply one. A cloud profile needs consent: either the run's
+existing consent for that same profile or explicit `allow_cloud_model: true`
+on the request. The UI checkbox grants consent to one request and resets.
+
+Applying a baseline proposal changes an overlay copy under the export directory,
+then checks for the same Semgrep rule. It never edits the target checkout.
+The check catches rule matches even if the patch shifted their line numbers;
+scanner failures or missing coverage do not count as a verified fix. Semgrep
+is resolved from PATH or the application virtual environment.
+
+To use an existing trained Laya checkpoint, set `LAYA_MODEL_DIR` to its directory
+before launching. The override applies only to the default model selection;
+Laya remains on the CPU.
+
 ## 4a. Run the AI harness
 
 The runtime, build and scanner dependency exports include `cvss==3.6`, so

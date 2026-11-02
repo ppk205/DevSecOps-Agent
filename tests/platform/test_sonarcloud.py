@@ -85,6 +85,7 @@ def test_sonarcloud_excludes_generated_external_and_credential_files():
         "web-ui/node_modules/library/index.js",
         "web-ui/dist/assets/index.js",
         "tests/fixtures/java/vulnerable/A.java",
+        "tests/scanners/fixtures/python/VulnSql.py",
         ".tools/check.py",
         ".venv/lib/a.py",
         ".devsec/sessions/log.jsonl",

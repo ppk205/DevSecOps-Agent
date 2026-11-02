@@ -123,6 +123,25 @@ def migrate(engine: Engine) -> None:
                 "CREATE INDEX IF NOT EXISTS scan_events_run_seq ON scan_events(run_id, seq)"
             )
             conn.exec_driver_sql("INSERT INTO schema_migrations VALUES (4)")
+        if not conn.exec_driver_sql("SELECT 1 FROM schema_migrations WHERE version = 5").first():
+            conn.exec_driver_sql(
+                """CREATE TABLE IF NOT EXISTS fix_proposals (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    run_id INTEGER NOT NULL REFERENCES runs(id),
+                    finding_id VARCHAR(80) NOT NULL,
+                    diff_text TEXT NOT NULL DEFAULT '',
+                    status VARCHAR(16) NOT NULL DEFAULT 'proposed',
+                    model VARCHAR(80),
+                    error TEXT,
+                    overlay_path TEXT,
+                    verification_json TEXT NOT NULL DEFAULT '{}',
+                    created_at VARCHAR(64)
+                )"""
+            )
+            conn.exec_driver_sql(
+                "CREATE INDEX IF NOT EXISTS fix_proposals_run ON fix_proposals(run_id, finding_id)"
+            )
+            conn.exec_driver_sql("INSERT INTO schema_migrations VALUES (5)")
 
 
 def init_db(db_path: str | Path = "vulnscan.db") -> None:
