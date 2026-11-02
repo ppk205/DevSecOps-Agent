@@ -102,3 +102,35 @@ def test_report_prompt_carries_compare_counts():
     )
     assert "Đối chiếu model vs scanner" in prompt
     assert '"agreed": 1' in prompt
+
+
+def test_empty_model_reply_falls_back_to_deterministic_narrative(monkeypatch):
+    """Empty AI reply must not produce a 0-byte report: deterministic text + partial."""
+    from vulnscan.reporting import final_report as fr_mod
+    from vulnscan.reporting.final_report import run_final_report
+
+    class _Resp:
+        content = "   "
+        model = "test-model"
+        usage = {"total_tokens": 0}
+
+    class _Client:
+        def __init__(self, *a, **k):
+            pass
+
+        def chat(self, *a, **k):
+            return _Resp()
+
+    monkeypatch.setattr(fr_mod, "ProviderClient", _Client)
+    monkeypatch.setattr(fr_mod, "load_profile", lambda pid: {"id": pid})
+    out = run_final_report(
+        [_finding()],
+        [],
+        {"target": "x", "commit": "y", "gate": "failed", "status": "failed"},
+        profile_id="any-profile",
+        model="m",
+    )
+    assert out["status"] == "partial"
+    assert out["ai_written"] is False
+    assert "empty reply" in out["detail"]
+    assert len(out["markdown"]) > 100

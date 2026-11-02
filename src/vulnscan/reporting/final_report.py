@@ -210,10 +210,18 @@ def run_final_report(
         report["model"] = resp.model
         report["provider"] = profile.id
         report["ai_written"] = True
-        report["status"] = "completed" if resp.content.strip() else "failed"
-        report["detail"] = (
-            f"{resp.usage.get('total_tokens', 0)} tokens" if resp.content.strip() else "empty reply"
-        )
+        if resp.content.strip():
+            report["status"] = "completed"
+            report["detail"] = f"{resp.usage.get('total_tokens', 0)} tokens"
+        else:
+            # Empty model reply: keep a deterministic narrative so the
+            # report file is never 0 bytes; mark partial, not failed.
+            report["markdown"] = deterministic_narrative(
+                findings, decisions, run_metadata, comparison=comparison
+            )
+            report["ai_written"] = False
+            report["status"] = "partial"
+            report["detail"] = "empty reply — deterministic narrative used"
     except Exception as exc:  # noqa: BLE001 — report stage never fails a run
         logger.warning("final report failed: %s", exc)
         report["status"] = "failed"
