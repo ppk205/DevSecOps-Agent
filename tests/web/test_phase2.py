@@ -98,6 +98,27 @@ class TestKeys:
         )
         assert response.status_code == 422
 
+    def test_put_key_only_preserves_headers(self, tmp_path: Path, monkeypatch) -> None:  # type: ignore[no-untyped-def]
+        from vulnscan.providers.profile_store import load_profile
+
+        client = _client(tmp_path, monkeypatch)
+        headers = _csrf(client)
+        first = client.put(
+            "/api/settings/keys/t-hdr",
+            json={"api_key": FAKE_KEY, "base_url": "https://example.test/v1", "label": "T Hdr"},
+            headers=headers,
+        )
+        assert first.status_code == 200
+        # Simulate a profile that needs a routing header, then update only the key.
+        prof = load_profile("t-hdr")
+        prof.headers = {"x-opencode-session": "devsecops-agent"}
+        from vulnscan.providers.profile_store import save_profile
+
+        save_profile(prof)
+        second = client.put("/api/settings/keys/t-hdr", json={"api_key": FAKE_KEY}, headers=headers)
+        assert second.status_code == 200
+        assert load_profile("t-hdr").headers == {"x-opencode-session": "devsecops-agent"}
+
     def test_delete_removes_profile(self, tmp_path: Path, monkeypatch) -> None:  # type: ignore[no-untyped-def]
         client = _client(tmp_path, monkeypatch)
         headers = _csrf(client)

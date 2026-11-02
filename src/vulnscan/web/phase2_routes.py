@@ -215,6 +215,10 @@ def api_key_put(profile: str, body: KeyPutIn) -> dict[str, Any]:
         if body.default_model is not None
         else (existing.default_model if existing else None)
     )
+    # Preserve custom headers (e.g. opencode session routing) — a key-only
+    # update must not wipe profile transport settings.
+    headers = dict(existing.headers) if existing and existing.headers else {}
+    metadata = dict(existing.metadata) if existing and existing.metadata else {}
     # Key stays in process env / project .env only — never on the profile JSON.
     EnvFile().set(api_key_env, raw)
     saved = ProviderProfile(
@@ -225,6 +229,8 @@ def api_key_put(profile: str, body: KeyPutIn) -> dict[str, Any]:
         api_key_env=api_key_env,
         models=models,
         default_model=default_model,
+        headers=headers,
+        metadata=metadata,
     )
     save_profile(saved)
     status = key_status(api_key_env)
