@@ -126,6 +126,24 @@ class TestHumanReadableExports:
         assert payload not in text
         assert "&lt;script&gt;" in text
 
+    def test_html_uses_pitwall_theme_and_summarized_coverage(self):
+        findings = [_finding("f1", FindingStatus.UNRESOLVED)]
+        coverage = {
+            "semgrep": [
+                {"status": "analyzed", "unit_path": "A.java"},
+                {"status": "skipped", "unit_path": "B.java", "limitation_reason": "binary file"},
+            ]
+        }
+        report = ReportGenerator(
+            "run-1", findings, run_metadata={"commit": "abc"}, coverage_summary=coverage
+        )
+        text = report.to_html()
+        assert "scrollbar-color" in text  # styled scrollbars, not default white
+        assert "st-unresolved" in text  # status chip, not plain text
+        assert "semgrep" in text and "1/2 units analyzed" in text
+        assert "binary file" in text
+        assert "'status': 'analyzed'" not in text  # no raw dict dump
+
     def test_json_export_is_valid_utf8_json(self):
         report = ReportGenerator("run-1", [_finding("f1", FindingStatus.CONFIRMED)])
         text = report.to_json()

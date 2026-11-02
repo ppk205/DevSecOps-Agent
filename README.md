@@ -27,28 +27,24 @@ The experimental target is [JVA-bookstore](https://github.com/Moseyuh333/JVA-boo
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    CLI / Web Dashboard                   │
-│                  (Typer + FastAPI + Jinja)                │
+│              CLI / PIT WALL Web UI / Go TUI              │
+│         (Typer + React SPA + FastAPI + native Go)        │
 ├─────────────────────────────────────────────────────────┤
 │                   Orchestration Layer                    │
 │            (scan lifecycle, queue, retry)                │
-├─────────┬──────────┬──────────┬──────────┬──────────────┤
-│ Semgrep │ SpotBugs │   ODG    │ Gitleaks │ CodeQL (exp) │
-│  (CE)   │+FindSec  │          │          │              │
-├─────────┴──────────┴──────────┴──────────┴──────────────┤
+├─────────────────────────────────────────────────────────┤
+│  Deterministic lane        │  Model-first lane (--hunt)  │
+│  Semgrep, Gitleaks,        │  Model hunts (read-only     │
+│  SpotBugs, ODC             │  tools) → scanners verify    │
+├────────────────────────────┴────────────────────────────┤
 │              Normalization & Deduplication               │
 ├─────────────────────────────────────────────────────────┤
-│          Source Context & Java Security Models           │
-│   (call-graph, sanitizers, auth checks, sinks, routes)  │
+│   Laya advisory routing + independent verification      │
 ├─────────────────────────────────────────────────────────┤
-│            AI Assessment Agent (LLM-backed)              │
-│      (CVSS v4.0 estimation, contextual reasoning)       │
-├─────────────────────────────────────────────────────────┤
-│         Independent Verification Engine                 │
-│   (mechanical checks on AI claims before acceptance)     │
+│   Targeted AI review (CVSS v4.0) + independent validation│
 ├─────────────────────────────────────────────────────────┤
 │          Reporting & Experiment Comparison               │
-│       (HTML, CSV, JSON; per-scanner, per-CWE)           │
+│   (JSON, SARIF, HTML, Markdown, CSV, TXT, DOCX)          │
 ├─────────────────────────────────────────────────────────┤
 │   Storage: SQLite (SQLAlchemy) + Artifact Files          │
 └─────────────────────────────────────────────────────────┘
@@ -78,11 +74,12 @@ Dependency vulnerabilities (OWASP Dependency-Check) are evaluated separately fro
 - **Language**: Python 3.11+
 - **Web Framework**: FastAPI + Uvicorn
 - **Templating**: Jinja2
-- **Database**: SQLite via SQLAlchemy (async with aiosqlite)
+- **Database**: SQLite via SQLAlchemy (sync sessions)
 - **CLI**: Typer
 - **HTTP Client**: httpx
 - **Scanners**: Semgrep CE, SpotBugs + FindSecBugs, OWASP Dependency-Check, Gitleaks, CodeQL (experimental)
-- **AI Provider**: Configurable LLM backend (OpenAI-compatible API)
+- **AI Provider**: Project-local profiles (`.providers/*.json`, OpenAI-compatible API) + BYOK env keys
+- **Web UI**: React SPA (PIT WALL) served by FastAPI; mock mode for frontend-only work
 - **Build**: Hatchling
 
 ## Project Structure
@@ -156,50 +153,50 @@ pip install -e ".[dev,scanners]"
 
 ### Configuration
 
-Create a `.env` file in the project root:
+AI keys are **bring-your-own** and never stored in the repo. Register a
+provider profile once, then export the key in your shell:
 
-```env
-# AI Provider settings
-LLM_API_KEY=your-api-key-here
-LLM_BASE_URL=https://api.openai.com/v1
-LLM_MODEL=gpt-4o
+```bash
+# Register a profile (writes .providers/kios-free.json; gitignored)
+devsecops-agent provider-add --id kios-free --base-url https://kiosapi.com/v1 \
+  --api-key-env KIOS_API_KEY --models beam-free --default-model beam-free
 
-# Scanner paths (adjust to your installation)
-SEMGREP_PATH=semgrep
-SPOTBUGS_PATH=/path/to/spotbugs
-OWASP_DC_PATH=/path/to/dependency-check/bin/dependency-check
-GITLEAKS_PATH=gitleaks
-CODEQL_PATH=/path/to/codeql
+# Export the key for this shell only (never commit it)
+export KIOS_API_KEY='<paste-key-here>'        # git-bash / Linux
+# setx KIOS_API_KEY "<paste-key-here>"         # Windows cmd (new shells)
 
-# Application
-DATABASE_URL=sqlite+aiosqlite:///data/vulnscan.db
-SECRET_KEY=change-this-to-a-random-string
-HOST=127.0.0.1
-PORT=8000
+# Models that must route through a session header (opencode go gateway)
+# declare it in the profile's "headers", e.g. {"x-opencode-session": "..."}
 ```
+
+Scanner binaries resolve via `PATH` with a `sys.prefix` fallback; install them
+once (Semgrep: `pip install semgrep`, Gitleaks/SpotBugs/ODC from their
+upstream releases). Local dirty checkouts require `--allow-dirty`.
 
 ## Usage
 
 ### CLI
 
 ```bash
-# Register a target project
-devsecops-agent register --path /path/to/JVA-bookstore --name jva-bookstore
+# Deterministic scan (Semgrep + Gitleaks)
+devsecops-agent scan-run --checkout /path/to/repo --out artifacts/demo \
+  --profile fast --db-path scans.db --allow-dirty
 
-# Run a full scan
-devsecops-agent scan --target jva-bookstore
+# + targeted AI review and AI-written final report (needs a provider profile)
+devsecops-agent scan-run --checkout /path/to/repo --out artifacts/demo-ai \
+  --ai-review --provider kios-free --model beam-free --max-ai-findings 2 --ai-report
 
-# Run only specific scanners
-devsecops-agent scan --target jva-bookstore --scanners semgrep,spotbugs
+# Model-first hunt: the model hunts with read-only tools, scanners verify,
+# Laya routes, AI reviews, validator confirms, report is written for humans
+devsecops-agent scan-run --checkout /path/to/repo --out artifacts/demo-hunt \
+  --mode hunt --provider opencode-free --model iceman-contributor-free \
+  --max-ai-findings 5 --ai-report
 
-# View scan results
-devsecops-agent results --scan-id 1
+# Export retained evidence without rerunning scanners
+devsecops-agent scan-export 37 --fmt html --out artifacts/run37-new
 
-# Generate a report
-devsecops-agent report --scan-id 1 --format html --output report.html
-
-# Compare experiments
-devsecops-agent compare --scan-ids 1,2 --output comparison.html
+# Start the local web backend (PIT WALL reads this DB)
+devsecops-agent serve --host 127.0.0.1 --port 8000
 ```
 
 ### Web Dashboard
@@ -238,7 +235,7 @@ Live backend: `npm run build`, then serve via uvicorn — the SPA proxies
 | Route | Page |
 |---|---|
 | `/app/` | Home (mission control, KPIs, charts, history) |
-| `/app/scans/new` | New scan (profile, scanners, AI review, CLI preview) |
+| `/app/scans/new` | New scan (FAST/DEEP profile, scanners, AI review, Hunt switch, CLI preview) |
 | `/app/live` | Live pipeline (8 stages, AI panel, results, log dock) |
 | `/app/findings` | Findings table, filters, drawer, detail, CSV export |
 | `/app/reports` | Report generate/preview/download + compare |
@@ -273,14 +270,18 @@ Notes and decisions:
 
 ### Scan Pipeline
 
-1. **Intake**: Register a Java Servlet/JSP project; the system catalogs all `.java` and `.jsp` files
-2. **Source Parsing**: Java and JSP files are parsed; AST and call-graph analysis extracts security-relevant context
-3. **Static Scanning**: Each enabled scanner analyzes the source and produces findings
-4. **Normalization**: Findings from all scanners are normalized into a common schema, deduplicated, and tagged with CWE IDs
-5. **Context Enrichment**: For each finding, the system assembles the finding-specific route, filter, callers, sanitizers, and sinks
-6. **AI Assessment**: The AI agent evaluates each normalized finding with contextual information and proposes a CVSS v4.0 assessment
-7. **Verification**: The independent verification engine mechanically checks every AI claim against source evidence before acceptance
-8. **Reporting**: Results are persisted in SQLite and available via CLI, web dashboard, or exported reports
+Two lanes, one gate:
+
+- **Deterministic lane** (`--profile fast|full`): intake → static scanners
+  (Semgrep, Gitleaks, + SpotBugs/ODC on full) → normalization & dedup.
+- **Model-first lane** (`--mode hunt`): the model hunts the snapshot with
+  read-only tools (`list_files`, `grep_code`) → scanners verify each
+  candidate → model/scanner comparison → Laya advisory routing.
+
+Then, for both lanes: Laya routing → targeted AI review with CVSS v4.0 →
+independent validation (conservative: only decisive evidence flips a status)
+→ final AI-written report (TXT/MD/DOCX) + machine exports
+(JSON/SARIF/HTML/Markdown/CSV).
 
 ### Verification Philosophy
 
@@ -376,7 +377,8 @@ navigate controls. UTC timestamps display in Asia/Saigon by default.
 Scanners must be installed separately. Fast scans require Semgrep and Gitleaks;
 missing tools produce an actionable failure and partial reports. Local dirty
 checkouts require `--allow-dirty` and retain a content-hash manifest. CI rejects
-dirty checkouts. AI/Laya default off. Deep analysis remains explicitly unavailable.
+dirty checkouts. AI stages (Laya routing, review, validation, AI report) run
+when a provider profile + key is configured; hunt mode requires one.
 The existing `serve` command keeps the local web interface available.
 
 See [consumer workflows, required checks and GitHub releases](docs/CI-INTEGRATION.md)

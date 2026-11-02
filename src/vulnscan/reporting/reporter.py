@@ -425,6 +425,7 @@ class ReportGenerator:
             counts=counts,
             findings=self.findings,
             coverage_summary=self.coverage_summary,
+            coverage_cards=_coverage_cards(self.coverage_summary),
         )
 
     def export(
@@ -468,30 +469,103 @@ class ReportGenerator:
         )
 
 
+def _coverage_cards(coverage_summary: dict[str, Any]) -> list[dict[str, Any]]:
+    """Summarize per-tool coverage for the HTML report.
+
+    The stored payload is a mapping of tool name to coverage records (or
+    record-like dicts). Dumping it raw produces a wall of repr text, so
+    collapse each tool to unit counts plus the distinct limitation reasons.
+    Unknown shapes degrade to a short record count instead of raising.
+    """
+    cards: list[dict[str, Any]] = []
+    for tool, records in (coverage_summary or {}).items():
+        items = records if isinstance(records, list) else [records]
+        units = len(items)
+        analyzed = 0
+        reasons: list[str] = []
+        for record in items:
+            if not isinstance(record, dict):
+                continue
+            if str(record.get("status", "")).lower() == "analyzed":
+                analyzed += 1
+            reason = record.get("limitation_reason") or record.get("reason")
+            if reason and str(reason) not in reasons:
+                reasons.append(str(reason))
+        cards.append(
+            {
+                "tool": str(tool),
+                "units": units,
+                "analyzed": analyzed,
+                "limitations": reasons[:8],
+            }
+        )
+    return cards
+
+
 _HTML_TEMPLATE = """<!doctype html>
-<html lang="en"><head><meta charset="utf-8">
+<html lang="en"><head><meta charset="utf-8\">
+<meta name="viewport" content="width=device-width, initial-scale=1\">
 <title>Security assessment {{ run_id }}</title>
 <style>
-body{font:15px/1.5 system-ui,sans-serif;max-width:1100px;margin:40px auto;padding:0 20px;color:#17202a}
-h1{font-size:28px} .counts{display:flex;gap:20px;padding:0;list-style:none}
-.counts li{border-left:3px solid #64748b;padding-left:12px}.count{font-size:28px;font-weight:700}
-.finding{border-top:1px solid #d8dee6;padding:20px 0}.meta{color:#52606d;font-size:13px}
-code{background:#eef2f6;padding:2px 5px}a{color:#075985}@media print{body{margin:20px}}
+:root{--bg:#0e1319;--card:#161d24;--ink:#e8edf2;--muted:#9aa7b4;--hairline:#2a3440;
+--accent:#1c69d4;--green:#22c55e;--yellow:#f59e0b;--red:#e22718;--code:#0b0f14}
+*{box-sizing:border-box}html{scrollbar-color:#3a4654 var(--bg)}
+body{font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:1100px;
+margin:40px auto;padding:0 20px;background:var(--bg);color:var(--ink)}
+h1{font-size:28px;margin:0 0 4px}h2{font-size:19px;margin:36px 0 12px;
+padding-bottom:8px;border-bottom:1px solid var(--hairline)}
+a{color:#6ea8fe}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+font-size:.86em;background:var(--code);border:1px solid var(--hairline);
+border-radius:4px;padding:2px 6px}
+.meta{color:var(--muted);font-size:13px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.chip{font-size:12px;border:1px solid var(--hairline);border-radius:999px;padding:3px 12px;color:var(--muted)}
+.counts{display:flex;flex-wrap:wrap;gap:12px;padding:0;list-style:none;margin:20px 0}
+.counts li{flex:1 1 140px;background:var(--card);border:1px solid var(--hairline);
+border-left:4px solid var(--muted);border-radius:6px;padding:10px 14px}
+.counts li.ok{border-left-color:var(--green)}.counts li.warn{border-left-color:var(--yellow)}
+.counts li.bad{border-left-color:var(--red)}
+.count{font-size:28px;font-weight:700;line-height:1.1}.counts small{color:var(--muted)}
+.finding{background:var(--card);border:1px solid var(--hairline);border-radius:8px;
+padding:18px 20px;margin:14px 0}
+.finding h3{margin:0 0 6px;font-size:16px}
+.st{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
+border-radius:4px;padding:2px 8px;margin-right:6px}
+.st-confirmed{background:rgba(34,197,94,.15);color:var(--green);border:1px solid var(--green)}
+.st-unresolved,.st-unprocessed{background:rgba(245,158,11,.13);color:var(--yellow);border:1px solid var(--yellow)}
+.st-rejected{background:rgba(154,167,180,.13);color:var(--muted);border:1px solid var(--muted)}
+.sev-high{color:var(--red)}.sev-medium{color:var(--yellow)}.sev-low{color:#6ea8fe}
+pre{background:var(--code);border:1px solid var(--hairline);border-radius:6px;
+padding:12px 14px;overflow-x:auto;font-size:13px;line-height:1.5;scrollbar-color:#3a4654 var(--code)}
+pre::-webkit-scrollbar{height:10px}pre::-webkit-scrollbar-track{background:var(--code)}
+pre::-webkit-scrollbar-thumb{background:#3a4654;border-radius:5px}
+pre::-webkit-scrollbar-thumb:hover{background:#4d5c6e}
+::-webkit-scrollbar{width:12px;height:12px}::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#3a4654;border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:#4d5c6e}
+.cover{background:var(--card);border:1px solid var(--hairline);border-radius:8px;
+padding:12px 16px;margin:10px 0}
+.cover b{color:var(--ink)}.cover ul{margin:6px 0 0;padding-left:20px;color:var(--muted)}
+@media print{body{margin:20px;background:#fff;color:#000}.finding,.counts li,.cover{break-inside:avoid}}
 </style></head><body>
 <h1>Security assessment <code>{{ run_id }}</code></h1>
-<p class="meta">devsecops-agent {{ application_version }} | {{ run_metadata }}</p>
+<p class="meta">devsecops-agent {{ application_version }}</p>
+<div class="chips">{% for k, v in run_metadata.items() %}<span class="chip">{{ k }}: {{ v }}</span>{% endfor %}</div>
 <ul class="counts">
-<li><span class="count">{{ counts.total }}</span><br>Total</li>
-<li><span class="count">{{ counts.confirmed }}</span><br>Confirmed</li>
-<li><span class="count">{{ counts.rejected }}</span><br>Rejected</li>
-<li><span class="count">{{ counts.unresolved }}</span><br>Unresolved</li>
-<li><span class="count">{{ counts.unprocessed }}</span><br>Unprocessed</li>
+<li class="ok"><span class="count">{{ counts.total }}</span><br><small>Total</small></li>
+<li class="ok"><span class="count">{{ counts.confirmed }}</span><br><small>Confirmed</small></li>
+<li><span class="count">{{ counts.rejected }}</span><br><small>Rejected</small></li>
+<li class="warn"><span class="count">{{ counts.unresolved }}</span><br><small>Unresolved</small></li>
+<li class="warn"><span class="count">{{ counts.unprocessed }}</span><br><small>Unprocessed</small></li>
 </ul>
-<h2>Coverage limitations</h2>
-{% if coverage_summary %}<ul>{% for k, v in coverage_summary.items() %}<li><strong>{{ k }}</strong>: {{ v }}</li>{% endfor %}</ul>{% else %}<p>No limitations recorded.</p>{% endif %}
+<h2>Coverage</h2>
+{% if coverage_cards %}{% for card in coverage_cards %}<div class="cover"><b>{{ card.tool }}</b>
+<span class="meta"> — {{ card.analyzed }}/{{ card.units }} units analyzed</span>
+{% if card.limitations %}<ul>{% for reason in card.limitations %}<li>{{ reason }}</li>{% endfor %}</ul>{% endif %}</div>{% endfor %}
+{% else %}<p class="meta">No coverage recorded.</p>{% endif %}
 <h2>Findings</h2>
 {% for f in findings %}<section class="finding"><h3>{{ f.title }}</h3>
-<p class="meta">{{ f.finding_id }} · {{ f.status.value }} · {{ f.severity.value }} · {{ f.cwe_category.value if f.cwe_category else "Unclassified" }}</p>
+<p><span class="st st-{{ f.status.value }}">{{ f.status.value }}</span><span class="sev-{{ f.severity.value }}">{{ f.severity.value }}</span>
+<span class="meta"> · {{ f.finding_id[:12] }} · {{ f.cwe_category.value if f.cwe_category else "Unclassified" }}</span></p>
 <p>{{ f.description }}</p>
 {% for observation in f.observations %}<p class="meta">{{ observation.tool.value }} / {{ observation.rule_id }} / {{ observation.location.as_string() }}</p>
 {% if observation.location.snippet %}<pre>{{ observation.location.snippet }}</pre>{% endif %}{% endfor %}
