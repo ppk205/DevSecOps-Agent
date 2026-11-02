@@ -28,6 +28,7 @@ subprocess.run(
     [str(python), "-m", "pip", "install", "--no-build-isolation", "--no-deps", str(ROOT)],
     check=True,
 )
+subprocess.run([str(python), "-I", str(ROOT / "ci/smoke_installed.py")], check=True)
 version = "8.24.2"
 name = f"gitleaks_{version}_linux_x64.tar.gz"
 base = f"https://github.com/gitleaks/gitleaks/releases/download/v{version}/"
