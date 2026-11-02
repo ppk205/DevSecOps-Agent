@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 from tests.harness.conftest import DIFF
-from vulnscan.harness.fixes import FixError, apply_fix, rescan_fix
+from vulnscan.harness.fixes import FixError, apply_fix, changed_lines, diff_hunks, rescan_fix
 from vulnscan.harness.workspace import FixProposal, Workspace
 
 GIT = ["git", "-c", "user.email=t@t", "-c", "user.name=t"]
@@ -57,3 +57,16 @@ def test_existing_branch_is_refused(ws: Workspace, tmp_path: Path) -> None:
     subprocess.run(["git", "branch", "devsec/fix-f1"], cwd=ws.target, check=True)
     with pytest.raises(FixError):
         apply_fix(ws, FixProposal("x4", "f1", DIFF), tmp_path / "wt")
+
+
+def test_diff_hunks_reports_old_ranges() -> None:
+    diff = (
+        "--- a/A.java\n+++ b/A.java\n@@ -10,3 +10,4 @@\n-a\n+b\n"
+        "--- a/B.java\n+++ b/B.java\n@@ -40 +40 @@\n-c\n+d\n"
+    )
+    assert diff_hunks(diff) == [("A.java", 10, 12), ("B.java", 40, 40)]
+
+
+def test_changed_lines_counts_content_only() -> None:
+    diff = "--- a/A.java\n+++ b/A.java\n@@ -1 +1 @@\n-old\n+new\n context\n"
+    assert changed_lines(diff) == 2

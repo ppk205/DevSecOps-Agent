@@ -17,7 +17,7 @@ from vulnscan.providers.credentials import redact_json
 
 from .audit import SessionLog
 from .evidence import check_citations, score_cvss4
-from .fixes import FixError, apply_fix, rescan_fix
+from .fixes import FixError, apply_fix, changed_lines, diff_hunks, rescan_fix
 from .gates import Gate, GateDecision, GateKeeper, GateRequest
 from .messages import ToolCall
 from .scanning import extract_candidates, inventory, lookup_route
@@ -353,6 +353,43 @@ def _propose_finding(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+FIX_WINDOW = 15
+MAX_FIX_LINES = 80
+
+
+def _check_fix_scope(finding: ProposedFinding, diff: str) -> None:
+    """Refuse a diff that leaves the finding's cited code.
+
+    A fix is a suggestion about one vulnerability, not a refactor: it may only
+    touch the hop files, within ``FIX_WINDOW`` lines of a cited hop, and change
+    at most ``MAX_FIX_LINES`` lines. Raising here keeps the refusal out of the
+    audit log's G6 record, because no gate was ever asked.
+    """
+    hops = finding.path
+    files = {hop.file for hop in hops}
+    changed = changed_lines(diff)
+    if changed > MAX_FIX_LINES:
+        raise ValueError(
+            f"fix changes {changed} lines; the limit is {MAX_FIX_LINES} (finding {finding.id})"
+        )
+    for file, start, end in diff_hunks(diff):
+        if file not in files:
+            raise ValueError(f"fix touches {file}, which is not cited by finding {finding.id}")
+        nearest = min(
+            (
+                abs(start - hop.line) if start > hop.line else abs(hop.line - end)
+                for hop in hops
+                if hop.file == file
+            ),
+            default=None,
+        )
+        if nearest is None or nearest > FIX_WINDOW:
+            raise ValueError(
+                f"fix touches {file}:{start}-{end}, more than {FIX_WINDOW} lines "
+                f"from any cited line of finding {finding.id}"
+            )
+
+
 def _propose_fix(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
     finding_id = str(args["finding_id"])
     finding = ctx.ws.findings.get(finding_id)
@@ -360,6 +397,8 @@ def _propose_fix(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
         raise ValueError(f"unknown finding: {finding_id}")
     if finding.status != "confirmed":
         raise ValueError(f"finding {finding_id} is not confirmed; a fix needs a human confirmation")
+
+    _check_fix_scope(finding, str(args["diff"]))
 
     fix = FixProposal(
         id="X" + finding_id,

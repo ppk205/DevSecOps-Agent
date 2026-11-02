@@ -10,8 +10,8 @@ import pytest
 
 from tests.harness.conftest import call, make_ctx
 from vulnscan.harness.messages import ToolCall
-from vulnscan.harness.tools import REGISTRY, run_tool, schemas
-from vulnscan.harness.workspace import ProposedFinding
+from vulnscan.harness.tools import REGISTRY, ToolContext, run_tool, schemas
+from vulnscan.harness.workspace import Hop, ProposedFinding
 
 
 def test_registry_has_no_write_or_shell_tool() -> None:
@@ -95,3 +95,53 @@ def test_fix_needs_confirmed_finding_and_human_apply(
     ctx.ws.findings["f1"].status = "confirmed"
     assert call(ctx, "propose_fix", finding_id="f1", diff="x")["status"] == "rejected"
     assert asked == ["G6"] and applied == []
+
+
+def _confirmed_with_hop(ctx: ToolContext, file: str = "A.java", line: int = 10) -> None:
+    ctx.ws.findings["f1"] = ProposedFinding(
+        "f1", "c", "t", "CWE-89", [Hop(file, line, "code")], "", "", status="confirmed"
+    )
+
+
+def _diff(file: str, start: int, body: list[str], count: int = 1) -> str:
+    header = f"@@ -{start},{count} +{start},{count} @@"
+    return "\n".join([f"--- a/{file}", f"+++ b/{file}", header, *body]) + "\n"
+
+
+def test_fix_outside_cited_code_is_refused(tmp_path: Path) -> None:
+    ctx, asked = make_ctx(tmp_path, [])
+    _confirmed_with_hop(ctx)
+    error = call(ctx, "propose_fix", finding_id="f1", diff=_diff("Other.java", 10, ["-a", "+b"]))[
+        "error"
+    ]
+    assert "Other.java" in error and "not cited" in error
+    assert asked == []
+
+
+def test_fix_far_from_hop_is_refused(tmp_path: Path) -> None:
+    ctx, asked = make_ctx(tmp_path, [])
+    _confirmed_with_hop(ctx)
+    error = call(ctx, "propose_fix", finding_id="f1", diff=_diff("A.java", 50, ["-a", "+b"]))[
+        "error"
+    ]
+    assert "more than 15 lines" in error
+    assert asked == []
+
+
+def test_large_fix_is_refused(tmp_path: Path) -> None:
+    ctx, asked = make_ctx(tmp_path, [])
+    _confirmed_with_hop(ctx)
+    body = [f"+line {index}" for index in range(81)]
+    error = call(ctx, "propose_fix", finding_id="f1", diff=_diff("A.java", 10, body, count=81))[
+        "error"
+    ]
+    assert "the limit is 80" in error
+    assert asked == []
+
+
+def test_fix_near_hop_reaches_g6(tmp_path: Path) -> None:
+    ctx, asked = make_ctx(tmp_path, ["reject"])
+    _confirmed_with_hop(ctx)
+    result = call(ctx, "propose_fix", finding_id="f1", diff=_diff("A.java", 22, ["-a", "+b"]))
+    assert result["status"] == "rejected"
+    assert asked == ["G6"]

@@ -64,6 +64,50 @@ def _cleanup(target: Path, worktree: Path, branch: str) -> None:
     _run(target, ["branch", "-D", branch])
 
 
+def diff_hunks(diff: str) -> list[tuple[str, int, int]]:
+    """``(file, first line, last line)`` per hunk, in the pre-change file.
+
+    Only the old-file range matters for scope: it says which existing lines the
+    suggestion rewrites. A hunk with no context (``-0,0``) is reported at its
+    anchor line.
+    """
+    hunks: list[tuple[str, int, int]] = []
+    current: str | None = None
+    for line in diff.splitlines():
+        if line.startswith("+++ "):
+            target = line[4:].strip()
+            target = target.removeprefix("b/")
+            current = target
+            continue
+        if line.startswith("--- "):
+            continue
+        if line.startswith("@@ ") and current is not None:
+            header = line[3:].split("@@", 1)[0].strip()
+            old = header.split()[0] if header else ""
+            if not old.startswith("-"):
+                continue
+            start_text, _, count_text = old[1:].partition(",")
+            try:
+                start = int(start_text)
+                count = int(count_text) if count_text else 1
+            except ValueError:
+                continue
+            end = start + max(count, 1) - 1
+            hunks.append((current, start, end))
+    return hunks
+
+
+def changed_lines(diff: str) -> int:
+    """Number of added plus removed content lines in *diff*."""
+    count = 0
+    for line in diff.splitlines():
+        if line.startswith(("+++ ", "--- ", "@@ ")):
+            continue
+        if line.startswith(("+", "-")):
+            count += 1
+    return count
+
+
 def apply_fix(ws: Workspace, fix: FixProposal, root: Path = Path(".devsec/worktrees")) -> str:
     """Apply *fix* on a new branch in a worktree; return the branch name."""
     if ws.commit == "unversioned":
