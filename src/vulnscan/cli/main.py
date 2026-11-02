@@ -320,9 +320,13 @@ def serve(host: str = "127.0.0.1", port: int = 8000, db_path: str = "vulnscan.db
     """Serve the existing local dashboard against the shared scan history."""
     import uvicorn
 
+    from ..infra.envfile import EnvFile
     from ..storage.database import get_engine
     from ..web.app import create_app
 
+    # Web scans auto-resolve the default provider from the process env;
+    # load saved project-local keys so a restart does not lose them.
+    EnvFile().load_into_environ()
     if host not in {"127.0.0.1", "localhost", "::1"}:
         raise typer.BadParameter("The dashboard must bind to localhost")
     uvicorn.run(create_app(engine=get_engine(db_path)), host=host, port=port)
