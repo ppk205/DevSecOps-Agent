@@ -552,6 +552,14 @@ def create_app(
         )
         snapshot = _snapshot_of(run)
         assessments = _entries_by_finding(snapshot, "assessments")
+        agreed_ids: set[str] = set()
+        comparison = snapshot.get("comparison") if isinstance(snapshot, dict) else None
+        if isinstance(comparison, dict):
+            for pair in comparison.get("agreed", []) or []:
+                if isinstance(pair, dict):
+                    found = pair.get("finding")
+                    if isinstance(found, dict) and found.get("finding_id"):
+                        agreed_ids.add(str(found["finding_id"]))
         items: list[dict[str, Any]] = []
         for row in rows:
             try:
@@ -563,7 +571,9 @@ def create_app(
             fid = str(raw.get("finding_id", ""))
             if not fid:
                 continue
-            items.append(_list_item(raw, assessments.get(fid)))
+            entry = _list_item(raw, assessments.get(fid))
+            entry["model_corroborated"] = fid in agreed_ids
+            items.append(entry)
 
         severities = _csv_param(severity)
         cwes = _csv_param(cwe)

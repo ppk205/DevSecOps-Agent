@@ -113,6 +113,7 @@ export const MOCK_FINDING_ITEMS: FindingListItem[] = MOCK_FINDINGS.map((f) => {
     cwe: f.cwe,
     status: f.status,
     scanners,
+    model_corroborated: seed % 4 === 0,
     file: f.file,
     line: f.line,
     origin: f.cwe === "CWE-1104" ? "dependency" : "source",

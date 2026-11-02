@@ -413,7 +413,19 @@ export function FindingsPage() {
               {
                 key: "scanners",
                 header: en.findings.columns.scanners,
-                render: (f: FindingListItem) => f.scanners.join(", "),
+                render: (f: FindingListItem) => (
+                  <span>
+                    {f.scanners.join(", ")}
+                    {f.model_corroborated && (
+                      <span
+                        title="Model hunt independently flagged the same issue"
+                        className="label-m ml-2 border border-success px-1.5 py-0.5 text-[10px] text-success"
+                      >
+                        AI ✓
+                      </span>
+                    )}
+                  </span>
+                ),
               },
               {
                 key: "ai",

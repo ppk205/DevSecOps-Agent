@@ -196,8 +196,20 @@ export function LivePage() {
     for (const item of items) {
       for (const tool of item.scanners) tally.set(tool, (tally.get(tool) ?? 0) + 1);
     }
+    // Include every tool that actually ran (even with 0 findings, e.g. a
+    // dependency scanner with a clean manifest) so ran ≠ found stays visible.
+    const ran = new Set<string>();
+    for (const s of live.data?.stages ?? []) {
+      const name = String(s.name ?? "");
+      if (["semgrep", "gitleaks", "spotbugs", "owasp-dependency-check"].includes(name)) {
+        ran.add(name);
+      }
+    }
+    for (const tool of ran) {
+      if (!tally.has(tool)) tally.set(tool, 0);
+    }
     return [...tally.entries()].sort((a, b) => b[1] - a[1]);
-  }, [items]);
+  }, [items, live.data]);
 
   const scannerHits = useMemo(
     () => items.reduce((sum, item) => sum + Math.max(1, item.scanners.length), 0),

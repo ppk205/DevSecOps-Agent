@@ -272,6 +272,7 @@ export interface FindingListItem {
   cwe: string;
   status: string;
   scanners: string[];
+  model_corroborated: boolean;
   file: string;
   line: number;
   origin: "source" | "dependency";

@@ -16,6 +16,7 @@ function row(partial: Partial<FindingListItem> & { id: string }): FindingListIte
     cwe: "CWE-79",
     status: "unprocessed",
     scanners: ["semgrep"],
+    model_corroborated: false,
     file: "src/App.java",
     line: 10,
     origin: "source",
