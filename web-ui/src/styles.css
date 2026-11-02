@@ -24,6 +24,44 @@
 
 html {
   background: var(--canvas);
+  scrollbar-color: #4d4d4d #0d0d0d;
+}
+
+/* Dark scrollbars everywhere: the native white track breaks the vibe. */
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: #0d0d0d;
+}
+*::-webkit-scrollbar-thumb {
+  background: #4d4d4d;
+  border-radius: 6px;
+  border: 2px solid #0d0d0d;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #6b6b6b;
+}
+*::-webkit-scrollbar-button:single-button {
+  background: #0d0d0d;
+  display: block;
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-button:single-button:horizontal:decrement {
+  border-right: 5px solid #909090;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+*::-webkit-scrollbar-button:single-button:horizontal:increment {
+  border-left: 5px solid #909090;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #4d4d4d #0d0d0d;
 }
 
 /* WCAG 2.4.13: 2px white focus ring, visible on every surface. */
