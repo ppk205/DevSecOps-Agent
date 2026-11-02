@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Replace the Maven-only SonarCloud job with the standard pinned scan action and repository-wide multi-language scope. Read project identity from Actions variables, classify tests separately, exclude generated/external/private data, and report the actual quality-gate result.
+
 - Merge the remaining chat and experiment implementation into `dev` for SonarCloud testing. Preserve its standalone SonarCloud workflow and align action pins and checkout credentials with the current CI contract.
 
 - Add authenticated browser control and a headless `devsec remote` command, with first-reply-wins human gates, replayable events and pending reviews. Restore session snapshots and recorded budgets without replaying tool actions; persist console G5 decisions immediately.

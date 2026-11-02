@@ -61,8 +61,9 @@ consistency, installed chat smoke tests and real baseline fixtures feed the
 `CI required` job. Full baseline integration also runs before releases. See
 [CI integration](docs/CI-INTEGRATION.md) for the jobs and local commands.
 
-The `dev` branch also retains a standalone Maven-based SonarCloud test
-workflow. Its trigger and current analysis limits are documented in
+SonarCloud also scans the repository's supported languages through the
+standard scan action on `main`, `dev` and same-repository pull requests.
+Set `SONAR_ORGANIZATION`, `SONAR_PROJECT_KEY` and the `SONAR_TOKEN` secret as documented in
 [CI integration](docs/CI-INTEGRATION.md#sonarcloud-testing-on-dev).
 
 ```

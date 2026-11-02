@@ -339,9 +339,12 @@ moving the Go binary to another machine.
 
 ## 7. Verify a development build
 
-Pushing `dev` also triggers its standalone SonarCloud experiment. This is a
-remote Maven-based baseline workflow, separate from the local checks below;
-see [its configuration and limits](CI-INTEGRATION.md#sonarcloud-testing-on-dev).
+Pushes to `main`/`dev`, same-repository pull requests and manual dispatch run
+the standard SonarCloud scan action for all supported first-party languages.
+The workflow needs repository variables `SONAR_ORGANIZATION` and
+`SONAR_PROJECT_KEY`, plus the `SONAR_TOKEN` Actions secret. It waits for the
+quality gate; it is separate from the local checks below. See
+[the setup and analysis scope](CI-INTEGRATION.md#sonarcloud-testing-on-dev).
 
 ### Web UI
 

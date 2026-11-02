@@ -103,17 +103,39 @@ refuse unattended G6. This does not claim live model or live Laya verification.
 
 ### SonarCloud testing on dev
 
-`sonarcloud.yml` is a separate baseline workflow retained from `dev`. Pushes
-to `dev` or `main`, and pull request updates, trigger it. It uses the GitHub
-Actions secret `SONAR_TOKEN`; token values are not stored in the repository.
-Its actions use full SHA pins and checkout disables persisted credentials.
+`sonarcloud.yml` uses the official `SonarSource/sonarqube-scan-action`, pinned
+to its verified release commit. It follows Sonar's standard CLI template for
+mixed-language projects. Pushes to `dev` or `main`, same-repository pull request
+updates, and manual dispatch run the analysis. Fork pull requests are skipped
+because GitHub does not give them the analysis secret; their normal CI runs.
 
-The retained experiment invokes the Maven Sonar scanner from the repository
-root when `hashFiles('**/pom.xml')` finds a POM, otherwise it logs a skip.
-The merged tree contains no tracked `pom.xml`, so a clean checkout takes the
-skip branch. The merge does not establish successful Sonar analysis; inspect
-the workflow's Build job when testing this configuration. SonarCloud is separate from
-`CI required` and does not feed findings into the harness.
+Set these under **Settings → Secrets and variables → Actions**:
+
+| Type | Name | Value |
+| --- | --- | --- |
+| Variable | `SONAR_ORGANIZATION` | Organization key from the SonarQube Cloud project |
+| Variable | `SONAR_PROJECT_KEY` | Existing project's key from SonarQube Cloud |
+| Secret | `SONAR_TOKEN` | Token with analysis permission for that project |
+
+Choose **With GitHub Actions** in the SonarQube Cloud project's analysis
+method, disabling automatic analysis if it was enabled. The workflow targets
+`https://sonarcloud.io`. Missing configuration fails with an explicit message;
+it no longer reports success by skipping analysis for lack of a Maven POM.
+
+`sonar-project.properties` discovers supported languages across the repository:
+Python, Go, JavaScript/TypeScript, HTML/CSS, workflow YAML and other supported
+configuration files. Python, Go and frontend test files are classified as
+tests, with no source/test overlap. Generated output, installed dependencies,
+scan evidence, third-party fixtures, essay files, local state and credential
+files are excluded. No language is hardcoded as the sole analysis language.
+
+The check waits for the SonarCloud quality gate and fails if that gate fails.
+This workflow performs static analysis; it does not generate or fabricate test
+coverage reports. Existing CI runs the tests separately. SonarCloud remains
+separate from `CI required` and does not feed findings into the harness.
+
+References: [official scan action](https://github.com/SonarSource/sonarqube-scan-action)
+and [GitHub Actions setup](https://docs.sonarsource.com/sonarqube-cloud/analyzing-source-code/ci-based-analysis/github-actions-for-sonarcloud).
 
 Package smoke selects the exact project version from `pyproject.toml` when
 choosing the wheel and source archive. Older files in a local `dist/` directory
