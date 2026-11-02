@@ -479,6 +479,26 @@ export async function applyFix(
   return postJson(`/api/scans/${runId}/fixes/${encodeURIComponent(proposalId)}/apply`, {});
 }
 
+/** ---- Task 4: notifications + fix .diff download (mock-aware) ---- */
+
+/** Raw download URL for one proposal's unified diff (anchor href, no fetch). */
+export function fixDiffUrl(runId: number, proposalId: string | number): string {
+  if (isMock) return `#/scans/${runId}/fixes/${encodeURIComponent(String(proposalId))}/download`;
+  return `/api/scans/${runId}/fixes/${encodeURIComponent(String(proposalId))}/download`;
+}
+
+export async function fetchNotifications(): Promise<import("../api/types").NotificationsResponse> {
+  if (isMock) return { notifications: [], unread: 0 };
+  return get<import("../api/types").NotificationsResponse>(`/api/notifications`);
+}
+
+export async function ackNotification(
+  id: number,
+): Promise<import("../api/types").ScanNotification> {
+  if (isMock) return { id, run_id: 0, kind: "scan_completed", message: "", is_read: true, created_at: null };
+  return postJson<import("../api/types").ScanNotification>(`/api/notifications/${id}/ack`, {});
+}
+
 /** SSE tail with graceful fallback: caller polls when the stream closes. */
 export function openEventsStream(
   scanId: number,

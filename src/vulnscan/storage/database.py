@@ -144,6 +144,22 @@ def migrate(engine: Engine) -> None:
                 "ON fix_proposals(run_id, finding_id)"
             )
             conn.exec_driver_sql("INSERT INTO schema_migrations VALUES (5)")
+        if not conn.exec_driver_sql("SELECT 1 FROM schema_migrations WHERE version = 6").first():
+            conn.exec_driver_sql(
+                """CREATE TABLE IF NOT EXISTS notifications (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    run_id INTEGER NOT NULL REFERENCES runs(id),
+                    kind VARCHAR(32) NOT NULL DEFAULT 'scan_completed',
+                    message TEXT NOT NULL DEFAULT '',
+                    is_read INTEGER NOT NULL DEFAULT 0,
+                    created_at VARCHAR(64)
+                )"""
+            )
+            conn.exec_driver_sql(
+                "CREATE INDEX IF NOT EXISTS notifications_run "
+                "ON notifications(run_id, kind)"
+            )
+            conn.exec_driver_sql("INSERT INTO schema_migrations VALUES (6)")
 
 
 def init_db(db_path: str | Path = "vulnscan.db") -> None:

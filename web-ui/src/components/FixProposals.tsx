@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { applyFix, fetchFixes } from "../api/client";
+import { applyFix, fetchFixes, fixDiffUrl } from "../api/client";
 import type { FixProposal, FixProposalStatus } from "../api/types";
 import { useStrings } from "../i18n/lang";
 
@@ -103,6 +103,16 @@ function ProposalCard({
           {applyMutation.isPending ? t.fix.applying : t.fix.apply}
         </button>
       )}
+      {(proposal.status === "proposed" || proposal.status === "verified") && proposal.diff ? (
+        <a
+          data-testid={`fix-download-${proposal.id}`}
+          href={fixDiffUrl(runId, proposal.id)}
+          download={`proposal-${proposal.id}.diff`}
+          className="label-m ml-2 mt-3 inline-block border border-hairline px-3 py-1.5 text-[11px] text-body no-underline transition-colors hover:border-ink hover:text-ink"
+        >
+          {t.fix.downloadDiff}
+        </a>
+      ) : null}
     </li>
   );
 }

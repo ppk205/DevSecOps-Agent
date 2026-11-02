@@ -31,6 +31,11 @@ export const vi: Strings = {
     emptyTitle: "Chưa có gì",
     emptyBody: "Hãy bắt đầu một lần quét hoặc điều chỉnh bộ lọc.",
   },
+  notifications: {
+    title: "Thông báo",
+    empty: "Không có thông báo.",
+    markRead: "Đánh dấu đã đọc",
+  },
   home: {
     title: "Trung tâm điều hành",
     subtitle: "Các lần quét gần đây, trạng thái cổng kiểm soát và bước tiếp theo.",
@@ -255,6 +260,7 @@ export const vi: Strings = {
     applying: "Đang áp dụng…",
     applied: "Đã áp dụng.",
     applyFailed: "Áp dụng thất bại.",
+    downloadDiff: "Tải .diff",
     verification: "Xác minh",
     errorLabel: "Lỗi",
     modelLabel: "Model",

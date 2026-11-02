@@ -35,7 +35,14 @@ from vulnscan.core.finding_view import project_finding
 from vulnscan.core.scan_service import ScanService
 from vulnscan.reporting.reporter import ReportGenerator
 from vulnscan.storage.database import get_engine, get_session, migrate
-from vulnscan.storage.models import FindingORM, FixProposalORM, RunORM, ScanEventORM, StageORM
+from vulnscan.storage.models import (
+    FindingORM,
+    FixProposalORM,
+    NotificationORM,
+    RunORM,
+    ScanEventORM,
+    StageORM,
+)
 from vulnscan.version import APP_VERSION
 
 _TEMPLATES = Path(__file__).with_name("templates")
@@ -1310,6 +1317,122 @@ def create_app(
             "overlay_path": proposal.overlay_path,
             "verification": json.loads(proposal.verification_json or "{}"),
         }
+
+    # ---- Task 4: notifications + fix .diff download ---------------------------
+    # The scan-completion writer lives in scan_service (untouched here); this
+    # module owns the record helper plus a lazy ensure pass so terminal runs
+    # always surface a notification even if the writer predates this table.
+
+    def _notification_to_dict(row: NotificationORM) -> dict[str, Any]:
+        return {
+            "id": row.id,
+            "run_id": row.run_id,
+            "kind": row.kind,
+            "message": redact_secrets(row.message),
+            "is_read": bool(row.is_read),
+            "created_at": row.created_at.isoformat() if row.created_at else None,
+        }
+
+    def _maybe_dispatch_webhook(payload: dict[str, Any]) -> None:
+        """Best-effort gate-fail webhook POST; never raises into the scan path."""
+        url = (os.environ.get("WEBHOOK_URL") or "").strip()
+        if not url:
+            return
+        try:
+            import urllib.request
+
+            data = json.dumps(payload).encode("utf-8")
+            request = urllib.request.Request(
+                url, data=data, headers={"Content-Type": "application/json"}
+            )
+            with urllib.request.urlopen(request, timeout=5):
+                pass
+        except Exception:  # webhook delivery must not fail the scan
+            logger.warning("webhook dispatch failed", exc_info=True)
+
+    def record_scan_notification(
+        session: Session, run_id: int, kind: str, message: str
+    ) -> dict[str, Any] | None:
+        """Record one notification per (run_id, kind); idempotent, returns dict."""
+        existing = (
+            session.query(NotificationORM)
+            .filter(NotificationORM.run_id == run_id, NotificationORM.kind == kind)
+            .first()
+        )
+        if existing is not None:
+            return _notification_to_dict(existing)
+        row = NotificationORM(run_id=run_id, kind=kind, message=message)
+        session.add(row)
+        session.flush()
+        if kind == "gate_failed":
+            _maybe_dispatch_webhook({"run_id": run_id, "kind": kind, "message": message})
+        return _notification_to_dict(row)
+
+    def _ensure_scan_notifications(session: Session) -> None:
+        """Lazily record completion notifications for terminal runs missing them."""
+        terminal = (
+            session.query(RunORM)
+            .filter(RunORM.status.in_(["completed", "failed", "cancelled"]))
+            .all()
+        )
+        for run in terminal:
+            try:
+                snapshot = json.loads(run.result_json or "{}")
+            except ValueError:
+                snapshot = {}
+            gate = str(snapshot.get("gate", "unknown"))
+            if run.status == "completed":
+                record_scan_notification(
+                    session, run.id, "scan_completed", f"Scan #{run.id} completed — gate {gate}."
+                )
+                if gate == "failed":
+                    record_scan_notification(
+                        session, run.id, "gate_failed", f"Scan #{run.id} gate failed."
+                    )
+            else:
+                record_scan_notification(
+                    session, run.id, "scan_completed", f"Scan #{run.id} {run.status}."
+                )
+        session.commit()
+
+    @app.get("/api/notifications")
+    def list_notifications(session: SessionDep) -> dict[str, Any]:
+        """List notifications, newest first, with an unread count."""
+        _ensure_scan_notifications(session)
+        rows = (
+            session.query(NotificationORM).order_by(NotificationORM.id.desc()).all()
+        )
+        items = [_notification_to_dict(row) for row in rows]
+        return {
+            "notifications": items,
+            "unread": sum(1 for item in items if not item["is_read"]),
+        }
+
+    @app.post("/api/notifications/{notification_id}/ack")
+    def ack_notification(
+        notification_id: int, session: SessionDep
+    ) -> dict[str, Any]:
+        """Acknowledge a notification (marks it read)."""
+        row = session.get(NotificationORM, notification_id)
+        if row is None:
+            raise HTTPException(404, "Notification not found")
+        row.is_read = 1
+        session.commit()
+        return _notification_to_dict(row)
+
+    @app.get("/api/scans/{run_id}/fixes/{proposal_id}/download")
+    def download_fix_diff(run_id: int, proposal_id: int, session: SessionDep) -> Response:
+        """Download one fix proposal's unified diff as text/plain."""
+        proposal = session.get(FixProposalORM, proposal_id)
+        if proposal is None or proposal.run_id != run_id or not proposal.diff_text:
+            raise HTTPException(404, "Proposal diff not found")
+        return Response(
+            content=proposal.diff_text,
+            media_type="text/plain",
+            headers={
+                "Content-Disposition": f'attachment; filename="proposal-{proposal_id}.diff"'
+            },
+        )
 
     # ---- Phase 5 Reports + Logs -------------------------------------------
     # Log lines are DERIVED (no dedicated event/log table beyond the Phase 1

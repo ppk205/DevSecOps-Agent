@@ -199,7 +199,11 @@ def main() -> None:
         timeout=spec.max_wall_seconds,
     )
 
-    if not build.succeeded:
+    # CodeQL database creation traces its own build (and JavaScript targets need
+    # no Maven build at all), so a failed pre-build is a warning for the opt-in
+    # DEEP step rather than a fatal gate as it is for bytecode scanners.
+    build_required = tool != ToolName.CODEQL
+    if build_required and not build.succeeded:
         result = ScannerResult(
             run_id=spec.run_id or "unassigned",
             tool=tool,
@@ -217,6 +221,12 @@ def main() -> None:
             1.0, (spec.max_wall_seconds or 600) - (time.monotonic() - started)
         )
         result = adapter.run(spec, workdir=str(work))
+        if tool == ToolName.CODEQL and not build.succeeded and result.is_complete:
+            result.warnings.insert(
+                0,
+                "Maven pre-build failed; CodeQL database creation traces its own build "
+                "so analysis continued: " + (build.stderr or build.stdout)[-500:],
+            )
         if result.is_complete:
             if tool == ToolName.SPOTBUGS:
                 result.metadata["findsecbugs_version"] = "1.14.0"

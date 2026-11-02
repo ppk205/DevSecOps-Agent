@@ -29,6 +29,11 @@ export const en = {
     emptyTitle: "Nothing here yet",
     emptyBody: "Start a scan or adjust the filters to populate this view.",
   },
+  notifications: {
+    title: "Notifications",
+    empty: "No notifications.",
+    markRead: "Mark read",
+  },
   home: {
     title: "Mission control",
     subtitle: "Recent scans, gate posture, and where to go next.",
@@ -253,6 +258,7 @@ export const en = {
     applying: "Applying…",
     applied: "Applied.",
     applyFailed: "Apply failed.",
+    downloadDiff: "Download .diff",
     verification: "Verification",
     errorLabel: "Error",
     modelLabel: "Model",

@@ -364,3 +364,20 @@ export interface FindingDetail extends FindingListItem {
   };
   raw: unknown;
 }
+
+/** Task 4: scan-completion notification. */
+export type NotificationKind = "scan_completed" | "gate_failed";
+
+export interface ScanNotification {
+  id: number;
+  run_id: number;
+  kind: NotificationKind | string;
+  message: string;
+  is_read: boolean;
+  created_at: string | null;
+}
+
+export interface NotificationsResponse {
+  notifications: ScanNotification[];
+  unread: number;
+}

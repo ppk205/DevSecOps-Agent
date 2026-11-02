@@ -160,3 +160,23 @@ class FixProposalORM(Base):
     created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=_utcnow)
 
     run: Mapped[RunORM] = relationship("RunORM")
+
+
+class NotificationORM(Base):
+    """A user-facing notification for one scan run.
+
+    Kinds: ``scan_completed`` | ``gate_failed``. Rows are created once per
+    (run_id, kind) by ``record_scan_notification`` and acknowledged via
+    ``POST /api/notifications/{id}/ack`` (sets ``is_read``).
+    """
+
+    __tablename__ = "notifications"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    run_id: Mapped[int] = mapped_column(ForeignKey("runs.id"))
+    kind: Mapped[str] = mapped_column(String(32), default="scan_completed")
+    message: Mapped[str] = mapped_column(Text, default="")
+    is_read: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=_utcnow)
+
+    run: Mapped[RunORM] = relationship("RunORM")

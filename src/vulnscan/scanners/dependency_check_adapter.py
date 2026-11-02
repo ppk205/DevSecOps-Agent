@@ -183,7 +183,16 @@ class DependencyCheckAdapter(ScannerAdapter):
 
         cap = self.capabilities()
         if not cap.available:
-            return self._skipped_result(spec, started, cap.unavailable_message())
+            # No ODC binary (and its NVD download is flaky offline): fall back
+            # to the OSV.dev lookup on manifests instead of skipping outright.
+            try:
+                from .osv_adapter import OSVAdapter
+
+                return OSVAdapter().run(spec, workdir=workdir)
+            except Exception as exc:  # noqa: BLE001 - fallback must never break the scan
+                return self._skipped_result(
+                    spec, started, f"{cap.unavailable_message()}; osv fallback: {exc}"
+                )
 
         report_path = Path(workdir) / "dependency-check-report.json"
         argv = [

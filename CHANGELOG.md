@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Kill the four honest limitations: OSV.dev CVE lookup replaces flaky NVD
+  downloads (auto-fallback when the ODC binary is missing); CodeQL promoted
+  from experimental stub to an opt-in DEEP step with SARIF parsing;
+  notifications feed (bell + ack + gate-fail webhook) plus fix `.diff`
+  download; targeted HTTP verification probes (reflected-XSS canary,
+  SQL-error signatures, allowlist + request caps) as opt-in DAST evidence.
+- Narrow secret redaction to key formats + loaded env values
+  (`token.isEmpty()`, diff lines and JSON pass through).
+
 - Scan any web language, not just Java: new Semgrep rulesets `javascript.yml` (JS/TS), `python.yml`, `php.yml` (10 rules each, two-direction fixtures, batched tests), `LanguageKind` extended + `language_from_extension` hub, inventory covers `.js/.ts/.py/.php/...`, default Semgrep load is every bundled `rules/*.yml`. Live-verified: CWE-78 JS, CWE-89 PY, CWE-79 PHP, safe code silent.
 
 - Add `--mode hunt`: model-first pipeline where the model explores the snapshot with read-only tools (`hunt_vulns`), scanners run unchanged, Laya verifies each candidate (`laya_verification`), and `model_scanner_compare` buckets agreed/model-only/scanner-only; the AI lane focuses on agreed findings and `hunt.json` lands next to `final-report.md`. Default `deterministic` mode is byte-for-byte unchanged; without `--provider` hunt stages skip and the run falls back to deterministic.
