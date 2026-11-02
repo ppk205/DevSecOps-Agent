@@ -176,3 +176,163 @@ rules:
       - pattern: $X.merge(...)
       - pattern: $X.mergeWith(...)
       - pattern: $X.defaultsDeep(...)
+
+  # ─── Eval variants / Injection ────────────────────────────────────
+  - id: js-redos-dynamic-regexp
+    languages: [javascript, typescript]
+    severity: WARNING
+    mode: taint
+    message: Request data builds a regular expression; anchor the pattern or escape it first.
+    metadata:
+      cwe: ['CWE-1333: Inefficient Regular Expression Complexity']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: req.query
+      - pattern: req.body
+      - pattern: req.params
+    pattern-sinks:
+      - pattern: new RegExp(...)
+      - pattern: RegExp(...)
+    pattern-sanitizers:
+      - pattern: _.escapeRegExp(...)
+
+  - id: js-implied-eval
+    languages: [javascript, typescript]
+    severity: ERROR
+    mode: taint
+    message: Request data reaches a string-evaluated callback or vm API; pass a function reference instead.
+    metadata:
+      cwe: ['CWE-95: Code Injection']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: req.query
+      - pattern: req.body
+      - pattern: req.params
+    pattern-sinks:
+      - pattern: setTimeout(...)
+      - pattern: setInterval(...)
+      - pattern: vm.runInThisContext(...)
+      - pattern: vm.runInNewContext(...)
+      - pattern: vm.runInContext(...)
+      - pattern: vm.compileFunction(...)
+
+  - id: js-shell-spawn
+    languages: [javascript, typescript]
+    severity: ERROR
+    mode: taint
+    message: 'Externally controlled input reaches a shell-enabled spawn; drop shell:true or allowlist the command.'
+    metadata:
+      cwe: ['CWE-78: OS Command Injection']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: req.query
+      - pattern: req.body
+      - pattern: req.params
+      - pattern: process.argv
+    pattern-sinks:
+      - pattern: '$CP.spawn(..., {shell: true, ...}, ...)'
+      - pattern: '$CP.spawnSync(..., {shell: true, ...}, ...)'
+      - pattern: '$CP.execFile(..., {shell: true, ...}, ...)'
+
+  - id: js-nosql-injection
+    languages: [javascript, typescript]
+    severity: ERROR
+    mode: taint
+    message: Request data reaches a NoSQL query operator; cast to a primitive or sanitize the filter.
+    metadata:
+      cwe: ['CWE-943: NoSQL Injection']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: req.query
+      - pattern: req.body
+      - pattern: req.params
+    pattern-sinks:
+      - pattern: $DB.find(...)
+      - pattern: $DB.findOne(...)
+      - pattern: $DB.findOneAndUpdate(...)
+      - pattern: $DB.updateOne(...)
+      - pattern: $DB.updateMany(...)
+      - pattern: $DB.deleteOne(...)
+      - pattern: $DB.deleteMany(...)
+    pattern-sanitizers:
+      - pattern: String(...)
+      - pattern: Number(...)
+      - pattern: validator.escape(...)
+
+  # ─── Auth / Browser / Hygiene ─────────────────────────────────────
+  - id: js-jwt-weak-secret
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: JWT signed with an empty or weak literal secret or none algorithm; use a strong env secret.
+    metadata:
+      cwe: ['CWE-327: Broken or Risky Cryptographic Algorithm']
+      version: '0.2.0'
+    pattern-either:
+      - pattern: $JWT.sign($P, "", ...)
+      - pattern: $JWT.sign($P, "secret", ...)
+      - pattern: $JWT.sign($P, "password", ...)
+      - pattern: $JWT.sign($P, "changeme", ...)
+      - pattern: '$JWT.sign(..., {algorithm: "none", ...}, ...)'
+
+  - id: js-postmessage-wildcard
+    languages: [javascript, typescript]
+    severity: WARNING
+    message: postMessage targets any origin; pin the recipient origin explicitly.
+    metadata:
+      cwe: ['CWE-940: Improper Verification of Source of a Communication Channel']
+      version: '0.2.0'
+    pattern: $WIN.postMessage($MSG, "*")
+
+  - id: js-timing-unsafe-compare
+    languages: [javascript, typescript]
+    severity: WARNING
+    mode: taint
+    message: Secret compared with equality leaks timing information; use crypto.timingSafeEqual.
+    metadata:
+      cwe: ['CWE-208: Observable Timing Discrepancy']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: req.query
+      - pattern: req.body
+      - pattern: req.params
+    pattern-sinks:
+      - pattern: $A == $B
+      - pattern: $A === $B
+    pattern-sanitizers:
+      - pattern: crypto.timingSafeEqual(...)
+
+  - id: js-debug-leftover
+    languages: [javascript, typescript]
+    severity: WARNING
+    message: Leftover debugger or console call ships debug output; remove it before release.
+    metadata:
+      cwe: ['CWE-489: Active Debug Code']
+      version: '0.2.0'
+    pattern-either:
+      - pattern: debugger;
+      - pattern: console.log(...)
+      - pattern: console.debug(...)
+
+  - id: js-weak-hash
+    languages: [javascript, typescript]
+    severity: WARNING
+    message: MD5, SHA-1 and createCipher are broken for security use; use SHA-256 or createCipheriv.
+    metadata:
+      cwe: ['CWE-328: Use of Weak Hash']
+      version: '0.2.0'
+    pattern-either:
+      - pattern: crypto.createHash("md5")
+      - pattern: crypto.createHash("sha1")
+      - pattern: crypto.createCipher(...)
+
+  - id: js-cors-wildcard
+    languages: [javascript, typescript]
+    severity: WARNING
+    message: CORS allows any origin; restrict to an explicit allowlist.
+    metadata:
+      cwe: ['CWE-942: Permissive Cross-domain Policy']
+      version: '0.2.0'
+    pattern-either:
+      - pattern: $RES.setHeader("Access-Control-Allow-Origin", "*")
+      - pattern: $RES.header("Access-Control-Allow-Origin", "*")
+      - pattern: cors()

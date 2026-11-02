@@ -193,3 +193,149 @@ rules:
       - pattern: extract($_POST[$X])
       - pattern: extract($_REQUEST[$X])
       - pattern: extract($_COOKIE[$X])
+
+  # ─── Injection: XXE / redirects / dynamic code ───────────────────────
+  - id: php-xxe-external-entity
+    languages: [php]
+    severity: ERROR
+    message: XML parser allows external entities; disable them or use LIBXML_NONET.
+    metadata:
+      cwe: ['CWE-611: XML External Entity (XXE)']
+      version: '0.3.0'
+    patterns:
+      - pattern-either:
+          - pattern: libxml_disable_entity_loader(false, ...)
+          - pattern: $DOC->loadXML(...)
+          - pattern: $DOC->load(...)
+      - pattern-not: $DOC->loadXML(..., LIBXML_NONET, ...)
+      - pattern-not: $DOC->load(..., LIBXML_NONET, ...)
+
+  - id: php-open-redirect
+    languages: [php]
+    severity: ERROR
+    mode: taint
+    message: User input reaches a Location header; validate against an allowlist.
+    metadata:
+      cwe: ['CWE-601: Open Redirect']
+      version: '0.3.0'
+    pattern-sources:
+      - pattern: $_GET
+      - pattern: $_POST
+      - pattern: $_REQUEST
+      - pattern: $_COOKIE
+    pattern-sinks:
+      - pattern: 'header("Location: " . $X, ...)'
+      - pattern: "header('Location: ' . $X, ...)"
+
+  - id: php-insecure-random
+    languages: [php]
+    severity: WARNING
+    message: rand/mt_rand are predictable; use random_int or random_bytes.
+    metadata:
+      cwe: ['CWE-330: Use of Insufficiently Random Values']
+      version: '0.3.0'
+    pattern-either:
+      - pattern: rand(...)
+      - pattern: mt_rand(...)
+      - pattern: srand(...)
+      - pattern: uniqid(...)
+
+  - id: php-jwt-weak-secret
+    languages: [php]
+    severity: ERROR
+    message: JWT signed with a hardcoded secret; load the key from the environment.
+    metadata:
+      cwe: ['CWE-798: Use of Hard-coded Credentials']
+      version: '0.3.0'
+    patterns:
+      - pattern-either:
+          - pattern: JWT::encode(..., "...", ...)
+          - pattern: JWT::decode(..., "...", ...)
+      - pattern-not: JWT::encode(..., getenv(...), ...)
+      - pattern-not: JWT::decode(..., getenv(...), ...)
+
+  - id: php-create-function-injection
+    languages: [php]
+    severity: ERROR
+    mode: taint
+    message: User input reaches create_function; use a closure instead.
+    metadata:
+      cwe: ['CWE-95: Code Injection']
+      version: '0.3.0'
+    pattern-sources:
+      - pattern: $_GET
+      - pattern: $_POST
+      - pattern: $_REQUEST
+      - pattern: $_COOKIE
+    pattern-sinks:
+      - pattern: create_function(...)
+
+  - id: php-dynamic-callable
+    languages: [php]
+    severity: ERROR
+    mode: taint
+    message: User input selects the called function; dispatch from an allowlist map.
+    metadata:
+      cwe: ['CWE-95: Code Injection']
+      version: '0.3.0'
+    pattern-sources:
+      - pattern: $_GET
+      - pattern: $_POST
+      - pattern: $_REQUEST
+      - pattern: $_COOKIE
+    pattern-sinks:
+      - pattern: call_user_func(...)
+      - pattern: call_user_func_array(...)
+
+  - id: php-parse-str-pollution
+    languages: [php]
+    severity: ERROR
+    mode: taint
+    message: parse_str on user input overwrites variables; parse explicitly instead.
+    metadata:
+      cwe: ['CWE-20: Improper Input Validation']
+      version: '0.3.0'
+    pattern-sources:
+      - pattern: $_GET
+      - pattern: $_POST
+      - pattern: $_REQUEST
+      - pattern: $_COOKIE
+    pattern-sinks:
+      - pattern: parse_str(...)
+      - pattern: mb_parse_str(...)
+
+  - id: php-preg-replace-eval
+    languages: [php]
+    severity: ERROR
+    message: preg_replace with /e executes the replacement; use preg_replace_callback.
+    metadata:
+      cwe: ['CWE-95: Code Injection']
+      version: '0.3.0'
+    pattern-regex: 'preg_replace\s*\(\s*["''][^"'']*/e'
+
+  - id: php-dangerous-phar-wrapper
+    languages: [php]
+    severity: ERROR
+    message: phar/expect wrappers enable deserialization and RCE; avoid them.
+    metadata:
+      cwe: ['CWE-98: Improper Control of Filename']
+      version: '0.3.0'
+    pattern-regex: '(phar|expect)://'
+
+  - id: php-session-fixation
+    languages: [php]
+    severity: ERROR
+    mode: taint
+    message: User input sets the session id; regenerate it at login instead.
+    metadata:
+      cwe: ['CWE-384: Session Fixation']
+      version: '0.3.0'
+    pattern-sources:
+      - pattern: $_GET
+      - pattern: $_POST
+      - pattern: $_REQUEST
+      - pattern: $_COOKIE
+    pattern-sinks:
+      - pattern: session_id(...)
+    pattern-sanitizers:
+      - pattern: session_regenerate_id(...)

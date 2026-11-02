@@ -37,12 +37,24 @@ CASES = {
     "py-hardcoded-secret": ("VulnSecret", "SafeSecret"),
     "py-weak-random-token": ("VulnRandom", "SafeRandom"),
     "py-code-injection-eval": ("VulnEval", "SafeEval"),
+    "py-ldap-injection": ("VulnLdap", "SafeLdap"),
+    "py-xxe-xml-parser": ("VulnXxe", "SafeXxe"),
+    "py-header-injection": ("VulnHeader", "SafeHeader"),
+    "py-open-redirect": ("VulnRedirect", "SafeRedirect"),
+    "py-weak-hash": ("VulnHash", "SafeHash"),
+    "py-jwt-hardcoded-secret": ("VulnJwt", "SafeJwt"),
+    "py-pickle-variant-loads": ("VulnPickleVar", "SafePickleVar"),
+    "py-debug-mode-enabled": ("VulnDebug", "SafeDebug"),
+    "py-subprocess-shell-true": ("VulnShell", "SafeShell"),
+    "py-tls-verify-disabled": ("VulnTls", "SafeTls"),
 }
 
 # Fixtures outside CASES that pin sanitizer/taint boundaries.
 SILENT_FIXTURES = {
     "SanitizedCommand": set(),
     "SanitizedXss": set(),
+    "SanitizedLdap": set(),
+    "SanitizedRedirect": set(),
 }
 
 

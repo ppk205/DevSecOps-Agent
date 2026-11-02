@@ -201,3 +201,209 @@ rules:
     pattern-either:
       - pattern: $R.addHeader("Access-Control-Allow-Origin", "*")
       - pattern: $R.setHeader("Access-Control-Allow-Origin", "*")
+
+  # ─── Injection II: LDAP / XPath / SSRF / process / redirect / reflection ──
+  - id: java-ldap-injection
+    languages: [java]
+    severity: ERROR
+    mode: taint
+    message: Request data reaches an LDAP search filter; use a parameterized filter or escape it.
+    metadata:
+      cwe: ['CWE-90: LDAP Injection']
+      version: '0.3.0'
+    pattern-sources:
+      - pattern: $REQ.getParameter(...)
+      - pattern: $REQ.getHeader(...)
+      - pattern: $REQ.getQueryString(...)
+      - pattern: $REQ.getCookies(...)
+      - pattern: $REQ.getPathInfo(...)
+      - pattern: $REQ.getReader()
+      - pattern: $REQ.getInputStream()
+    pattern-sinks:
+      - pattern: $CTX.search(...)
+    pattern-sanitizers:
+      - pattern: $F.encode()
+      - pattern: org.springframework.ldap.support.LdapEncoder.filterEncode(...)
+
+  - id: java-xpath-injection
+    languages: [java]
+    severity: ERROR
+    mode: taint
+    message: Request data reaches an XPath expression; use a parameterized XPathVariableResolver.
+    metadata:
+      cwe: ['CWE-643: XPath Injection']
+      version: '0.3.0'
+    pattern-sources:
+      - pattern: $REQ.getParameter(...)
+      - pattern: $REQ.getHeader(...)
+      - pattern: $REQ.getQueryString(...)
+      - pattern: $REQ.getCookies(...)
+      - pattern: $REQ.getPathInfo(...)
+      - pattern: $REQ.getReader()
+      - pattern: $REQ.getInputStream()
+    pattern-sinks:
+      - pattern: $XPATH.evaluate(...)
+      - pattern: $XPATH.compile(...)
+
+  - id: java-ssrf-url-connection
+    languages: [java]
+    severity: ERROR
+    mode: taint
+    message: Request data reaches an outbound URL connection; restrict to an allowlist.
+    metadata:
+      cwe: ['CWE-918: Server-Side Request Forgery (SSRF)']
+      version: '0.3.0'
+    pattern-sources:
+      - pattern: $REQ.getParameter(...)
+      - pattern: $REQ.getHeader(...)
+      - pattern: $REQ.getQueryString(...)
+      - pattern: $REQ.getCookies(...)
+      - pattern: $REQ.getPathInfo(...)
+      - pattern: $REQ.getReader()
+      - pattern: $REQ.getInputStream()
+    pattern-sinks:
+      - pattern: new java.net.URL(...).openConnection()
+      - pattern: new URL(...).openConnection()
+      - pattern: new java.net.URL(...).openStream()
+      - pattern: new URL(...).openStream()
+
+  - id: java-command-injection-processbuilder
+    languages: [java]
+    severity: ERROR
+    mode: taint
+    message: Request data reaches a process command; use a fixed argument list.
+    metadata:
+      cwe: ['CWE-78: OS Command Injection']
+      version: '0.3.0'
+    pattern-sources:
+      - pattern: $REQ.getParameter(...)
+      - pattern: $REQ.getHeader(...)
+      - pattern: $REQ.getQueryString(...)
+      - pattern: $REQ.getCookies(...)
+      - pattern: $REQ.getPathInfo(...)
+      - pattern: $REQ.getReader()
+      - pattern: $REQ.getInputStream()
+    pattern-sinks:
+      - pattern: new ProcessBuilder(...)
+      - pattern: new java.lang.ProcessBuilder(...)
+      - pattern: $PB.command(...)
+
+  - id: java-open-redirect
+    languages: [java]
+    severity: WARNING
+    mode: taint
+    message: Request data controls a redirect target; validate against an allowlist.
+    metadata:
+      cwe: ['CWE-601: Open Redirect']
+      version: '0.3.0'
+    pattern-sources:
+      - pattern: $REQ.getParameter(...)
+      - pattern: $REQ.getHeader(...)
+      - pattern: $REQ.getQueryString(...)
+      - pattern: $REQ.getCookies(...)
+      - pattern: $REQ.getPathInfo(...)
+      - pattern: $REQ.getReader()
+      - pattern: $REQ.getInputStream()
+    pattern-sinks:
+      - pattern: $R.sendRedirect(...)
+
+  - id: java-unsafe-reflection
+    languages: [java]
+    severity: ERROR
+    mode: taint
+    message: Request data selects a class or method reflectively; restrict to an allowlist.
+    metadata:
+      cwe: ['CWE-470: Externally-Controlled Input to Reflection']
+      version: '0.3.0'
+    pattern-sources:
+      - pattern: $REQ.getParameter(...)
+      - pattern: $REQ.getHeader(...)
+      - pattern: $REQ.getQueryString(...)
+      - pattern: $REQ.getCookies(...)
+      - pattern: $REQ.getPathInfo(...)
+      - pattern: $REQ.getReader()
+      - pattern: $REQ.getInputStream()
+    pattern-sinks:
+      - pattern: Class.forName(...)
+      - pattern: java.lang.Class.forName(...)
+      - pattern: $C.getMethod(...)
+      - pattern: $C.getDeclaredMethod(...)
+
+  - id: java-log-injection
+    languages: [java]
+    severity: WARNING
+    mode: taint
+    message: Request data reaches a log statement; neutralize CRLF sequences first.
+    metadata:
+      cwe: ['CWE-117: Log Injection']
+      version: '0.3.0'
+    pattern-sources:
+      - pattern: $REQ.getParameter(...)
+      - pattern: $REQ.getHeader(...)
+      - pattern: $REQ.getQueryString(...)
+      - pattern: $REQ.getCookies(...)
+      - pattern: $REQ.getPathInfo(...)
+      - pattern: $REQ.getReader()
+      - pattern: $REQ.getInputStream()
+    pattern-sinks:
+      - pattern: $LOG.trace(...)
+      - pattern: $LOG.debug(...)
+      - pattern: $LOG.info(...)
+      - pattern: $LOG.warn(...)
+      - pattern: $LOG.error(...)
+      - pattern: $LOG.log(...)
+
+  # ─── Hardening: cookies / secrets / errors / parsers / paths ─────────────
+  - id: java-insecure-cookie
+    languages: [java]
+    severity: WARNING
+    message: Cookie explicitly disables Secure or HttpOnly; set both flags.
+    metadata:
+      cwe: ['CWE-614: Sensitive Cookie Without Secure Flag']
+      version: '0.3.0'
+    pattern-either:
+      - pattern: $C.setSecure(false)
+      - pattern: $C.setHttpOnly(false)
+
+  - id: java-hardcoded-credentials
+    languages: [java]
+    severity: WARNING
+    message: Hardcoded credential; load secrets from the environment or a vault.
+    metadata:
+      cwe: ['CWE-798: Use of Hard-coded Credentials']
+      version: '0.3.0'
+    pattern-regex: '(?i)(password|passwd|secret|api[_-]?key|access[_-]?token)\s*=\s*"[^"]+"'
+
+  - id: java-stack-trace-exposure
+    languages: [java]
+    severity: WARNING
+    message: printStackTrace exposes internals; log through a logger instead.
+    metadata:
+      cwe: ['CWE-209: Information Exposure Through an Error Message']
+      version: '0.3.0'
+    pattern: $E.printStackTrace(...)
+
+  - id: java-xxe-sax-parser
+    languages: [java]
+    severity: ERROR
+    message: SAX parser without secure processing is vulnerable to XXE.
+    metadata:
+      cwe: ['CWE-611: XML External Entity Injection']
+      version: '0.3.0'
+    pattern-either:
+      - pattern: javax.xml.parsers.SAXParserFactory.newInstance().newSAXParser()
+      - pattern: SAXParserFactory.newInstance().newSAXParser()
+      - pattern: org.xml.sax.helpers.XMLReaderFactory.createXMLReader()
+
+  - id: java-path-traversal-nio
+    languages: [java]
+    severity: ERROR
+    message: NIO path includes externally controlled input; validate or confine it.
+    metadata:
+      cwe: ['CWE-22: Path Traversal']
+      version: '0.3.0'
+    pattern-either:
+      - pattern: java.nio.file.Paths.get("..." + $X)
+      - pattern: java.nio.file.Paths.get($X + "...")
+      - pattern: Paths.get("..." + $X)
+      - pattern: Paths.get($X + "...")

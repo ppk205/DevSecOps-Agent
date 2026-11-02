@@ -37,6 +37,16 @@ CASES = {
     "php-loose-comparison": ("VulnCompare", "SafeCompare"),
     "php-dangerous-extract": ("VulnExtract", "SafeExtract"),
     "php-dynamic-eval": ("VulnEval", "SafeEval"),
+    "php-xxe-external-entity": ("VulnXxe", "SafeXxe"),
+    "php-open-redirect": ("VulnRedirect", "SafeRedirect"),
+    "php-insecure-random": ("VulnRandom", "SafeRandom"),
+    "php-jwt-weak-secret": ("VulnJwt", "SafeJwt"),
+    "php-create-function-injection": ("VulnCreateFunc", "SafeCreateFunc"),
+    "php-dynamic-callable": ("VulnCallable", "SafeCallable"),
+    "php-parse-str-pollution": ("VulnParseStr", "SafeParseStr"),
+    "php-preg-replace-eval": ("VulnPreg", "SafePreg"),
+    "php-dangerous-phar-wrapper": ("VulnPhar", "SafePhar"),
+    "php-session-fixation": ("VulnSession", "SafeSession"),
 }
 
 # Fixtures outside CASES that pin FP boundaries: sanitized sinks and
@@ -44,6 +54,9 @@ CASES = {
 SILENT_FIXTURES = {
     "SilentSanitizedSql": set(),
     "SilentStaticHash": set(),
+    "SilentAllowlistedCallable": set(),
+    "SilentPregCallback": set(),
+    "SilentRegeneratedSession": set(),
 }
 
 

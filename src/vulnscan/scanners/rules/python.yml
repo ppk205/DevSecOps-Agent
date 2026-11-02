@@ -203,3 +203,191 @@ rules:
       - pattern: random.randrange(...)
       - pattern: random.choice(...)
       - pattern: random.uniform(...)
+
+  # ─── Injection: LDAP / XML / headers / redirects ────────────────────
+  - id: py-ldap-injection
+    languages: [python]
+    severity: ERROR
+    mode: taint
+    message: Request data reaches an LDAP filter; escape it with escape_filter_chars().
+    metadata:
+      cwe: ['CWE-90: LDAP Injection']
+      version: '0.3.0'
+    pattern-sources:
+      - pattern: request.args.get(...)
+      - pattern: request.form.get(...)
+      - pattern: request.values.get(...)
+      - pattern: request.args[...]
+      - pattern: request.form[...]
+      - pattern: request.get_json(...)
+      - pattern: request.json
+      - pattern: request.data
+      - pattern: request.GET.get(...)
+      - pattern: request.POST.get(...)
+    pattern-sinks:
+      - pattern: $CONN.search(...)
+      - pattern: $CONN.search_s(...)
+      - pattern: $CONN.search_st(...)
+    pattern-sanitizers:
+      - pattern: ldap.filter.escape_filter_chars(...)
+      - pattern: escape_filter_chars(...)
+
+  - id: py-xxe-xml-parser
+    languages: [python]
+    severity: ERROR
+    message: XML parser resolves external entities; use defusedxml or disable them.
+    metadata:
+      cwe: ['CWE-611: XML External Entity (XXE)']
+      version: '0.3.0'
+    pattern-either:
+      - pattern: lxml.etree.fromstring(...)
+      - pattern: lxml.etree.XML(...)
+      - pattern: lxml.etree.parse(...)
+      - pattern: xml.etree.ElementTree.fromstring(...)
+      - pattern: xml.etree.ElementTree.parse(...)
+      - pattern: etree.fromstring(...)
+      - pattern: etree.XML(...)
+      - pattern: etree.parse(...)
+      - pattern: ET.fromstring(...)
+      - pattern: ET.parse(...)
+      - pattern: ElementTree.fromstring(...)
+      - pattern: ElementTree.parse(...)
+
+  - id: py-header-injection
+    languages: [python]
+    severity: ERROR
+    mode: taint
+    message: Request data reaches a response header; strip CR/LF or allowlist values.
+    metadata:
+      cwe: ['CWE-113: HTTP Response Splitting']
+      version: '0.3.0'
+    pattern-sources:
+      - pattern: request.args.get(...)
+      - pattern: request.form.get(...)
+      - pattern: request.values.get(...)
+      - pattern: request.args[...]
+      - pattern: request.form[...]
+      - pattern: request.get_json(...)
+      - pattern: request.json
+      - pattern: request.data
+      - pattern: request.GET.get(...)
+      - pattern: request.POST.get(...)
+    pattern-sinks:
+      - pattern: $RESP.headers[...] = ...
+      - pattern: $RESP.headers.set(...)
+      - pattern: $RESP.headers.append(...)
+
+  - id: py-open-redirect
+    languages: [python]
+    severity: ERROR
+    mode: taint
+    message: Request data reaches a redirect target; validate against an allowlist.
+    metadata:
+      cwe: ['CWE-601: Open Redirect']
+      version: '0.3.0'
+    pattern-sources:
+      - pattern: request.args.get(...)
+      - pattern: request.form.get(...)
+      - pattern: request.values.get(...)
+      - pattern: request.args[...]
+      - pattern: request.form[...]
+      - pattern: request.get_json(...)
+      - pattern: request.json
+      - pattern: request.data
+      - pattern: request.GET.get(...)
+      - pattern: request.POST.get(...)
+    pattern-sinks:
+      - pattern: redirect(...)
+      - pattern: flask.redirect(...)
+      - pattern: HttpResponseRedirect(...)
+      - pattern: HttpResponsePermanentRedirect(...)
+      - pattern: django.shortcuts.redirect(...)
+    pattern-sanitizers:
+      - pattern: flask.url_for(...)
+      - pattern: url_for(...)
+
+  # ─── Cryptography / auth ────────────────────────────────────────────
+  - id: py-weak-hash
+    languages: [python]
+    severity: WARNING
+    message: md5/sha1 are broken for security use; prefer sha256 or bcrypt.
+    metadata:
+      cwe: ['CWE-328: Use of Weak Hash']
+      version: '0.3.0'
+    pattern-either:
+      - pattern: hashlib.md5(...)
+      - pattern: hashlib.sha1(...)
+      - pattern: hashlib.sha(...)
+
+  - id: py-jwt-hardcoded-secret
+    languages: [python]
+    severity: ERROR
+    message: JWT signed with a hardcoded secret; load the key from the environment.
+    metadata:
+      cwe: ['CWE-798: Use of Hard-coded Credentials']
+      version: '0.3.0'
+    pattern-either:
+      - pattern: jwt.encode(..., "...", ...)
+      - pattern: jwt.encode(..., key="...", ...)
+      - pattern: jwt.decode(..., "...", ...)
+
+  # ─── Deserialization variants ───────────────────────────────────────
+  - id: py-pickle-variant-loads
+    languages: [python]
+    severity: ERROR
+    message: Unsafe deserialization via dill/cloudpickle/joblib; use json instead.
+    metadata:
+      cwe: ['CWE-502: Deserialization of Untrusted Data']
+      version: '0.3.0'
+    pattern-either:
+      - pattern: dill.loads(...)
+      - pattern: dill.load(...)
+      - pattern: cloudpickle.loads(...)
+      - pattern: cloudpickle.load(...)
+      - pattern: joblib.load(...)
+      - pattern: cPickle.loads(...)
+      - pattern: cPickle.load(...)
+      - pattern: _pickle.loads(...)
+      - pattern: _pickle.load(...)
+
+  # ─── Configuration / transport ──────────────────────────────────────
+  - id: py-debug-mode-enabled
+    languages: [python]
+    severity: WARNING
+    message: Debug mode leaks tracebacks; never enable it in production.
+    metadata:
+      cwe: ['CWE-215: Debug Information Exposure']
+      version: '0.3.0'
+    pattern-either:
+      - pattern: app.run(..., debug=True, ...)
+      - pattern: app.debug = True
+      - pattern: DEBUG = True
+
+  - id: py-subprocess-shell-true
+    languages: [python]
+    severity: WARNING
+    message: shell=True hands parsing to the shell; use an argument list instead.
+    metadata:
+      cwe: ['CWE-78: OS Command Injection']
+      version: '0.3.0'
+    pattern-either:
+      - pattern: subprocess.call(..., shell=True, ...)
+      - pattern: subprocess.run(..., shell=True, ...)
+      - pattern: subprocess.Popen(..., shell=True, ...)
+      - pattern: subprocess.check_output(..., shell=True, ...)
+      - pattern: subprocess.check_call(..., shell=True, ...)
+
+  - id: py-tls-verify-disabled
+    languages: [python]
+    severity: ERROR
+    message: TLS verification is disabled; keep verify=True or a pinned CA bundle.
+    metadata:
+      cwe: ['CWE-295: Improper Certificate Validation']
+      version: '0.3.0'
+    pattern-either:
+      - pattern: requests.get(..., verify=False, ...)
+      - pattern: requests.post(..., verify=False, ...)
+      - pattern: requests.put(..., verify=False, ...)
+      - pattern: requests.delete(..., verify=False, ...)
+      - pattern: requests.request(..., verify=False, ...)
+      - pattern: ssl._create_unverified_context(...)

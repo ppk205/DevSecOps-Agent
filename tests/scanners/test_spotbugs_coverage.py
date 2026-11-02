@@ -93,3 +93,21 @@ def test_clean_compiled_files_marked_analyzed(tmp_path: Path, monkeypatch) -> No
     assert by_path.get("src/main/java/org/example/NeverCompiled.java") == CoverageUnitStatus.UNSUPPORTED
     # Non-Java units are out of scope, recorded not missing.
     assert by_path.get("src/main/resources/app.js") == CoverageUnitStatus.UNSUPPORTED
+
+
+def test_spotbugs_cwe_mapping() -> None:
+    from vulnscan.contracts import CWECategory
+    from vulnscan.scanners.spotbugs_adapter import _spotbugs_cwe
+
+    assert _spotbugs_cwe("SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE", "SQL") == CWECategory.SQL_INJECTION
+    assert _spotbugs_cwe("EI_EXPOSE_REP2", "BAD_PRACTICE") == CWECategory.SENSITIVE_DATA_EXPOSURE
+    assert _spotbugs_cwe("DMI_RANDOM_USED_ONLY_ONCE", "BAD_PRACTICE") == CWECategory.INSECURE_RANDOMNESS
+    assert _spotbugs_cwe("RV_RETURN_VALUE_IGNORED", "BAD_PRACTICE") == CWECategory.UNCHECKED_RETURN_VALUE
+    assert _spotbugs_cwe("URF_UNREAD_FIELD", "STYLE") == CWECategory.UNUSED_ASSIGNMENT
+    assert _spotbugs_cwe("OBL_UNSATISFIED_OBLIGATION", "BAD_PRACTICE") == CWECategory.IMPROPER_RESOURCE_SHUTDOWN
+    assert _spotbugs_cwe("REC_CATCH_EXCEPTION", "BAD_PRACTICE") == CWECategory.GENERIC_EXCEPTION_CAUGHT
+    assert _spotbugs_cwe("DM_DEFAULT_ENCODING", "I18N") == CWECategory.UNICODE_ENCODING_ERROR
+    assert _spotbugs_cwe("DE_MIGHT_IGNORE", "BAD_PRACTICE") == CWECategory.IMPROPER_EXCEPTION_CHECK
+    assert _spotbugs_cwe("VA_FORMAT_STRING_USES_NEWLINE", "I18N") == CWECategory.EXTERNALLY_CONTROLLED_FORMAT_STRING
+    assert _spotbugs_cwe("MS_PKGPROTECT", "MALICIOUS_CODE") is None
+    assert _spotbugs_cwe("SOMETHING_ELSE", "CORRECTNESS") is None

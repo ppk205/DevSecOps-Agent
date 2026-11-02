@@ -37,14 +37,31 @@ CASES = {
     "java-trust-all-certificates": ("VulnTls", "SafeTls"),
     "java-unsafe-deserialization-objectmapper": ("VulnMapper", "SafeMapper"),
     "java-permissive-cors": ("VulnCors", "SafeCors"),
+    "java-ldap-injection": ("VulnLdap", "SafeLdap"),
+    "java-xpath-injection": ("VulnXpath", "SafeXpath"),
+    "java-ssrf-url-connection": ("VulnSsrf", "SafeSsrf"),
+    "java-command-injection-processbuilder": ("VulnProc", "SafeProc"),
+    "java-open-redirect": ("VulnRedirect", "SafeRedirect"),
+    "java-unsafe-reflection": ("VulnReflect", "SafeReflect"),
+    "java-log-injection": ("VulnLog", "SafeLog"),
+    "java-insecure-cookie": ("VulnCookie", "SafeCookie"),
+    "java-hardcoded-credentials": ("VulnSecret", "SafeSecret"),
+    "java-stack-trace-exposure": ("VulnStack", "SafeStack"),
+    "java-xxe-sax-parser": ("VulnSax", "SafeSax"),
+    "java-path-traversal-nio": ("VulnNio", "SafeNio"),
 }
 
-# Fixtures outside CASES that pin the XSS rule's boundaries.
+# Fixtures outside CASES that pin rule boundaries: console logging, static
+# JSON and escaped output stay quiet; request data serialised then written
+# is the real signal and must survive. The same idea applies to the new
+# rules: an encoded LDAP filter and a Secure-only cookie stay quiet.
 SILENT_FIXTURES = {
     "LogConsole": set(),
     "StaticJson": set(),
     "SanitizedXss": set(),
     "ComputedXss": {"java-xss-response-writer"},
+    "SanitizedLdap": set(),
+    "PartialCookie": set(),
 }
 
 # FR-23: every TLS verification bypass shape, and validating/unrelated look-alikes.

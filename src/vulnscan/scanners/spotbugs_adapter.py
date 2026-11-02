@@ -18,6 +18,7 @@ from typing import Any
 from vulnscan.contracts import (
     CoverageRecord,
     CoverageUnitStatus,
+    CWECategory,
     ExtractionMode,
     LanguageKind,
     Observation,
@@ -81,6 +82,39 @@ def _parse_line_number(source_lines: Any) -> int | None:
             return int(start)
         except (ValueError, TypeError):
             pass
+    return None
+
+
+_SPOTBUGS_CWE_BY_CODE_PREFIX: tuple[tuple[str, CWECategory], ...] = (
+    ("SQL_", CWECategory.SQL_INJECTION),
+    ("XSS_", CWECategory.XSS),
+    ("DMI_RANDOM", CWECategory.INSECURE_RANDOMNESS),
+    ("RV_", CWECategory.UNCHECKED_RETURN_VALUE),
+    ("URF_", CWECategory.UNUSED_ASSIGNMENT),
+    ("DLS_", CWECategory.UNUSED_ASSIGNMENT),
+    ("OBL_", CWECategory.IMPROPER_RESOURCE_SHUTDOWN),
+    ("ODR_", CWECategory.IMPROPER_RESOURCE_SHUTDOWN),
+    ("OS_OPEN_STREAM", CWECategory.IMPROPER_RESOURCE_SHUTDOWN),
+    ("REC_CATCH_EXCEPTION", CWECategory.GENERIC_EXCEPTION_CAUGHT),
+    ("DM_DEFAULT_ENCODING", CWECategory.UNICODE_ENCODING_ERROR),
+    ("DE_MIGHT_IGNORE", CWECategory.IMPROPER_EXCEPTION_CHECK),
+    ("DE_MIGHT_DROP", CWECategory.IMPROPER_EXCEPTION_CHECK),
+    ("EI_EXPOSE_REP", CWECategory.SENSITIVE_DATA_EXPOSURE),
+    ("VA_FORMAT_STRING", CWECategory.EXTERNALLY_CONTROLLED_FORMAT_STRING),
+)
+
+
+def _spotbugs_cwe(bug_id: str, category: str) -> CWECategory | None:
+    """Best-effort SpotBugs pattern/category to contract CWE bucket."""
+    for prefix, cwe in _SPOTBUGS_CWE_BY_CODE_PREFIX:
+        if bug_id.startswith(prefix):
+            return cwe
+    if category == "SQL":
+        return CWECategory.SQL_INJECTION
+    if category == "XSS":
+        return CWECategory.XSS
+    if category == "I18N":
+        return CWECategory.UNICODE_ENCODING_ERROR
     return None
 
 
@@ -148,7 +182,7 @@ def parse_spotbugs_xml(
                 tool=ToolName.SPOTBUGS,
                 tool_version=tool_version,
                 rule_id=bug_id,
-                cwe_category=None,
+                cwe_category=_spotbugs_cwe(bug_id, category),
                 severity=sev,
                 native_severity=f"priority={priority}, category={category}",
                 message=long_msg[:1000] if long_msg else short_msg[:1000],

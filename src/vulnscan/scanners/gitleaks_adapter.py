@@ -20,6 +20,7 @@ from typing import Any
 from vulnscan.contracts import (
     CoverageRecord,
     CoverageUnitStatus,
+    CWECategory,
     ExtractionMode,
     LanguageKind,
     Observation,
@@ -97,7 +98,7 @@ def parse_gitleaks_json(
                 tool=ToolName.GITLEAKS,
                 tool_version=tool_version,
                 rule_id=rule_id,
-                cwe_category=None,
+                cwe_category=CWECategory.HARD_CODED_SECRET,
                 severity=sev,
                 native_severity=raw_sev,
                 message=f"Secret found: {description}",

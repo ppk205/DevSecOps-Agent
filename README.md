@@ -169,10 +169,10 @@ DevSecOps-Agent/
 
 | Area | Status |
 |------|--------|
-| Java Servlet/JSP | Full: 13 Semgrep rules + SpotBugs + ODC |
-| JavaScript/TypeScript | 10 Semgrep rules (SQLi, XSS, exec, path traversal, SSRF, open redirect, eval, weak random, secrets, prototype pollution) |
-| Python | 10 Semgrep rules (SQLi, XSS bypass, command injection, eval, path traversal, SSRF, SSTI, pickle/YAML, secrets, weak random) |
-| PHP | 10 Semgrep rules (SQLi concat, reflected XSS, command injection, path traversal, SSRF, unserialize, weak hashing, loose comparison, extract, eval) |
+| Java Servlet/JSP | Full: 25 Semgrep rules (injection incl. LDAP/XPath/XXE/SSRF/log, crypto, cookie/session, open redirect, reflection, error exposure) + SpotBugs + ODC |
+| JavaScript/TypeScript | 20 Semgrep rules (SQLi, NoSQLi, XSS, exec/spawn, eval/implied-eval, ReDoS, JWT, postMessage, CORS, timing compare, weak hash, debug leftover, path traversal) |
+| Python | 20 Semgrep rules (SQLi, LDAPi, XXE, header injection, open redirect, command injection, eval, pickle/dill variants, JWT, TLS-verify-off, debug mode, weak hash, secrets) |
+| PHP | 20 Semgrep rules (SQLi concat, reflected XSS, command injection, XXE, open redirect, create_function, dynamic callable, parse_str/extract pollution, preg /e, phar wrapper, session fixation, JWT, weak random, eval) |
 | Secrets/credentials | Gitleaks, all languages and docs |
 | Java dependencies | OWASP Dependency-Check (DEEP profile), with **OSV.dev fallback** when the binary/NVD is unavailable |
 | Notifications | In-app bell + read/unread feed, optional gate-fail webhook |

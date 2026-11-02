@@ -37,6 +37,16 @@ CASES = {
     "js-insecure-random": ("VulnRandom.js", "SafeRandom.js"),
     "js-hardcoded-secret": ("VulnSecret.js", "SafeSecret.js"),
     "js-prototype-pollution": ("VulnProto.ts", "SafeProto.ts"),
+    "js-redos-dynamic-regexp": ("VulnRedos.js", "SafeRedos.js"),
+    "js-implied-eval": ("VulnImpliedEval.js", "SafeImpliedEval.js"),
+    "js-shell-spawn": ("VulnSpawn.js", "SafeSpawn.js"),
+    "js-nosql-injection": ("VulnNoSql.js", "SafeNoSql.js"),
+    "js-jwt-weak-secret": ("VulnJwt.js", "SafeJwt.js"),
+    "js-postmessage-wildcard": ("VulnPostmsg.js", "SafePostmsg.js"),
+    "js-timing-unsafe-compare": ("VulnTiming.js", "SafeTiming.js"),
+    "js-debug-leftover": ("VulnDebug.js", "SafeDebug.js"),
+    "js-weak-hash": ("VulnHash.js", "SafeHash.js"),
+    "js-cors-wildcard": ("VulnCors.js", "SafeCors.js"),
 }
 
 # Fixtures outside CASES that pin the XSS rule's FP boundaries: a static
@@ -45,6 +55,8 @@ CASES = {
 SILENT_FIXTURES = {
     "StaticInnerHtml.js": set(),
     "SanitizedXss.js": set(),
+    "SanitizedNoSql.js": set(),
+    "StaticRegex.js": set(),
 }
 
 
