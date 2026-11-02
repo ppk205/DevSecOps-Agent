@@ -148,15 +148,22 @@ def ensure_maven_build(workdir: str, timeout: float) -> str | None:
     if "JAVA_HOME" in os.environ:
         env["JAVA_HOME"] = os.environ["JAVA_HOME"]
     build = run_command(
-        [maven, "-B", "-DskipTests", "compile",
-         "org.apache.maven.plugins:maven-dependency-plugin:3.8.1:copy-dependencies"],
+        [
+            maven,
+            "-B",
+            "-DskipTests",
+            "compile",
+            "org.apache.maven.plugins:maven-dependency-plugin:3.8.1:copy-dependencies",
+        ],
         cwd=str(root),
         timeout=timeout,
         env=env or None,
     )
     if build.succeeded:
         return None
-    return "maven build failed: " + ((build.stderr or build.stdout).strip()[-500:] or "unknown error")
+    return "maven build failed: " + (
+        (build.stderr or build.stdout).strip()[-500:] or "unknown error"
+    )
 
 
 def run_isolated_tool(tool: ToolName, spec: ScanSpecification, timeout: float) -> ScannerResult:
