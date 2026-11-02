@@ -171,7 +171,9 @@ class DependencyCheckAdapter(ScannerAdapter):
             binary=self.binary_name,
             version=version,
             available=resolved is not None,
-            reason=None if resolved else f"{self.binary_name} not found on PATH",
+            reason=None
+            if resolved
+            else f"{self.binary_name} not found on PATH; OSV.dev fallback covers manifests",
         )
 
     def run(self, spec: ScanSpecification, *, workdir: str) -> ScannerResult:

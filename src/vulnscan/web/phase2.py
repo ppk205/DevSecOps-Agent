@@ -149,7 +149,13 @@ def probe_tools(with_versions: bool = False) -> list[dict[str, Any]]:
                 "path": resolved,
                 "available": resolved is not None,
                 "version": version,
-                "hint": None if resolved else f"Install {binary} on PATH",
+                "hint": None
+                if resolved
+                else (
+                    "Install dependency-check on PATH; OSV.dev covers manifests meanwhile"
+                    if name == "owasp-dependency-check"
+                    else f"Install {binary} on PATH"
+                ),
             }
         )
     return out

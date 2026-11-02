@@ -174,7 +174,9 @@ DevSecOps-Agent/
 | Python | 10 Semgrep rules (SQLi, XSS bypass, command injection, eval, path traversal, SSRF, SSTI, pickle/YAML, secrets, weak random) |
 | PHP | 10 Semgrep rules (SQLi concat, reflected XSS, command injection, path traversal, SSRF, unserialize, weak hashing, loose comparison, extract, eval) |
 | Secrets/credentials | Gitleaks, all languages and docs |
-| Java dependencies | OWASP Dependency-Check (DEEP profile) |
+| Java dependencies | OWASP Dependency-Check (DEEP profile), with **OSV.dev fallback** when the binary/NVD is unavailable |
+| Notifications | In-app bell + read/unread feed, optional gate-fail webhook |
+| Targeted verification probes | Opt-in HTTP probes (reflected-XSS canary, SQL-error signatures) as extra evidence — never auto-findings |
 | DAST / runtime attacks | **Not supported** — static analysis only |
 | Auto-remediation | **Not supported** — proposals only, you apply |
 | Other languages (Go, Ruby, C#…) | Hunt mode reads any text, but no dedicated rules yet |
@@ -372,7 +374,9 @@ From any finding (drawer button) or the whole run (**Fix all**):
    rows and retries failed ones.
 
 API: `POST /api/scans/{id}/fix` (`finding_ids` or `null` = all),
-`GET /api/scans/{id}/fixes`, `POST /api/scans/{id}/fixes/{pid}/apply`.
+`GET /api/scans/{id}/fixes`, `POST /api/scans/{id}/fixes/{pid}/apply`,
+`GET /api/scans/{id}/fixes/{pid}/download` (raw `.diff` to take the patch
+anywhere, e.g. targets without git).
 
 ### Verification Philosophy
 
@@ -498,15 +502,20 @@ labels created by agents record `labelled_by`; agents never self-assign
 
 ## Limitations (honest)
 
-- Local-only, single user; no hosted mode, no accounts, no notifications.
-- Static analysis only — no DAST, no runtime exploitation.
+- Local-only, single user; no hosted mode, no accounts. In-app notification
+  feed + optional webhook cover alerts (nothing leaves the machine unless you
+  configure a webhook URL).
+- Static analysis only — no DAST, no runtime exploitation. Opt-in targeted
+  HTTP probes (XSS canary, SQL-error signatures, allowlisted host only) can
+  corroborate a finding as extra evidence.
 - Laya is advisory; the validator is conservative, so ambiguous findings stay
   `unresolved` rather than guessed.
 - Free-tier providers rate-limit (stages slow down with backoff) and some
   reasoning-only models return empty content the pipeline must work around.
 - Training on a 4GB laptop GPU fits only tiny datasets with microbatch 1;
   use the Kaggle notebook path from `docs/LAYA-TRAINING.md` for anything big.
-- CodeQL is experimental; ODC needs NVD downloads (flaky offline).
+- CodeQL is an opt-in DEEP step (needs the CodeQL CLI bundle); ODC needs NVD
+  downloads (flaky offline — OSV.dev fallback covers manifests).
 
 ## Budget and Timeline
 
