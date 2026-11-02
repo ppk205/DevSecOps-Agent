@@ -13,6 +13,13 @@ export function SeverityBars({ data }: { data: BarDatum[] }) {
   const gap = 10;
   const height = data.length * (barH + gap);
   const width = 420;
+  // Long labels (e.g. CWE-UNCLASSIFIED) overflowed the fixed 110px gutter
+  // and the bar painted over the tail. Size the gutter from the longest label.
+  const labelW = Math.min(
+    210,
+    Math.max(110, ...data.map((d) => d.label.length * 7 + 16)),
+  );
+  const barMax = width - labelW - 44;
 
   return (
     <svg
@@ -23,15 +30,15 @@ export function SeverityBars({ data }: { data: BarDatum[] }) {
       preserveAspectRatio="xMidYMid meet"
     >
       {data.map((d, i) => {
-        const w = Math.max(2, (d.value / max) * (width - 120));
+        const w = Math.max(2, (d.value / max) * barMax);
         const y = i * (barH + gap);
         return (
           <g key={d.label}>
             <text x="0" y={y + 17} fill="#7e7e7e" fontSize="11" letterSpacing="1.5">
               {d.label.toUpperCase()}
             </text>
-            <rect x="110" y={y} width={w} height={barH} fill={severityColor[d.severity]} opacity="0.85" />
-            <text x={116 + w} y={y + 17} fill="#bbbbbb" fontSize="12">
+            <rect x={labelW} y={y} width={w} height={barH} fill={severityColor[d.severity]} opacity="0.85" />
+            <text x={labelW + 6 + w} y={y + 17} fill="#bbbbbb" fontSize="12">
               {d.value}
             </text>
           </g>
