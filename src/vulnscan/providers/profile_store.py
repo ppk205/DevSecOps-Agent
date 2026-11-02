@@ -75,6 +75,11 @@ def default_profile(base: Path | None = None) -> ProviderProfile | None:
     """
     import os
 
+    if base is None and os.environ.get("PYTEST_CURRENT_TEST"):
+        # Unit tests must never touch the network: without an explicit base
+        # dir there is no auto provider under pytest. Tests that exercise
+        # resolution itself pass base=tmp_path explicitly.
+        return None
     keyed = [
         p
         for p in list_profiles(base)
