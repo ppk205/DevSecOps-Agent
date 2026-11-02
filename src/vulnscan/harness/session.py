@@ -54,6 +54,18 @@ class Session:
         self.budget = budget
         self.messages: list[Message] = ctx.log.messages()
         self._rejected: set[tuple[str, str]] = set()
+        self._cancelled = False
+
+    # ------------------------------------------------------------------
+    # cancellation
+    # ------------------------------------------------------------------
+    def cancel(self) -> None:
+        """Ask the current turn to stop before the next provider call or tool."""
+        self._cancelled = True
+
+    @property
+    def cancelled(self) -> bool:
+        return self._cancelled
 
     # ------------------------------------------------------------------
     # session lifecycle
@@ -133,9 +145,12 @@ class Session:
         """Run one user turn to completion; return the messages it added."""
         new: list[Message] = []
         self._rejected.clear()
+        self._cancelled = False
         self._append(Message("user", text), new)
 
         for _ in range(self.max_rounds):
+            if self._cancelled:
+                return self._interrupted(new)
             try:
                 if self.budget is not None:
                     self.budget.check()
@@ -150,6 +165,8 @@ class Session:
             if not reply.message.tool_calls:
                 return new
             for call in reply.message.tool_calls:
+                if self._cancelled:
+                    return self._interrupted(new)
                 self._append(
                     Message("tool", self._run(call), tool_call_id=call.id, name=call.name), new
                 )
@@ -213,4 +230,11 @@ class Session:
         self.ctx.log.append({"type": "error", "error": text})
         # Returned to the caller for display, never sent back to a provider.
         new.append(Message("assistant", f"Provider error: {text}"))
+        return new
+
+    def _interrupted(self, new: list[Message]) -> list[Message]:
+        """End the turn on request: the next tool call never runs."""
+        self._cancelled = False
+        self._append(Message("assistant", "Interrupted."), new)
+        self.ctx.log.append({"type": "interrupted"})
         return new

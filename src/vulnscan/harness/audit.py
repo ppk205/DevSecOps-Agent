@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import secrets
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -38,6 +39,20 @@ class SessionLog:
     def __init__(self, path: Path) -> None:
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
+        self._listeners: list[Callable[[dict[str, Any]], None]] = []
+        self._listener_failures = 0
+
+    def subscribe(self, fn: Callable[[dict[str, Any]], None]) -> Callable[[], None]:
+        """Call *fn* after each line is written; the return value unsubscribes."""
+        self._listeners.append(fn)
+
+        def unsubscribe() -> None:
+            try:
+                self._listeners.remove(fn)
+            except ValueError:
+                pass
+
+        return unsubscribe
 
     def append(self, event: dict[str, Any]) -> None:
         payload = dict(event)
@@ -45,6 +60,11 @@ class SessionLog:
         with self.path.open("a", encoding="utf-8") as handle:
             handle.write(redact_json(payload) + "\n")
             handle.flush()
+        for listener in list(self._listeners):
+            try:
+                listener(payload)
+            except Exception:  # noqa: BLE001 - a listener must never break the loop
+                self._listener_failures += 1
 
     def events(self) -> list[dict[str, Any]]:
         if not self.path.exists():
