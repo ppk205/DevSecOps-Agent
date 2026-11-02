@@ -112,7 +112,7 @@ def test_empty_model_reply_falls_back_to_deterministic_narrative(monkeypatch):
     class _Resp:
         content = "   "
         model = "test-model"
-        usage = {"total_tokens": 0}
+        usage = {"total_tokens": 0}  # noqa: RUF012 - test stub, never mutated
 
     class _Client:
         def __init__(self, *a, **k):
@@ -122,7 +122,11 @@ def test_empty_model_reply_falls_back_to_deterministic_narrative(monkeypatch):
             return _Resp()
 
     monkeypatch.setattr(fr_mod, "ProviderClient", _Client)
-    monkeypatch.setattr(fr_mod, "load_profile", lambda pid: {"id": pid})
+    from types import SimpleNamespace
+
+    monkeypatch.setattr(
+        fr_mod, "load_profile", lambda pid: SimpleNamespace(id=pid, default_model="m")
+    )
     out = run_final_report(
         [_finding()],
         [],
