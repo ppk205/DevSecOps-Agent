@@ -406,6 +406,64 @@ class SemgrepAdapter(ScannerAdapter):
                     analyzed_at=finished,
                 )
             )
+        # Completion: semgrep scans every target it is given, so an inventory
+        # file with no record and no stderr evidence was scanned clean — mark
+        # it analyzed. Files semgrep demonstrably skipped (rule timeouts,
+        # minified bundles) get unsupported records with a reason instead of
+        # vanishing into false "missing coverage" errors.
+        import re as _re
+
+        scanned = {c.unit_path.replace("\\", "/") for c in coverage_records}
+        timed_out = set()
+        for line in (result.stderr or "").splitlines():
+            m = _re.search(r"Timeout when running \S+ on (\S+?)(?::\s*$|\s*$)", line)
+            if m:
+                timed_out.add(m.group(1).replace("\\", "/"))
+        manifest = (spec.metadata or {}).get("manifest") or {}
+        for name in manifest.get("inventory", []) or []:
+            norm = name.replace("\\", "/")
+            if norm in scanned or language_from_extension(norm) is None:
+                continue
+            timed = any(t == norm or norm.endswith(t.lstrip("/")) for t in timed_out)
+            minified = norm.endswith(".min.js")
+            if timed or minified:
+                coverage_records.append(
+                    CoverageRecord(
+                        run_id=spec.run_id or "unassigned",
+                        tool=self.tool,
+                        tool_version=cap.version or "unknown",
+                        source_snapshot=spec.target_commit_sha,
+                        unit_path=norm,
+                        unit_language=language_from_extension(norm),
+                        eligible=True,
+                        status=CoverageUnitStatus.UNSUPPORTED,
+                        limitation_reason=(
+                            "rule timeout on oversized/minified file"
+                            if timed
+                            else "minified bundle: pattern scan skipped"
+                        ),
+                        analyzed_at=finished,
+                    )
+                )
+            else:
+                coverage_records.append(
+                    CoverageRecord(
+                        run_id=spec.run_id or "unassigned",
+                        tool=self.tool,
+                        tool_version=cap.version or "unknown",
+                        source_snapshot=spec.target_commit_sha,
+                        unit_path=norm,
+                        unit_language=language_from_extension(norm),
+                        eligible=True,
+                        status=CoverageUnitStatus.ANALYZED,
+                        extraction_mode=ExtractionMode.PATTERN,
+                        diagnostics=[],
+                        unresolved_calls=[],
+                        cwe_capabilities=[],
+                        cwe_limitations=[],
+                        analyzed_at=finished,
+                    )
+                )
         return ScannerResult(
             run_id=spec.run_id or "unassigned",
             tool=self.tool,

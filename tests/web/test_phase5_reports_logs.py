@@ -246,6 +246,18 @@ class TestCompare:
         assert {entry["finding_id"] for entry in body["new"]} == {"f-new"}
         assert {entry["finding_id"] for entry in body["fixed"]} == {"f-fixed"}
         assert {entry["finding_id"] for entry in body["changed"]} == {"f-shared"}
+        assert {row["run_id"] for row in body["ai"]} == {client.run1, client.run2}
+        for row in body["ai"]:
+            assert set(row) >= {"candidates", "agreed", "model_only", "confirmed", "rejected"}
+
+    def test_hunt_candidates_endpoint(self, tmp_path: Path) -> None:
+        client = _seeded_client(tmp_path)
+        response = client.get(f"/api/scans/{client.run1}/hunt")
+        assert response.status_code == 200
+        body = response.json()
+        assert body["run_id"] == client.run1
+        assert isinstance(body["candidates"], list)
+        assert client.get("/api/scans/9999/hunt").status_code == 404
 
     def test_compare_requires_two_scans(self, tmp_path: Path) -> None:
         client = _seeded_client(tmp_path)

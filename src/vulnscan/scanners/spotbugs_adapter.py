@@ -319,6 +319,47 @@ class SpotBugsAdapter(ScannerAdapter):
                 spec, started, finished, result, note=f"failed to parse SpotBugs XML: {exc}"
             )
 
+        # Coverage: BugInstance entries only cover files WITH bugs. A clean
+        # compiled file was analyzed too — mark every inventory .java that
+        # has a compiled counterpart as analyzed so reconcile() does not
+        # flood errors with false "missing coverage".
+        recorded = {c.unit_path for c in coverage_records}
+        manifest = (spec.metadata or {}).get("manifest") or {}
+        classes_dir = Path(workdir) / "target" / "classes"
+        for name in manifest.get("inventory", []) or []:
+            if not name.endswith(".java") or name in recorded:
+                continue
+            rel = name
+            for prefix in ("src/main/java/", "src/test/java/", "src/"):
+                if rel.startswith(prefix):
+                    rel = rel[len(prefix) :]
+                    break
+            stem = rel[: -len(".java")]
+            compiled = (classes_dir / (stem + ".class")).is_file() or bool(
+                list((classes_dir / stem).parent.glob(Path(stem).name + "*.class"))
+                if (classes_dir / stem).parent.is_dir()
+                else False
+            )
+            if compiled:
+                coverage_records.append(
+                    CoverageRecord(
+                        run_id=spec.run_id or "unassigned",
+                        tool=self.tool,
+                        tool_version=cap.version or "unknown",
+                        source_snapshot=spec.target_commit_sha,
+                        unit_path=name,
+                        unit_language=LanguageKind.JAVA,
+                        eligible=True,
+                        status=CoverageUnitStatus.ANALYZED,
+                        extraction_mode=ExtractionMode.BYTECODE,
+                        diagnostics=[],
+                        unresolved_calls=[],
+                        cwe_capabilities=[],
+                        cwe_limitations=[],
+                        analyzed_at=finished,
+                    )
+                )
+
         return ScannerResult(
             run_id=spec.run_id or "unassigned",
             tool=self.tool,
