@@ -108,10 +108,35 @@ def changed_lines(diff: str) -> int:
     return count
 
 
+def _export_patch(ws: Workspace, fix: FixProposal, root: Path) -> str:
+    """Write the proposal as a patch for a target that is not a git checkout.
+
+    AGENTS S3 allows ``apply_fix`` to write only under
+    ``.devsec/worktrees/<finding_id>``, so the patch lands next to where a
+    worktree would have been rather than in the target. Nothing is written
+    inside the target, and the caller gets the patch path back.
+    """
+    paths = _diff_paths(fix.diff)
+    if not paths:
+        raise FixError("the diff does not touch any file")
+    for path in paths:
+        try:
+            ws.resolve(path)
+        except PathEscape as exc:
+            raise FixError(str(exc)) from exc
+    out = (Path(root) / fix.finding_id).resolve()
+    out.mkdir(parents=True, exist_ok=True)
+    patch = out / f"{fix.finding_id}.patch"
+    patch.write_text(fix.diff, encoding="utf-8", newline="\n")
+    fix.status = "exported"
+    fix.branch = ""
+    return str(patch)
+
+
 def apply_fix(ws: Workspace, fix: FixProposal, root: Path = Path(".devsec/worktrees")) -> str:
     """Apply *fix* on a new branch in a worktree; return the branch name."""
     if ws.commit == "unversioned":
-        raise FixError("the target is not a git checkout, so a fix branch is impossible")
+        return _export_patch(ws, fix, root)
     paths = _diff_paths(fix.diff)
     if not paths:
         raise FixError("the diff does not touch any file")
@@ -151,6 +176,9 @@ def apply_fix(ws: Workspace, fix: FixProposal, root: Path = Path(".devsec/worktr
 
 def rescan_fix(ws: Workspace, fix: FixProposal, root: Path = Path(".devsec/worktrees")) -> str:
     """Re-extract candidates on the fixed files; report if the candidate is gone."""
+    if ws.commit == "unversioned":
+        fix.rescan = "unavailable: target is not a git repository"
+        return fix.rescan
     worktree = (Path(root) / fix.finding_id).resolve()
     if not worktree.is_dir():
         raise FixError(f"no worktree at {worktree}; apply the fix first")

@@ -406,13 +406,22 @@ def _propose_fix(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
         diff=str(args["diff"]),
         test_hint=str(args.get("test_hint") or ""),
     )
+    unversioned = ctx.ws.commit == "unversioned"
     decision = _ask(
         ctx,
         Gate.G6_FIX,
-        f"Apply the fix for {finding_id} on a separate branch?",
+        (
+            "Export patch (target is not a git repository)"
+            if unversioned
+            else f"Apply the fix for {finding_id} on a separate branch?"
+        ),
         str(
             args.get("test_hint")
-            or "The model proposes this diff; nothing is written until you apply."
+            or (
+                "The model proposes this diff; nothing is written until you apply."
+                if not unversioned
+                else "The model proposes this diff; it is saved as a patch file, never applied."
+            )
         ),
         {"fix_id": fix.id, "finding_id": finding_id, "diff": fix.diff},
         "The harness writes only inside .devsec/worktrees and never commits.",

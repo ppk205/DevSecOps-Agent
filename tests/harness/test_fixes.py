@@ -70,3 +70,29 @@ def test_diff_hunks_reports_old_ranges() -> None:
 def test_changed_lines_counts_content_only() -> None:
     diff = "--- a/A.java\n+++ b/A.java\n@@ -1 +1 @@\n-old\n+new\n context\n"
     assert changed_lines(diff) == 2
+
+
+def test_unversioned_apply_exports_patch_only(tmp_path: Path) -> None:
+    target = tmp_path / "plain"
+    target.mkdir()
+    (target / "A.java").write_text(
+        "class A { int r(){ return new Random().nextInt(); } }\n", encoding="utf-8"
+    )
+    ws = Workspace(target, "unversioned")
+    fix = FixProposal("x9", "f1", DIFF)
+    path = apply_fix(ws, fix, tmp_path / "worktrees")
+    patch = Path(path)
+    assert patch.read_text(encoding="utf-8") == DIFF
+    assert fix.status == "exported"
+    assert sorted(p.name for p in target.iterdir()) == ["A.java"]
+
+
+def test_unversioned_rescan_unavailable(tmp_path: Path) -> None:
+    target = tmp_path / "plain"
+    target.mkdir()
+    (target / "A.java").write_text("class A {}\n", encoding="utf-8")
+    ws = Workspace(target, "unversioned")
+    fix = FixProposal("x9", "f1", DIFF)
+    assert rescan_fix(ws, fix, tmp_path / "worktrees") == (
+        "unavailable: target is not a git repository"
+    )
