@@ -111,6 +111,18 @@ describe("NotificationsBell", () => {
     fireEvent.click(screen.getByTestId("notification-ack-1"));
     await waitFor(() => expect(mockedAck).toHaveBeenCalledWith(1));
   });
+
+  it("closes the panel on outside click and on Escape", async () => {
+    renderBell();
+    fireEvent.click(screen.getByTestId("notifications-bell"));
+    expect(await screen.findByTestId("notifications-panel")).toBeInTheDocument();
+    fireEvent.pointerDown(document.body);
+    await waitFor(() => expect(screen.queryByTestId("notifications-panel")).not.toBeInTheDocument());
+    fireEvent.click(screen.getByTestId("notifications-bell"));
+    expect(await screen.findByTestId("notifications-panel")).toBeInTheDocument();
+    fireEvent.keyDown(document, { key: "Escape" });
+    await waitFor(() => expect(screen.queryByTestId("notifications-panel")).not.toBeInTheDocument());
+  });
 });
 
 describe("fix .diff download", () => {

@@ -23,17 +23,18 @@ export function Shell() {
   return (
     <div className="flex min-h-screen flex-col bg-canvas">
       <header className="bg-canvas">
-        <nav aria-label="Primary" className="mx-auto flex h-16 max-w-pitwall items-center gap-2 overflow-x-auto px-6">
-          <NavLink to="/" className="label-m mr-8 text-sm text-ink no-underline">
+        <nav aria-label="Primary" className="mx-auto flex h-16 max-w-pitwall items-center gap-2 overflow-visible px-6">
+          <NavLink to="/" className="label-m mr-8 shrink-0 text-sm text-ink no-underline">
             PIT&nbsp;WALL
           </NavLink>
+          <div className="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto">
           {NAV.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               end={item.to === "/"}
               className={({ isActive }) =>
-                `label-m px-3 py-2 text-xs no-underline transition-colors duration-150 ease-out ${
+                `label-m shrink-0 px-3 py-2 text-xs no-underline transition-colors duration-150 ease-out ${
                   isActive ? "text-ink" : "text-muted hover:text-body"
                 }`
               }
@@ -44,7 +45,8 @@ export function Shell() {
               {item.label}
             </NavLink>
           ))}
-          <div className="ml-auto flex items-center gap-3">
+          </div>
+          <div className="ml-auto flex shrink-0 items-center gap-3">
             <NotificationsBell />
             <div role="group" aria-label={en.shell.language} className="flex items-center border border-hairline">
               {(["en", "vi"] as const).map((code) => (

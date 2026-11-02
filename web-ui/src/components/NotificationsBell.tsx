@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ackNotification, fetchNotifications } from "../api/client";
 import { useStrings } from "../i18n/lang";
@@ -6,11 +6,32 @@ import { useStrings } from "../i18n/lang";
 /**
  * Task 4: header bell with unread-count polling + dropdown panel with ack.
  * Polls GET /api/notifications every 15s; ack uses the postJson CSRF path.
+ * The panel is absolutely positioned inside this relative wrapper; the navbar
+ * itself must stay overflow-visible so opening the bell never creates a
+ * navbar scrollbar. Closes on outside click / Escape.
  */
 export function NotificationsBell() {
   const t = useStrings();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (event: PointerEvent) => {
+      if (rootRef.current && !rootRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
   const { data } = useQuery({
     queryKey: ["notifications"],
     queryFn: fetchNotifications,
@@ -27,7 +48,7 @@ export function NotificationsBell() {
   const unread = data?.unread ?? 0;
 
   return (
-    <div className="relative">
+    <div ref={rootRef} className="relative">
       <button
         type="button"
         data-testid="notifications-bell"

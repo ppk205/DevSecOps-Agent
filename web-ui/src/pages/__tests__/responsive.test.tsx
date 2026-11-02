@@ -59,7 +59,12 @@ describe("Phase 6 responsive + motion", () => {
   it("topnav scrolls horizontally on narrow screens", () => {
     const { container } = renderAt("/");
     const nav = container.querySelector('nav[aria-label="Primary"]');
-    expect(nav?.className).toContain("overflow-x-auto");
+    // The nav itself must stay overflow-visible so the bell dropdown floats
+    // without creating a navbar scrollbar; horizontal scrolling lives on the
+    // inner links container.
+    expect(nav?.className).toContain("overflow-visible");
+    const linksScroller = nav?.querySelector("div.overflow-x-auto");
+    expect(linksScroller).not.toBeNull();
   });
 
   it("motion budget: 150-250ms ease-out only, single sweep, reduced-motion honored", () => {
