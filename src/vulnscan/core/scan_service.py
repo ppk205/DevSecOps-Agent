@@ -760,8 +760,16 @@ class ScanService:
                         "owasp-dependency-check",
                     }:
                         from vulnscan.infra.full_scan import run_isolated_tool
+                        from vulnscan.scanners.platform import which
 
-                        result = run_isolated_tool(cfg.tool, execution_spec, remaining)
+                        if which("docker") is None:
+                            # No Docker on this host: run the adapter in-process
+                            # instead of the isolated container. ODC without an
+                            # NVD DB degrades to the OSV.dev fallback inside
+                            # its own adapter; nothing fails the scan.
+                            result = adapter.run(execution_spec, workdir=str(snapshot_root))
+                        else:
+                            result = run_isolated_tool(cfg.tool, execution_spec, remaining)
                     else:
                         result = adapter.run(execution_spec, workdir=str(snapshot_root))
                     for observation in result.observations:
