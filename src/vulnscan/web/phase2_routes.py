@@ -76,6 +76,7 @@ class ScanCreateIn(BaseModel):
     profile: str | None = "fast"
     tools: list[str] | None = None
     ai_review: bool = False
+    allow_cloud_model: bool = False
     provider_profile: str | None = None
     provider_model: str | None = None
     max_ai_findings: int | None = 10
@@ -362,6 +363,7 @@ def api_scans_create(
         "profile": profile,
         "tools": list(body.tools or []),
         "ai_review": body.ai_review,
+        "allow_cloud_model": body.allow_cloud_model,
         "provider_profile": body.provider_profile,
         "provider_model": body.provider_model,
         "max_ai_findings": body.max_ai_findings or 10,
@@ -465,6 +467,7 @@ def _execute_web_scan(
             provider_profile=params.get("provider_profile"),
             provider_model=params.get("provider_model"),
             ai_report=bool(params.get("provider_profile")),
+            allow_cloud_model=bool(params.get("allow_cloud_model")),
             max_ai_findings=params.get("max_ai_findings") or 10,
             tools=params.get("tools") or None,
             mode=mode,

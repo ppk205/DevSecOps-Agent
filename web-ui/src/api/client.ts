@@ -443,6 +443,7 @@ export async function createScan(body: {
   profile?: string;
   tools?: string[];
   ai_review?: boolean;
+  allow_cloud_model?: boolean;
   provider_profile?: string | null;
   provider_model?: string | null;
   max_ai_findings?: number;

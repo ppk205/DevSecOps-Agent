@@ -39,6 +39,7 @@ class ScanConfig(BaseModel):
     provider_profile: str | None = None
     provider_model: str | None = None
     ai_report: bool = False
+    allow_cloud_model: bool = False
     max_ai_findings: int = Field(default=10, ge=1, le=500)
     mode: Literal["deterministic", "hunt"] = "deterministic"
     tools: list[str] | None = Field(

@@ -88,6 +88,7 @@ export const en = {
     deepDetail: "Semgrep + Gitleaks + SpotBugs + ODC · slower, needs Java + NVD data",
     scanners: "Scanners",
     aiReview: "AI review",
+    allowCloud: "Allow code excerpts to leave this machine (cloud provider)",
     aiOff: "Off — deterministic",
     aiOn: "On — needs a provider key",
     hunt: "Model hunt",

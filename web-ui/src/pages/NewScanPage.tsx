@@ -29,6 +29,7 @@ export function NewScanPage() {
     "owasp-dependency-check": false,
   });
   const [aiReview, setAiReview] = useState(false);
+  const [allowCloudModel, setAllowCloudModel] = useState(false);
   const [hunt, setHunt] = useState(false);
   const [providerProfile, setProviderProfile] = useState("");
   const [providerModel, setProviderModel] = useState("");
@@ -48,6 +49,7 @@ export function NewScanPage() {
         profile,
         tools: SCANNERS.filter((t) => tools[t]),
         ai_review: aiReview,
+        allow_cloud_model: allowCloudModel,
         provider_profile: providerProfile || null,
         provider_model: providerModel || null,
         max_ai_findings: maxAi,
@@ -235,6 +237,17 @@ export function NewScanPage() {
             </div>
             {aiReview && (
               <div className="grid gap-3 sm:grid-cols-2">
+                <label className="flex items-start gap-2 sm:col-span-2">
+                  <input
+                    type="checkbox"
+                    role="checkbox"
+                    aria-label={en.newScan.allowCloud}
+                    checked={allowCloudModel}
+                    onChange={(e) => setAllowCloudModel(e.target.checked)}
+                    className="mt-1"
+                  />
+                  <span className="text-xs text-muted">{en.newScan.allowCloud}</span>
+                </label>
                 <label className="block">
                   <span className="label-m text-[11px] text-muted">{en.newScan.providerProfile}</span>
                   <input

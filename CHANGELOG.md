@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Require `--allow-cloud-model` before `scan-run` sends code excerpts to a non-loopback provider on its model paths (`--mode hunt`, `--ai-review`, `--ai-report`); a refused stage is recorded as skipped with the reason, and the web New Scan form carries the same consent checkbox. These paths are baseline B7 and their output never reaches the harness.
+- Narrow redaction to key formats (`sk-`, `ghp_`, `github_pat_`, `AKIA`, `xox`, `Bearer …`) plus the literal values of loaded `*_API_KEY`, `*_TOKEN` and `*_SECRET` variables, and add `redact_value`/`redact_json` for both sides of the provider boundary, the session log, tool results and report exports. Code such as `token.isEmpty()` is no longer turned into `[REDACTED]`, and structured output stays valid JSON.
+- Add a `web-ui` CI job (Node 24, committed lock file) that runs `npm ci`, `lint`, `test` and `build`, and include it in the `CI required` aggregate gate.
+- Merge main: PIT WALL web UI, the model hunt pipeline, Laya verification of hunted candidates and the AI-written final report. The native Go path now emits the aggregate `scanners` and `final_report` stages and writes `final-report.md`, so its history and artifacts match the Python service.
 - Rebuild required CI checks around the current harness, locked dependency exports, full Python matrix, native platform suites, installed-package chat refusal and real baseline fixtures.
 - Add a `CI required` aggregate check that rejects failed, skipped or cancelled prerequisite jobs, and retain harness/native JUnit and coverage on failure.
 - Preserve installed extras with `uv run --no-sync`, test the wheel, Action and scanner image with the same offline chat smoke check, and select Python explicitly in release jobs.

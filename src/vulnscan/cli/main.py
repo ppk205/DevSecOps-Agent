@@ -116,6 +116,11 @@ def scan_run(
     ai_report: bool | None = typer.Option(
         None, "--ai-report/--no-ai-report", help="AI-written final report (needs --provider)."
     ),
+    allow_cloud_model: bool | None = typer.Option(
+        None,
+        "--allow-cloud-model/--no-allow-cloud-model",
+        help="Let model stages send code excerpts to a non-loopback provider.",
+    ),
     max_ai_findings: int | None = typer.Option(
         None, "--max-ai-findings", help="Cap on model-reviewed findings per run."
     ),
@@ -146,6 +151,7 @@ def scan_run(
             provider_profile=provider,
             provider_model=model,
             ai_report=ai_report,
+            allow_cloud_model=allow_cloud_model,
             max_ai_findings=max_ai_findings,
             mode=mode,
         )

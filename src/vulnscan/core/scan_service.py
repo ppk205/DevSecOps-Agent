@@ -681,6 +681,22 @@ class ScanService:
             hunt_out: dict[str, Any] = {}
             hunt_status = "skipped"
             hunt_detail = "deterministic mode"
+            # Baseline B7: the model stages of scan-run still send code to the
+            # provider, so a cloud profile needs --allow-cloud-model. Checked
+            # once, before any ProviderClient is built.
+            consent_reason: str | None = None
+            wants_model = (config.mode == "hunt" or config.ai_review or config.ai_report) and bool(
+                config.provider_profile
+            )
+            if wants_model:
+                from vulnscan.core.model_consent import model_use_allowed
+                from vulnscan.providers.profile_store import load_profile
+
+                consent_ok, consent_reason = model_use_allowed(
+                    load_profile(config.provider_profile or ""), config.allow_cloud_model
+                )
+                if consent_ok:
+                    consent_reason = None
             verified: list[dict[str, Any]] = []
             comparison: dict[str, Any] = {
                 "agreed": [],
@@ -692,6 +708,9 @@ class ScanService:
                 persist("model_hunt", "running", "Model exploring snapshot for vulnerabilities")
                 if not config.provider_profile:
                     hunt_detail = "no provider profile configured"
+                    persist("model_hunt", "skipped", hunt_detail)
+                elif consent_reason is not None:
+                    hunt_detail = consent_reason
                     persist("model_hunt", "skipped", hunt_detail)
                 else:
                     try:
@@ -909,7 +928,9 @@ class ScanService:
             from vulnscan.reporting.final_report import run_final_report
 
             review_profile = (
-                config.provider_profile if (config.ai_review or config.mode == "hunt") else None
+                config.provider_profile
+                if (config.ai_review or config.mode == "hunt") and consent_reason is None
+                else None
             )
             review = run_ai_review(
                 review_findings,
@@ -923,7 +944,13 @@ class ScanService:
                 model=config.provider_model,
                 max_findings=config.max_ai_findings,
             )
-            persist("targeted_deep_analysis", review["status"], review["detail"])
+            persist(
+                "targeted_deep_analysis",
+                review["status"],
+                consent_reason
+                if consent_reason is not None and (config.ai_review or config.mode == "hunt")
+                else review["detail"],
+            )
             decisions = review["decisions"]
             if decisions:
                 confirmed = sum(1 for d in decisions if d["new_status"] == "confirmed")
@@ -948,11 +975,19 @@ class ScanService:
                     "gate": "pending",
                     "status": "pending",
                 },
-                profile_id=config.provider_profile if config.ai_report else None,
+                profile_id=config.provider_profile
+                if config.ai_report and consent_reason is None
+                else None,
                 model=config.provider_model,
                 comparison=comparison if hunt_active else None,
             )
-            persist("final_report", final["status"], final["detail"] or "narrative ready")
+            persist(
+                "final_report",
+                final["status"],
+                consent_reason
+                if consent_reason is not None and config.ai_report
+                else (final["detail"] or "narrative ready"),
+            )
         except (ScanCancelled, KeyboardInterrupt):
             was_cancelled = True
             persist("execution", "cancelled", "Scan cancelled; partial evidence retained")

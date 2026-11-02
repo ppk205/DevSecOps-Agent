@@ -90,6 +90,7 @@ export const vi: Strings = {
     deepDetail: "Semgrep + Gitleaks + SpotBugs + ODC · chậm hơn, cần Java + dữ liệu NVD",
     scanners: "Scanner",
     aiReview: "Đánh giá AI",
+    allowCloud: "Cho phép mã nguồn rời khỏi máy này (nhà cung cấp cloud)",
     aiOff: "Tắt — đơn định",
     aiOn: "Bật — cần khóa nhà cung cấp",
     hunt: "Săn model",

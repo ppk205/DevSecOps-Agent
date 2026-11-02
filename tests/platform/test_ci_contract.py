@@ -21,6 +21,7 @@ ACTION_PINS = {
     "actions/setup-go": "b7ad1dad31e06c5925ef5d2fc7ad053ef454303e",
     "actions/upload-artifact": "cf430e030ddbb5b0abf93d22962f4752f3646cd9",
     "actions/download-artifact": "9000827ccba6bdab643e8b6fd33ac0654aef8333",
+    "actions/setup-node": "949feb2413d6458794dcd2491c4babbbce0c15c1",
 }
 
 
@@ -31,6 +32,15 @@ def workflow(name: str) -> dict:
 
 def commands(job: dict) -> str:
     return "\n".join(step.get("run", "") for step in job["steps"])
+
+
+def test_web_ui_job_installs_locked_and_runs_typecheck_tests_build():
+    jobs = workflow("checks.yml")["jobs"]
+    job = jobs["web-ui"]
+    run = commands(job)
+    for cmd in ("npm ci", "npm run lint", "npm test", "npm run build"):
+        assert cmd in run
+    assert "web-ui" in jobs["required"]["needs"]
 
 
 def test_qr23_required_gate_covers_every_job_and_preserves_platform_matrix():

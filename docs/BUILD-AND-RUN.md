@@ -187,6 +187,12 @@ and 130 for cancellation. Open <http://127.0.0.1:8000> for the dashboard and use
 Ctrl+C to stop its server. The default SQLite file is `vulnscan.db` in the
 working directory; use the same `--db-path` when sharing history across commands.
 
+`scan-run --mode hunt`, `--ai-review` and `--ai-report` are baseline B7: they
+call a model outside the harness gates. When the provider's base URL is not
+loopback (`localhost`, `127.0.0.1`, `::1`), they stay skipped unless you pass
+`--allow-cloud-model`; the refusal is recorded on the run's stages, not raised
+as an error.
+
 ## 4a. Run the AI harness
 
 The runtime, build and scanner dependency exports include `cvss==3.6`, so
@@ -292,6 +298,23 @@ Go executable is a separate artifact. Install the matching Python package when
 moving the Go binary to another machine.
 
 ## 7. Verify a development build
+
+### Web UI
+
+The PIT WALL SPA lives in `web-ui/` and is built with Node 24 and the
+committed `package-lock.json`. From `web-ui/`:
+
+```bash
+npm ci
+npm run lint    # tsc --noEmit
+npm test        # vitest run
+npm run build   # tsc --noEmit && vite build -> web-ui/dist
+```
+
+The built `web-ui/dist` is served by the Python app at `/app/` in a source
+checkout. Copying it into the wheel under `src/vulnscan/web/static/app` is
+**not implemented**, so a pip install serves the JSON API and the legacy Jinja
+pages but not the SPA.
 
 Required CI checks use uv 0.12.17 and `uv sync --locked`. Commands after the
 sync use `uv run --no-sync` so installed dev and scanner extras remain present.

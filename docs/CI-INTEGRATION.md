@@ -82,6 +82,7 @@ have a separate concurrency group from the release workflow itself.
 | --- | --- |
 | `quality` | Compare all shipped exports to `uv.lock`; Ruff on `src tests ci`; strict mypy for Linux/macOS/Windows |
 | `harness` | Fake-provider and fake-Laya regression tests on Linux/Windows/macOS Python 3.11; gates, secrets, confinement and fix verification |
+| `web-ui` | Node 24 with the committed lock file: `npm ci`, `npm run lint` (tsc), `npm test` (vitest) and `npm run build` for the PIT WALL SPA |
 | `native` | Go 1.27.1 vet/tests with read-only modules; build native binary; run all platform, CLI and Python TUI tests on each OS |
 | `tests` | Every Python test area on Linux Python 3.11–3.13 and Windows/macOS Python 3.11 |
 | `package` | Build wheel/sdist once, install into a fresh environment, check installed chat/assets/CVSS, cross-compile native release assets |
