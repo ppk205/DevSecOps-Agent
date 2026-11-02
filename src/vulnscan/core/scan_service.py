@@ -662,6 +662,20 @@ class ScanService:
         }
         try:
             persist("intake", "running")
+            # Defaults for every stage below: the summary block after the
+            # try/except reads these even when intake fails early, so they
+            # must exist before any persist() that can raise.
+            hunt_candidates = []
+            hunt_out = {}
+            hunt_status = "skipped"
+            hunt_detail = "scan ended before model hunt"
+            verified = []
+            comparison = {
+                "agreed": [],
+                "model_only": [],
+                "scanner_only": [],
+                "counts": {"agreed": 0, "model_only": 0, "scanner_only": 0},
+            }
             runtime = self.runtime_paths(config) + [output]
             manifest = checkout_manifest(checkout, config, expected_commit, excluded=runtime)
             spec.target_commit_sha = manifest["commit"]
@@ -694,19 +708,9 @@ class ScanService:
                 )
                 manifest["dependencies_included"] = True
             persist("intake", "completed", f"Verified commit {manifest['commit']}")
-            hunt_candidates: list[dict[str, Any]] = []
-            hunt_out: dict[str, Any] = {}
-            hunt_status = "skipped"
             hunt_detail = "deterministic mode — enable Hunt + a provider profile to run the model"
             if config.mode != "hunt":
                 persist("model_hunt", "skipped", hunt_detail)
-            verified: list[dict[str, Any]] = []
-            comparison: dict[str, Any] = {
-                "agreed": [],
-                "model_only": [],
-                "scanner_only": [],
-                "counts": {"agreed": 0, "model_only": 0, "scanner_only": 0},
-            }
             if config.mode == "hunt":
                 persist("model_hunt", "running", "Model exploring snapshot for vulnerabilities")
                 if not config.provider_profile:
@@ -794,6 +798,30 @@ class ScanService:
                             # instead of the isolated container. ODC without an
                             # NVD DB degrades to the OSV.dev fallback inside
                             # its own adapter; nothing fails the scan.
+                            if cfg.tool.value == "spotbugs":
+                                from vulnscan.infra.full_scan import ensure_maven_build
+
+                                build_issue = ensure_maven_build(
+                                    str(snapshot_root), min(600.0, remaining)
+                                )
+                                if build_issue is not None:
+                                    from vulnscan.contracts import RunStatus
+
+                                    now = datetime.now(UTC)
+                                    persist(cfg.tool.value, "skipped", build_issue)
+                                    results.append(
+                                        ScannerResult(
+                                            run_id=run_id,
+                                            tool=cfg.tool,
+                                            tool_version="unknown",
+                                            adapter_version="0.2.0",
+                                            status=RunStatus.SKIPPED,
+                                            started_at=now,
+                                            finished_at=now,
+                                            errors=[build_issue],
+                                        )
+                                    )
+                                    continue
                             result = adapter.run(execution_spec, workdir=str(snapshot_root))
                         else:
                             result = run_isolated_tool(cfg.tool, execution_spec, remaining)

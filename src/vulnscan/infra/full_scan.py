@@ -124,6 +124,41 @@ def _advisories(spec: ScanSpecification, timeout: float) -> Iterator[Path]:
         lock.release()
 
 
+def ensure_maven_build(workdir: str, timeout: float) -> str | None:
+    """Compile a Maven checkout in place so bytecode scanners can run.
+
+    Returns None on success (or when there is nothing to build), otherwise
+    a short reason. Never raises. Only builds when ``pom.xml`` exists and
+    ``target/classes`` or ``target/dependency`` is missing.
+    """
+    from pathlib import Path
+
+    from vulnscan.scanners.platform import which
+    from vulnscan.scanners.process import run_command
+
+    root = Path(workdir)
+    if not (root / "pom.xml").is_file():
+        return None
+    if (root / "target" / "classes").is_dir() and (root / "target" / "dependency").is_dir():
+        return None
+    maven = which("mvn.cmd") or which("mvn")
+    if maven is None:
+        return "maven not on PATH — install Maven or pre-build target/classes"
+    env: dict[str, str] = {}
+    if "JAVA_HOME" in os.environ:
+        env["JAVA_HOME"] = os.environ["JAVA_HOME"]
+    build = run_command(
+        [maven, "-B", "-DskipTests", "compile",
+         "org.apache.maven.plugins:maven-dependency-plugin:3.8.1:copy-dependencies"],
+        cwd=str(root),
+        timeout=timeout,
+        env=env or None,
+    )
+    if build.succeeded:
+        return None
+    return "maven build failed: " + ((build.stderr or build.stdout).strip()[-500:] or "unknown error")
+
+
 def run_isolated_tool(tool: ToolName, spec: ScanSpecification, timeout: float) -> ScannerResult:
     started = time.monotonic()
     try:

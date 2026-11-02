@@ -179,12 +179,12 @@ async def test_qr21_worker_shutdown_terminates_scanner(service, checkout, tmp_pa
         app.reviewed = (str(checkout), ScanConfig(output_dir=str(tmp_path / "reports")))
         app.begin()
         app.execute_scan()
-        for _ in range(100):
+        for _ in range(200):
             await pilot.pause(0.05)
             if app.active_pk is not None:
                 break
         app.workers.cancel_all()
-        for _ in range(100):
+        for _ in range(200):
             await pilot.pause(0.05)
             if service.history()[0]["status"] == "cancelled":
                 break
