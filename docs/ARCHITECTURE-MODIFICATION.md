@@ -1,9 +1,10 @@
 # Architecture modification: human-gated AI harness
 
-Status: phases 1–5 implemented in `src/vulnscan/harness/` and `devsec chat`
-(console). Not implemented: phase 6 (Go chat TUI, dashboard session pages),
-streaming, prompt caching, `/compact`, `check_dependency` (open question Q2) and
-the experiment of section 8. Written 2026-11-01 against agent 0.3.0 (commit
+Status: phases 1–6 implemented, including the Go chat client, remote session
+page, added models, local triggers and snapshot-backed resume. Experiment
+tooling is implemented; measured trials and the essay update are pending.
+Provider token streaming, prompt caching, `/compact` and `check_dependency`
+(open question Q2) remain unimplemented. Written 2026-11-01 against agent 0.3.0 (commit
 `f7d4fc7`) and essay `essay/DeCuongChiTiet_v6_HinhMoi.docx`; implemented the same
 day on branch `feat/human-gated-harness`, and section 13 is the change record.
 Supersedes `docs/HARNESS-TUI-PLAN.md` where the two disagree (section 9).
@@ -15,7 +16,11 @@ Gitleaks, SpotBugs/FindSecBugs and Dependency-Check in a fixed order. Laya is
 optional and off by default, and the LLM agent is never called
 (`targeted_deep_analysis` always reports "Deep analysis is not implemented").
 
-The target system is the reverse: a **hand-written AI harness** is the core.
+The target system is a **hand-written, human-gated harness**. Detection comes
+from the harness's own static tools: source–sink rules and route lookup in
+`harness/scanning.py`. **The AI is a supporting tool, not the detector** (D10).
+It investigates the candidates those tools found, explains them, proposes
+CVSS vectors and fixes. Laya narrows the work, and a human decides.
 
 ```
 Human ⇄ Harness (hand-written session loop, permission gates, audit log)
@@ -44,9 +49,10 @@ harness in the experiment (section 8).
 | D2 | The model is not fixed. A provider layer (section 4.1, the Hermes pattern from `HARNESS-TUI-PLAN.md`) supports native Anthropic and any OpenAI-compatible endpoint: OpenAI, OpenRouter, DeepSeek, Ollama, LM Studio, custom. `/model` switches provider and model during a session. Every turn records provider, model id, tokens and cost. |
 | D3 | The harness scans code with its own tools (section 5). Existing scanners are baselines only. |
 | D4 | Laya runs inside the loop, before the LLM, to decide which candidates need deep reasoning and which kind. Its purpose is to reduce LLM tokens and time. It is on by default. |
-| D5 | Two gate modes. `ask` (default): every gate waits for a human. `auto`: routine scanning gates (G1–G4, G7) are approved automatically and logged as person `auto`; **dangerous gates still wait for a human in every mode**: G0 (code leaves the machine, cost) and G6 (writing code). Nothing is approved by timeout or by a closed prompt. |
+| D5 | Two gate modes. `ask` (default): every gate waits for a human. `auto`: routine scanning gates (G1–G4, G7) are approved automatically and logged as person `auto`. G0 may auto-approve only for a local provider with an interactive human client attached; cloud and unattended G0 wait. G6 always waits. Nothing is approved by timeout or by a closed prompt. |
 | D6 | Only a human sets a finding's final status (confirmed / rejected / needs more evidence). The AI and the validator only propose and check. In `auto` mode G5 does not block: the finding stays `proposed` and the human settles it later with `/review`. |
-| D7 | The AI may propose code fixes as diffs. A fix is written only after a human approves it, only to a separate git branch, and is never committed, pushed or merged by the harness. |
+| D7 | The AI may propose code fixes as diffs. A fix is a suggestion limited to the vulnerability's cited code (hop files, ±15 lines, ≤ 80 changed lines); it is shown at G6 and applied only to a worktree, never to the target. A fix is written only after a human approves it, only to a separate git branch, and is never committed, pushed or merged by the harness. |
+| D10 | AI is a supporting tool (owner, 2026-11-02, following `special_requirements.txt`). The object of study is vulnerabilities in Java Servlet/JSP source code. The harness's static tools find candidates. The model may only investigate candidates in a batch opened at G3/G4, and `propose_finding` refuses anything else (`harness/tools.py`). The model never originates or decides a finding. Docs, the essay and the UI describe the model as "AI hỗ trợ" (AI support), never as the scanner or the core. |
 | D8 | With a cloud provider, code excerpts leave the machine. The user must consent at session start and again after `/model` switches to a different provider; local providers (Ollama, LM Studio) need no consent. The report states which provider and model saw which files. |
 | D9 | Chat is the main screen, as in `HARNESS-TUI-PLAN.md` §3: the user types a request, the answer streams, tool calls appear as blocks, permission dialogs pause the loop, the status line shows model, tokens and cost. Old views move behind `/scan`, `/history`, `/findings`, `/keys`. |
 
@@ -87,7 +93,7 @@ Gate behaviour by mode:
 
 | Gate | `ask` | `auto` |
 |---|---|---|
-| G0 session, consent | human | **human** (dangerous) |
+| G0 session, consent | human | **human** for cloud or unattended runs; local sessions may auto-approve only with an interactive human client attached |
 | G1 plan, G2 scan, G3 triage, G4 investigate | human | approved, logged as `auto` |
 | G5 finding status | human | deferred: finding stays `proposed` until `/review` |
 | G6 apply fix | human | **human** (dangerous) |
@@ -96,6 +102,18 @@ Gate behaviour by mode:
 The mode is chosen at session start (`--mode ask|auto`) or with `/mode`.
 Switching to `auto` is itself logged.
 
+Owner-approved changes (2026-11-02): G0 may be auto-approved only when the
+keeper is interactive, the mode is `auto`, and the payload explicitly says
+`local: true` and `code_leaves_machine: false`. Locality is determined from
+the loopback base URL, not profile metadata. The log records person `auto`
+and reason `local provider, auto mode`. G5 and G6 remain human-only; pipes,
+CI and hooks cannot pass G0. G7 accepts an explicit edit as well as approve
+or reject. Dialog arrows and Enter require an explicit button selection;
+the initial selection is empty.
+
+Explicit undecided decisions retain their reason in the audit log, including
+missing web confirmation words. Invalid choices still become undecided.
+
 Gate rules:
 
 - A rejected step is not retried by the AI without a new human message.
@@ -103,8 +121,8 @@ Gate rules:
 - Read-only reads (`read_file`, `grep`) inside an **approved** G4 batch run
   without a prompt each, so the human approves the batch, not every line read.
   Each read is still logged and shown.
-- CI or non-interactive runs cannot pass a scanning gate. They may only replay
-  a recorded session for testing.
+- CI and non-interactive runs cannot pass G0 or G6. Scripted askers may
+  exercise the gates against fixtures in tests.
 - Each decision is stored: gate, AI recommendation, human choice, reason,
   person, timestamp. The report includes this log.
 
@@ -141,15 +159,21 @@ to a transport. The existing `ProviderProfile` (`protocol`, `base_url`,
 | `lmstudio` | `openai_compatible` | none | local |
 | `custom` | `openai_compatible` | user-supplied `base_url` and variable name | either |
 
-Profiles are JSON files under `.providers/`; keys are referenced by
-environment variable name only and entered through the existing `/keys` view.
+Built-in profiles are templates. `devsec model add` creates an alias with a
+protocol, base URL and one or more model ids in `.providers/<alias>.json`.
+The masked key belongs to that alias and is stored through `EnvFile`; the
+profile contains only its generated `api_key_env`. Clients see key set/missing,
+not the value or variable name. `--model alias[:model-id]` and `/model` select
+added models. Legacy `--provider` remains supported for one release.
+Loopback base URLs determine locality; a template's name or metadata cannot
+make a cloud endpoint local.
 
-Transports, one interface `stream(messages, tools) → events`:
+Transports implement `complete(system, messages, tools) → Reply`:
 
-- `AnthropicTransport`: Messages API, SSE streaming, `tool_use` and
-  `tool_result` blocks, prompt caching on the system prompt and tool definitions.
-- `ChatCompletionsTransport`: extends `providers/client.py` with `stream=true`
-  and assembles streamed tool-call fragments into whole calls.
+- `AnthropicTransport`: Messages API with `tool_use` and `tool_result` blocks.
+- `ChatCompletionsTransport`: Chat Completions requests with complete tool calls.
+
+SSE token streaming and Anthropic prompt caching are planned, not implemented.
 
 One internal message format is converted to each provider's format at the
 transport edge, so sessions, gates, telemetry and the TUI never depend on the
@@ -161,9 +185,13 @@ new provider is a cloud one), `/cost`, `/resume`, `/clear`, `/compact`,
 `/export`, `/help`. Not taken from Hermes: OAuth logins, provider plugins,
 key rotation.
 
-Events harness → TUI: `text_delta`, `tool_call`, `tool_result`,
-`permission_request`, `usage`, `error`, `done`. Messages TUI → harness:
+The client protocol is `devsec-chat/1`, separate from the baseline scan bridge.
+Harness → client: `models`, `ready`, `text_delta`, `tool_call`, `tool_result`,
+`permission_request`, `gate_result`, `usage`, `error`, `done`, `remote`, `pending`, `findings`.
+Client → harness: `hello`, `start`, `model_add`, `model_remove`, `model_key`,
 `user_message`, `permission_reply`, `interrupt`, `command`.
+Whole model replies are delivered as `text_delta`; provider token streaming
+and prompt caching remain unimplemented. Browser SSE carries host events.
 
 ## 5. Tools
 
@@ -258,9 +286,15 @@ Same target (JVA-bookstore at `dd48d12`), same labelled ground truth.
 | B4 | OWASP Dependency-Check (dependency findings only) |
 | B5 | Gitleaks (secrets only) |
 | B6 | The same model as S1/S2, one prompt per file, no tools |
+| B7 | `scan-run` model paths without harness gates: `--mode hunt`, `--ai-review`, `--ai-report`; cloud providers need `--allow-cloud-model` |
 | S1 | Harness without Laya |
 | S2 | Harness with Laya |
 | S3 | S2 repeated on other provider profiles (for example one Anthropic, one OpenAI-compatible cloud, one local model) |
+
+S1 uses a separate configuration with `mode: "off"`; its routing result is
+`skipped` with reason `Laya disabled for S1`, and candidates remain available
+through G3/G4. The `enabled` field continues to control baseline scans only.
+The shipped `shadow` configuration runs Laya in the harness by default.
 
 B1, B2, B4 and B5 can reuse today's `scan-run --profile full --no-laya`; the
 run on 2026-11-01 (`evidence/jva-fullscan-2026-11-01/run-4c67cbbd…`) is a
@@ -291,7 +325,7 @@ the target architecture.
 
 | Section | Now says | Change to |
 |---|---|---|
-| Mở đầu §2 Mục tiêu | "Agentic AI chỉ hỗ trợ phân tích ngữ cảnh"; goal 5 compares the system with each tool used alone | AI harness is the core; the system detects, explains, proposes fixes; a human decides at every step. Keep the comparison goal, with the tools as baselines |
+| Mở đầu §2 Mục tiêu | "Agentic AI chỉ hỗ trợ phân tích ngữ cảnh"; goal 5 compares the system with each tool used alone | Keep "AI chỉ hỗ trợ" (AI only assists; D10). Static analysis by the harness's own tools detects candidates; AI supports investigation, explanation, CVSS vectors and fixes; a human decides at every step. Keep the comparison goal, with the tools as baselines |
 | §3 Câu hỏi và giả thuyết | Q1 and H1: "thêm lớp hỗ trợ Agentic AI sau chuỗi công cụ tất định" | Q1: harness (S1/S2) against baseline tools. New: how much does Laya reduce tokens and time, and at what recall cost? How many human decisions does one scan need? How many proposed fixes are accepted and pass re-scan? |
 | §4 Đối tượng và phạm vi | "hệ thống chỉ dùng phân tích tĩnh, gồm bốn công cụ" | The system uses its own static analysis tools driven by the LLM; the four tools and CodeQL are baselines. The model is chosen per session from several providers. The survey criterion "không gửi mã nguồn ra ngoài" holds only with a local model; with a cloud provider, state that excerpts leave the machine with user consent |
 | §5 Giới hạn | "Một phần thành phần AI chưa nối vào luồng quét" | Replace with the real limits of the new design: cloud model, Laya quality before fine-tuning, human time cost, one target app |
@@ -328,15 +362,15 @@ the target architecture.
 
 ## 12. Phases
 
-| # | Delivers | Done when | State on 2026-11-01 |
+| # | Delivers | Done when | Latest recorded state |
 |---|---|---|---|
 | 1 | Provider layer (both transports, built-in profiles, `/model`), session loop, gate manager, audit store | The same 3-turn tool-calling session passes on Anthropic and on an OpenAI-compatible provider, against recorded replies in CI and once live; every gate decision is in the log | **Done except the live call.** `harness/providers.py`, `messages.py`, `session.py`, `gates.py`, `audit.py`; both transports tested against recorded HTTP replies; no live provider call was made (no key and no local model on the build machine). |
 | 2 | Scan tools (`inventory`, `extract_candidates`, `lookup_route`, `read_file`, `grep`) | Candidates for JVA-bookstore cover the 5 manual cases in `HARNESS-TUI-PLAN.md` §10 | **Done.** 612 candidates on JVA-bookstore at `dd48d12`; the five manual cases are candidates, tested. |
 | 3 | Laya on candidates (new input format, 300 s) | Laya routes every candidate; G3 override works | **Done.** `harness/triage.py` with `candidate_state`; `triage_many_batched(..., to_state=)`; `config/laya.json` timeout 300. Without the optional `laya` package every candidate falls back to `human_review` (tested). |
 | 4 | Finding cards, evidence checker, CVSS v4.0 scoring | Every card's citations verified; vector scores match the FIRST calculator | **Done.** `harness/evidence.py`, `harness/report.py`; the score comes from `cvss` 3.6, never from a model or a person. |
 | 5 | Fix proposal, worktree apply, re-scan | One confirmed finding fixed on a branch and re-scanned, all through gates | **Done in code and tests.** `harness/fixes.py` plus the `propose_fix` and `rescan` tools, exercised on a throwaway git fixture, not on JVA-bookstore. |
-| 6 | Chat TUI (streaming, tool-call blocks, permission dialog, status line, slash commands) and dashboard session pages | A full session runs from the TUI; after a restart `/resume` continues it with costs intact | **Console only.** `devsec chat` runs sessions with text prompts and slash commands. Streaming, the Go TUI dialogs and the dashboard pages are **not implemented**; `/resume` loads history, not worktrees. |
-| 7 | Experiment B1–S3 and essay update | Section 8 metrics filled; essay sections in section 10 rewritten | **Not implemented.** |
+| 6 | Chat TUI, tool-call blocks, permission dialogs, status, commands and remote session page | A session runs from the TUI; resume retains history, review state and recorded costs | **Implemented in code and tests.** Go uses the dedicated stdio host; browser clients use its authenticated SSE relay. Replies are delivered whole; provider token streaming remains planned. |
+| 7 | Experiment B1–S3 and essay update | Section 8 metrics filled; essay sections in section 10 rewritten | **Tooling implemented; measurements pending.** B6, normalisers, evaluator and scratch-clone fix evaluation are tested. Live runs need labellers, models and applicable consent. Essay work was excluded from this implementation request. |
 
 ## 13. Implementation record (2026-11-01)
 
@@ -386,15 +420,18 @@ Modified:
 | `extract_candidates` | G2 | yes | needs `ws.plan`; defaults from the plan |
 | `laya_triage` | G2 | yes | runs Laya on the CPU; a failure sends every candidate to `human_review` |
 | `select_candidates` | G3 | yes | `edit` replaces the chosen ids; sets `selected` |
-| `begin_investigation` | G4 | yes | only G3-selected candidates; opens the batch and resets its token counter |
+| `begin_investigation` | G4 | yes | only G3-selected candidates with a recorded Laya route, including `human_review`; validates edited ids too; opens the batch and resets its token counter |
 | `read_file`, `grep`, `lookup_route` | — | yes | require an open batch; output is wrapped in `<untrusted_code>` |
 | `propose_finding` | G5 | yes | checks citations, scores the vector, records the human's status |
 | `propose_fix` | G6 | until apply | requires a `confirmed` finding; apply writes only in the worktree |
-| `rescan` | G7 | yes | requires an applied fix; reports `candidate gone` or `still present` |
+| `rescan` | G7 | yes | requires an applied fix; checks the original candidate file and changed files; reports `candidate gone` or `still present` |
 
 There is no `apply_fix`, `shell`, `exec`, `write_file` or `run_command` tool.
 
 ### 13.3 Verification run
+
+This table records the initial implementation run, before the review fixes
+described in section 13.6.
 
 | Command | Result |
 |---|---|
@@ -450,10 +487,199 @@ CWE-89 6, CWE-601 4, CWE-22 3, CWE-306 3, CWE-330 2.
     cloud key configured and nothing listens on `127.0.0.1:11434` (Ollama). The
     transport path is covered by recorded HTTP replies only.
 
-### 13.5 Not implemented
+### 13.5 Not implemented at the initial implementation
 
 Phase 6 and 7 of section 12; plus, from the plan's "not in this plan" table:
 the Go chat view and permission dialog, SSE streaming and Anthropic prompt
 caching, `/compact`, `check_dependency` with OSV, Laya fine-tuning, the
 B1–S6/S1–S3 experiment and the essay rewrite.
 
+### 13.6 Review corrections
+
+- `Workspace.files` validates every enumerated path through `Workspace.resolve`
+  before reading it. Inventory, grep, extraction and route indexing share this
+  enumeration. The shared source index accepts the harness's confined file list.
+- Direct and enumerated reads exclude `.env`, `.env.*` and `.secrets`, including
+  aliases resolving to them. `.env.example` is allowed. Parent path components
+  and Windows drive-relative paths are rejected.
+- Normal provider request and response bodies, tool results, console output,
+  JSONL events and Markdown/JSON reports pass through `credentials.redact`.
+  Redaction does not alter the in-memory diff used by git.
+- The console displays request payloads and the complete fix diff before
+  accepting G6. Malformed or non-object JSON edits leave the gate undecided.
+  These corrections enforce the existing gate rules; gate authority is unchanged.
+- Investigation batches require a recorded Laya outcome for every selected id,
+  including human-edited ids. An unavailable Laya outcome routes to `human_review`.
+- Fix worktree paths become absolute relative to the caller before invoking git
+  and use the same resolution for re-scans. Verification includes the original
+  candidate file, so changes confined to an unrelated file cannot remove it.
+- Route lookup includes filters applicable to the servlet URL using exact,
+  path-prefix and extension mappings. Authorization checks in those filter
+  files contribute to `auth_check`. This is static evidence, not proof that
+  the guard is effective at runtime.
+- All shipped dependency exports include the required `cvss==3.6` from `uv.lock`.
+
+Requirements trace: SRS FR-16 (route/filter mapping), QR-01/QR-04 (honest
+verification), QR-12 (secrets), QR-20 (platform support), and AGENTS A5, H5,
+S2, T5, K1–K3.
+
+### 13.7 Review-fix verification (2026-11-01)
+
+| Check | Result |
+|---|---|
+| Ruff check `src tests` | All checks passed |
+| Ruff format check `src tests` | 206 files already formatted |
+| Strict mypy `src/vulnscan` | No issues in 122 source files |
+| Harness tests | 113 passed |
+| Full pytest suite | 530 passed, 1 skipped, 2 warnings |
+
+The skip is `tests/analysis/test_adapter_unavailable.py`: the Semgrep binary
+is installed, so its unavailable-binary case does not apply. The warnings
+concern Starlette's httpx deprecation and terminal echo control in an existing
+empty-key test. Provider tests used mock HTTP replies; live-provider smoke
+testing was skipped. The unimplemented features remain listed in section 13.5.
+
+The first sandbox full-suite run produced 32 scanner setup errors because
+Semgrep exited with `ca_certs_iter_on_anchors: CertOpenSystemStore returned NULL`.
+Host access resolved that error. A host run using a temporary directory inside
+the checkout then failed two root-discovery tests because they found the parent
+repository. The final passing run used host access and a fresh temporary
+directory outside the checkout, with a separate pytest cache. No tests were
+disabled to obtain the passing run.
+
+### 13.8 CI alignment
+
+Required checks now include a dedicated mocked harness suite on Linux, Windows
+and macOS. All offline Python test areas still run on Linux Python 3.11–3.13
+and Windows/macOS Python 3.11. Native jobs run Go vet/tests, build the binary,
+then run the platform, CLI and Python TUI suites. JUnit and Python coverage
+artifacts are retained when tests fail.
+
+The quality job checks the three shipped requirements exports against `uv.lock`
+and lints `ci/` alongside application code and tests. CI syncs with `--locked`
+and then uses `uv run --no-sync` to preserve the requested extras. The wheel,
+Action and scanner-image installations check packaged assets, CVSS and both
+chat aliases; unattended G0 and G6 stay refused. No provider keys are supplied
+and model downloads are disabled. These are scripted checks, not a live model run.
+
+The `CI required` aggregate job fails for any failed, skipped or cancelled
+prerequisite. Full baseline integration remains scheduled/manual and a release
+prerequisite. Release jobs select Python explicitly and continue using the
+frozen commit and the package job's distribution artifact. Publishing still
+requires maintainer dispatch. See `docs/CI-INTEGRATION.md` for the workflow map.
+
+Package smoke selects the exact current-version wheel and source archive,
+preserving older local builds. Official Action revisions are refreshed to
+reviewed stable releases and pinned by full SHA throughout the delivery paths.
+
+### 13.9 Merge with main and stabilization (2026-11-02)
+
+`origin/main` (`8d9eeb4c13793375699bbb7226c14a0fc56b06f6`, 41 commits) was merged
+into `feat/human-gated-harness` with `--no-ff`; the merge commit is `b19b84e`.
+Two files conflicted. `pyproject.toml` keeps both `cvss==3.6` (this branch) and
+`python-docx>=1.1.0` (main), with `sse-starlette` merged automatically; `uv.lock`
+and the three requirement exports were regenerated and `ci/check_lock_exports.py`
+reports a match for each. `CHANGELOG.md` became one `Unreleased` section, branch
+entries first.
+
+The merge exposed two real incompatibilities, both fixed rather than papered
+over:
+
+- `base.html` now reads `request.url.path`, but the native dashboard renders
+  through `core/rpc.py` `render_page` with a plain dict. `render_page` supplies a
+  request stub and `internal/dashboard/server.go` passes `r.URL.Path`, so nav
+  highlighting matches the Python dashboard.
+- The Python `ScanService` always writes `final-report.md`, so native runs failed
+  the parity test. `core/rpc.py` now generates the same artifact in its `reports`
+  helper, and `internal/service/scan.go` records the aggregate `scanners` stage
+  and the `final_report` stage, so native and Python stage histories match.
+
+Stabilization changes in this section:
+
+- **B7 consent.** `core/model_consent.py` decides whether a model may be used.
+  Loopback base URLs (`localhost`, `127.0.0.1`, `::1`) are allowed because no
+  code leaves the machine; anything else needs `allow_cloud_model`. `scan-run`
+  exposes `--allow-cloud-model`, the web New Scan form carries the same checkbox
+  (unticked by default), and `ScanService` checks consent once before any
+  `ProviderClient` exists. A refusal is recorded on `model_hunt`,
+  `targeted_deep_analysis` and `final_report` as `skipped` with the
+  `--allow-cloud-model` reason; it is not raised as an error.
+- **Redaction.** `providers.credentials` matches key *formats* and the literal
+  values of loaded `*_API_KEY`/`*_TOKEN`/`*_SECRET` variables instead of a broad
+  `sk|pk|tok|api` prefix. `redact_value`/`redact_json` replace
+  `redact(json.dumps(...))` at every structured call site — both directions of
+  the provider boundary, the session log, tool results and report exports — so
+  model output, audit lines and reports stay valid JSON and code such as
+  `token.isEmpty()` is preserved.
+- **Web UI in CI.** A `web-ui` job (Node 24, committed lock file) runs `npm ci`,
+  `npm run lint`, `npm test` and `npm run build`, and is part of the
+  `CI required` needs list. `tests/platform/test_ci_contract.py` enforces it.
+
+Verification actually run, in order: pre-merge `547 passed, 1 skipped`; after the
+merge `649 passed, 1 skipped`; after B7 `662 passed, 1 skipped`; after redaction
+`676 passed, 1 skipped`. `ruff check`, `ruff format --check` and strict `mypy`
+(131 files) are clean. `go vet ./...` is clean and `go test ./cmd/... ./internal/...`
+passes; `go test ./...` additionally collects the gitignored scratch probe in
+`artifacts/tui-verification/`, which is injected with `-overlay` and is not
+source. In `web-ui`: `npm ci`, `npm run lint`, `npm test` (17 files, 71 tests) and
+`npm run build` pass. `ci/package_smoke.py` passes and still reports that an
+installed `devsec chat` refuses G0 unattended.
+
+Still not implemented: copying `web-ui/dist` into the wheel (a pip install serves
+the JSON API and the Jinja pages, not the SPA); the shared test helpers and
+`filter_match` export; the Go chat TUI, local triggers, web remote control and
+the experiment harness in `docs/superpowers/plans/`.
+
+### 13.10 Remaining-plan implementation (2026-11-02)
+
+The owner approved the documented rule changes, dependent implementation
+before merge checkpoints, parallel coding work, and a combined feature-branch
+delivery. The scope is software and experiment tooling, excluding the essay.
+
+- Added models own their masked keys. Templates come from the existing profile
+  table. Locality uses the endpoint URL. A cloud endpoint change under the same
+  alias requires fresh G0; a refused switch leaves the active model unchanged.
+- `SessionHost`, `rpc` and `remote` supply durable sequenced events, client
+  attribution, first-reply-wins gates, interruption, replay and snapshot-backed
+  resume. Console review decisions are saved immediately. Restoring data never
+  replays past tool actions.
+- The Go client provides chat, model forms, gate dialogs, a full-diff viewer,
+  restart and an embedded Baseline tab. The Textual TUI is removed. `chat`,
+  `model`, `hooks` and `remote` stay Python-handled.
+- The remote page shares the host session. Login is single-use and expires;
+  authenticated mutations use CSRF. Web G0/G6 approvals need typed words
+  checked by Python. The SPA is served from a built source checkout; packaging
+  it into the wheel remains unimplemented.
+- Hooks and the non-git watcher queue reviews. Root commits, linked worktrees,
+  filename delimiters and repeated saves are covered. Custom `core.hooksPath`
+  settings are refused. Automatic review requires an idle, local, auto-mode
+  host with a human client attached. Run from a separate harness directory when
+  using a non-git target so its queue and patch output stay outside that target.
+- Fix proposals use validated unified text patches and cited-code scope.
+  Unversioned targets export patches under `.devsec/patches`; G7 reports that
+  re-scan is unavailable. Binary/mode-only patches, renames and quoted Git paths
+  are explicitly unsupported.
+- Experiment tooling and its operator requirements are in
+  [EXPERIMENT-RUNBOOK.md](EXPERIMENT-RUNBOOK.md). S1 uses explicit `mode: "off"`.
+  Public-source comparison is in `experiment/related-work.md`; no project
+  detection result is inferred from that literature.
+
+Verification, remaining operator steps and plan coverage are recorded in
+[PLAN-EXECUTION-2026-11-02.md](PLAN-EXECUTION-2026-11-02.md).
+
+### 13.11 Merge into dev for SonarCloud testing
+
+At the owner's request, `feat/go-chat-tui` (`db5c274`) is merged into the
+SonarCloud testing branch based on `origin/dev` (`1e9a58e`). The changelog
+conflict keeps the newer entries without duplicating older harness entries.
+The standalone `sonarcloud.yml` keeps its triggers, Maven analysis command
+and secret reference; action pins and checkout credentials satisfy the current
+CI contract. Its Maven-root limitation is recorded in
+[CI-INTEGRATION.md](CI-INTEGRATION.md#sonarcloud-testing-on-dev). A successful
+merge or local test run is not evidence of a successful SonarCloud analysis.
+
+Merge verification: Ruff lint and format pass, mypy passes for 141 source
+files, and pytest reports 977 passed and 1 skipped. All dependency exports
+match the lock. Go vet/tests pass on a clean copy of the Go source, excluding
+the pre-existing local scratch probe described in section 13.10's execution
+record. No tracked application source differs from `feat/go-chat-tui`.

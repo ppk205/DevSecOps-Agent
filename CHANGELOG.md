@@ -2,14 +2,55 @@
 
 ## Unreleased
 
+- Merge the remaining chat and experiment implementation into `dev` for SonarCloud testing. Preserve its standalone SonarCloud workflow and align action pins and checkout credentials with the current CI contract.
+
+- Add authenticated browser control and a headless `devsec remote` command, with first-reply-wins human gates, replayable events and pending reviews. Restore session snapshots and recorded budgets without replaying tool actions; persist console G5 decisions immediately.
+- Require renewed G0 when an added alias switches to a different cloud endpoint. Rejected model switches retain the current transport and do not record an accepted model change.
+- Add the B6 model-only runner, deterministic experiment evaluator, scratch-clone fix scoring and experiment runbook. Preserve partial/unknown measurements; live experiments and human labels remain operator work.
+
+- Replace the Textual TUI with the Go chat client and a dedicated `devsec-chat/1` bridge. Add masked model forms, gate dialogs, full-diff viewing, command hints, restart, remote links and pending-review controls. Keep comparison scans inside the embedded Baseline tab.
+- Make `devsec tui` require the native binary with a build hint when missing. Keep harness commands on Python even with the Go preference, remove the Textual dependency, and align installed smoke/native CI suites with the replacement.
+
+- Include root commits in pending reviews, parse Git filenames with NUL delimiters, support linked worktree hook locations, and explicitly refuse custom `core.hooksPath` settings.
+
+- Add model aliases with the shared masked-key wizard in the CLI and console. Built-in providers are templates; aliases select saved model ids, and legacy `--provider` remains supported for one release. Local added models can call either transport without a key.
+
+- Make S1 reproducible with an explicit Laya `mode: "off"` configuration: skip the backend, record the reason, and keep G3/G4 investigation gates.
+
+- Allow local G0 auto-approval only in interactive `auto` sessions, with the decision recorded as person `auto`; cloud and unattended G0 stay human-gated, and G5/G6 remain human-only. Provider locality comes from the loopback URL rather than profile metadata. G7 accepts explicit human edits.
+- Redact loaded model-owned credentials (`DEVSEC_KEY_`) at the same boundaries as legacy provider keys; missing-key errors identify the model alias without exposing its variable name.
+
+- Require `--allow-cloud-model` before `scan-run` sends code excerpts to a non-loopback provider on its model paths (`--mode hunt`, `--ai-review`, `--ai-report`); a refused stage is recorded as skipped with the reason, and the web New Scan form carries the same consent checkbox. These paths are baseline B7 and their output never reaches the harness.
+- Narrow redaction to key formats (`sk-`, `ghp_`, `github_pat_`, `AKIA`, `xox`, `Bearer …`) plus the literal values of loaded `*_API_KEY`, `*_TOKEN` and `*_SECRET` variables, and add `redact_value`/`redact_json` for both sides of the provider boundary, the session log, tool results and report exports. Code such as `token.isEmpty()` is no longer turned into `[REDACTED]`, and structured output stays valid JSON.
+- Add a `web-ui` CI job (Node 24, committed lock file) that runs `npm ci`, `lint`, `test` and `build`, and include it in the `CI required` aggregate gate.
+- Merge main: PIT WALL web UI, the model hunt pipeline, Laya verification of hunted candidates and the AI-written final report. The native Go path now emits the aggregate `scanners` and `final_report` stages and writes `final-report.md`, so its history and artifacts match the Python service.
+- Rebuild required CI checks around the current harness, locked dependency exports, full Python matrix, native platform suites, installed-package chat refusal and real baseline fixtures.
+- Add a `CI required` aggregate check that rejects failed, skipped or cancelled prerequisite jobs, and retain harness/native JUnit and coverage on failure.
+- Preserve installed extras with `uv run --no-sync`, test the wheel, Action and scanner image with the same offline chat smoke check, and select Python explicitly in release jobs.
+- Select the exact current-version package archives and refresh official Action revisions to reviewed full commit SHAs across workflows, the composite Action and examples.
+
+- Validate enumerated harness paths, including source-index inputs, and exclude credential files while preserving `.env.example`.
+- Redact normal provider messages, tool output, console display, audit events and both report formats.
+- Display the full fix diff before G6 and leave malformed JSON gate edits undecided.
+- Require recorded Laya triage before opening investigation batches, including edited candidate lists.
+- Resolve fix worktrees to absolute paths and re-scan the original candidate alongside changed files.
+- Include applicable exact, path-prefix and extension filters and their authorization checks in route lookup.
+- `lookup_route` reports `filter_match` (`request_url` when the query was a URL, `servlet_pattern` when it was a class name), so a caller can see which basis matched.
+- `propose_fix` refuses a diff that touches a file the finding does not cite, reaches further than 15 lines from every cited hop, or changes more than 80 lines. The refusal names the offending file and lines and never reaches G6.
+- Add the pending review queue (git hooks and a folder watcher) and `devsec hooks install|uninstall|status`. The hooks only append to the queue and always exit 0, and `install` refuses to overwrite a hook it did not write.
+- A target that is not a git checkout gets its fix as `.devsec/patches/<finding_id>.patch`, never applied; its G6 title says so and the G7 re-scan reports `unavailable: target is not a git repository`. Exports preserve existing patches and refuse unsafe destinations.
+- Validate complete unified-diff bodies before checking fix scope. Reject unsupported patch types, malformed hunks, unsafe paths, and hunks extending outside cited-code windows. Repeated watcher saves receive distinct review ids; queue reads tolerate malformed records.
+- Refresh runtime, build and scanner requirements exports with the required `cvss==3.6` dependency.
+
 - Add `devsec chat`, the hand-written AI harness: a provider layer with two transports (Anthropic Messages, OpenAI-compatible Chat Completions) and built-in profiles for Anthropic, OpenAI, OpenRouter, DeepSeek, Ollama and LM Studio, plus user profiles in `.providers/*.json`.
 - Add a session loop with non-streaming tool calling, `/model` switching, budget checks, provider-error recovery and resume from the append-only `.devsec/sessions/*.jsonl` log.
-- Add human permission gates G0–G7 with `ask` and `auto` modes: only G1–G4 and G7 may be approved automatically (logged as person `auto`), G0 and G6 always wait for a human, and G5 is never decided by code. No gate offers "always", and a closed or invalid prompt is `undecided`.
+- Add human permission gates G0–G7 with `ask` and `auto` modes: G1–G4 and G7 may be approved automatically (logged as person `auto`), with the interactive-local G0 exception above. G6 waits for a human, and G5 is never decided by code. No gate offers "always", and a closed or invalid prompt is `undecided`.
 - Add the harness scan tools: file inventory, source–sink candidate extraction (14 rule families plus a missing-role-check route rule), route lookup, confined reads and grep. Third-party scanners stay as `scan-run` baselines.
 - Run Laya triage on harness candidates before the model reads anything, with a new candidate-based input state; raise the shipped Laya timeout from 30 s to 300 s.
 - Add the citation checker and CVSS v4.0 scoring through `cvss==3.6`; the harness verifies evidence and only a human sets a finding's status.
 - Add fix proposals applied only to a `devsec/fix-<finding_id>` worktree branch after a human G6, and a G7 re-scan that reports whether the candidate is gone.
 - Add finding-card reports (Markdown and JSON) with the gate decision log, and the console slash commands `/model`, `/mode`, `/cost`, `/review`, `/export`, `/resume`, `/clear`, `/quit`.
+
 - Add `--mode hunt`: model-first pipeline where the model explores the snapshot with read-only tools (`hunt_vulns`), scanners run unchanged, Laya verifies each candidate (`laya_verification`), and `model_scanner_compare` buckets agreed/model-only/scanner-only; the AI lane focuses on agreed findings and `hunt.json` lands next to `final-report.md`. Default `deterministic` mode is byte-for-byte unchanged; without `--provider` hunt stages skip and the run falls back to deterministic.
 - Verify hunted vulnerabilities with Laya: each model candidate becomes a `DecisionRequest` with a code excerpt, attaching `laya_route`/`laya_confidence`/`laya_status` — Laya unavailable degrades to `skipped`, never fails a run.
 - Compare model vs scanner findings with a pure `(path, line±3, CWE-digits)` matcher and surface it in the final report via a `## Đối chiếu model vs scanner` section (prompt counts + deterministic fallback table).

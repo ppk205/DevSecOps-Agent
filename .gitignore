@@ -140,3 +140,6 @@ bin/
 
 # Local thesis working documents
 /essay/
+
+# Scanner caches kept beside evidence folders
+.scanner-data/

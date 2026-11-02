@@ -120,8 +120,7 @@ def migrate(engine: Engine) -> None:
                 )"""
             )
             conn.exec_driver_sql(
-                "CREATE INDEX IF NOT EXISTS scan_events_run_seq "
-                "ON scan_events(run_id, seq)"
+                "CREATE INDEX IF NOT EXISTS scan_events_run_seq ON scan_events(run_id, seq)"
             )
             conn.exec_driver_sql("INSERT INTO schema_migrations VALUES (4)")
 

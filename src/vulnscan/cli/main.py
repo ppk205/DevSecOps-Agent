@@ -116,6 +116,11 @@ def scan_run(
     ai_report: bool | None = typer.Option(
         None, "--ai-report/--no-ai-report", help="AI-written final report (needs --provider)."
     ),
+    allow_cloud_model: bool | None = typer.Option(
+        None,
+        "--allow-cloud-model/--no-allow-cloud-model",
+        help="Let model stages send code excerpts to a non-loopback provider.",
+    ),
     max_ai_findings: int | None = typer.Option(
         None, "--max-ai-findings", help="Cap on model-reviewed findings per run."
     ),
@@ -146,6 +151,7 @@ def scan_run(
             provider_profile=provider,
             provider_model=model,
             ai_report=ai_report,
+            allow_cloud_model=allow_cloud_model,
             max_ai_findings=max_ai_findings,
             mode=mode,
         )
@@ -190,22 +196,13 @@ def launch_tui(db_path: str = "vulnscan.db") -> None:
 
     from ..core.native import binary_path
 
-    binary = binary_path()
-    # The complete URL/credential workflow lives in Textual. Native UI remains
-    # explicit until those newer surfaces have native parity (C-04, FR-71).
-    if (
-        binary
-        and os.environ.get("DEVSECOPS_NATIVE") == "go"
-        and os.environ.get("DEVSECOPS_PYTHON_ONLY") != "1"
-    ):
-        env = {**os.environ, "DEVSECOPS_PYTHON": sys.executable}
-        result = subprocess.run([binary, "tui", "--db-path", db_path], env=env, check=False)
-        raise typer.Exit(result.returncode)
-    from ..infra.envfile import EnvFile
-    from ..tui.app import ScanApp
-
-    EnvFile().load_into_environ()
-    ScanApp(db_path).run()
+    binary = binary_path(required=True)
+    if binary is None:
+        typer.echo("chat needs the native binary: run ci/build_native.py")
+        raise typer.Exit(2)
+    env = {**os.environ, "DEVSECOPS_PYTHON": sys.executable}
+    result = subprocess.run([binary, "tui", "--db-path", db_path], env=env, check=False)
+    raise typer.Exit(result.returncode)
 
 
 env_app = typer.Typer(help="Manage API keys and secrets in the project .env file.")
@@ -437,6 +434,35 @@ def laya_evaluate(
     typer.echo(rendered)
 
 
+@app.command("hooks")
+def hooks(
+    action: str = typer.Argument("status", help="install, uninstall or status."),
+    repo: str = typer.Option(".", "--target", "--repo", help="Target git checkout."),
+) -> None:
+    """Manage the opt-in git hooks that queue a review after a commit or merge."""
+    from pathlib import Path as _Path
+
+    from ..harness.hooks import HookError, current_python, install, status, uninstall
+
+    root = _Path(repo)
+    try:
+        if action == "install":
+            names = install(root, current_python())
+            typer.echo(f"installed {', '.join(names)} for {root}")
+        elif action == "uninstall":
+            names = uninstall(root)
+            typer.echo(f"removed {', '.join(names) if names else 'nothing'}")
+        elif action == "status":
+            for name, value in status(root).items():
+                typer.echo(f"{name}: {value}")
+        else:
+            typer.echo("usage: devsec hooks [install|uninstall|status]")
+            raise typer.Exit(2)
+    except HookError as exc:
+        typer.echo(str(exc))
+        raise typer.Exit(1)
+
+
 @app.command("evidence-manifest")
 def evidence_manifest(
     out: str = typer.Option("", "--out", help="Optional path to write the manifest."),
@@ -464,11 +490,75 @@ def evidence_manifest(
     typer.echo(rendered)
 
 
+model_app = typer.Typer(help="Add models and manage their masked keys.")
+app.add_typer(model_app, name="model")
+
+
+@model_app.command("add")
+def model_add_cli(template: str | None = typer.Option(None, "--template")) -> None:
+    """Add a model using the interactive, masked-key wizard."""
+    from ..harness.console import add_model_wizard
+
+    try:
+        add_model_wizard(template, write=typer.echo)
+    except (ValueError, OSError):
+        typer.echo("Cannot add model. Check the alias, protocol, URL, model ids and key.", err=True)
+        raise typer.Exit(2) from None
+
+
+@model_app.command("list")
+def model_list_cli() -> None:
+    """List added models and key status, never credential values or names."""
+    from ..harness.console import model_summary
+    from ..harness.models import list_models
+
+    try:
+        entries = list_models()
+    except (ValueError, OSError):
+        typer.echo("Cannot list added models. Check the model profiles.", err=True)
+        raise typer.Exit(2) from None
+    for entry in entries:
+        typer.echo(model_summary(entry))
+    if not entries:
+        typer.echo("No models added. Use devsec model add.")
+
+
+@model_app.command("remove")
+def model_remove_cli(alias: str = typer.Argument(...)) -> None:
+    """Remove an added model and its own saved key."""
+    from ..harness.models import remove_model
+
+    try:
+        remove_model(alias)
+    except (ValueError, OSError):
+        typer.echo("Cannot remove added model. Check its alias and profile.", err=True)
+        raise typer.Exit(2) from None
+    typer.echo("Model removed.")
+
+
+@model_app.command("key")
+def model_key_cli(alias: str = typer.Argument(...)) -> None:
+    """Replace an added model's key with hidden input."""
+    from ..harness.console import prompt_model_key
+    from ..harness.models import set_key
+
+    try:
+        set_key(alias, prompt_model_key())
+    except (ValueError, OSError):
+        typer.echo("Cannot set model key. Check the alias and use hidden terminal input.", err=True)
+        raise typer.Exit(2) from None
+    typer.echo("Model key set.")
+
+
 @app.command("chat")
 def chat(
     target: str = typer.Option(".", help="Target checkout to review."),
-    provider: str = typer.Option("anthropic", help="Provider profile id."),
-    model: str | None = typer.Option(None, help="Model id; defaults to the profile's."),
+    provider: str | None = typer.Option(
+        None, help="Deprecated: legacy provider profile (one release)."
+    ),
+    model: str | None = typer.Option(
+        None, help="Added model alias[:model-id]; defaults to its first model."
+    ),
     mode: str = typer.Option("ask", help="Gate mode: ask or auto."),
     prompt: str | None = typer.Option(None, "-p", "--prompt", help="Send one prompt and exit."),
     resume: str | None = typer.Option(None, help="Session JSONL file to resume."),
@@ -486,6 +576,7 @@ def chat(
     from ..harness.console import ChatConsole, console_asker
     from ..harness.gates import MODES, GateKeeper, refuse_all
     from ..harness.messages import ProviderError
+    from ..harness.models import resolve_model
     from ..harness.providers import all_profiles, make_transport
     from ..harness.session import Session
     from ..harness.tools import ToolContext
@@ -497,17 +588,27 @@ def chat(
         typer.echo(f"unknown mode {mode!r}; use one of: {', '.join(MODES)}")
         raise typer.Exit(2)
 
-    EnvFile().load_into_environ()
-    profiles = all_profiles()
-    profile = profiles.get(provider)
-    if profile is None:
-        typer.echo(f"unknown provider {provider!r}; known: {', '.join(sorted(profiles))}")
-        raise typer.Exit(2)
+    profiles = None
     try:
-        transport = make_transport(profile, model)
-    except ProviderError as exc:
-        typer.echo(str(exc))
-        raise typer.Exit(2) from exc
+        EnvFile().load_into_environ()
+        if provider is not None:
+            # ponytail: --provider selects a legacy profile for one release.
+            profiles = all_profiles()
+            profile = profiles.get(provider)
+            if profile is None:
+                raise ValueError("Unknown provider")
+            transport = make_transport(profile, model)
+        else:
+            if model is None:
+                typer.echo(
+                    "Choose an added model with --model <alias>; use devsec model add first."
+                )
+                raise typer.Exit(2)
+            profile, model_id = resolve_model(model)
+            transport = make_transport(profile, model_id)
+    except (ProviderError, ValueError, OSError):
+        typer.echo("Cannot use model. Check its alias, settings and key.", err=True)
+        raise typer.Exit(2) from None
 
     laya_file = _Path(laya_config_path)
     laya = load_config(laya_file) if laya_file.is_file() else LayaConfig(timeout_seconds=300)
@@ -515,12 +616,13 @@ def chat(
     from ..harness.audit import SessionLog, new_session_path
 
     log_path = _Path(resume) if resume else new_session_path(_Path(sessions_dir))
-    interactive = sys.stdin.isatty() and sys.stdout.isatty()
+    interactive = sys.stdin.isatty()
     keeper = GateKeeper(
-        console_asker() if interactive else refuse_all,
+        console_asker(mode=lambda: keeper.mode) if interactive else refuse_all,
         SessionLog(log_path).append,
         person="human" if interactive else "",
         mode=mode,
+        interactive=interactive,
     )
     log = SessionLog(log_path)
     ctx = ToolContext(Workspace.open(_Path(target)), keeper, log, laya)
@@ -530,6 +632,42 @@ def chat(
         typer.echo("G0 needs a human: run devsec chat in a terminal")
         raise typer.Exit(2)
     raise typer.Exit(ChatConsole(session, profiles=profiles).run(prompt))
+
+
+@app.command("remote")
+def remote(
+    target: str = typer.Option(".", help="Target checkout to review."),
+    model: str | None = typer.Option(None, help="Added model alias[:model-id]."),
+    provider: str | None = typer.Option(None, help="Deprecated legacy provider profile."),
+    mode: str = typer.Option("ask", help="Gate mode: ask or auto."),
+    budget: float = typer.Option(50.0, min=0, help="Total USD budget."),
+    resume: str | None = typer.Option(None, help="Session JSONL to resume."),
+    sessions_dir: str = typer.Option(".devsec/sessions", help="Session log directory."),
+    laya_config_path: str = typer.Option("config/laya.json", "--laya-config"),
+    port: int = typer.Option(0, min=0, max=65535, help="Listen port; zero chooses a free port."),
+    remote_host: str = typer.Option("127.0.0.1", help="Listener address."),
+    remote_allow_lan: bool = typer.Option(False, help="Allow non-loopback binding."),
+) -> None:
+    """Run a headless harness and print its one-time browser connection link."""
+    from pathlib import Path
+
+    from ..harness.remote import run_headless
+
+    raise typer.Exit(
+        run_headless(
+            target=Path(target),
+            model=model,
+            provider=provider,
+            mode=mode,
+            budget=budget,
+            resume=Path(resume) if resume else None,
+            sessions_dir=Path(sessions_dir),
+            laya_config=Path(laya_config_path),
+            port=port,
+            remote_host=remote_host,
+            remote_allow_lan=remote_allow_lan,
+        )
+    )
 
 
 def main() -> None:
@@ -542,9 +680,18 @@ def main() -> None:
 
     binary = binary_path()
     arguments = sys.argv[1:]
-    source_surface = not arguments or arguments[0] in {"tui", "scan-run", "chat"}
+    source_surface = not arguments or arguments[0] in {
+        "tui",
+        "scan-run",
+        "chat",
+        "model",
+        "hooks",
+        "remote",
+    }
+    python_only_surface = bool(arguments and arguments[0] in {"chat", "model", "hooks", "remote"})
     if (
         binary
+        and not python_only_surface
         and os.environ.get("DEVSECOPS_PYTHON_ONLY") != "1"
         and "--version" not in sys.argv[1:]
         and (not source_surface or os.environ.get("DEVSECOPS_NATIVE") == "go")

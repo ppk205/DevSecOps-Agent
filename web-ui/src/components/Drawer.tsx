@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { en } from "../i18n/en";
+import { useEffect, useRef } from "react";
+import { useStrings } from "../i18n/lang";
 
 interface DrawerProps {
   open: boolean;
@@ -10,8 +10,11 @@ interface DrawerProps {
 
 /** Right slide-over evidence drawer. Escape closes; content scrolls. */
 export function Drawer({ open, title, onClose, children }: DrawerProps) {
+  const en = useStrings();
+  const closeRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (!open) return;
+    closeRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
@@ -31,6 +34,7 @@ export function Drawer({ open, title, onClose, children }: DrawerProps) {
         <div className="flex items-center justify-between border-b border-hairline p-5">
           <div className="label-m text-sm text-ink">{title}</div>
           <button
+            ref={closeRef}
             onClick={onClose}
             aria-label={en.common.close}
             className="label-m text-xs text-muted transition-colors duration-150 hover:text-ink"

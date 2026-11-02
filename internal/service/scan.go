@@ -346,6 +346,45 @@ func (b *Backend) nativeRun(ctx context.Context, params map[string]any, eventCal
 				return e
 			}
 		}
+		// Aggregate rail node: the Python service persists a "scanners" stage
+		// from the per-tool outcomes, so the native path must emit the same
+		// stage for the two histories to match.
+		toolConfigs := objects(spec["tools"])
+		outcomes := []string{}
+		for _, result := range results {
+			outcomes = append(outcomes, fmt.Sprint(result["status"]))
+		}
+		for len(outcomes) < len(toolConfigs) {
+			outcomes = append(outcomes, "failed")
+		}
+		failed := false
+		partial := false
+		for _, status := range outcomes {
+			if status == "failed" {
+				failed = true
+			}
+			if status != "completed" {
+				partial = true
+			}
+		}
+		switch {
+		case failed:
+			recent := executionErrors
+			if len(recent) > len(toolConfigs) {
+				recent = recent[len(recent)-len(toolConfigs):]
+			}
+			if e = persist("scanners", "failed", strings.Join(recent, "; ")); e != nil {
+				return e
+			}
+		case partial:
+			if e = persist("scanners", "partial", fmt.Sprintf("%d/%d scanners completed", len(results), len(toolConfigs))); e != nil {
+				return e
+			}
+		default:
+			if e = persist("scanners", "completed", fmt.Sprintf("%d/%d scanners completed", len(results), len(toolConfigs))); e != nil {
+				return e
+			}
+		}
 		after, e := b.review(deadlineCtx, checkout, commit, cfg)
 		if e != nil {
 			return e
@@ -431,6 +470,9 @@ func (b *Backend) nativeRun(ctx context.Context, params map[string]any, eventCal
 				summary["gate"] = "failed"
 			}
 		}
+	}
+	if e = persist("final_report", "skipped", "no provider profile configured"); e != nil {
+		return nil, e
 	}
 	summary["summary_path"] = filepath.Join(output, "summary.json")
 	if e = os.WriteFile(fmt.Sprint(summary["summary_path"]), []byte(marshal(summary)), 0600); e != nil {

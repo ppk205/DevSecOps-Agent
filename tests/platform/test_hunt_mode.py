@@ -167,7 +167,10 @@ def test_hunt_mode_persists_three_stages_and_artifact(service, checkout, tmp_pat
     monkeypatch.setattr(verify_mod, "laya_verify_candidates", _fake_verify)
     monkeypatch.setattr(store_mod, "load_profile", lambda _pid: _profile())
 
-    result = service.run(str(checkout), settings(tmp_path, mode="hunt", provider_profile="test"))
+    result = service.run(
+        str(checkout),
+        settings(tmp_path, mode="hunt", provider_profile="test", allow_cloud_model=True),
+    )
     assert result["model_candidates"]
     assert result["comparison"]["counts"]["agreed"] >= 1
     stages = {e["stage"]: e["status"] for e in result["stages"]}

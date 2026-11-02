@@ -37,7 +37,7 @@ def test_dr09_additive_migration_preserves_integer_history(tmp_path):
         assert (
             conn.execute("SELECT created_at FROM runs WHERE id=9").fetchone()[0].endswith("+00:00")
         )
-        assert conn.execute("SELECT count(*) FROM schema_migrations").fetchone()[0] == 3
+        assert conn.execute("SELECT count(*) FROM schema_migrations").fetchone()[0] == 4
 
 
 def test_dr09_database_paths_are_independent(tmp_path):

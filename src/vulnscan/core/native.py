@@ -14,8 +14,8 @@ from vulnscan.scanners.process import _cancel_check
 _workers: dict[str, JSONWorker] = {}
 
 
-def binary_path() -> str | None:
-    if os.environ.get("DEVSECOPS_NATIVE", "auto") == "python":
+def binary_path(*, required: bool = False) -> str | None:
+    if not required and os.environ.get("DEVSECOPS_NATIVE", "auto") == "python":
         return None
     override = os.environ.get("DEVSECOPS_GO_BINARY")
     if override:

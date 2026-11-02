@@ -17,7 +17,8 @@ import httpx
 
 from vulnscan.contracts.enums import ProviderProtocol
 from vulnscan.contracts.provider import ProviderProfile
-from vulnscan.providers.credentials import CredentialError, load_api_key, redact
+from vulnscan.core.model_consent import is_local_base_url
+from vulnscan.providers.credentials import CredentialError, load_api_key, redact, redact_value
 from vulnscan.providers.profile_store import list_profiles
 
 from .messages import Message, ProviderError, Reply, ToolCall, Transport, Usage
@@ -123,7 +124,7 @@ def all_profiles(base: Path | None = None) -> dict[str, ProviderProfile]:
 
 def is_local(profile: ProviderProfile) -> bool:
     """True when the profile runs on this machine, so no code leaves it."""
-    return bool(profile.metadata.get("local"))
+    return is_local_base_url(profile.base_url)
 
 
 def price(model: str, usage: Usage) -> float:
@@ -175,10 +176,14 @@ class _HttpTransport:
             try:
                 headers["Authorization"] = f"Bearer {load_api_key(self.profile.api_key_env)}"
             except CredentialError as exc:
-                raise ProviderError(str(exc)) from exc
+                if not is_local(self.profile):
+                    raise ProviderError(
+                        f"Model {self.profile.id}: key missing; set its key before starting."
+                    ) from exc
         return headers
 
     def _post(self, url: str, payload: dict[str, Any], headers: dict[str, str]) -> dict[str, Any]:
+        payload = redact_value(payload)
         last_error = "no attempt was made"
         for attempt in range(self.profile.max_retries + 1):
             try:
@@ -198,9 +203,10 @@ class _HttpTransport:
                     redact(f"HTTP {response.status_code} from {self.profile.id}: {response.text}")
                 )
             try:
-                raw: Any = response.json()
+                decoded = response.json()
             except ValueError as exc:
                 raise ProviderError(f"Invalid JSON from {self.profile.id}: {exc}") from exc
+            raw: Any = redact_value(decoded)
             if not isinstance(raw, dict):
                 raise ProviderError(f"Invalid response from {self.profile.id}: expected an object")
             return cast("dict[str, Any]", raw)
@@ -377,12 +383,9 @@ class AnthropicTransport(_HttpTransport):
 
     def _headers(self) -> dict[str, str]:
         headers = super()._headers()
-        headers.pop("Authorization", None)
-        if self.profile.api_key_env:
-            try:
-                headers["x-api-key"] = load_api_key(self.profile.api_key_env)
-            except CredentialError as exc:
-                raise ProviderError(str(exc)) from exc
+        authorization = headers.pop("Authorization", None)
+        if authorization is not None:
+            headers["x-api-key"] = authorization.removeprefix("Bearer ")
         headers["anthropic-version"] = _ANTHROPIC_VERSION
         return headers
 

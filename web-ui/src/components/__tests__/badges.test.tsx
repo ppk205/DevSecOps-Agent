@@ -4,11 +4,15 @@ import { SeverityBadge } from "../SeverityBadge";
 import { VerificationBadge } from "../VerificationBadge";
 
 describe("SeverityBadge", () => {
-  it("renders the critical label in M red", () => {
+  it("renders the critical label in ink with an M-red chip (WCAG AA on soft)", () => {
     render(<SeverityBadge severity="critical" />);
     const badge = screen.getByTestId("severity-critical");
     expect(badge).toHaveTextContent("Critical");
-    expect(badge.style.color).toBe("rgb(226, 39, 24)");
+    // Label text is ink (4.5:1+ on bg-soft); the brand color lives on the chip.
+    expect(badge.style.color).toBe("");
+    expect(badge.className).toContain("text-ink");
+    const chip = badge.querySelector("span[aria-hidden]");
+    expect(chip?.getAttribute("style")).toContain("rgb(226, 39, 24)");
   });
 
   it("renders all five severities", () => {

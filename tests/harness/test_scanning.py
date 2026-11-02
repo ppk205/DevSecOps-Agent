@@ -79,6 +79,11 @@ def test_inventory_and_lookup_route(ws: Workspace) -> None:
     assert r["auth_check"] is False
 
 
+def test_lookup_route_reports_filter_match_basis(ws: Workspace) -> None:
+    assert lookup_route(ws, "Users")["filter_match"] == "servlet_pattern"
+    assert lookup_route(ws, "/api/admin/users")["filter_match"] == "request_url"
+
+
 JVA = Path(__file__).resolve().parents[2] / "JVA-bookstore"
 
 

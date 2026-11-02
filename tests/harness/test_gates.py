@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
+import re
+from pathlib import Path
 from typing import Any
 
 import pytest
 
-from vulnscan.harness.gates import CHOICES, Gate, GateDecision, GateKeeper, GateRequest
+from tests.harness.conftest import scripted
+from vulnscan.harness.console import console_asker
+from vulnscan.harness.gates import CHOICES, Gate, GateDecision, GateKeeper, GateRequest, refuse_all
 
 
 def keeper(mode: str, answers: list[Any]) -> tuple[GateKeeper, list[Gate], list[dict[str, Any]]]:
@@ -84,3 +88,80 @@ def test_every_decision_is_recorded() -> None:
         "mode",
         "at",
     }
+
+
+def test_invalid_console_edit_is_logged_as_undecided() -> None:
+    log: list[dict[str, Any]] = []
+    k = GateKeeper(console_asker(scripted(["e", "{broken"]), lambda _: None), log.append)
+    decision = k.ask(GateRequest(Gate.G2_SCAN, "scan", "", {"globs": ["**/*"]}))
+    assert decision.choice == "undecided" and not decision.approved
+    assert log[0]["choice"] == "undecided" and log[0]["payload"] == {"globs": ["**/*"]}
+
+
+@pytest.mark.parametrize("mode", ["ask", "auto"])
+@pytest.mark.parametrize("local", [True, False])
+@pytest.mark.parametrize("interactive", [True, False])
+def test_local_g0_auto_matrix(mode: str, local: bool, interactive: bool) -> None:
+    log: list[dict[str, Any]] = []
+    gatekeeper = GateKeeper(refuse_all, log.append, mode=mode, interactive=interactive)
+    decision = gatekeeper.ask(
+        GateRequest(
+            Gate.G0_SESSION, "Start", "", {"local": local, "code_leaves_machine": not local}
+        )
+    )
+    expected = mode == "auto" and local and interactive
+    assert decision.approved is expected
+    assert (log[0]["person"] == "auto") is expected
+    if expected:
+        assert log[0]["reason"] == "local provider, auto mode"
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        {"local": "true", "code_leaves_machine": False},
+        {"local": True},
+        {"local": True, "code_leaves_machine": 0},
+    ],
+)
+def test_local_g0_requires_explicit_boolean_payload(payload: dict[str, Any]) -> None:
+    gatekeeper = GateKeeper(refuse_all, lambda _: None, mode="auto", interactive=True)
+    assert not gatekeeper.ask(GateRequest(Gate.G0_SESSION, "Start", "", payload)).approved
+
+
+def test_g6_never_auto_even_local_interactive() -> None:
+    gatekeeper = GateKeeper(refuse_all, lambda _: None, mode="auto", interactive=True)
+    request = GateRequest(Gate.G6_FIX, "Apply", "", {"local": True, "code_leaves_machine": False})
+    assert not gatekeeper.ask(request).approved
+
+
+def test_g7_accepts_explicit_human_edit() -> None:
+    gatekeeper = GateKeeper(
+        lambda request: GateDecision(request.gate, "edit", edits={"finding_id": "F2"}),
+        lambda _: None,
+    )
+    decision = gatekeeper.ask(GateRequest(Gate.G7_RESCAN, "Rescan", ""))
+    assert decision.choice == "edit" and decision.edits == {"finding_id": "F2"}
+
+
+def test_explicit_undecided_preserves_reason() -> None:
+    log = []
+    gatekeeper = GateKeeper(
+        lambda request: GateDecision(request.gate, "undecided", "confirmation word missing"),
+        log.append,
+    )
+    decision = gatekeeper.ask(GateRequest(Gate.G6_FIX, "Apply", ""))
+    assert not decision.approved
+    assert decision.reason == log[0]["reason"] == "confirmation word missing"
+
+
+def test_tui_button_table_matches_choices() -> None:
+    source = (Path(__file__).resolve().parents[2] / "internal/chat/dialog.go").read_text(
+        encoding="utf-8"
+    )
+    table = source.split("var buttonTable =", 1)[1].split("\n}", 1)[0]
+    actual = {
+        Gate(gate): tuple(re.findall(r'\{"[a-z]", "([a-z_]+)"', buttons))
+        for gate, buttons in re.findall(r'"(G[0-7])":\s*\{(.*)\}', table)
+    }
+    assert actual == CHOICES

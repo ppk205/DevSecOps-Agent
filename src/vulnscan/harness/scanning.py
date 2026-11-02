@@ -174,15 +174,15 @@ def _kind(path: Path) -> str:
 
 
 def _files(ws: Workspace, globs: list[str] | None = None) -> list[Path]:
-    root = ws.target.resolve()
-    found: dict[str, Path] = {}
-    patterns = globs or ["**/*"]
-    for pattern in patterns:
-        for path in root.glob(pattern):
-            if not path.is_file() or ".git" in path.parts:
-                continue
-            found[path.relative_to(root).as_posix()] = path
-    return [found[key] for key in sorted(found)]
+    return ws.files(globs)
+
+
+def _source_index(ws: Workspace) -> SourceIndex:
+    paths = [
+        ws.resolve(path.relative_to(ws.target.resolve()).as_posix())
+        for path in _files(ws, ["**/*.java", "**/web.xml"])
+    ]
+    return build_source_index(ws.target, files=paths)
 
 
 def inventory(ws: Workspace, globs: list[str]) -> list[dict[str, object]]:
@@ -191,7 +191,7 @@ def inventory(ws: Workspace, globs: list[str]) -> list[dict[str, object]]:
     for path in _files(ws, globs):
         relative = path.relative_to(ws.target.resolve()).as_posix()
         try:
-            data = path.read_bytes()
+            data = ws.resolve(relative).read_bytes()
         except OSError:
             continue
         entries.append(
@@ -258,7 +258,7 @@ def extract_candidates(
     """Extract source–sink candidates from the target and record them."""
     root = ws.target.resolve()
     texts: dict[str, str] = {}
-    index = build_source_index(root)
+    index = _source_index(ws)
     servlet_by_stem = {servlet.class_name.rsplit(".", 1)[-1]: servlet for servlet in index.servlets}
     files_by_stem: dict[str, str] = {}
     for path in _files(ws, ["**/*.java"]):
@@ -277,7 +277,7 @@ def extract_candidates(
     for path in selected:
         relative = path.relative_to(root).as_posix()
         try:
-            text = path.read_text(encoding="utf-8", errors="replace")
+            text = ws.resolve(relative).read_text(encoding="utf-8", errors="replace")
         except OSError:
             continue
         texts[relative] = text
@@ -315,7 +315,6 @@ def extract_candidates(
                     has_auth_check=has_auth_check,
                 )
 
-    index = build_source_index(root)
     for class_name, url_pattern, relative, _ in _servlet_for(index, files_by_stem):
         if relative not in selected_relatives:
             continue
@@ -324,7 +323,7 @@ def extract_candidates(
         servlet_text = texts.get(relative)
         if servlet_text is None:
             try:
-                servlet_text = (root / relative).read_text(encoding="utf-8", errors="replace")
+                servlet_text = ws.resolve(relative).read_text(encoding="utf-8", errors="replace")
             except OSError:
                 continue
             texts[relative] = servlet_text
@@ -356,7 +355,7 @@ def extract_candidates(
 def lookup_route(ws: Workspace, query: str) -> dict[str, object]:
     """Servlet route, filters and auth checks for a class name or URL."""
     root = ws.target.resolve()
-    index = build_source_index(root)
+    index = _source_index(ws)
     files_by_stem: dict[str, str] = {}
     for path in _files(ws, ["**/*.java"]):
         files_by_stem.setdefault(path.stem, path.relative_to(root).as_posix())
@@ -366,29 +365,71 @@ def lookup_route(ws: Workspace, query: str) -> dict[str, object]:
         stem = servlet.class_name.rsplit(".", 1)[-1]
         relative = files_by_stem.get(stem) or ""
         matches = query in {servlet.class_name, stem, servlet.url_pattern}
+        if query.startswith("/"):
+            matches = matches or _url_matches(servlet.url_pattern, query, default=True)
         if not matches and relative:
             matches = relative == query or relative.endswith(f"/{query}")
         if not matches:
             continue
         servlets.append({"class": stem, "url_pattern": servlet.url_pattern, "file": relative})
 
+    if query.startswith("/") and servlets:
+        # Servlet dispatch chooses one mapping tier, not every matching
+        # servlet. A guard on a default servlet cannot protect an exact route.
+        best = max(_servlet_priority(str(entry["url_pattern"]), query) for entry in servlets)
+        servlets = [
+            entry
+            for entry in servlets
+            if _servlet_priority(str(entry["url_pattern"]), query) == best
+        ]
+
+    route_urls = [query] if query.startswith("/") else [str(s["url_pattern"]) for s in servlets]
     filters = [
         {"class": entry.class_name.rsplit(".", 1)[-1], "url_pattern": entry.url_pattern}
         for entry in index.filters
-        if entry.class_name.rsplit(".", 1)[-1] == query or entry.url_pattern == query
+        if entry.class_name.rsplit(".", 1)[-1] == query
+        or any(_url_matches(entry.url_pattern, url) for url in route_urls)
     ]
 
     auth_check = False
-    for servlet_entry in servlets:
-        relative = str(servlet_entry["file"])
+    auth_files = [str(entry["file"]) for entry in servlets]
+    auth_files.extend(files_by_stem.get(str(entry["class"]), "") for entry in filters)
+    for relative in auth_files:
         if not relative:
             continue
         try:
-            text = (root / relative).read_text(encoding="utf-8", errors="replace")
+            text = ws.resolve(relative).read_text(encoding="utf-8", errors="replace")
         except OSError:
             continue
         if ROLE_CHECK.search(text):
             auth_check = True
             break
 
-    return {"servlets": servlets, "filters": filters, "auth_check": auth_check}
+    return {
+        "servlets": servlets,
+        "filters": filters,
+        "auth_check": auth_check,
+        "filter_match": "request_url" if query.startswith("/") else "servlet_pattern",
+    }
+
+
+def _url_matches(pattern: str, url: str, *, default: bool = False) -> bool:
+    """Servlet-style exact, path-prefix and extension URL mappings."""
+    if pattern == url or (default and pattern == "/"):
+        return True
+    if pattern.endswith("/*"):
+        prefix = pattern[:-2]
+        return url == prefix or url.startswith(prefix + "/")
+    if pattern.startswith("*."):
+        return url.rsplit("/", 1)[-1].endswith(pattern[1:])
+    return False
+
+
+def _servlet_priority(pattern: str, url: str) -> tuple[int, int]:
+    if pattern == url:
+        return 3, len(pattern)
+    if pattern.endswith("/*"):
+        return 2, len(pattern)
+    if pattern.startswith("*."):
+        return 1, len(pattern)
+    return 0, 0

@@ -16,6 +16,7 @@ with tempfile.TemporaryDirectory(prefix="vulnscan-image-") as temporary:
             "pyproject.toml",
             "README.md",
             "ci/scanners.Dockerfile",
+            "ci/smoke_installed.py",
         ]
     ]
     files.extend(

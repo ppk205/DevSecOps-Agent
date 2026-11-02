@@ -96,6 +96,21 @@ export function mockCounts(items: FindingSummary[]): Counts {
   return counts;
 }
 
+export function mockSeverity(items: FindingSummary[]): Record<string, number> {
+  const tally: Record<string, number> = {};
+  for (const f of items) tally[f.severity] = (tally[f.severity] ?? 0) + 1;
+  return tally;
+}
+
+export function mockTopCwe(items: FindingSummary[]): { cwe: string; count: number }[] {
+  const tally = new Map<string, number>();
+  for (const f of items) tally.set(f.cwe, (tally.get(f.cwe) ?? 0) + 1);
+  return [...tally.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 8)
+    .map(([cwe, count]) => ({ cwe, count }));
+}
+
 const STAGE_NAMES = ["intake", "scan", "hunt", "validate", "report"] as const;
 
 export function mockScan(): ScanSummary {
@@ -107,6 +122,8 @@ export function mockScan(): ScanSummary {
     status: "completed",
     gate: "fail",
     counts: mockCounts(MOCK_FINDINGS),
+    severity: mockSeverity(MOCK_FINDINGS),
+    top_cwe: mockTopCwe(MOCK_FINDINGS),
     stages: STAGE_NAMES.map((name, i) => ({
       name,
       status: "completed" as const,

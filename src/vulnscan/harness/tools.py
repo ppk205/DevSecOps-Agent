@@ -7,17 +7,17 @@ model API, or writes outside the fix worktree.
 
 from __future__ import annotations
 
-import json
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
 from vulnscan.decisions.config import LayaConfig
+from vulnscan.providers.credentials import redact_json
 
 from .audit import SessionLog
 from .evidence import check_citations, score_cvss4
-from .fixes import FixError, apply_fix, rescan_fix
+from .fixes import FixError, _validate_id, apply_fix, changed_lines, diff_hunks, rescan_fix
 from .gates import Gate, GateDecision, GateKeeper, GateRequest
 from .messages import ToolCall
 from .scanning import extract_candidates, inventory, lookup_route
@@ -195,16 +195,27 @@ def _laya_triage(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
         ctx,
         Gate.G2_SCAN,
         "Run Laya triage",
-        f"{len(cands)} candidate(s) will be routed by the local Laya model on the CPU.",
+        (
+            f"Skip Laya for {len(cands)} candidate(s): Laya disabled for S1."
+            if ctx.laya_config.mode == "off"
+            else f"{len(cands)} candidate(s) will be routed by the local Laya model on the CPU."
+        ),
         {"candidate_ids": ids},
         "Laya narrows what the model reads; it never sets a finding's status.",
     )
     if not decision.approved:
         return _refusal(Gate.G2_SCAN, decision)
+    chosen = _ids(decision.edits.get("candidate_ids", ids))
+    cands = [_candidate(ctx, candidate_id) for candidate_id in chosen]
     routes = triage_candidates(cands, ctx.laya_config, ctx.laya_agent)
     return {
         "routes": {
-            candidate_id: {"route": route.route, "confidence": route.confidence}
+            candidate_id: {
+                "route": route.route,
+                "confidence": route.confidence,
+                "status": route.status.value,
+                "reasons": route.reasons,
+            }
             for candidate_id, route in routes.items()
         }
     }
@@ -245,10 +256,16 @@ def _select_candidates(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]
 
 def _begin_investigation(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
     ids = _ids(args["candidate_ids"])
-    for candidate_id in ids:
-        candidate = _candidate(ctx, candidate_id)
-        if not candidate.selected:
-            raise ValueError(f"candidate {candidate_id} was not selected at G3")
+
+    def validate(candidate_ids: list[str]) -> None:
+        for candidate_id in candidate_ids:
+            candidate = _candidate(ctx, candidate_id)
+            if not candidate.selected:
+                raise ValueError(f"candidate {candidate_id} was not selected at G3")
+            if candidate.laya_route is None:
+                raise ValueError(f"candidate {candidate_id} needs Laya triage before investigation")
+
+    validate(ids)
     decision = _ask(
         ctx,
         Gate.G4_INVESTIGATE,
@@ -260,6 +277,7 @@ def _begin_investigation(ctx: ToolContext, args: dict[str, Any]) -> dict[str, An
     if not decision.approved:
         return _refusal(Gate.G4_INVESTIGATE, decision)
     chosen = _ids(decision.edits.get("candidate_ids", ids))
+    validate(chosen)
     ctx.ws.open_batch = set(chosen)
     ctx.ws.batch_tokens = 0
     return {"status": "approved", "candidate_ids": chosen}
@@ -346,13 +364,58 @@ def _propose_finding(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+FIX_WINDOW = 15
+MAX_FIX_LINES = 80
+
+
+def _check_fix_scope(finding: ProposedFinding, diff: str) -> None:
+    """Refuse a diff that leaves the finding's cited code.
+
+    A fix is a suggestion about one vulnerability, not a refactor: it may only
+    touch the hop files, within ``FIX_WINDOW`` lines of a cited hop, and change
+    at most ``MAX_FIX_LINES`` lines. Raising here keeps the refusal out of the
+    audit log's G6 record, because no gate was ever asked.
+    """
+    hops = finding.path
+    files = {hop.file for hop in hops}
+    hunks = diff_hunks(diff)
+    changed = changed_lines(diff)
+    if changed > MAX_FIX_LINES:
+        locations = ", ".join(f"{file}:{start}-{end}" for file, start, end in hunks)
+        raise ValueError(
+            f"fix changes {changed} lines in {locations}; the limit is {MAX_FIX_LINES} "
+            f"(finding {finding.id})"
+        )
+    for file, start, end in hunks:
+        if file not in files:
+            raise ValueError(f"fix touches {file}, which is not cited by finding {finding.id}")
+        uncovered = start
+        for low, high in sorted(
+            (hop.line - FIX_WINDOW, hop.line + FIX_WINDOW) for hop in hops if hop.file == file
+        ):
+            if low > uncovered:
+                break
+            if high >= uncovered:
+                uncovered = high + 1
+        if uncovered <= end:
+            raise ValueError(
+                f"fix touches {file}:{start}-{end}, more than {FIX_WINDOW} lines "
+                f"from any cited line of finding {finding.id}"
+            )
+
+
 def _propose_fix(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
     finding_id = str(args["finding_id"])
+    _validate_id(finding_id)
     finding = ctx.ws.findings.get(finding_id)
     if finding is None:
         raise ValueError(f"unknown finding: {finding_id}")
     if finding.status != "confirmed":
         raise ValueError(f"finding {finding_id} is not confirmed; a fix needs a human confirmation")
+
+    _check_fix_scope(finding, str(args["diff"]))
+    for file, _, _ in diff_hunks(str(args["diff"])):
+        ctx.ws.resolve(file)
 
     fix = FixProposal(
         id="X" + finding_id,
@@ -360,16 +423,29 @@ def _propose_fix(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
         diff=str(args["diff"]),
         test_hint=str(args.get("test_hint") or ""),
     )
+    unversioned = ctx.ws.commit == "unversioned"
     decision = _ask(
         ctx,
         Gate.G6_FIX,
-        f"Apply the fix for {finding_id} on a separate branch?",
+        (
+            "Export patch (target is not a git repository)"
+            if unversioned
+            else f"Apply the fix for {finding_id} on a separate branch?"
+        ),
         str(
             args.get("test_hint")
-            or "The model proposes this diff; nothing is written until you apply."
+            or (
+                "The model proposes this diff; nothing is written until you apply."
+                if not unversioned
+                else "The model proposes this diff; it is saved as a patch file, never applied."
+            )
         ),
         {"fix_id": fix.id, "finding_id": finding_id, "diff": fix.diff},
-        "The harness writes only inside .devsec/worktrees and never commits.",
+        (
+            "The harness exports to .devsec/patches; the target is never modified."
+            if unversioned
+            else "The harness writes only inside .devsec/worktrees and never commits."
+        ),
     )
     if decision.choice == "apply":
         apply_fix(ctx.ws, fix, ctx.worktrees)
@@ -382,12 +458,21 @@ def _propose_fix(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
 
 
 def _rescan(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
-    finding_id = str(args["finding_id"])
-    fix = ctx.ws.fixes.get("X" + finding_id)
-    if fix is None:
-        raise ValueError(f"no fix proposed for {finding_id}")
-    if fix.status != "applied":
-        raise ValueError(f"fix for {finding_id} is {fix.status}, not applied")
+    def eligible(finding_id: Any) -> FixProposal:
+        if not isinstance(finding_id, str) or not finding_id:
+            raise ValueError("finding_id must be a non-empty string")
+        _validate_id(finding_id)
+        fix = ctx.ws.fixes.get("X" + finding_id)
+        if fix is None or fix.finding_id != finding_id:
+            raise ValueError(f"no fix proposed for {finding_id}")
+        if fix.status != "applied" and not (
+            fix.status == "exported" and ctx.ws.commit == "unversioned"
+        ):
+            raise ValueError(f"fix for {finding_id} is {fix.status}, not applied")
+        return fix
+
+    finding_id = args["finding_id"]
+    fix = eligible(finding_id)
     decision = _ask(
         ctx,
         Gate.G7_RESCAN,
@@ -398,6 +483,7 @@ def _rescan(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
     )
     if not decision.approved:
         return _refusal(Gate.G7_RESCAN, decision)
+    fix = eligible(decision.edits.get("finding_id", finding_id))
     return {"result": rescan_fix(ctx.ws, fix, ctx.worktrees)}
 
 
@@ -556,4 +642,4 @@ def run_tool(ctx: ToolContext, call: ToolCall) -> str:
             except Exception as exc:  # noqa: BLE001 - a tool must never break the loop
                 result = {"error": f"{type(exc).__name__}: {exc}"}
     ctx.log.append({"type": "tool_result", "tool": call.name, "id": call.id, "result": result})
-    return json.dumps(result, default=str)
+    return redact_json(result)

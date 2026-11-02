@@ -10,7 +10,9 @@ RUN curl -fLsS https://repo.maven.apache.org/maven2/com/h3xstream/findsecbugs/fi
 RUN curl -fLsS https://github.com/dependency-check/DependencyCheck/releases/download/v13.0.0/dependency-check-13.0.0-release.zip -o /tmp/dc.zip && unzip /tmp/dc.zip -d /opt && rm /tmp/dc.zip && chmod +x /opt/dependency-check/bin/dependency-check.sh && ln -s /opt/dependency-check/bin/dependency-check.sh /usr/local/bin/dependency-check
 COPY pyproject.toml README.md ./
 COPY src ./src
+COPY ci/smoke_installed.py ./ci/smoke_installed.py
 RUN pip install --no-build-isolation --no-deps .
+RUN python -I ci/smoke_installed.py
 ENV MAVEN_CONFIG=/tmp/.m2
 ENTRYPOINT []
 WORKDIR /tmp

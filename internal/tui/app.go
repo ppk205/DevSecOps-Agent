@@ -66,8 +66,10 @@ func (m *Model) reviewedTarget() string {
 	}
 	return m.reviewedCheckout
 }
+
 type Model struct {
 	api                API
+	embedded           bool
 	Send               func(tea.Msg)
 	width, height      int
 	ready              bool
@@ -167,6 +169,15 @@ func New(api API) Model {
 	m.form = viewport.New(viewport.WithWidth(96), viewport.WithHeight(20))
 	m.activity = viewport.New(viewport.WithWidth(96), viewport.WithHeight(20))
 	m.review.SoftWrap, m.evidence.SoftWrap, m.activity.SoftWrap = true, true, true
+	m.resize()
+	return m
+}
+
+// NewEmbedded keeps scanner state separate from the chat host. The chat client
+// owns navigation and model-key management when this view is embedded.
+func NewEmbedded(api API) Model {
+	m := New(api)
+	m.embedded = true
 	m.resize()
 	return m
 }
@@ -315,7 +326,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "init":
 			m.ready = true
 			m.status = "Ready"
-			cmds = append(cmds, m.historyCmd(), m.keysCmd(), func() tea.Msg {
+			if !m.embedded {
+				cmds = append(cmds, m.keysCmd())
+			}
+			cmds = append(cmds, m.historyCmd(), func() tea.Msg {
 				caps, err := m.api.Capabilities(context.Background())
 				return loaded{kind: "capabilities", value: caps, err: err}
 			})
@@ -511,6 +525,27 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		state := updated.(Model)
 		state.resize()
 		return state, cmd
+	case tea.MouseClickMsg:
+		if m.embedded {
+			return m.embeddedMouse(msg)
+		}
+	case tea.MouseWheelMsg:
+		if m.embedded {
+			var cmd tea.Cmd
+			switch {
+			case m.tab == 0:
+				m.historyTable, cmd = m.historyTable.Update(msg)
+			case m.tab == 2:
+				m.activity, cmd = m.activity.Update(msg)
+			case m.tab == 3 && m.evidenceFocus:
+				m.evidence, cmd = m.evidence.Update(msg)
+			case m.tab == 3:
+				m.findingTable, cmd = m.findingTable.Update(msg)
+			case m.reviewMode:
+				m.review, cmd = m.review.Update(msg)
+			}
+			return m, cmd
+		}
 	default:
 		return m.handleInput(msg)
 	}

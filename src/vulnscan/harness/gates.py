@@ -1,8 +1,8 @@
 """Human permission gates G0–G7.
 
 No gate offers "always". A timeout, a closed prompt, an exception or an invalid
-answer is ``undecided``, never approval. Two gates are dangerous and always
-wait for a human: G0 (code leaves the machine, cost) and G6 (writing code).
+answer is ``undecided``, never approval. G0 and G6 are dangerous. Only an
+interactive local session in auto mode may auto-approve G0; G6 always waits.
 G5 (a finding's final status) is never decided by code or by auto mode.
 """
 
@@ -36,7 +36,7 @@ CHOICES: dict[Gate, tuple[str, ...]] = {
     Gate.G4_INVESTIGATE: ("approve", "edit", "reject"),
     Gate.G5_FINDING: ("confirm", "reject", "need_more"),
     Gate.G6_FIX: ("apply", "reject", "defer"),
-    Gate.G7_RESCAN: ("approve", "reject"),
+    Gate.G7_RESCAN: ("approve", "edit", "reject"),
 }
 
 DANGEROUS = frozenset({Gate.G0_SESSION, Gate.G6_FIX})
@@ -89,6 +89,16 @@ def refuse_all(request: GateRequest) -> GateDecision:
     )
 
 
+def _auto_local_g0(request: GateRequest, mode: str, interactive: bool) -> bool:
+    return (
+        request.gate is Gate.G0_SESSION
+        and mode == "auto"
+        and interactive
+        and request.payload.get("local") is True
+        and request.payload.get("code_leaves_machine") is False
+    )
+
+
 class GateKeeper:
     """Ask the human before a gated step and record every decision."""
 
@@ -98,6 +108,7 @@ class GateKeeper:
         record: Callable[[dict[str, Any]], None],
         person: str = "",
         mode: str = "ask",
+        interactive: bool = False,
     ) -> None:
         if mode not in MODES:
             raise ValueError(f"unsupported gate mode: {mode!r}")
@@ -105,6 +116,7 @@ class GateKeeper:
         self.record = record
         self.person = person
         self.mode = mode
+        self.interactive = interactive
 
     def ask(self, request: GateRequest) -> GateDecision:
         decision = self._decide(request)
@@ -126,6 +138,8 @@ class GateKeeper:
         return decision
 
     def _decide(self, request: GateRequest) -> GateDecision:
+        if _auto_local_g0(request, self.mode, self.interactive):
+            return GateDecision(request.gate, "approve", "local provider, auto mode", person="auto")
         if self.mode == "auto":
             if request.gate in HUMAN_STATUS:
                 return GateDecision(
@@ -150,7 +164,7 @@ class GateKeeper:
                 f"prompt failed: {exc}",
                 person=self.person,
             )
-        if decision.choice not in CHOICES[request.gate]:
+        if decision.choice != "undecided" and decision.choice not in CHOICES[request.gate]:
             return GateDecision(
                 request.gate,
                 "undecided",

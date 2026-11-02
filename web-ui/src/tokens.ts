@@ -9,7 +9,8 @@ export const tokens = {
     hairline: "#3c3c3c",
     ink: "#ffffff",
     body: "#bbbbbb",
-    muted: "#7e7e7e",
+    // WCAG AA on canvas/soft/card/elevated (4.74:1 worst case on #262626).
+    muted: "#909090",
     mBlueLight: "#0066b1",
     mBlueDark: "#1c69d4",
     mRed: "#e22718",

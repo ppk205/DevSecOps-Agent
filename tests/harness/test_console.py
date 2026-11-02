@@ -3,22 +3,17 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
 
+import pytest
 from typer.testing import CliRunner
 
+from tests.harness.conftest import make_ctx, scripted
 from tests.harness.fakes import ScriptedTransport
-from tests.harness.test_tools import make_ctx
 from vulnscan.cli.main import app
 from vulnscan.harness.console import ChatConsole, console_asker
 from vulnscan.harness.gates import Gate, GateRequest
 from vulnscan.harness.session import Session
 from vulnscan.harness.workspace import ProposedFinding
-
-
-def scripted(lines: list[str]) -> Any:
-    it = iter(lines)
-    return lambda prompt="": next(it)
 
 
 def test_asker_keys_and_empty_line_is_not_yes() -> None:
@@ -40,7 +35,9 @@ def test_mode_cost_and_review(tmp_path: Path) -> None:
     ctx, _ = make_ctx(tmp_path, [], mode="ask")
     ctx.ws.findings["f1"] = ProposedFinding("f1", "c", "t", "CWE-89", [], "", "")
     out: list[str] = []
-    con = ChatConsole(Session(ScriptedTransport([]), ctx), read=scripted(["c"]), write=out.append)
+    con = ChatConsole(
+        Session(ScriptedTransport([]), ctx), read=scripted(["y", "c"]), write=out.append
+    )
     con.handle("/mode auto")
     assert ctx.gates.mode == "auto"
     assert any(e.get("mode") == "auto" and e["type"] == "mode" for e in ctx.log.events())
@@ -51,7 +48,11 @@ def test_mode_cost_and_review(tmp_path: Path) -> None:
     assert con.handle("/quit") is False
 
 
-def test_cli_chat_refuses_without_a_human(tmp_path: Path) -> None:
+def test_cli_chat_refuses_without_a_human(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from vulnscan.infra.envfile import EnvFile
+
+    env = EnvFile(tmp_path / "synthetic.keys")
+    monkeypatch.setattr("vulnscan.infra.envfile.EnvFile", lambda: env)
     r = CliRunner().invoke(
         app,
         [

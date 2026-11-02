@@ -13,7 +13,7 @@
   --hairline: #3c3c3c;
   --ink: #ffffff;
   --body: #bbbbbb;
-  --muted: #7e7e7e;
+  --muted: #909090;
   --m-blue-light: #0066b1;
   --m-blue-dark: #1c69d4;
   --m-red: #e22718;
@@ -24,6 +24,25 @@
 
 html {
   background: var(--canvas);
+}
+
+/* WCAG 2.4.13: 2px white focus ring, visible on every surface. */
+:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* WCAG 2.5.8: 44px minimum targets on coarse pointers (touch). */
+@media (pointer: coarse) {
+  button,
+  a,
+  select,
+  input,
+  [role="tab"],
+  [role="switch"],
+  [role="radio"] {
+    min-height: 44px;
+  }
 }
 
 body {
@@ -94,4 +113,29 @@ body {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Phase 3→6: RUNNING stripe sweeps ONCE (200ms ease-out), then rests static.
+ * No loops, no animated gradient fills — flat blocks only. */
+@keyframes pitwall-scan {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 32px 0;
+  }
+}
+
+.stage-running {
+  background-image: linear-gradient(
+    45deg,
+    var(--m-blue-dark) 25%,
+    var(--m-red) 25%,
+    var(--m-red) 50%,
+    var(--m-blue-dark) 50%,
+    var(--m-blue-dark) 75%,
+    var(--m-red) 75%
+  );
+  background-size: 32px 4px;
+  animation: pitwall-scan 200ms ease-out 1;
 }

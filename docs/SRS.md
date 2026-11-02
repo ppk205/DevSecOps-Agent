@@ -43,7 +43,7 @@ The application performs static analysis of Java Servlet/JSP source code. It doe
 - JSP output-context analysis (HTML text, attributes, URLs, embedded JavaScript)
 - Reporting in multiple formats with per-CWE and per-scanner breakdowns
 - Experiment comparison for accuracy evaluation
-- Full-screen Textual TUI, CLI, local web dashboard and Ubuntu composite GitHub Action sharing application services
+- Full-screen Go chat TUI, Python console, local web remote/dashboard and Ubuntu composite GitHub Action sharing application services
 
 **Out of scope (first release)**:
 
@@ -386,7 +386,7 @@ Feature IDs below are stable and carried unchanged into the test plan and eviden
 
 **FR-70: Shared execution.** One service starts, observes, cancels, retries and exports scans. Only one scan may execute per database across processes. Scanner failures preserve partial evidence. Deep analysis without an implementation is unavailable.
 
-**FR-71: Terminal interface.** Interactive bare invocation and `tui` open a keyboard-accessible terminal interface (Textual in Python; Bubble Tea in Go) with overview/history, checkout/profile/limits configuration and effective settings review, live progress, filtered findings/evidence and report exports. Quitting an active scan offers stay or cancel and quit. No detached execution.
+**FR-71: Terminal interface.** Interactive bare invocation and `tui` open the keyboard-accessible Go chat client, with added-model/target setup, transcript, permission dialogs, status and report commands. The embedded Baseline tab retains scan configuration, progress, findings and exports for comparison. The Python console remains available through `chat`. A missing native binary produces a build hint; there is no Textual fallback. Quitting leaves pending gates undecided.
 
 Terminal acceptance criteria (2026-10-03): configure and review a scan in one
 Workspace with expandable advanced options; expose existing operations through

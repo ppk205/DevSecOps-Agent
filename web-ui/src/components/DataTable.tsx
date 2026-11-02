@@ -1,4 +1,4 @@
-import { en } from "../i18n/en";
+import { useStrings } from "../i18n/lang";
 
 export interface Column<T> {
   key: string;
@@ -16,6 +16,7 @@ interface DataTableProps<T> {
 
 /** Squared, hairline-ruled table with an EmptyState fallback. */
 export function DataTable<T>({ columns, rows, rowKey, emptyTitle, emptyBody }: DataTableProps<T>) {
+  const en = useStrings();
   if (rows.length === 0) {
     return (
       <div className="card p-10 text-center">

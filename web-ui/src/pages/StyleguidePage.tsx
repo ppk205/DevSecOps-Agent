@@ -14,7 +14,7 @@ import { VerificationBadge } from "../components/VerificationBadge";
 import { SeverityBars } from "../components/charts/SeverityBars";
 import { SeverityDonut } from "../components/charts/SeverityDonut";
 import { PageHeader } from "./pages";
-import { en } from "../i18n/en";
+import { useStrings } from "../i18n/lang";
 import { tokens, type Severity, type VerificationState } from "../tokens";
 import { MOCK_FINDINGS } from "../mock/mockRun";
 import type { FindingSummary } from "../api/types";
@@ -30,6 +30,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 /** Hidden route: renders every token and component. Not in nav. */
 export function StyleguidePage() {
+  const en = useStrings();
   const [tab, setTab] = useState("tokens");
   const [drawer, setDrawer] = useState(false);
   const severities: Severity[] = ["critical", "high", "medium", "low", "info"];

@@ -12,7 +12,7 @@ export default {
         hairline: "#3c3c3c",
         ink: "#ffffff",
         body: "#bbbbbb",
-        muted: "#7e7e7e",
+        muted: "#909090",
         mblue: "#0066b1",
         mbluedark: "#1c69d4",
         mred: "#e22718",

@@ -43,5 +43,17 @@ npm run build                  # must succeed; dist/ is gitignored
 
 - Tokens live once in `src/tokens.ts` (+ Tailwind + `styles.css` mirror).
 - No chart library: hand-written SVG in `src/components/charts/`.
-- EN strings in `src/i18n/en.ts` (VI lands in Phase 6).
+- EN strings in `src/i18n/en.ts`, VI mirror in `src/i18n/vi.ts`
+  (key-for-key, enforced by `src/i18n/__tests__/i18n.test.tsx`).
+  `useStrings()` re-renders on toggle; topnav EN/VI persists to
+  `localStorage` and sets `<html lang>`. Brand headlines stay
+  UPPERCASE in both languages (CSS `uppercase` + uppercase source).
 - Mock layer in `src/mock/` — deterministic, seeded, ~60 findings.
+- Motion budget: `duration-150/200 ease-out` only; the live stage
+  stripe sweeps once (200ms); `prefers-reduced-motion` disables
+  animation/transition. No shimmer gradients (flat blocks only),
+  enforced by `src/pages/__tests__/responsive.test.tsx`.
+- Accessibility: muted `#909090` (WCAG AA on all surfaces), 2px
+  white `:focus-visible` ring, APG arrow-key tablists, `aria-live`
+  polite on AI feed + counters (never log lines), 44px targets on
+  coarse pointers — see `src/components/__tests__/a11y.test.tsx`.

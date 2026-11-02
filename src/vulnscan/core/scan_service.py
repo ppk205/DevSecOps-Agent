@@ -25,7 +25,7 @@ from vulnscan.reporting.reporter import ReportGenerator
 from vulnscan.scanners.base import AdapterRegistry
 from vulnscan.scanners.process import ScanCancelled, _cancel_check, run_command
 from vulnscan.storage.database import get_session, init_db
-from vulnscan.storage.models import FindingORM, RunORM, StageORM, TargetORM
+from vulnscan.storage.models import FindingORM, RunORM, ScanEventORM, StageORM, TargetORM
 from vulnscan.version import APP_VERSION
 
 from .config import ScanConfig
@@ -46,6 +46,24 @@ class ProgressEvent:
 
 
 _TEST_SEGMENTS = frozenset({"test", "tests", "it", "e2e"})
+
+
+def _live_event_kind(stage: str, status: str) -> str:
+    """Map a pipeline stage to a scan_events kind (Phase 3 live feed).
+
+    ``stage`` rows always exist; the live event kind mirrors what the
+    operator sees: scanner work as ``log``, AI reasoning as ``ai_step``,
+    proposals as ``ai_proposal``, and checks as ``verification_result``.
+    """
+    if stage in {"model_hunt", "laya_batch_routing", "targeted_deep_analysis"}:
+        return "ai_step"
+    if stage in {"laya_verification", "model_scanner_compare", "independent_validation"}:
+        return "verification_result" if status in {"completed", "partial"} else "ai_step"
+    if stage in {"semgrep", "gitleaks", "spotbugs", "owasp-dependency-check"}:
+        return "log"
+    if stage == "final_report" and status == "completed":
+        return "stage"
+    return "stage"
 
 
 def _is_scanned_source(name: str) -> bool:
@@ -165,9 +183,14 @@ class ScanService:
         except Timeout:
             pass  # A live process owns the scan; it must not be marked interrupted.
 
-    def _recover_locked(self) -> None:
+    def _recover_locked(self, exclude_public_id: str | None = None) -> None:
         with get_session(self.db_path) as session:
-            for row in session.query(RunORM).filter(RunORM.status.in_(["running", "queued"])):
+            query = session.query(RunORM).filter(RunORM.status.in_(["running", "queued"]))
+            if exclude_public_id:
+                query = query.filter(
+                    (RunORM.public_id.is_(None)) | (RunORM.public_id != exclude_public_id)
+                )
+            for row in query:
                 row.status = "interrupted"
                 summary = json.loads(row.result_json or "{}")
                 summary.update(status="interrupted", exit_code=130, gate="failed")
@@ -409,7 +432,7 @@ class ScanService:
         except Timeout as exc:
             raise ValueError("another scan is active in this database") from exc
         try:
-            self._recover_locked()
+            self._recover_locked(exclude_public_id=public_id)
             return self._run(
                 checkout,
                 config,
@@ -438,7 +461,10 @@ class ScanService:
         if not re.fullmatch(r"[A-Za-z0-9_-]{1,80}", run_id):
             raise ValueError("run ID must contain only letters, digits, underscores and hyphens")
         with get_session(self.db_path) as session:
-            if session.query(RunORM).filter_by(public_id=run_id).first() is not None:
+            adopted = (
+                session.query(RunORM).filter_by(public_id=run_id).first() if public_id else None
+            )
+            if adopted is not None and adopted.status != "queued":
                 raise ValueError("run ID already exists; choose a new attempt ID")
         output = Path(config.output_dir).resolve() / run_id
         if output.exists() or output.is_symlink():
@@ -460,15 +486,28 @@ class ScanService:
             session.add(target)
             session.flush()
             parent = session.get(RunORM, parent_id) if parent_id else None
-            row = RunORM(
-                target_id=target.id,
-                public_id=run_id,
-                status="running",
-                parent_id=parent_id,
-                attempt=parent.attempt + 1 if parent else 1,
-                scan_spec_json=spec.model_dump_json(),
+            adopted = (
+                session.query(RunORM).filter_by(public_id=run_id).first() if public_id else None
             )
-            session.add(row)
+            if adopted is not None and adopted.status == "queued":
+                # API-queued run: adopt the placeholder row instead of
+                # creating a second one, so live polling keeps working.
+                row = adopted
+                row.target_id = target.id
+                row.status = "running"
+                row.parent_id = parent_id
+                row.attempt = parent.attempt + 1 if parent else row.attempt
+                row.scan_spec_json = spec.model_dump_json()
+            else:
+                row = RunORM(
+                    target_id=target.id,
+                    public_id=run_id,
+                    status="running",
+                    parent_id=parent_id,
+                    attempt=parent.attempt + 1 if parent else 1,
+                    scan_spec_json=spec.model_dump_json(),
+                )
+                session.add(row)
             session.flush()
             pk = row.id
         started = time.monotonic()
@@ -546,6 +585,51 @@ class ScanService:
                     changed = True
                 if changed:
                     row.findings_revision += 1
+                # ---- Phase 3: append-only live event row (never breaks a scan)
+                try:
+                    from sqlalchemy import func as _func
+
+                    max_seq = session.scalar(
+                        select(_func.max(ScanEventORM.seq)).where(ScanEventORM.run_id == pk)
+                    )
+                    next_seq = int(max_seq) + 1 if max_seq is not None else 0
+                    kind = _live_event_kind(stage, status)
+                    session.add(
+                        ScanEventORM(
+                            run_id=pk,
+                            seq=next_seq,
+                            kind=kind,
+                            stage=stage,
+                            message=sanitize(message) or f"{stage} → {status}",
+                            payload_json=json.dumps(sanitize({"status": status, "stage": stage})),
+                            created_at=datetime.now(UTC),
+                        )
+                    )
+                    # AI review completion also yields a proposal row so the
+                    # AI AGENT PANEL has a CVSS/claim feed without parsing.
+                    if stage == "targeted_deep_analysis" and status in {
+                        "completed",
+                        "partial",
+                    }:
+                        try:
+                            proposal_count = len(review["assessments"])
+                        except Exception:  # noqa: BLE001
+                            proposal_count = 0
+                        session.add(
+                            ScanEventORM(
+                                run_id=pk,
+                                seq=next_seq + 1,
+                                kind="ai_proposal",
+                                stage=stage,
+                                message=sanitize(message or f"{proposal_count} AI proposals ready"),
+                                payload_json=json.dumps(
+                                    sanitize({"status": status, "proposals": proposal_count}),
+                                ),
+                                created_at=datetime.now(UTC),
+                            )
+                        )
+                except Exception:  # noqa: BLE001, S110
+                    pass
             if on_event:
                 on_event(event)
 
@@ -597,6 +681,22 @@ class ScanService:
             hunt_out: dict[str, Any] = {}
             hunt_status = "skipped"
             hunt_detail = "deterministic mode"
+            # Baseline B7: the model stages of scan-run still send code to the
+            # provider, so a cloud profile needs --allow-cloud-model. Checked
+            # once, before any ProviderClient is built.
+            consent_reason: str | None = None
+            wants_model = (config.mode == "hunt" or config.ai_review or config.ai_report) and bool(
+                config.provider_profile
+            )
+            if wants_model:
+                from vulnscan.core.model_consent import model_use_allowed
+                from vulnscan.providers.profile_store import load_profile
+
+                consent_ok, consent_reason = model_use_allowed(
+                    load_profile(config.provider_profile or ""), config.allow_cloud_model
+                )
+                if consent_ok:
+                    consent_reason = None
             verified: list[dict[str, Any]] = []
             comparison: dict[str, Any] = {
                 "agreed": [],
@@ -608,6 +708,9 @@ class ScanService:
                 persist("model_hunt", "running", "Model exploring snapshot for vulnerabilities")
                 if not config.provider_profile:
                     hunt_detail = "no provider profile configured"
+                    persist("model_hunt", "skipped", hunt_detail)
+                elif consent_reason is not None:
+                    hunt_detail = consent_reason
                     persist("model_hunt", "skipped", hunt_detail)
                 else:
                     try:
@@ -750,6 +853,22 @@ class ScanService:
                 except Exception as exc:  # noqa: BLE001 ? application boundary preserves partial evidence
                     errors.append(f"{cfg.tool.value}: {type(exc).__name__}: {exc}")
                     persist(cfg.tool.value, "failed", errors[-1])
+            # Aggregate rail node: web runs pre-create a "scanners" placeholder
+            # row, so mark it from the per-tool outcomes instead of leaving it
+            # pending forever while semgrep/gitleaks show completed.
+            tool_outcomes = [r.status.value for r in results]
+            if len(tool_outcomes) < len(spec.tools):
+                tool_outcomes.append("failed")
+            if any(s == "failed" for s in tool_outcomes):
+                persist("scanners", "failed", "; ".join(errors[-len(spec.tools) :]))
+            elif any(s != "completed" for s in tool_outcomes):
+                persist(
+                    "scanners", "partial", f"{len(results)}/{len(spec.tools)} scanners completed"
+                )
+            else:
+                persist(
+                    "scanners", "completed", f"{len(results)}/{len(spec.tools)} scanners completed"
+                )
             if cancelled():
                 raise ScanCancelled()
             # Detect modifications during scanning instead of claiming the original revision.
@@ -809,7 +928,9 @@ class ScanService:
             from vulnscan.reporting.final_report import run_final_report
 
             review_profile = (
-                config.provider_profile if (config.ai_review or config.mode == "hunt") else None
+                config.provider_profile
+                if (config.ai_review or config.mode == "hunt") and consent_reason is None
+                else None
             )
             review = run_ai_review(
                 review_findings,
@@ -823,7 +944,13 @@ class ScanService:
                 model=config.provider_model,
                 max_findings=config.max_ai_findings,
             )
-            persist("targeted_deep_analysis", review["status"], review["detail"])
+            persist(
+                "targeted_deep_analysis",
+                review["status"],
+                consent_reason
+                if consent_reason is not None and (config.ai_review or config.mode == "hunt")
+                else review["detail"],
+            )
             decisions = review["decisions"]
             if decisions:
                 confirmed = sum(1 for d in decisions if d["new_status"] == "confirmed")
@@ -848,11 +975,19 @@ class ScanService:
                     "gate": "pending",
                     "status": "pending",
                 },
-                profile_id=config.provider_profile if config.ai_report else None,
+                profile_id=config.provider_profile
+                if config.ai_report and consent_reason is None
+                else None,
                 model=config.provider_model,
                 comparison=comparison if hunt_active else None,
             )
-            persist("final_report", final["status"], final["detail"] or "narrative ready")
+            persist(
+                "final_report",
+                final["status"],
+                consent_reason
+                if consent_reason is not None and config.ai_report
+                else (final["detail"] or "narrative ready"),
+            )
         except (ScanCancelled, KeyboardInterrupt):
             was_cancelled = True
             persist("execution", "cancelled", "Scan cancelled; partial evidence retained")

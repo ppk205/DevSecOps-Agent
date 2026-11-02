@@ -21,7 +21,6 @@ classifiers = [
 ]
 
 dependencies = [
-    "textual>=0.89,<2",
     "tzdata>=2024.1",
     "filelock>=3.16",
     "python-multipart>=0.0.18",

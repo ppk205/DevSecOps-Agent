@@ -1,4 +1,4 @@
-import { en } from "../i18n/en";
+import { useStrings } from "../i18n/lang";
 import { Button } from "./Button";
 
 interface EmptyStateProps {
@@ -9,6 +9,7 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({ title, body, actionLabel, onAction }: EmptyStateProps) {
+  const en = useStrings();
   return (
     <div className="card flex flex-col items-center p-12 text-center">
       <div

@@ -97,6 +97,7 @@ func (b *Backend) Export(ctx context.Context, id, format, output string) (string
 	err := b.Client.Call(ctx, "export", map[string]any{"run_id": id, "format": format, "output": output}, &result, nil)
 	return result.Path, err
 }
+
 // EnvList returns ONLY stored variable names — values never leave .env.
 func (b *Backend) EnvList(ctx context.Context) ([]string, error) {
 	var result struct {

@@ -5,12 +5,13 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
+from tests.harness.conftest import make_ctx
 from tests.harness.fakes import ScriptedTransport
-from tests.harness.test_tools import make_ctx
 from vulnscan.harness.audit import SessionLog
 from vulnscan.harness.messages import Message, ProviderError, Reply, ToolCall, Usage
 from vulnscan.harness.providers import BUILTIN_PROFILES
 from vulnscan.harness.session import Session
+from vulnscan.harness.workspace import Candidate, FixProposal, Hop, ProposedFinding
 from vulnscan.providers.budget import BudgetManager
 
 
@@ -92,3 +93,61 @@ def test_switch_to_cloud_provider_asks_g0_again(tmp_path: Path) -> None:
     assert s.switch(
         ScriptedTransport([], profile=BUILTIN_PROFILES["lmstudio"], model="m")
     ) is True and asked == ["G0"]
+
+
+def test_snapshot_restores_workspace_and_budget_without_running_tools(tmp_path: Path) -> None:
+    ctx, _ = make_ctx(tmp_path, [])
+    ctx.ws.plan = {"scope": ["A.java"], "classes": ["CWE-89"]}
+    ctx.ws.candidates["c"] = Candidate("c", "CWE-89", "sql_concat", "A.java", 1, "x", selected=True)
+    ctx.ws.findings["f"] = ProposedFinding(
+        "f",
+        "c",
+        "proposal",
+        "CWE-89",
+        [Hop("A.java", 1, "x")],
+        "",
+        "",
+        status="confirmed",
+        decided_by="tui",
+    )
+    ctx.ws.fixes["x"] = FixProposal("x", "f", "diff", status="deferred")
+    ctx.ws.open_batch = {"c"}
+    ctx.log.append(
+        {
+            "type": "usage",
+            "input_tokens": 10,
+            "output_tokens": 5,
+            "cost_usd": 1.25,
+            "provider": "ollama",
+        }
+    )
+    session = Session(ScriptedTransport([]), ctx)
+    session.snapshot()
+    ctx.ws.candidates.clear()
+    ctx.ws.findings.clear()
+    ctx.ws.fixes.clear()
+    ctx.ws.open_batch.clear()
+    transport = ScriptedTransport([])
+    restored = Session(transport, ctx, budget=BudgetManager(total_usd=50))
+    assert transport.calls == []
+    assert restored.ctx.ws.findings["f"].status == "confirmed"
+    assert restored.ctx.ws.findings["f"].path == [Hop("A.java", 1, "x")]
+    assert restored.ctx.ws.fixes["x"].status == "deferred"
+    assert restored.ctx.ws.open_batch == {"c"}
+    assert restored.budget.spent == 1.25
+
+
+def test_snapshot_rejects_foreign_target_before_restoring(tmp_path: Path) -> None:
+    ctx, _ = make_ctx(tmp_path, [])
+    ctx.log.append(
+        {
+            "type": "workspace_state",
+            "version": 1,
+            "target": str(tmp_path / "other"),
+            "commit": "unversioned",
+        }
+    )
+    import pytest
+
+    with pytest.raises(ValueError, match="target"):
+        Session(ScriptedTransport([]), ctx)
