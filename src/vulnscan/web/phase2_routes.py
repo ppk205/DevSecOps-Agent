@@ -470,7 +470,7 @@ def _execute_web_scan(
             ai_review=params.get("ai_review") or mode == "hunt",
             provider_profile=params.get("provider_profile"),
             provider_model=params.get("provider_model"),
-            ai_report=bool(params.get("provider_profile")),
+            ai_report=bool(params.get("provider_profile")) or mode == "hunt",
             max_ai_findings=params.get("max_ai_findings") or 10,
             tools=params.get("tools") or None,
             mode=mode,

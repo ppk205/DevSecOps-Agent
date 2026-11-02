@@ -984,7 +984,7 @@ class ScanService:
                     "gate": "pending",
                     "status": "pending",
                 },
-                profile_id=config.provider_profile if config.ai_report else None,
+                profile_id=config.provider_profile if (config.ai_report or config.mode == "hunt") else None,
                 model=config.provider_model,
                 comparison=comparison if hunt_active else None,
             )
