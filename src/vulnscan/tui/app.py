@@ -269,6 +269,30 @@ class ScanApp(App[None]):
                     )
                     yield Label("Optional Laya advisory configuration file")
                     yield Input(placeholder="config/laya.json", id="laya-config-path")
+                    yield Select(
+                        [
+                            ("AI review off (deterministic)", "off"),
+                            ("AI review on (needs provider below)", "on"),
+                        ],
+                        value="off",
+                        allow_blank=False,
+                        id="ai-review",
+                    )
+                    yield Label("Provider profile id for AI stages (optional)")
+                    yield Input(placeholder="kios-free", id="provider")
+                    yield Label("Model override for AI stages (optional)")
+                    yield Input(placeholder="beam-free", id="model")
+                    yield Label("Max AI-reviewed findings per run")
+                    yield Input(placeholder="10", id="max-ai-findings")
+                    yield Select(
+                        [
+                            ("Template final report", "off"),
+                            ("AI-written final report (needs provider)", "on"),
+                        ],
+                        value="off",
+                        allow_blank=False,
+                        id="ai-report",
+                    )
                 with Horizontal(id="scan-actions"):
                     yield Button("Review (Ctrl+E)", id="review")
                     yield Button("Start (Ctrl+S)", id="start", variant="primary", disabled=True)
@@ -887,6 +911,11 @@ class ScanApp(App[None]):
                     "dirty",
                     "laya",
                     "laya-config-path",
+                    "ai-review",
+                    "provider",
+                    "model",
+                    "max-ai-findings",
+                    "ai-report",
                 }:
                     self.reviewed = None
                     self.screen_stack[0].query_one("#start", Button).disabled = True
@@ -915,6 +944,20 @@ class ScanApp(App[None]):
             "threshold": ("fail_on", screen.query_one("#threshold", Select).value),
             "dirty": ("allow_dirty", screen.query_one("#dirty", Select).value == "dirty"),
             "laya": ("laya", screen.query_one("#laya", Select).value == "on"),
+            "ai-review": ("ai_review", screen.query_one("#ai-review", Select).value == "on"),
+            "provider": (
+                "provider_profile",
+                screen.query_one("#provider", Input).value or None,
+            ),
+            "model": (
+                "provider_model",
+                screen.query_one("#model", Input).value or None,
+            ),
+            "max-ai-findings": (
+                "max_ai_findings",
+                numeric(screen.query_one("#max-ai-findings", Input).value or "10"),
+            ),
+            "ai-report": ("ai_report", screen.query_one("#ai-report", Select).value == "on"),
         }
         defaults = ScanConfig()
         flags = {

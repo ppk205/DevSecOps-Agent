@@ -110,28 +110,53 @@ class ProviderClient:
             "Authorization": f"Bearer {self._get_key()}",
             "Content-Type": "application/json",
         }
+        for key, value in (self.profile.headers or {}).items():
+            if key.lower() in ("authorization", "content-type"):
+                continue
+            headers[key] = value
 
         url = f"{self.profile.base_url.rstrip('/')}/chat/completions"
 
-        try:
-            with httpx.Client(timeout=self.profile.timeout_seconds) as client:
-                resp = client.post(url, json=payload, headers=headers)
-                resp.raise_for_status()
-        except httpx.HTTPStatusError as exc:
-            raise ProviderError(
-                f"HTTP {exc.response.status_code} from {self.profile.id}: {exc.response.text[:500]}"
-            ) from exc
-        except httpx.RequestError as exc:
-            raise ProviderError(f"Request failed for {self.profile.id}: {exc}") from exc
+        resp = None
+        attempts = max(1, self.profile.max_retries + 1)
+        for attempt in range(attempts):
+            try:
+                with httpx.Client(timeout=self.profile.timeout_seconds) as client:
+                    resp = client.post(url, json=payload, headers=headers)
+                    resp.raise_for_status()
+                break
+            except httpx.HTTPStatusError as exc:
+                if exc.response.status_code == 429 and attempt < attempts - 1:
+                    import time as _time
+
+                    retry_after = exc.response.headers.get("retry-after")
+                    try:
+                        wait = float(retry_after) if retry_after else 20.0 * (attempt + 1)
+                    except (TypeError, ValueError):
+                        wait = 20.0 * (attempt + 1)
+                    _time.sleep(min(wait, 120.0))
+                    continue
+                raise ProviderError(
+                    f"HTTP {exc.response.status_code} from {self.profile.id}: {exc.response.text[:500]}"
+                ) from exc
+            except httpx.RequestError as exc:
+                raise ProviderError(f"Request failed for {self.profile.id}: {exc}") from exc
+        assert resp is not None
 
         data = resp.json()
 
-        # Parse response
+        # Parse response (some reasoning gateways put the answer in
+        # `reasoning_content`/`reasoning` and leave `content` empty).
         choice = data.get("choices", [{}])[0]
         message = choice.get("message", {})
+        content = message.get("content") or ""
+        if not content:
+            content = message.get("reasoning_content") or message.get("reasoning") or ""
+            if isinstance(content, list):
+                content = "\n".join(str(p.get("text", "")) for p in content if isinstance(p, dict))
 
         chat_resp = ChatResponse(
-            content=message.get("content") or "",
+            content=content if isinstance(content, str) else "",
             tool_calls=message.get("tool_calls") or [],
             usage=data.get("usage", {}),
             model=data.get("model", use_model),

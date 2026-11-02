@@ -35,6 +35,16 @@ class ScanConfig(BaseModel):
     ci: bool = False
     laya: bool = True
     laya_config_path: str | None = None
+    ai_review: bool = False
+    provider_profile: str | None = None
+    provider_model: str | None = None
+    ai_report: bool = False
+    max_ai_findings: int = Field(default=10, ge=1, le=500)
+    mode: Literal["deterministic", "hunt"] = "deterministic"
+    tools: list[str] | None = Field(
+        default=None,
+        description="Optional scanner subset override (ToolName values); defaults to profile set.",
+    )
 
     @field_validator("timezone")
     @classmethod
@@ -46,11 +56,20 @@ class ScanConfig(BaseModel):
         return value
 
     def specification(self, checkout: str, commit: str, repo: str) -> ScanSpecification:
+        if self.tools is None:
+            selected = list(PROFILES[self.profile])
+        else:
+            selected = []
+            for name in self.tools:
+                try:
+                    selected.append(ToolName(name))
+                except ValueError as exc:
+                    raise ValueError(f"Unknown scanner tool: {name}") from exc
         return ScanSpecification(
             target_repository_url=repo,
             target_commit_sha=commit,
             repository_checkout_path=checkout,
-            tools=[ToolConfig(tool=t) for t in PROFILES[self.profile]],
+            tools=[ToolConfig(tool=t) for t in selected],
             max_wall_seconds=self.timeout,
             max_file_count=self.max_files,
             rules_packs_version="0.2.0",

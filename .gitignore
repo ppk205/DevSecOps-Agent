@@ -86,6 +86,7 @@ odc/
 .env.*
 !.env.example
 !.env.template
+.providers/
 *.key
 *.pem
 *.p12

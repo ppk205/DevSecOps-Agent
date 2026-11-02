@@ -141,6 +141,8 @@ class ExportFormat(str, Enum):
     JSON = "json"
     HTML = "html"
     MARKDOWN = "markdown"
+    TXT = "txt"
+    DOCX = "docx"
 
 
 class ToolName(str, Enum):

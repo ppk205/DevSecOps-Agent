@@ -29,6 +29,59 @@ logger = logging.getLogger(__name__)
 ToolHandler = Callable[[dict[str, Any]], dict[str, Any]]
 
 
+def parse_verdict_text(text: str) -> tuple[str, float, str, bool]:
+    """Extract (status, confidence, rationale, explicit) from free text.
+
+    ``explicit`` is True only when the text carries an unambiguous verdict
+    (JSON block or decisive keywords); otherwise the caller should treat
+    the assessment as hollow and escalate (single-shot fallback / human).
+    """
+    status = "unresolved"
+    confidence = 0.5
+    rationale = text
+    explicit = False
+
+    json_match = re.search(r"\{[^{}]*\"proposed_status\"[^{}]*\}", text, re.DOTALL)
+    if json_match:
+        try:
+            parsed = json.loads(json_match.group())
+            status = str(parsed.get("proposed_status", "unresolved")).lower()
+            confidence = float(parsed.get("confidence", 0.5))
+            rationale = str(parsed.get("rationale", text))
+            explicit = True
+        except (json.JSONDecodeError, ValueError, TypeError):
+            pass
+    if not explicit:
+        lowered = text.lower()
+        decisive_confirm = ("confirmed", "true positive", "true-positive", "exploitable")
+        decisive_reject = (
+            "rejected",
+            "false positive",
+            "false-positive",
+            "not exploitable",
+            "safe to ignore",
+        )
+        if any(k in lowered for k in decisive_confirm) and not any(
+            k in lowered for k in decisive_reject
+        ):
+            status, explicit = "confirmed", True
+        elif any(k in lowered for k in decisive_reject) and not any(
+            k in lowered for k in decisive_confirm
+        ):
+            status, explicit = "rejected", True
+        conf_match = re.search(r"confidence\s*[:=]?\s*(0?\.\d+|1\.0|1|0)", lowered)
+        if conf_match:
+            try:
+                confidence = max(0.0, min(1.0, float(conf_match.group(1))))
+            except ValueError:
+                pass
+    try:
+        confidence = max(0.0, min(1.0, float(confidence)))
+    except (TypeError, ValueError):
+        confidence = 0.5
+    return status, confidence, (rationale or text)[:2000], explicit
+
+
 class AgentLoop:
     """Run the bounded investigation for a single finding.
 
@@ -206,21 +259,16 @@ class AgentLoop:
         total_tokens: int,
     ) -> Assessment:
         """Parse the final LLM response into an Assessment proposal."""
-        proposed_status = "unresolved"
-        confidence = 0.5
-        rationale = resp.content
-        cvss_vector = None
+        proposed_status, confidence, rationale, explicit = parse_verdict_text(resp.content)
+        _ = explicit
 
-        json_match = re.search(r'\{[^{}]*"proposed_status"[^{}]*\}', resp.content, re.DOTALL)
+        cvss_vector = None
+        json_match = re.search(r"\{[^{}]*\"proposed_status\"[^{}]*\}", resp.content, re.DOTALL)
         if json_match:
             try:
-                parsed = json.loads(json_match.group())
-                proposed_status = parsed.get("proposed_status", "unresolved")
-                confidence = float(parsed.get("confidence", 0.5))
-                rationale = parsed.get("rationale", resp.content)
-                cvss_vector = parsed.get("cvss_vector")
-            except (json.JSONDecodeError, ValueError, TypeError):
-                pass
+                cvss_vector = json.loads(json_match.group()).get("cvss_vector")
+            except (json.JSONDecodeError, ValueError, TypeError, AttributeError):
+                cvss_vector = None
 
         cvss = None
         if cvss_vector:

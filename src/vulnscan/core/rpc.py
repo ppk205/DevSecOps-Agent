@@ -12,6 +12,7 @@ import sys
 import threading
 from contextlib import redirect_stdout
 from dataclasses import asdict
+from types import SimpleNamespace
 from typing import Any
 
 from filelock import FileLock, Timeout
@@ -74,6 +75,9 @@ class ServiceRPC:
             if name not in {"targets.html", "runs.html", "findings.html", "evidence.html"}:
                 raise ValueError("unknown dashboard template")
             context = params["context"]
+            context["request"] = SimpleNamespace(
+                url=SimpleNamespace(path=str(params.get("path", "")))
+            )
             if "finding" in context:
                 context["finding"] = Finding.model_validate(context["finding"])
             if "findings" in context:
@@ -177,6 +181,30 @@ class ServiceRPC:
                     )
                 except (OSError, ValueError) as exc:
                     export_errors.append(f"{fmt.value} export failed: {exc}")
+            # The Python ScanService always writes final-report.md; the native
+            # path must produce the same artifact set. No provider is used here,
+            # so this is the deterministic narrative.
+            from pathlib import Path
+
+            from vulnscan.reporting.final_report import run_final_report
+
+            final = run_final_report(
+                [Finding.model_validate(f) for f in params["findings"]],
+                [],
+                {
+                    "target": summary.get("target", ""),
+                    "commit": summary.get("commit", ""),
+                    "gate": summary.get("gate", ""),
+                    "status": summary.get("status", ""),
+                },
+                profile_id=None,
+            )
+            try:
+                final_path = Path(str(params["output"])) / "final-report.md"
+                final_path.write_text(final["markdown"], encoding="utf-8")
+                reports["final-report"] = str(final_path)
+            except OSError as exc:
+                export_errors.append(f"final-report export failed: {exc}")
             return {"reports": reports, "errors": export_errors}
         if method == "hello":
             self.service.recover()

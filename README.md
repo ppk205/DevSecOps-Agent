@@ -236,6 +236,57 @@ The web dashboard provides four screens:
 3. **Findings & Evidence** — browse findings with source evidence, CVSS assumptions, and verification results
 4. **Settings & Reports** — configure AI providers, view usage, export reports, compare experiments
 
+### Web UI (PIT WALL)
+
+The React SPA at `/app/` (FastAPI serves `web-ui/dist`; legacy Jinja stays at `/`).
+
+```bash
+cd web-ui
+npm install
+VITE_MOCK=1 npm run dev        # mock mode: scripted run, no backend
+npm run build                  # tsc + vite build -> web-ui/dist (offline-safe)
+npm test                       # vitest run
+npm run lint                   # tsc --noEmit
+```
+
+Live backend: `npm run build`, then serve via uvicorn — the SPA proxies
+`/api` to `127.0.0.1:8000` under `npm run dev`. Contract version header:
+`X-Contract-Version: 1`.
+
+| Route | Page |
+|---|---|
+| `/app/` | Home (mission control, KPIs, charts, history) |
+| `/app/scans/new` | New scan (profile, scanners, AI review, CLI preview) |
+| `/app/live` | Live pipeline (8 stages, AI panel, results, log dock) |
+| `/app/findings` | Findings table, filters, drawer, detail, CSV export |
+| `/app/reports` | Report generate/preview/download + compare |
+| `/app/logs` | Log stream, filter, copy, .log/.jsonl download |
+| `/app/keys` | API keys (write-only), tools, usage, settings |
+| `/app/styleguide` | Hidden token/component inventory (not in nav) |
+
+Notes and decisions:
+
+- **Reports CSV**: flat finding-rows export (`finding_id,title,severity,
+  status,tools,file,line,cwe`), generated via the reports table
+  (`text/csv` download) and mirrored client-side from Findings
+  ("Export CSV"). Decision: CSV stays a flat rows dump, not a formatted report.
+- **Keys are write-only**: the API never returns secrets (masked `••••8901`
+  display only); covered by the secret-leak tests in `tests/web/`.
+- **i18n**: EN/VI dictionaries in `web-ui/src/i18n/` (`vi.ts` mirrors `en.ts`
+  key-for-key, enforced by test); EN/VI toggle in the topnav persists to
+  `localStorage` and sets `document.documentElement.lang`. Brand headlines
+  stay UPPERCASE in both languages.
+- **Accessibility**: WCAG 2.2 AA contrast on black (muted `#909090`);
+  2px white focus ring; full keyboard operation (J/K + arrows + Esc);
+  `aria-live="polite"` on the AI feed and counters (never on log lines);
+  44px+ touch targets on coarse pointers.
+- **Verification limits (honest)**: layout widths 375/768/1024/1440/1920
+  were verified by responsive-class audit + jsdom render — no real
+  Chromium exists in this environment, so no rendered screenshots were
+  captured (see `docs/screenshots/` for the textual page inventory).
+  Lighthouse could not run headless here — performance/PWA/SEO scores
+  are unverified.
+
 ## How It Works
 
 ### Harness review pipeline
