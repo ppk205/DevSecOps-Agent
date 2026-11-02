@@ -188,11 +188,56 @@ class CoverageUnitStatus(str, Enum):
 
 
 class LanguageKind(str, Enum):
-    """Source language of an analysis unit; Java and JSP reconcile separately."""
+    """Source language of an analysis unit; each web language reconciles separately."""
 
     JAVA = "java"
     JSP = "jsp"
+    JAVASCRIPT = "javascript"
+    TYPESCRIPT = "typescript"
+    PYTHON = "python"
+    PHP = "php"
     OTHER = "other"
+
+
+#: File extensions scanned as web source (inventory + coverage).
+WEB_SOURCE_EXTENSIONS = frozenset(
+    {
+        ".java",
+        ".jsp",
+        ".jspx",
+        ".js",
+        ".jsx",
+        ".ts",
+        ".tsx",
+        ".mjs",
+        ".cjs",
+        ".vue",
+        ".py",
+        ".php",
+    }
+)
+
+_EXTENSION_LANGUAGE: dict[str, LanguageKind] = {
+    ".java": LanguageKind.JAVA,
+    ".jsp": LanguageKind.JSP,
+    ".jspx": LanguageKind.JSP,
+    ".js": LanguageKind.JAVASCRIPT,
+    ".jsx": LanguageKind.JAVASCRIPT,
+    ".mjs": LanguageKind.JAVASCRIPT,
+    ".cjs": LanguageKind.JAVASCRIPT,
+    ".vue": LanguageKind.JAVASCRIPT,
+    ".ts": LanguageKind.TYPESCRIPT,
+    ".tsx": LanguageKind.TYPESCRIPT,
+    ".py": LanguageKind.PYTHON,
+    ".php": LanguageKind.PHP,
+}
+
+
+def language_from_extension(path: str) -> LanguageKind:
+    """Map a file path to its web language; unknown extensions are OTHER."""
+    from pathlib import Path
+
+    return _EXTENSION_LANGUAGE.get(Path(path).suffix.lower(), LanguageKind.OTHER)
 
 
 class EvidenceKind(str, Enum):

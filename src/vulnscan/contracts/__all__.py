@@ -35,6 +35,7 @@ from .decision import (
 # ruff: noqa: RUF022  (semantic grouping intentionally overrides alphabetical __all__)
 # Enums (shared vocabulary across every module)
 from .enums import (
+    WEB_SOURCE_EXTENSIONS,
     CoverageUnitStatus,
     CWECategory,
     EvidenceKind,
@@ -56,6 +57,7 @@ from .enums import (
     ToolName,
     VariantRelationship,
     VerificationOutcome,
+    language_from_extension,
 )
 
 # Evaluator-only records (ACC-05..07) — never exposed to scanners or agents
@@ -99,6 +101,8 @@ __all__ = [
     "ExportFormat",
     "FindingStatus",
     "LanguageKind",
+    "WEB_SOURCE_EXTENSIONS",
+    "language_from_extension",
     "MissReason",
     "ModelApplicability",
     "OperationKind",

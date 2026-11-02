@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Scan any web language, not just Java: new Semgrep rulesets `javascript.yml` (JS/TS), `python.yml`, `php.yml` (10 rules each, two-direction fixtures, batched tests), `LanguageKind` extended + `language_from_extension` hub, inventory covers `.js/.ts/.py/.php/...`, default Semgrep load is every bundled `rules/*.yml`. Live-verified: CWE-78 JS, CWE-89 PY, CWE-79 PHP, safe code silent.
+
 - Add `--mode hunt`: model-first pipeline where the model explores the snapshot with read-only tools (`hunt_vulns`), scanners run unchanged, Laya verifies each candidate (`laya_verification`), and `model_scanner_compare` buckets agreed/model-only/scanner-only; the AI lane focuses on agreed findings and `hunt.json` lands next to `final-report.md`. Default `deterministic` mode is byte-for-byte unchanged; without `--provider` hunt stages skip and the run falls back to deterministic.
 - Verify hunted vulnerabilities with Laya: each model candidate becomes a `DecisionRequest` with a code excerpt, attaching `laya_route`/`laya_confidence`/`laya_status` — Laya unavailable degrades to `skipped`, never fails a run.
 - Compare model vs scanner findings with a pure `(path, line±3, CWE-digits)` matcher and surface it in the final report via a `## Đối chiếu model vs scanner` section (prompt counts + deterministic fallback table).

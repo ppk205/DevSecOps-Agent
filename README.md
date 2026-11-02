@@ -15,7 +15,7 @@ clone-cache settings and the API Keys tab. Set `DEVSECOPS_NATIVE=go` to use the
 native TUI for local checkouts; `DEVSECOPS_NATIVE=python` selects Python for
 all commands. The `devsec` alias is also available.
 
-Automated vulnerability scanning and severity assessment for Java Servlet/JSP source code, powered by a multi-scanner pipeline with Agentic AI analysis and independent mechanical verification.
+Automated vulnerability scanning and severity assessment for web projects in **Java/Servlet/JSP, JavaScript/TypeScript, Python, and PHP**, powered by a multi-scanner pipeline with Agentic AI analysis and independent mechanical verification.
 
 ## Overview
 

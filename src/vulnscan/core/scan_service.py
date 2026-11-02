@@ -19,6 +19,7 @@ from filelock import FileLock, Timeout
 from sqlalchemy import func, select, update
 
 from vulnscan.contracts import ExportFormat, Finding, ScannerResult, ScanSpecification
+from vulnscan.contracts.enums import WEB_SOURCE_EXTENSIONS
 from vulnscan.decisions.config import LayaConfig
 from vulnscan.pipeline.runner import ScanPipeline
 from vulnscan.reporting.reporter import ReportGenerator
@@ -76,7 +77,7 @@ def _is_scanned_source(name: str) -> bool:
     or use a non-Maven layout, so detection is segment-based, not prefix-based:
     any path segment that is a test marker excludes the file.
     """
-    if not name.endswith((".java", ".jsp")):
+    if not name.endswith(tuple(WEB_SOURCE_EXTENSIONS)):
         return False
     return not any(segment in _TEST_SEGMENTS for segment in name.split("/"))
 
@@ -841,11 +842,15 @@ class ScanService:
             if len(tool_outcomes) < len(spec.tools):
                 tool_outcomes.append("failed")
             if any(s == "failed" for s in tool_outcomes):
-                persist("scanners", "failed", "; ".join(errors[-len(spec.tools):]))
+                persist("scanners", "failed", "; ".join(errors[-len(spec.tools) :]))
             elif any(s != "completed" for s in tool_outcomes):
-                persist("scanners", "partial", f"{len(results)}/{len(spec.tools)} scanners completed")
+                persist(
+                    "scanners", "partial", f"{len(results)}/{len(spec.tools)} scanners completed"
+                )
             else:
-                persist("scanners", "completed", f"{len(results)}/{len(spec.tools)} scanners completed")
+                persist(
+                    "scanners", "completed", f"{len(results)}/{len(spec.tools)} scanners completed"
+                )
             if cancelled():
                 raise ScanCancelled()
             # Detect modifications during scanning instead of claiming the original revision.

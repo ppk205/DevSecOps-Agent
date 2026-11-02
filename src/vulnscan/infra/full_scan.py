@@ -25,6 +25,7 @@ from vulnscan.contracts import (
     ScannerResult,
     ScanSpecification,
     ToolName,
+    language_from_extension,
 )
 from vulnscan.scanners.base import AdapterRegistry
 from vulnscan.scanners.process import CommandResult, ScanCancelled, _cancel_check, run_command
@@ -253,7 +254,9 @@ def main() -> None:
                             tool_version=result.tool_version,
                             source_snapshot=spec.target_commit_sha,
                             unit_path=name,
-                            unit_language=LanguageKind.JSP if unsupported else LanguageKind.JAVA,
+                            unit_language=LanguageKind.JSP
+                            if unsupported
+                            else language_from_extension(name),
                             eligible=True,
                             status=CoverageUnitStatus.UNSUPPORTED
                             if unsupported

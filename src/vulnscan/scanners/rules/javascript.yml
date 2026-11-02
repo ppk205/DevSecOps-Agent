@@ -1,0 +1,178 @@
+rules:
+  # ─── Injection ──────────────────────────────────────────────────────
+  - id: js-sql-concatenation
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: SQL built through concatenation or interpolation; use a parameterized query.
+    metadata:
+      cwe: ['CWE-89: SQL Injection']
+      version: '0.2.0'
+    pattern-either:
+      - pattern: $DB.query($A + $B, ...)
+      - pattern: $DB.query(`...${$X}...`, ...)
+      - pattern: $DB.execute($A + $B, ...)
+      - pattern: $DB.execute(`...${$X}...`, ...)
+
+  - id: js-xss-innerhtml
+    languages: [javascript, typescript]
+    severity: ERROR
+    mode: taint
+    message: Request data reaches an HTML sink without escaping; encode output or sanitize with DOMPurify.
+    metadata:
+      cwe: ['CWE-79: Cross-site Scripting (XSS)']
+      version: '0.2.0'
+    # Taint mode, not a pattern match. A pattern on innerHTML alone
+    # flagged every static banner on a real repo, because the sink
+    # exists in all of them; only the dataflow says whether it is
+    # actually injectable.
+    pattern-sources:
+      - pattern: req.query
+      - pattern: req.body
+      - pattern: req.params
+      - pattern: location.search
+      - pattern: location.hash
+      - pattern: document.URL
+    pattern-sinks:
+      - pattern: $EL.innerHTML = ...
+      - pattern: $EL.outerHTML = ...
+      - pattern: document.write(...)
+      - pattern: document.writeln(...)
+      - pattern: $EL.insertAdjacentHTML(...)
+    pattern-sanitizers:
+      - pattern: DOMPurify.sanitize(...)
+      - pattern: encodeURIComponent(...)
+      - pattern: encodeURI(...)
+
+  - id: js-command-injection
+    languages: [javascript, typescript]
+    severity: ERROR
+    mode: taint
+    message: Externally controlled input reaches a shell command; use execFile/spawn with an argument list.
+    metadata:
+      cwe: ['CWE-78: OS Command Injection']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: req.query
+      - pattern: req.body
+      - pattern: req.params
+      - pattern: process.argv
+    pattern-sinks:
+      - pattern: $CP.exec(...)
+      - pattern: $CP.execSync(...)
+
+  - id: js-path-traversal
+    languages: [javascript, typescript]
+    severity: ERROR
+    mode: taint
+    message: File path includes externally controlled input; validate or canonicalize.
+    metadata:
+      cwe: ['CWE-22: Path Traversal']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: req.query
+      - pattern: req.body
+      - pattern: req.params
+    pattern-sinks:
+      - pattern: $FS.readFile(...)
+      - pattern: $FS.readFileSync(...)
+      - pattern: $FS.createReadStream(...)
+      - pattern: $FS.writeFile(...)
+      - pattern: $FS.writeFileSync(...)
+    pattern-sanitizers:
+      - pattern: path.basename(...)
+      - pattern: path.normalize(...)
+
+  - id: js-ssrf-fetch
+    languages: [javascript, typescript]
+    severity: ERROR
+    mode: taint
+    message: Request data reaches an outbound HTTP call; validate against an allowlist.
+    metadata:
+      cwe: ['CWE-918: Server-Side Request Forgery (SSRF)']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: req.query
+      - pattern: req.body
+      - pattern: req.params
+    pattern-sinks:
+      - pattern: fetch(...)
+      - pattern: axios.get(...)
+      - pattern: axios.post(...)
+      - pattern: axios.request(...)
+      - pattern: axios(...)
+      - pattern: http.get(...)
+      - pattern: https.get(...)
+      - pattern: http.request(...)
+      - pattern: https.request(...)
+    pattern-sanitizers:
+      - pattern: encodeURIComponent(...)
+
+  - id: js-open-redirect
+    languages: [javascript, typescript]
+    severity: ERROR
+    mode: taint
+    message: Request data reaches a redirect target; validate against an allowlist.
+    metadata:
+      cwe: ['CWE-601: Open Redirect']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: req.query
+      - pattern: req.body
+      - pattern: req.params
+    pattern-sinks:
+      - pattern: $RES.redirect(...)
+      - pattern: location.assign(...)
+    pattern-sanitizers:
+      - pattern: encodeURIComponent(...)
+
+  - id: js-eval-injection
+    languages: [javascript, typescript]
+    severity: ERROR
+    mode: taint
+    message: Request data reaches dynamic code execution; avoid eval/Function with untrusted input.
+    metadata:
+      cwe: ['CWE-95: Code Injection']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: req.query
+      - pattern: req.body
+      - pattern: req.params
+    pattern-sinks:
+      - pattern: eval(...)
+      - pattern: new Function(...)
+
+  # ─── Randomness / Secrets / Objects ────────────────────────────────
+  - id: js-insecure-random
+    languages: [javascript, typescript]
+    severity: WARNING
+    message: Math.random is predictable in security contexts; use crypto.randomBytes/getRandomValues.
+    metadata:
+      cwe: ['CWE-330: Use of Insufficiently Random Values']
+      version: '0.2.0'
+    pattern: Math.random()
+
+  - id: js-hardcoded-secret
+    languages: [javascript, typescript]
+    severity: WARNING
+    message: Hardcoded credential in source; load secrets from the environment or a vault.
+    metadata:
+      cwe: ['CWE-798: Hardcoded Credentials']
+      version: '0.2.0'
+    pattern-regex: (?i)(password|passwd|secret|api[_-]?key|token)\s*=\s*['"][^'"]+['"]
+
+  - id: js-prototype-pollution
+    languages: [javascript, typescript]
+    severity: WARNING
+    mode: taint
+    message: Untrusted data reaches a recursive merge; validate keys or freeze the prototype.
+    metadata:
+      cwe: ['CWE-1321: Prototype Pollution']
+      version: '0.2.0'
+    pattern-sources:
+      - pattern: req.body
+      - pattern: req.query
+      - pattern: JSON.parse(...)
+    pattern-sinks:
+      - pattern: $X.merge(...)
+      - pattern: $X.mergeWith(...)
+      - pattern: $X.defaultsDeep(...)
