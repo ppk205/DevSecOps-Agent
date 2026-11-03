@@ -407,6 +407,68 @@
       ],
       "source": "src/vulnscan/scanners/rules/java.yml#java-path-traversal-nio",
       "mode": "search"
+    },
+    {
+      "id": "java-default-encoding",
+      "languages": [
+        "java"
+      ],
+      "severity": "WARNING",
+      "message": "Relies on platform default charset; specify StandardCharsets.UTF_8.",
+      "cwe": "176",
+      "attack": "weak_encoding",
+      "mode": "search",
+      "patterns": [
+        "new\\s+String\\s*\\([^,()]+\\)",
+        "\\.getBytes\\s*\\(\\s*\\)",
+        "new\\s+(?:InputStreamReader|OutputStreamWriter|FileReader|FileWriter)\\s*\\([^,()]+\\)"
+      ],
+      "source": "native-addition:spotbugs-DM_DEFAULT_ENCODING"
+    },
+    {
+      "id": "java-jwt-token",
+      "languages": [
+        "java"
+      ],
+      "severity": "WARNING",
+      "message": "Hardcoded JWT bearer token.",
+      "cwe": "798",
+      "attack": "hardcoded_secret",
+      "mode": "search",
+      "patterns": [
+        "eyJ[A-Za-z0-9_\\-]{10,}\\.[A-Za-z0-9_\\-]{10,}\\.[A-Za-z0-9_\\-]{8,}"
+      ],
+      "source": "native-addition:gitleaks-jwt"
+    },
+    {
+      "id": "java-private-key",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "Embedded private key material.",
+      "cwe": "798",
+      "attack": "hardcoded_secret",
+      "mode": "search",
+      "patterns": [
+        "-----BEGIN (?:RSA |EC |DSA |OPENSSH )?PRIVATE KEY"
+      ],
+      "source": "native-addition:gitleaks-private-key"
+    },
+    {
+      "id": "java-generic-api-key",
+      "languages": [
+        "java"
+      ],
+      "severity": "WARNING",
+      "message": "Hardcoded API key/secret assignment.",
+      "cwe": "798",
+      "attack": "hardcoded_secret",
+      "mode": "search",
+      "patterns": [
+        "(?i)(api[_-]?key|client[_-]?secret|auth[_-]?token|access[_-]?token)\\s*[:=]\\s*[\\'\"][A-Za-z0-9_\\-]{16,}[\\'\"]"
+      ],
+      "source": "native-addition:gitleaks-generic-api-key"
     }
   ]
 }

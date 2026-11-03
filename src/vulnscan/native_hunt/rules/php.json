@@ -340,6 +340,51 @@
       ],
       "source": "src/vulnscan/scanners/rules/php.yml#php-session-fixation",
       "mode": "taint"
+    },
+    {
+      "id": "php-jwt-token",
+      "languages": [
+        "php"
+      ],
+      "severity": "WARNING",
+      "message": "Hardcoded JWT bearer token.",
+      "cwe": "798",
+      "attack": "hardcoded_secret",
+      "mode": "search",
+      "patterns": [
+        "eyJ[A-Za-z0-9_\\-]{10,}\\.[A-Za-z0-9_\\-]{10,}\\.[A-Za-z0-9_\\-]{8,}"
+      ],
+      "source": "native-addition:gitleaks-jwt"
+    },
+    {
+      "id": "php-private-key",
+      "languages": [
+        "php"
+      ],
+      "severity": "ERROR",
+      "message": "Embedded private key material.",
+      "cwe": "798",
+      "attack": "hardcoded_secret",
+      "mode": "search",
+      "patterns": [
+        "-----BEGIN (?:RSA |EC |DSA |OPENSSH )?PRIVATE KEY"
+      ],
+      "source": "native-addition:gitleaks-private-key"
+    },
+    {
+      "id": "php-generic-api-key",
+      "languages": [
+        "php"
+      ],
+      "severity": "WARNING",
+      "message": "Hardcoded API key/secret assignment.",
+      "cwe": "798",
+      "attack": "hardcoded_secret",
+      "mode": "search",
+      "patterns": [
+        "(?i)(api[_-]?key|client[_-]?secret|auth[_-]?token|access[_-]?token)\\s*[:=]\\s*[\\'\"][A-Za-z0-9_\\-]{16,}[\\'\"]"
+      ],
+      "source": "native-addition:gitleaks-generic-api-key"
     }
   ]
 }
