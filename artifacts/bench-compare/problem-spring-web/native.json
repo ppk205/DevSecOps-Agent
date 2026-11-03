@@ -1,0 +1,10 @@
+[
+  {
+    "file": "mvn/wrapper/MavenWrapperDownloader.java",
+    "line": 92,
+    "rule_id": "java-stack-trace-exposure",
+    "cwe": "209",
+    "confidence": "Weak",
+    "snippet": "e.printStackTrace();"
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "file": "falcon\\bench\\dj\\dj\\settings.py",
+    "line": 27,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-debug-mode-enabled",
+    "cwe": "CWECategory.DEBUG_INFO_EXPOSURE",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "falcon\\testing\\helpers.py",
+    "line": 1098,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-weak-random-token",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  }
+]

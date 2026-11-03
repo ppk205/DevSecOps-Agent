@@ -1,0 +1,14 @@
+{
+  "repo": "vue-mdc",
+  "url": "https://github.com/posva/vue-mdc",
+  "clone_exit": 0,
+  "commit": "bf4795cefe225780cd26f51e270e65780c5a9323",
+  "native_files": 52,
+  "native_skipped": 0,
+  "native_time_s": 1.2,
+  "semgrep_time_s": 5.4,
+  "semgrep_errors": [],
+  "gitleaks_time_s": 0.6,
+  "gitleaks_errors": [],
+  "osv_errors": []
+}

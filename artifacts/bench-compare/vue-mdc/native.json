@@ -1,0 +1,18 @@
+[
+  {
+    "file": "build/utils/log.js",
+    "line": 2,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "console.log(e)"
+  },
+  {
+    "file": "build/utils/write.js",
+    "line": 9,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "console.log(blue(dest) + ' ' + getSize(code))"
+  }
+]

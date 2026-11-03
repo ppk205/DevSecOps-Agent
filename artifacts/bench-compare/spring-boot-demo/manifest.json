@@ -1,0 +1,14 @@
+{
+  "repo": "spring-boot-demo",
+  "url": "https://github.com/xkcoding/spring-boot-demo",
+  "clone_exit": 0,
+  "commit": "87a142f9604c1a5365b4d24d22c2c11c26a9d5ab",
+  "native_files": 486,
+  "native_skipped": 7,
+  "native_time_s": 11.1,
+  "semgrep_time_s": 30.0,
+  "semgrep_errors": [],
+  "gitleaks_time_s": 2.0,
+  "gitleaks_errors": [],
+  "osv_errors": []
+}

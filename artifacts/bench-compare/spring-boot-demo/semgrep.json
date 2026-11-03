@@ -1,0 +1,114 @@
+[
+  {
+    "file": "demo-elasticsearch-rest-high-level-client\\src\\main\\java\\com\\xkcoding\\elasticsearch\\service\\base\\BaseElasticsearchService.java",
+    "line": 160,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.java-stack-trace-exposure",
+    "cwe": "CWECategory.STACK_TRACE_EXPOSURE",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "demo-elasticsearch-rest-high-level-client\\src\\main\\java\\com\\xkcoding\\elasticsearch\\service\\impl\\PersonServiceImpl.java",
+    "line": 48,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.java-stack-trace-exposure",
+    "cwe": "CWECategory.STACK_TRACE_EXPOSURE",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "demo-elasticsearch-rest-high-level-client\\src\\main\\java\\com\\xkcoding\\elasticsearch\\service\\impl\\PersonServiceImpl.java",
+    "line": 55,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.java-stack-trace-exposure",
+    "cwe": "CWECategory.STACK_TRACE_EXPOSURE",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "demo-https\\src\\main\\java\\com\\xkcoding\\https\\config\\HttpsConfig.java",
+    "line": 29,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.java-insecure-cookie",
+    "cwe": "CWECategory.INSECURE_COOKIE",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "demo-ldap\\src\\main\\java\\com\\xkcoding\\ldap\\service\\impl\\PersonServiceImpl.java",
+    "line": 53,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.java-stack-trace-exposure",
+    "cwe": "CWECategory.STACK_TRACE_EXPOSURE",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "demo-ldap\\src\\main\\java\\com\\xkcoding\\ldap\\util\\LdapUtils.java",
+    "line": 28,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.java-weak-digest",
+    "cwe": "CWECategory.CRYPTOGRAPHIC_FAILURE",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "demo-log-aop\\src\\main\\java\\com\\xkcoding\\log\\aop\\aspectj\\AopLog.java",
+    "line": 85,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.java-log-injection",
+    "cwe": "CWECategory.LOG_INJECTION",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "demo-mq-rabbitmq\\src\\main\\java\\com\\xkcoding\\mq\\rabbitmq\\handler\\DelayQueueHandler.java",
+    "line": 41,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.java-stack-trace-exposure",
+    "cwe": "CWECategory.STACK_TRACE_EXPOSURE",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "demo-mq-rabbitmq\\src\\main\\java\\com\\xkcoding\\mq\\rabbitmq\\handler\\DirectQueueOneHandler.java",
+    "line": 49,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.java-stack-trace-exposure",
+    "cwe": "CWECategory.STACK_TRACE_EXPOSURE",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "demo-mq-rabbitmq\\src\\main\\java\\com\\xkcoding\\mq\\rabbitmq\\handler\\QueueThreeHandler.java",
+    "line": 41,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.java-stack-trace-exposure",
+    "cwe": "CWECategory.STACK_TRACE_EXPOSURE",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "demo-mq-rabbitmq\\src\\main\\java\\com\\xkcoding\\mq\\rabbitmq\\handler\\QueueTwoHandler.java",
+    "line": 41,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.java-stack-trace-exposure",
+    "cwe": "CWECategory.STACK_TRACE_EXPOSURE",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "demo-oauth\\oauth-authorization-server\\src\\main\\java\\com\\xkcoding\\oauth\\config\\ClientLogoutSuccessHandler.java",
+    "line": 27,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.java-open-redirect",
+    "cwe": "CWECategory.OPEN_REDIRECT",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "demo-rbac-security\\src\\main\\java\\com\\xkcoding\\rbac\\security\\util\\ResponseUtil.java",
+    "line": 33,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.java-permissive-cors",
+    "cwe": "CWECategory.CORS_WILDCARD",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "demo-rbac-security\\src\\main\\java\\com\\xkcoding\\rbac\\security\\util\\ResponseUtil.java",
+    "line": 54,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.java-permissive-cors",
+    "cwe": "CWECategory.CORS_WILDCARD",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "demo-swagger\\src\\main\\java\\com\\xkcoding\\swagger\\common\\DataType.java",
+    "line": 23,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.java-hardcoded-credentials",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "demo-websocket-socketio\\src\\main\\resources\\static\\js\\socket.io\\socket.io.js",
+    "line": 1,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  }
+]

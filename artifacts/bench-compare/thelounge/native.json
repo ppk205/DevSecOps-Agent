@@ -1,0 +1,282 @@
+[
+  {
+    "file": "client/components/MessageCondensed.vue",
+    "line": 74,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "console.log(`empty message type, this should not happen: ${message.id}`);"
+  },
+  {
+    "file": "client/js/keybinds.ts",
+    "line": 152,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "navigate(\"Help\").catch((err) => console.log(err));"
+  },
+  {
+    "file": "client/js/router.ts",
+    "line": 134,
+    "rule_id": "js-timing-unsafe-compare",
+    "cwe": "208",
+    "confidence": "High",
+    "snippet": "if (to.name === \"RoutedChat\" && !store.getters.findChannel(Number(to.params.id))) {"
+  },
+  {
+    "file": "client/js/router.ts",
+    "line": 139,
+    "rule_id": "js-timing-unsafe-compare",
+    "cwe": "208",
+    "confidence": "Medium",
+    "snippet": "if (to.name === \"NetworkEdit\" && !store.getters.findNetwork(String(to.params.uuid))) {"
+  },
+  {
+    "file": "client/js/router.ts",
+    "line": 189,
+    "rule_id": "js-timing-unsafe-compare",
+    "cwe": "208",
+    "confidence": "High",
+    "snippet": "if (event.data && event.data.type === \"open\") {"
+  },
+  {
+    "file": "client/js/upload.ts",
+    "line": 99,
+    "rule_id": "js-timing-unsafe-compare",
+    "cwe": "208",
+    "confidence": "High",
+    "snippet": "if (items[i].kind === \"file\") {"
+  },
+  {
+    "file": "client/js/upload.ts",
+    "line": 104,
+    "rule_id": "js-timing-unsafe-compare",
+    "cwe": "208",
+    "confidence": "High",
+    "snippet": "if (files.length === 0) {"
+  },
+  {
+    "file": "client/js/upload.ts",
+    "line": 146,
+    "rule_id": "js-timing-unsafe-compare",
+    "cwe": "208",
+    "confidence": "Medium",
+    "snippet": "if (wasQueueEmpty && this.xhr === null && this.fileQueue.length > 0) {"
+  },
+  {
+    "file": "client/js/upload.ts",
+    "line": 175,
+    "rule_id": "js-implied-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "this.tokenKeepAlive = setInterval(() => socket.emit(\"upload:ping\", token), 40 * 1000);"
+  },
+  {
+    "file": "client/js/upload.ts",
+    "line": 236,
+    "rule_id": "js-timing-unsafe-compare",
+    "cwe": "208",
+    "confidence": "Weak",
+    "snippet": "if (this.xhr?.readyState === XMLHttpRequest.DONE) {"
+  },
+  {
+    "file": "client/js/upload.ts",
+    "line": 240,
+    "rule_id": "js-unsafe-deserialization",
+    "cwe": "502",
+    "confidence": "Weak",
+    "snippet": "response = JSON.parse(this.xhr.responseText);"
+  },
+  {
+    "file": "client/public/js/loading-error-handlers.js",
+    "line": 115,
+    "rule_id": "js-timing-unsafe-compare",
+    "cwe": "208",
+    "confidence": "High",
+    "snippet": "if (event.data.type === \"fetch-error\") {"
+  },
+  {
+    "file": "defaults/config.js",
+    "line": 365,
+    "rule_id": "js-hardcoded-secret",
+    "cwe": "798",
+    "confidence": "Weak",
+    "snippet": "//       webircObj.password = \"thisiswebircpassword\";"
+  },
+  {
+    "file": "scripts/changelog.js",
+    "line": 84,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "console.log(timestamp(), colors.blue(\"[INFO]\"), ...args);"
+  },
+  {
+    "file": "scripts/changelog.js",
+    "line": 87,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "console.log(timestamp(), colors.green(\"[DEBUG]\"), ...args);"
+  },
+  {
+    "file": "scripts/changelog.js",
+    "line": 90,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "console.log(...args);"
+  },
+  {
+    "file": "scripts/generate-config-doc.js",
+    "line": 38,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "console.log(timestamp(), colors.blue(\"[INFO]\"), ...args);"
+  },
+  {
+    "file": "scripts/generate-config-doc.js",
+    "line": 41,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "console.log(timestamp(), colors.green(\"[DEBUG]\"), ...args);"
+  },
+  {
+    "file": "scripts/generate-config-doc.js",
+    "line": 44,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "console.log(...args);"
+  },
+  {
+    "file": "server/client.ts",
+    "line": 218,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "delay += 1000 + Math.floor(Math.random() * 1000);"
+  },
+  {
+    "file": "server/config.ts",
+    "line": 169,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "Math.floor(Math.random() * 10).toString()"
+  },
+  {
+    "file": "server/log.ts",
+    "line": 19,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "console.log(timestamp(), colors.blue(\"[INFO]\"), ...args);"
+  },
+  {
+    "file": "server/log.ts",
+    "line": 22,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "console.log(timestamp(), colors.green(\"[DEBUG]\"), ...args);"
+  },
+  {
+    "file": "server/log.ts",
+    "line": 25,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "console.log(...args);"
+  },
+  {
+    "file": "server/plugins/changelog.ts",
+    "line": 108,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "24 * 3600 * 1000 + Math.floor(Math.random() * 10000000)"
+  },
+  {
+    "file": "server/plugins/clientCertificate.ts",
+    "line": 127,
+    "rule_id": "js-jwt-weak-secret",
+    "cwe": "327",
+    "confidence": "Weak",
+    "snippet": "cert.sign(keys.privateKey, md.sha256.create());"
+  },
+  {
+    "file": "server/plugins/irc-events/error.ts",
+    "line": 65,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "const random = (data.nick || irc.user.nick) + Math.floor(Math.random() * 10);"
+  },
+  {
+    "file": "server/plugins/uploader.ts",
+    "line": 129,
+    "rule_id": "js-path-traversal",
+    "cwe": "22",
+    "confidence": "Medium",
+    "snippet": "return res.sendFile(filePath);"
+  },
+  {
+    "file": "server/server.ts",
+    "line": 61,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "const serverHash = Math.floor(Date.now() * Math.random());"
+  },
+  {
+    "file": "server/server.ts",
+    "line": 128,
+    "rule_id": "js-path-traversal",
+    "cwe": "22",
+    "confidence": "High",
+    "snippet": "return res.sendFile(path.join(packagePath, fileName));"
+  },
+  {
+    "file": "server/server.ts",
+    "line": 246,
+    "rule_id": "js-timing-unsafe-compare",
+    "cwe": "208",
+    "confidence": "Weak",
+    "snippet": "if (defaultTheme === undefined) {"
+  },
+  {
+    "file": "test/plugins/auth/ldap.ts",
+    "line": 12,
+    "rule_id": "js-hardcoded-secret",
+    "cwe": "798",
+    "confidence": "Weak",
+    "snippet": "const correctPassword = \"loremipsum\";"
+  },
+  {
+    "file": "test/plugins/auth/ldap.ts",
+    "line": 13,
+    "rule_id": "js-hardcoded-secret",
+    "cwe": "798",
+    "confidence": "Weak",
+    "snippet": "const wrongPassword = \"dolorsitamet\";"
+  },
+  {
+    "file": "test/plugins/clientCertificate.ts",
+    "line": 20,
+    "rule_id": "js-private-key",
+    "cwe": "798",
+    "confidence": "Weak",
+    "snippet": "expect(certificate.private_key).to.match(/^-----BEGIN RSA PRIVATE KEY-----/);"
+  },
+  {
+    "file": "test/tests/passwords.ts",
+    "line": 5,
+    "rule_id": "js-hardcoded-secret",
+    "cwe": "798",
+    "confidence": "Weak",
+    "snippet": "const inputPassword = \"my$Super@Cool Password\";"
+  }
+]

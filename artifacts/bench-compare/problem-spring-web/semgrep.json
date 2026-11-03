@@ -1,0 +1,9 @@
+[
+  {
+    "file": ".mvn\\wrapper\\MavenWrapperDownloader.java",
+    "line": 92,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.java-stack-trace-exposure",
+    "cwe": "CWECategory.STACK_TRACE_EXPOSURE",
+    "severity": "Severity.MEDIUM"
+  }
+]

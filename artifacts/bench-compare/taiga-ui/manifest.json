@@ -1,0 +1,19 @@
+{
+  "repo": "taiga-ui",
+  "url": "https://github.com/taiga-family/taiga-ui",
+  "clone_exit": 0,
+  "commit": "8281ae4d3a0bf1e57730bca35ebc5d387144084d",
+  "native_files": 3470,
+  "native_skipped": 0,
+  "native_time_s": 61.3,
+  "semgrep_time_s": 38.2,
+  "semgrep_errors": [
+    "Syntax error at line projects\\cdk\\types\\index.ts:1:\n `type` was unexpected",
+    "Syntax error at line projects\\demo\\scripts\\llms\\utils\\page-prose.ts:60:\n `(/` was unexpected"
+  ],
+  "gitleaks_time_s": 2.3,
+  "gitleaks_errors": [],
+  "osv_errors": [
+    "osv.dev unreachable: Server error '503 Service Unavailable' for url 'https://api.osv.dev/v1/querybatch'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503"
+  ]
+}

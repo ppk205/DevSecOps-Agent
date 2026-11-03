@@ -1,0 +1,14 @@
+{
+  "repo": "thelounge",
+  "url": "https://github.com/thelounge/thelounge",
+  "clone_exit": 0,
+  "commit": "70db8bcb6faf98e9c2a09018e26c28ae3eaa0b09",
+  "native_files": 333,
+  "native_skipped": 0,
+  "native_time_s": 9.3,
+  "semgrep_time_s": 7.0,
+  "semgrep_errors": [],
+  "gitleaks_time_s": 0.7,
+  "gitleaks_errors": [],
+  "osv_errors": []
+}

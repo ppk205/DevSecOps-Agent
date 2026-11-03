@@ -1,0 +1,14 @@
+{
+  "repo": "flask-tutorial",
+  "url": "https://github.com/helloflask/flask-tutorial",
+  "clone_exit": 0,
+  "commit": "3edd2f296eab58756f4ad5522adb40d27a9fa72d",
+  "native_files": 2,
+  "native_skipped": 0,
+  "native_time_s": 0.1,
+  "semgrep_time_s": 8.3,
+  "semgrep_errors": [],
+  "gitleaks_time_s": 0.6,
+  "gitleaks_errors": [],
+  "osv_errors": []
+}

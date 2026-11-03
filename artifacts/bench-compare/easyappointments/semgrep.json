@@ -1,0 +1,842 @@
+[
+  {
+    "file": "application\\controllers\\Booking.php",
+    "line": 271,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "application\\controllers\\Booking.php",
+    "line": 271,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "application\\controllers\\Booking.php",
+    "line": 271,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "application\\controllers\\Calendar.php",
+    "line": 172,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\controllers\\Customers.php",
+    "line": 240,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\controllers\\api\\v1\\Admins_api_v1.php",
+    "line": 68,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\controllers\\api\\v1\\Admins_api_v1.php",
+    "line": 107,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\controllers\\api\\v1\\Appointments_api_v1.php",
+    "line": 126,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\controllers\\api\\v1\\Appointments_api_v1.php",
+    "line": 196,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\controllers\\api\\v1\\Blocked_periods_api_v1.php",
+    "line": 92,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\controllers\\api\\v1\\Blocked_periods_api_v1.php",
+    "line": 131,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\controllers\\api\\v1\\Customers_api_v1.php",
+    "line": 66,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\controllers\\api\\v1\\Providers_api_v1.php",
+    "line": 66,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\controllers\\api\\v1\\Providers_api_v1.php",
+    "line": 105,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\controllers\\api\\v1\\Secretaries_api_v1.php",
+    "line": 66,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\controllers\\api\\v1\\Service_categories_api_v1.php",
+    "line": 66,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\controllers\\api\\v1\\Service_categories_api_v1.php",
+    "line": 105,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\controllers\\api\\v1\\Services_api_v1.php",
+    "line": 66,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\controllers\\api\\v1\\Services_api_v1.php",
+    "line": 105,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\controllers\\api\\v1\\Unavailabilities_api_v1.php",
+    "line": 66,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\controllers\\api\\v1\\Unavailabilities_api_v1.php",
+    "line": 105,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\controllers\\api\\v1\\Webhooks_api_v1.php",
+    "line": 65,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\controllers\\api\\v1\\Webhooks_api_v1.php",
+    "line": 104,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\controllers\\api\\v1\\Working_plan_exceptions_api_v1.php",
+    "line": 97,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\controllers\\api\\v1\\Working_plan_exceptions_api_v1.php",
+    "line": 136,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\core\\EA_Controller.php",
+    "line": 138,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\helpers\\password_helper.php",
+    "line": 107,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "application\\helpers\\password_helper.php",
+    "line": 107,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "application\\libraries\\Google_sync.php",
+    "line": 245,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "application\\libraries\\Google_sync.php",
+    "line": 334,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "application\\libraries\\Ics_file.php",
+    "line": 247,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "application\\libraries\\Notifications.php",
+    "line": 80,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\libraries\\Notifications.php",
+    "line": 111,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\libraries\\Notifications.php",
+    "line": 143,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\libraries\\Notifications.php",
+    "line": 179,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\libraries\\Notifications.php",
+    "line": 205,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\libraries\\Notifications.php",
+    "line": 237,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\libraries\\Notifications.php",
+    "line": 261,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\libraries\\Notifications.php",
+    "line": 288,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\libraries\\Notifications.php",
+    "line": 319,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "application\\libraries\\Notifications.php",
+    "line": 347,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "gulpfile.js",
+    "line": 92,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+    "cwe": "CWECategory.DEBUG_LEFTOVER",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\core\\Common.php",
+    "line": 103,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\core\\Common.php",
+    "line": 103,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\core\\Lang.php",
+    "line": 94,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "system\\core\\Loader.php",
+    "line": 705,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "system\\core\\Loader.php",
+    "line": 724,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "system\\core\\Output.php",
+    "line": 581,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\core\\Output.php",
+    "line": 583,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-path-traversal",
+    "cwe": "CWECategory.PATH_TRAVERSAL",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "system\\core\\Output.php",
+    "line": 675,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\core\\Output.php",
+    "line": 677,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-path-traversal",
+    "cwe": "CWECategory.PATH_TRAVERSAL",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "system\\core\\Output.php",
+    "line": 764,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\core\\Security.php",
+    "line": 595,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\core\\Security.php",
+    "line": 595,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\core\\Security.php",
+    "line": 595,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\core\\Security.php",
+    "line": 1062,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\core\\Security.php",
+    "line": 1062,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\core\\Security.php",
+    "line": 1062,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\core\\URI.php",
+    "line": 270,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-parse-str-pollution",
+    "cwe": "CWECategory.IMPROPER_INPUT_VALIDATION",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "system\\core\\URI.php",
+    "line": 305,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-parse-str-pollution",
+    "cwe": "CWECategory.IMPROPER_INPUT_VALIDATION",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "system\\database\\DB_cache.php",
+    "line": 144,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\database\\DB_cache.php",
+    "line": 168,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\database\\DB_driver.php",
+    "line": 1707,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "system\\helpers\\captcha_helper.php",
+    "line": 251,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\helpers\\captcha_helper.php",
+    "line": 263,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\helpers\\captcha_helper.php",
+    "line": 264,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\helpers\\captcha_helper.php",
+    "line": 265,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\helpers\\captcha_helper.php",
+    "line": 265,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\helpers\\captcha_helper.php",
+    "line": 320,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\helpers\\captcha_helper.php",
+    "line": 326,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\helpers\\captcha_helper.php",
+    "line": 334,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\helpers\\captcha_helper.php",
+    "line": 340,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\helpers\\date_helper.php",
+    "line": 141,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "system\\helpers\\date_helper.php",
+    "line": 535,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "system\\helpers\\form_helper.php",
+    "line": 112,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\helpers\\number_helper.php",
+    "line": 64,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "system\\helpers\\string_helper.php",
+    "line": 182,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\helpers\\string_helper.php",
+    "line": 205,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\helpers\\string_helper.php",
+    "line": 205,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\helpers\\string_helper.php",
+    "line": 205,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\helpers\\string_helper.php",
+    "line": 208,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\helpers\\string_helper.php",
+    "line": 208,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\helpers\\string_helper.php",
+    "line": 208,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Cache\\drivers\\Cache_memcached.php",
+    "line": 86,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "system\\libraries\\Cache\\drivers\\Cache_redis.php",
+    "line": 124,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "system\\libraries\\Calendar.php",
+    "line": 133,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "system\\libraries\\Email.php",
+    "line": 737,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Email.php",
+    "line": 888,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Email.php",
+    "line": 1285,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Email.php",
+    "line": 1320,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Email.php",
+    "line": 1341,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Email.php",
+    "line": 1346,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Email.php",
+    "line": 1353,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Email.php",
+    "line": 2333,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "system\\libraries\\Encrypt.php",
+    "line": 131,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Form_validation.php",
+    "line": 448,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "system\\libraries\\Ftp.php",
+    "line": 663,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "system\\libraries\\Image_lib.php",
+    "line": 1845,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "system\\libraries\\Migration.php",
+    "line": 144,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "system\\libraries\\Session\\drivers\\Session_database_driver.php",
+    "line": 180,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Session\\drivers\\Session_database_driver.php",
+    "line": 191,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Session\\drivers\\Session_database_driver.php",
+    "line": 239,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Session\\drivers\\Session_database_driver.php",
+    "line": 254,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Session\\drivers\\Session_database_driver.php",
+    "line": 263,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Session\\drivers\\Session_database_driver.php",
+    "line": 382,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Session\\drivers\\Session_files_driver.php",
+    "line": 152,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Session\\drivers\\Session_files_driver.php",
+    "line": 198,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Session\\drivers\\Session_files_driver.php",
+    "line": 228,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Session\\drivers\\Session_files_driver.php",
+    "line": 257,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Session\\drivers\\Session_files_driver.php",
+    "line": 282,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Session\\drivers\\Session_files_driver.php",
+    "line": 288,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Session\\drivers\\Session_memcached_driver.php",
+    "line": 171,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Session\\drivers\\Session_memcached_driver.php",
+    "line": 203,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Session\\drivers\\Session_memcached_driver.php",
+    "line": 210,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Session\\drivers\\Session_redis_driver.php",
+    "line": 250,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Session\\drivers\\Session_redis_driver.php",
+    "line": 287,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Upload.php",
+    "line": 656,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+    "cwe": "CWECategory.WEAK_HASH",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Upload.php",
+    "line": 656,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Upload.php",
+    "line": 656,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "system\\libraries\\Upload.php",
+    "line": 1151,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-xxe-external-entity",
+    "cwe": "CWECategory.XXE",
+    "severity": "Severity.HIGH"
+  }
+]

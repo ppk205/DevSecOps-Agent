@@ -1,0 +1,1612 @@
+[
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-4x5r-pxfx-6jf8",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-968p-4wvh-cqc8",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-fv7c-fp4j-7gwp",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-968p-4wvh-cqc8",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-2g4f-4pwh-qvx6",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-2g4f-4pwh-qvx6",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-3g43-6gmg-66jw",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-3p68-rc4w-qgx5",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-43fc-jf86-j433",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-5c9x-8gcm-mpgx",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-62hf-57xw-28j9",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-6chq-wfr3-2hj9",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-7q8q-rj6j-mhjq",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-898c-q2cr-xwhg",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-fvcv-3m26-pcqx",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-hfxv-24rg-xrqf",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-j5f8-grm9-p9fc",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-jr5f-v2jv-69x6",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-m7pr-hjqh-92cm",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-mmx7-hfxf-jppx",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-p92q-9vqr-4j8v",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-pf86-5x62-jrwf",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-pjwm-pj3p-43mv",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-pmwg-cvhr-8vh7",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-vf2m-468p-8v99",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-w9j2-pvgh-6h63",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-wf5p-g6vw-rhxx",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-xhjh-pmcv-23jw",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-xx6v-rp6x-q39c",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-35jp-ww65-95wh",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-3g43-6gmg-66jw",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-3p68-rc4w-qgx5",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-3w6x-2g7m-8v23",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-42h9-826w-cgv3",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-43fc-jf86-j433",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-445q-vr5w-6q77",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-4hjh-wcwx-xvwj",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-5c9x-8gcm-mpgx",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-62hf-57xw-28j9",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-6chq-wfr3-2hj9",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-777c-7fjr-54vf",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-7q8q-rj6j-mhjq",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-898c-q2cr-xwhg",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-8hc4-vh64-cxmj",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-9fr6-4gfg-395g",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-fvcv-3m26-pcqx",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-hfxv-24rg-xrqf",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-j5f8-grm9-p9fc",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-j8rh-479h-cp32",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-jqh4-m9w3-8hp9",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-jr5f-v2jv-69x6",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-m7pr-hjqh-92cm",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-mmx7-hfxf-jppx",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-p92q-9vqr-4j8v",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-pf86-5x62-jrwf",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-pmv8-rq9r-6j72",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-pmwg-cvhr-8vh7",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-q8qp-cvcw-x6jj",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-vf2m-468p-8v99",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-vh66-26gq-q6x8",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-w9j2-pvgh-6h63",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-xhjh-pmcv-23jw",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-xx6v-rp6x-q39c",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-378v-28hj-76wf",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-378v-28hj-76wf",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-27r3-jxmh-p828",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-qwcr-r2fm-qrc7",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-v422-hmwv-36x6",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-3jxr-9vmj-r5cp",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-6j4f-fj2g-mc7p",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-f886-m6hf-6m8v",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-mh99-v99m-4gvg",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-q2hr-2g5m-vwhr",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-qhr7-859c-m2p7",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-rgw5-rvv9-x895",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-v6h2-p8h4-qcjw",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-grv7-fg5c-xmjg",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-x9w5-v3q2-3rhw",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-73wf-gq98-2v4g",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-c83g-rgw3-j3cx",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-cpq7-6gpm-g9rc",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-2wm5-q62r-hmrv",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-vc2v-76pw-4v95",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-pxg6-pf52-xh8x",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-3xgq-45jj-v275",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-gcqx-w48m-w2h4",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-r7jx-5m6m-cpg9",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-434g-2637-qmqr",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-49q7-c7j4-3p7m",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-848j-6mx2-7j84",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-977x-g7h5-7qgw",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-f7q4-pwc6-w24p",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-fc9h-whq2-v747",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-vjh7-7g9h-fjfh",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-q9mw-68c2-j6m5",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-r635-g3xr-vw7x",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-qw6h-vgh9-j6wx",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-rv95-896h-c2vc",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-25h7-pfq9-p65f",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-rf6f-7fwh-wjgh",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-r4q5-vmmm-2653",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-fjxv-7rqg-78g4",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-hmw2-7cc7-3qxx",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-4www-5p9h-95mh",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-64mm-vxmg-q3vj",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-9gqv-wp59-fq42",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-c7qv-q95q-8v27",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-v56q-mh7h-f735",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-wf6x-7x77-mvgw",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-xvcm-6775-5m9r",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-v56q-mh7h-f735",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-wf6x-7x77-mvgw",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-xvcm-6775-5m9r",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-2p57-rm9w-gvfp",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-78xj-cgh5-2h22",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-2883-xcg3-v3hh",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-52cp-r559-cp3m",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-5p4m-2wfm-xmqj",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-h67p-54hq-rp68",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-mh29-5h37-fv8m",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-2883-xcg3-v3hh",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-52cp-r559-cp3m",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-5p4m-2wfm-xmqj",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-h67p-54hq-rp68",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-mh29-5h37-fv8m",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-9c47-m6qq-7p4h",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-3rfm-jhwj-7488",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-76p3-8jx3-jpfq",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-hhq3-ff78-jv3g",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-3rfm-jhwj-7488",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-76p3-8jx3-jpfq",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-hhq3-ff78-jv3g",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-3rfm-jhwj-7488",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-76p3-8jx3-jpfq",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-hhq3-ff78-jv3g",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-f23m-r3pf-42rh",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-r5fr-rjxr-66jc",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-xxjr-mmjv-4gpg",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-952p-6rrq-rcjv",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-23c5-xmqv-rm74",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-3ppc-4f35-3m26",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-7r86-cg39-jmmj",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-g3hv-75wg-m249",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-28wg-ghj8-5hjv",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-2v37-7h3g-55p8",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-mwcw-c2x4-8c55",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-xwg4-73v4-xw9w",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-2328-f5f3-gj25",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-2r2c-g63r-vccr",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-4487-j8r4-4g2f",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-4642-5mcj-2rqw",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-525v-9gp9-w22h",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-554w-wpv2-vw27",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-5cwg-6vw7-rj6p",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-5gfm-wpxj-wjgq",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-5m6q-g25r-mvwx",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-5x38-2vff-x55p",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-65ch-62r8-g69g",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-6wvx-3r32-xmcg",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-7wch-p9px-956x",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-86w9-cpqp-85rv",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-8hrf-8g6f-7xwp",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-cfm4-qjh2-4765",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-h6cr-wjv9-3cpp",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-hqq3-7jhf-c5jx",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-jc66-7q78-782g",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-ppp5-5v6c-4jwp",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-q67f-28xg-22rw",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-x4jg-mjrx-434g",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-76c9-3jph-rj3q",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-37ch-88jc-xwx2",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-9wv6-86v2-598j",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-rhx6-c78j-4q9w",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-477h-4r7f-fvrx",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-h7cp-r72f-jxh6",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-v62p-rq8g-8h59",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-3v7f-55p6-f55p",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-c2c7-rcm5-vvqj",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-6g55-p6wh-862q",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-7fh5-64p2-3v2j",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-fxqj-rqcc-2cmp",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-qx2v-qp2m-jg93",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-r28c-9q8g-f849",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-rj75-hqrm-r3gf",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-x7hr-w5r2-h6wg",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-jqcg-44mw-7w3h",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-4mjr-xmp4-gh2g",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-6pq8-jhm2-2vcw",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-6rw7-vpxm-498p",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-hrpp-h998-j3pp",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-w7fw-mjwx-w883",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-c2qf-rxjj-qqgw",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-m6fv-jmcg-4jfg",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-m6fv-jmcg-4jfg",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-5c6j-r48x-rmvq",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-76p7-773f-r4q5",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-m5mm-p8h7-m29v",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-qj8w-gfj5-8c6v",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-cm22-4g7w-348p",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-cm22-4g7w-348p",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-95m3-7q98-8xr5",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-25hc-qcg6-38wj",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-2m8v-j782-fhvr",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-677m-j7p3-52f9",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-68fv-2mgg-jv7q",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-2p49-hgcm-8545",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-4vpr-x523-8j87",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-w27v-7q3p-w38r",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-xpqw-6gx7-v673",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-4wf5-vphf-c2xc",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-4wf5-vphf-c2xc",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-w5hq-g745-h8pq",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-38r7-794h-5758",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-4vvj-4cpr-p986",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-8fgc-7cc6-rx7x",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-hc6q-2mpp-qw7j",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-g84c-rxfj-3j2c",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-wr3j-pwj9-hqq6",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-4v9v-hfq4-rm2v",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-79cf-xcqc-c78w",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-9jgg-88mc-972h",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-f5vj-f2hx-8m93",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-m28w-2pqf-7qgj",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-mx8g-39q3-5c79",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-mp7j-qc5w-4988",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-xv26-6w52-cph6",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-3h5v-q93c-6h6q",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-58qx-3vcg-4xpx",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-96hv-2xvq-fx4p",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "package-lock.json",
+    "line": 1,
+    "rule_id": "osv-GHSA-48c2-rrv3-qjmp",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  }
+]

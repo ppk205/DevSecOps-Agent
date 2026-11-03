@@ -1,0 +1,30 @@
+[
+  {
+    "file": "examples\\events.js",
+    "line": 150,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+    "cwe": "CWECategory.DEBUG_LEFTOVER",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "examples\\events.js",
+    "line": 157,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+    "cwe": "CWECategory.DEBUG_LEFTOVER",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "examples\\events.js",
+    "line": 162,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+    "cwe": "CWECategory.DEBUG_LEFTOVER",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "examples\\events.js",
+    "line": 167,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+    "cwe": "CWECategory.DEBUG_LEFTOVER",
+    "severity": "Severity.MEDIUM"
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "repo": "problem-spring-web",
+  "url": "https://github.com/zalando/problem-spring-web",
+  "clone_exit": 0,
+  "commit": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+  "native_files": 184,
+  "native_skipped": 0,
+  "native_time_s": 4.0,
+  "semgrep_time_s": 6.2,
+  "semgrep_errors": [],
+  "gitleaks_time_s": 0.6,
+  "gitleaks_errors": [],
+  "osv_errors": []
+}

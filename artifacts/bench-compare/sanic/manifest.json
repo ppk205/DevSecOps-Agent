@@ -1,0 +1,14 @@
+{
+  "repo": "sanic",
+  "url": "https://github.com/sanic-org/sanic",
+  "clone_exit": 0,
+  "commit": "5ffc7b3710838eaf016d2f9612a86a08626915e5",
+  "native_files": 334,
+  "native_skipped": 0,
+  "native_time_s": 20.8,
+  "semgrep_time_s": 10.3,
+  "semgrep_errors": [],
+  "gitleaks_time_s": 0.7,
+  "gitleaks_errors": [],
+  "osv_errors": []
+}

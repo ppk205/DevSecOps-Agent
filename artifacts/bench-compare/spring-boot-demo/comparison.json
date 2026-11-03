@@ -1,0 +1,55 @@
+{
+  "native_lines": 59,
+  "semgrep_lines": 16,
+  "gitleaks_lines": 9,
+  "native_and_semgrep": 14,
+  "native_only": 45,
+  "semgrep_only": 2,
+  "gitleaks_only": 9,
+  "native_top_rules": [
+    [
+      "java-log-injection",
+      32
+    ],
+    [
+      "java-stack-trace-exposure",
+      8
+    ],
+    [
+      "java-unsafe-reflection",
+      4
+    ],
+    [
+      "java-unclosed-resource",
+      2
+    ],
+    [
+      "java-hardcoded-credentials",
+      2
+    ]
+  ],
+  "semgrep_top_rules": [
+    [
+      "java-stack-trace-exposure",
+      8
+    ],
+    [
+      "java-permissive-cors",
+      2
+    ],
+    [
+      "java-insecure-cookie",
+      1
+    ],
+    [
+      "java-weak-digest",
+      1
+    ],
+    [
+      "java-log-injection",
+      1
+    ]
+  ],
+  "native_time_s": 5.6,
+  "engine": "native-hunt fixed (heredoc/append/entry-mark)"
+}

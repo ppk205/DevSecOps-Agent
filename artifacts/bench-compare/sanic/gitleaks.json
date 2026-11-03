@@ -1,0 +1,114 @@
+[
+  {
+    "file": "D:/dev/bench-repos/sanic/guide/content/en/guide/basics/headers.md",
+    "line": 30,
+    "rule_id": "curl-auth-header",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/sanic/guide/content/en/guide/basics/headers.md",
+    "line": 36,
+    "rule_id": "curl-auth-header",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/sanic/guide/content/en/guide/basics/headers.md",
+    "line": 37,
+    "rule_id": "jwt",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/sanic/guide/content/en/guide/basics/headers.md",
+    "line": 38,
+    "rule_id": "jwt",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/sanic/guide/content/en/release-notes/2022/v22.12.md",
+    "line": 101,
+    "rule_id": "curl-auth-header",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/sanic/guide/content/en/guide/running/inspector.md",
+    "line": 209,
+    "rule_id": "curl-auth-header",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/sanic/guide/content/en/release-notes/2022/v22.3.md",
+    "line": 120,
+    "rule_id": "generic-api-key",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/sanic/guide/content/en/guide/how-to/authentication.md",
+    "line": 92,
+    "rule_id": "curl-auth-header",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/sanic/guide/content/en/guide/how-to/authentication.md",
+    "line": 105,
+    "rule_id": "curl-auth-header",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/sanic/tests/certs/localhost/privkey.pem",
+    "line": 1,
+    "rule_id": "private-key",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/sanic/tests/test_blueprint_group.py",
+    "line": 15,
+    "rule_id": "generic-api-key",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/sanic/tests/certs/invalid.certmissing/privkey.pem",
+    "line": 1,
+    "rule_id": "private-key",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/sanic/tests/certs/password/privkey.pem",
+    "line": 1,
+    "rule_id": "private-key",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/sanic/tests/certs/sanic.example/privkey.pem",
+    "line": 1,
+    "rule_id": "private-key",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/sanic/tests/test_requests.py",
+    "line": 402,
+    "rule_id": "generic-api-key",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/sanic/tests/test_requests.py",
+    "line": 434,
+    "rule_id": "generic-api-key",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  }
+]

@@ -1,0 +1,282 @@
+[
+  {
+    "file": "projects/addon-commerce/pipes/amount/amount.pipe.ts",
+    "line": 47,
+    "rule_id": "js-jwt-weak-secret",
+    "cwe": "327",
+    "confidence": "Weak",
+    "snippet": "formatted === '0' ? '' : tuiFormatSignSymbol(this.value(), this.sign());"
+  },
+  {
+    "file": "projects/cdk/schematics/ng-add/tests/schematic-ng-add.spec.ts",
+    "line": 305,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": ".catch(err => console.log(err));"
+  },
+  {
+    "file": "projects/cdk/schematics/ng-update/v5/steps/migrate-breakpoint-service.ts",
+    "line": 14,
+    "rule_id": "js-hardcoded-secret",
+    "cwe": "798",
+    "confidence": "Weak",
+    "snippet": "const BREAKPOINT_TOKEN = 'TUI_BREAKPOINT';"
+  },
+  {
+    "file": "projects/cdk/schematics/ng-update/v5/steps/migrate-range-token.ts",
+    "line": 10,
+    "rule_id": "js-hardcoded-secret",
+    "cwe": "798",
+    "confidence": "Weak",
+    "snippet": "const RANGE_TOKEN = 'TUI_RANGE';"
+  },
+  {
+    "file": "projects/cdk/schematics/ng-update/v5/steps/migrate-tokens/migrate-tokens.ts",
+    "line": 22,
+    "rule_id": "js-hardcoded-secret",
+    "cwe": "798",
+    "confidence": "Weak",
+    "snippet": "const INJECTION_TOKEN = 'InjectionToken';"
+  },
+  {
+    "file": "projects/demo-playwright/utils/performance-collector.ts",
+    "line": 149,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "// console.log(`\ud83d\uded1 Stopping CDP tracing for test: ${testName}`);"
+  },
+  {
+    "file": "projects/demo-playwright/utils/performance-collector.ts",
+    "line": 388,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "// console.log(`\ud83d\udcbe Test performance data saved to: ${filename}`);"
+  },
+  {
+    "file": "projects/demo/src/pages/app/search/env.ts",
+    "line": 9,
+    "rule_id": "js-generic-api-key",
+    "cwe": "798",
+    "confidence": "Weak",
+    "snippet": "apiKey: '954fc3fb1ed14929de8006f229f545a6',"
+  },
+  {
+    "file": "projects/demo/src/pages/components/combo-box/examples/5/database.ts",
+    "line": 19,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "delay(Math.random() * 2_000 + 1_000),"
+  },
+  {
+    "file": "projects/demo/src/pages/components/input-files/examples/1/index.ts",
+    "line": 43,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "if (Math.random() > 0.5) {"
+  },
+  {
+    "file": "projects/demo/src/pages/components/keypad/examples/3/index.ts",
+    "line": 40,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "return DIGITS.map((digit) => [Math.random(), digit] as const)"
+  },
+  {
+    "file": "projects/demo/src/pages/components/line-clamp/examples/4/index.ts",
+    "line": 12,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "const randomPoz = Math.floor(Math.random() * charSet.length);"
+  },
+  {
+    "file": "projects/demo/src/pages/components/line-clamp/examples/6/index.ts",
+    "line": 203,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "const firstName = this.names[Math.floor(Math.random() * this.names.length)] ?? '';"
+  },
+  {
+    "file": "projects/demo/src/pages/components/line-clamp/examples/6/index.ts",
+    "line": 206,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "this.names[Math.floor((Math.random() * this.names.length) / 2)] ?? '';"
+  },
+  {
+    "file": "projects/demo/src/pages/components/line-days-chart/examples/1/index.ts",
+    "line": 44,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": ": (i ? (array[i - 1]?.[1] ?? 0) : 100) + Math.random() * 10 - 5,"
+  },
+  {
+    "file": "projects/demo/src/pages/components/line-days-chart/examples/2/index.ts",
+    "line": 142,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "Math.random() * 10 -"
+  },
+  {
+    "file": "projects/demo/src/pages/components/line-days-chart/index.ts",
+    "line": 25,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "(i ? (array[i - 1]?.[1] ?? 0) : 100) + Math.random() * 20 - 10,"
+  },
+  {
+    "file": "projects/demo/src/pages/components/pdf-viewer/examples/3/index.ts",
+    "line": 39,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "this.error.set(Math.random() <= 0.5);"
+  },
+  {
+    "file": "projects/demo/src/pages/components/table/examples/4/index.ts",
+    "line": 82,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "const dob = TODAY.append({day: -Math.floor(Math.random() * 4000) - 7500}),"
+  },
+  {
+    "file": "projects/demo/src/pages/components/table/examples/4/index.ts",
+    "line": 84,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "name = `${LAST[Math.floor(Math.random() * 10)]}, ${FIRST[Math.floor(Math.random() * 10)]}`;"
+  },
+  {
+    "file": "projects/demo/src/pages/components/table/examples/4/index.ts",
+    "line": 219,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "return timer(Math.random() * 1e3 + 1e3).pipe(map(() => result));"
+  },
+  {
+    "file": "projects/demo/src/pages/components/table/examples/5/index.ts",
+    "line": 47,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "name: `${LAST[Math.floor(Math.random() * 10)]}, ${"
+  },
+  {
+    "file": "projects/demo/src/pages/components/table/examples/5/index.ts",
+    "line": 48,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "FIRST[Math.floor(Math.random() * 10)]"
+  },
+  {
+    "file": "projects/demo/src/pages/components/table/examples/5/index.ts",
+    "line": 50,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "dob: TODAY.append({day: -Math.floor(Math.random() * 4000) - 7500}),"
+  },
+  {
+    "file": "projects/demo/src/pages/components/tree/examples/7/index.ts",
+    "line": 27,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "{text: `${text} 1`, children: Math.random() > 0.5},"
+  },
+  {
+    "file": "projects/demo/src/pages/components/tree/examples/7/index.ts",
+    "line": 28,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "{text: `${text} 2`, children: Math.random() > 0.5},"
+  },
+  {
+    "file": "projects/demo/src/pages/components/tree/examples/7/index.ts",
+    "line": 29,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "{text: `${text} 3`, children: Math.random() > 0.5},"
+  },
+  {
+    "file": "projects/demo/src/pages/directives/fluid-typography/examples/1/index.ts",
+    "line": 20,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "{length: Math.ceil(10 * Math.random())},"
+  },
+  {
+    "file": "projects/demo/src/pages/directives/fluid-typography/examples/1/index.ts",
+    "line": 21,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "() => WORDS[Math.floor(Math.random() * WORDS.length)],"
+  },
+  {
+    "file": "projects/demo/src/pages/info/migration-guide/target.ts",
+    "line": 17,
+    "rule_id": "js-timing-unsafe-compare",
+    "cwe": "208",
+    "confidence": "High",
+    "snippet": "this.directive.open.set(`#${this.el.id}` === this.location.hash);"
+  },
+  {
+    "file": "projects/kit/components/tiles/tiles.tokens.ts",
+    "line": 31,
+    "rule_id": "js-jwt-weak-secret",
+    "cwe": "327",
+    "confidence": "Weak",
+    "snippet": "const step = Math.sign(placement - dragged);"
+  },
+  {
+    "file": "projects/kit/directives/sensitive/sensitive.directive.ts",
+    "line": 43,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "protected readonly offset = Math.round(Math.random() * 10) * 10;"
+  },
+  {
+    "file": "projects/kit/directives/skeleton/skeleton.directive.ts",
+    "line": 73,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "return CHAR_NO_BREAK_SPACE.repeat(Math.floor(Math.random() * (15 - 5 + 1)) + 5);"
+  },
+  {
+    "file": "projects/layout/components/slides/slides.directive.ts",
+    "line": 40,
+    "rule_id": "js-jwt-weak-secret",
+    "cwe": "327",
+    "confidence": "Weak",
+    "snippet": "protected readonly sign = computed(() => Math.sign(this.direction() || 0));"
+  },
+  {
+    "file": "projects/legacy/components/carousel/carousel-scroll.directive.ts",
+    "line": 15,
+    "rule_id": "js-jwt-weak-secret",
+    "cwe": "327",
+    "confidence": "Weak",
+    "snippet": "map(({deltaX}) => Math.sign(deltaX)),"
+  }
+]

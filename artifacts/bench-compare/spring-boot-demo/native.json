@@ -1,0 +1,482 @@
+[
+  {
+    "file": "demo-async/src/main/java/com/xkcoding/async/task/TaskFactory.java",
+    "line": 72,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.info(\"{}\u5f00\u59cb\u6267\u884c\uff0c\u5f53\u524d\u7ebf\u7a0b\u540d\u79f0\u3010{}\u3011\", taskName, Thread.currentThread().getName());"
+  },
+  {
+    "file": "demo-async/src/main/java/com/xkcoding/async/task/TaskFactory.java",
+    "line": 74,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.info(\"{}\u6267\u884c\u6210\u529f\uff0c\u5f53\u524d\u7ebf\u7a0b\u540d\u79f0\u3010{}\u3011\", taskName, Thread.currentThread().getName());"
+  },
+  {
+    "file": "demo-codegen/src/test/java/com/xkcoding/codegen/CodeGenServiceTest.java",
+    "line": 70,
+    "rule_id": "java-path-traversal-file",
+    "cwe": "22",
+    "confidence": "Weak",
+    "snippet": "OutputStream outputStream = new FileOutputStream(new File(\"/Users/yangkai.shen/Desktop/\" + request.getTableName() + \".zip\"));"
+  },
+  {
+    "file": "demo-codegen/src/test/java/com/xkcoding/codegen/CodeGenServiceTest.java",
+    "line": 70,
+    "rule_id": "java-unclosed-resource",
+    "cwe": "404",
+    "confidence": "Weak",
+    "snippet": "OutputStream outputStream = new FileOutputStream(new File(\"/Users/yangkai.shen/Desktop/\" + request.getTableName() + \".zip\"));"
+  },
+  {
+    "file": "demo-dubbo/dubbo-consumer/src/main/java/com/xkcoding/dubbo/consumer/controller/HelloController.java",
+    "line": 26,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.info(\"i'm ready to call someone......\");"
+  },
+  {
+    "file": "demo-elasticsearch-rest-high-level-client/src/main/java/com/xkcoding/elasticsearch/service/base/BaseElasticsearchService.java",
+    "line": 160,
+    "rule_id": "java-stack-trace-exposure",
+    "cwe": "209",
+    "confidence": "Weak",
+    "snippet": "e.printStackTrace();"
+  },
+  {
+    "file": "demo-elasticsearch-rest-high-level-client/src/main/java/com/xkcoding/elasticsearch/service/impl/PersonServiceImpl.java",
+    "line": 48,
+    "rule_id": "java-stack-trace-exposure",
+    "cwe": "209",
+    "confidence": "Weak",
+    "snippet": "e.printStackTrace();"
+  },
+  {
+    "file": "demo-elasticsearch-rest-high-level-client/src/main/java/com/xkcoding/elasticsearch/service/impl/PersonServiceImpl.java",
+    "line": 55,
+    "rule_id": "java-stack-trace-exposure",
+    "cwe": "209",
+    "confidence": "Weak",
+    "snippet": "e.printStackTrace();"
+  },
+  {
+    "file": "demo-elasticsearch/src/test/java/com/xkcoding/elasticsearch/repository/PersonRepositoryTest.java",
+    "line": 95,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "repo.findAll(Sort.by(Sort.Direction.DESC, \"birthday\")).forEach(person -> log.info(\"{} \u751f\u65e5: {}\", person.getName(), DateUtil.formatDateTime(person.getBirthday())));"
+  },
+  {
+    "file": "demo-elasticsearch/src/test/java/com/xkcoding/elasticsearch/repository/PersonRepositoryTest.java",
+    "line": 103,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "repo.findByAgeBetween(18, 19).forEach(person -> log.info(\"{} \u5e74\u9f84: {}\", person.getName(), person.getAge()));"
+  },
+  {
+    "file": "demo-elasticsearch/src/test/java/com/xkcoding/elasticsearch/repository/PersonRepositoryTest.java",
+    "line": 134,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "people.forEach(person -> log.info(\"\u3010person\u3011= {}\uff0c\u5e74\u9f84 = {}\", person.getName(), person.getAge()));"
+  },
+  {
+    "file": "demo-email/src/test/java/com/xkcoding/email/PasswordTest.java",
+    "line": 25,
+    "rule_id": "java-hardcoded-credentials",
+    "cwe": "798",
+    "confidence": "Weak",
+    "snippet": "String password = \"Just4Test!\";"
+  },
+  {
+    "file": "demo-https/src/main/java/com/xkcoding/https/config/HttpsConfig.java",
+    "line": 29,
+    "rule_id": "java-insecure-cookie",
+    "cwe": "614",
+    "confidence": "Weak",
+    "snippet": "connector.setSecure(false);"
+  },
+  {
+    "file": "demo-ldap/src/main/java/com/xkcoding/ldap/service/impl/PersonServiceImpl.java",
+    "line": 39,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.info(\"IN LDAP auth\");"
+  },
+  {
+    "file": "demo-ldap/src/main/java/com/xkcoding/ldap/service/impl/PersonServiceImpl.java",
+    "line": 53,
+    "rule_id": "java-stack-trace-exposure",
+    "cwe": "209",
+    "confidence": "Weak",
+    "snippet": "e.printStackTrace();"
+  },
+  {
+    "file": "demo-ldap/src/main/java/com/xkcoding/ldap/service/impl/PersonServiceImpl.java",
+    "line": 56,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.info(\"user info:{}\", user);"
+  },
+  {
+    "file": "demo-ldap/src/main/java/com/xkcoding/ldap/util/LdapUtils.java",
+    "line": 28,
+    "rule_id": "java-weak-digest",
+    "cwe": "327",
+    "confidence": "Weak",
+    "snippet": "MessageDigest md = MessageDigest.getInstance(\"SHA-1\");"
+  },
+  {
+    "file": "demo-ldap/src/main/java/com/xkcoding/ldap/util/LdapUtils.java",
+    "line": 52,
+    "rule_id": "java-default-encoding",
+    "cwe": "176",
+    "confidence": "Weak",
+    "snippet": "md.update(inputPassword.getBytes());"
+  },
+  {
+    "file": "demo-log-aop/src/main/java/com/xkcoding/log/aop/aspectj/AopLog.java",
+    "line": 106,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.warn(\"{}\u65b9\u6cd5\u53c2\u6570\u540d\u548c\u53c2\u6570\u503c\u6570\u91cf\u4e0d\u4e00\u81f4\", methodSignature.getName());"
+  },
+  {
+    "file": "demo-log-aop/src/main/java/com/xkcoding/log/aop/controller/TestController.java",
+    "line": 47,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.info(jsonStr);"
+  },
+  {
+    "file": "demo-mq-rabbitmq/src/main/java/com/xkcoding/mq/rabbitmq/handler/DelayQueueHandler.java",
+    "line": 41,
+    "rule_id": "java-stack-trace-exposure",
+    "cwe": "209",
+    "confidence": "Weak",
+    "snippet": "e1.printStackTrace();"
+  },
+  {
+    "file": "demo-mq-rabbitmq/src/main/java/com/xkcoding/mq/rabbitmq/handler/DirectQueueOneHandler.java",
+    "line": 49,
+    "rule_id": "java-stack-trace-exposure",
+    "cwe": "209",
+    "confidence": "Weak",
+    "snippet": "e1.printStackTrace();"
+  },
+  {
+    "file": "demo-mq-rabbitmq/src/main/java/com/xkcoding/mq/rabbitmq/handler/QueueThreeHandler.java",
+    "line": 41,
+    "rule_id": "java-stack-trace-exposure",
+    "cwe": "209",
+    "confidence": "Weak",
+    "snippet": "e1.printStackTrace();"
+  },
+  {
+    "file": "demo-mq-rabbitmq/src/main/java/com/xkcoding/mq/rabbitmq/handler/QueueTwoHandler.java",
+    "line": 41,
+    "rule_id": "java-stack-trace-exposure",
+    "cwe": "209",
+    "confidence": "Weak",
+    "snippet": "e1.printStackTrace();"
+  },
+  {
+    "file": "demo-oauth/oauth-authorization-server/src/main/java/com/xkcoding/oauth/config/ClientLogoutSuccessHandler.java",
+    "line": 27,
+    "rule_id": "java-open-redirect",
+    "cwe": "601",
+    "confidence": "High",
+    "snippet": "response.sendRedirect(request.getParameter(\"redirectUrl\"));"
+  },
+  {
+    "file": "demo-oauth/oauth-authorization-server/src/test/java/com/xkcoding/oauth/oauth/AuthorizationServerInfo.java",
+    "line": 85,
+    "rule_id": "java-sql-concatenation",
+    "cwe": "89",
+    "confidence": "High",
+    "snippet": "return client.execute(builder.toString(), HttpMethod.POST, requestCallback, HttpMessage::getHeaders);"
+  },
+  {
+    "file": "demo-oauth/oauth-resource-server/src/main/java/com/xkcoding/oauth/config/OauthResourceTokenConfig.java",
+    "line": 96,
+    "rule_id": "java-default-encoding",
+    "cwe": "176",
+    "confidence": "Weak",
+    "snippet": "return \"Basic \" + Base64.getEncoder().encodeToString((resourceServerProperties.getClientId() + \":\" + resourceServerProperties.getClientSecret()).getBytes());"
+  },
+  {
+    "file": "demo-ratelimit-guava/src/main/java/com/xkcoding/ratelimit/guava/aspect/RateLimiterAspect.java",
+    "line": 49,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.debug(\"\u3010{}\u3011\u7684QPS\u8bbe\u7f6e\u4e3a: {}\", method.getName(), RATE_LIMITER_CACHE.get(method.getName()).getRate());"
+  },
+  {
+    "file": "demo-rbac-security/src/main/java/com/xkcoding/rbac/security/config/JwtAuthenticationFilter.java",
+    "line": 86,
+    "rule_id": "java-unsafe-reflection",
+    "cwe": "470",
+    "confidence": "High",
+    "snippet": "String method = request.getMethod();"
+  },
+  {
+    "file": "demo-rbac-security/src/main/java/com/xkcoding/rbac/security/config/RbacAuthorityService.java",
+    "line": 71,
+    "rule_id": "java-unsafe-reflection",
+    "cwe": "470",
+    "confidence": "Weak",
+    "snippet": ".filter(permission -> StrUtil.isNotBlank(permission.getMethod())).collect(Collectors.toList());"
+  },
+  {
+    "file": "demo-rbac-security/src/main/java/com/xkcoding/rbac/security/config/RbacAuthorityService.java",
+    "line": 74,
+    "rule_id": "java-unsafe-reflection",
+    "cwe": "470",
+    "confidence": "High",
+    "snippet": "AntPathRequestMatcher antPathMatcher = new AntPathRequestMatcher(btnPerm.getUrl(), btnPerm.getMethod());"
+  },
+  {
+    "file": "demo-rbac-security/src/main/java/com/xkcoding/rbac/security/config/RbacAuthorityService.java",
+    "line": 94,
+    "rule_id": "java-unsafe-reflection",
+    "cwe": "470",
+    "confidence": "High",
+    "snippet": "String currentMethod = request.getMethod();"
+  },
+  {
+    "file": "demo-rbac-security/src/main/java/com/xkcoding/rbac/security/exception/handler/GlobalExceptionHandler.java",
+    "line": 50,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.error(\"\u3010\u5168\u5c40\u5f02\u5e38\u62e6\u622a\u3011MethodArgumentTypeMismatchException: \u53c2\u6570\u540d {}, \u5f02\u5e38\u4fe1\u606f {}\", ((MethodArgumentTypeMismatchException) e).getName(), ((MethodArgumentTypeMismatchException) e).getMessage());"
+  },
+  {
+    "file": "demo-rbac-security/src/main/java/com/xkcoding/rbac/security/util/RedisUtil.java",
+    "line": 43,
+    "rule_id": "java-unclosed-resource",
+    "cwe": "404",
+    "confidence": "Weak",
+    "snippet": "RedisConnection rc = factory.getConnection();"
+  },
+  {
+    "file": "demo-rbac-security/src/main/java/com/xkcoding/rbac/security/util/ResponseUtil.java",
+    "line": 33,
+    "rule_id": "java-permissive-cors",
+    "cwe": "942",
+    "confidence": "High",
+    "snippet": "response.setHeader(\"Access-Control-Allow-Origin\", \"*\");"
+  },
+  {
+    "file": "demo-rbac-security/src/main/java/com/xkcoding/rbac/security/util/ResponseUtil.java",
+    "line": 40,
+    "rule_id": "java-xss-response-writer",
+    "cwe": "79",
+    "confidence": "High",
+    "snippet": "response.getWriter().write(JSONUtil.toJsonStr(new JSONObject(ApiResponse.ofStatus(status, data), false)));"
+  },
+  {
+    "file": "demo-rbac-security/src/main/java/com/xkcoding/rbac/security/util/ResponseUtil.java",
+    "line": 54,
+    "rule_id": "java-permissive-cors",
+    "cwe": "942",
+    "confidence": "High",
+    "snippet": "response.setHeader(\"Access-Control-Allow-Origin\", \"*\");"
+  },
+  {
+    "file": "demo-rbac-security/src/main/java/com/xkcoding/rbac/security/util/ResponseUtil.java",
+    "line": 61,
+    "rule_id": "java-xss-response-writer",
+    "cwe": "79",
+    "confidence": "High",
+    "snippet": "response.getWriter().write(JSONUtil.toJsonStr(new JSONObject(ApiResponse.ofException(exception), false)));"
+  },
+  {
+    "file": "demo-social/src/main/java/com/xkcoding/social/controller/OauthController.java",
+    "line": 59,
+    "rule_id": "java-open-redirect",
+    "cwe": "601",
+    "confidence": "High",
+    "snippet": "response.sendRedirect(authRequest.authorize(oauthType + \"::\" + AuthStateUtils.createState()));"
+  },
+  {
+    "file": "demo-social/src/main/java/com/xkcoding/social/controller/OauthController.java",
+    "line": 73,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "Medium",
+    "snippet": "log.info(\"\u3010response\u3011= {}\", JSONUtil.toJsonStr(response));"
+  },
+  {
+    "file": "demo-swagger-beauty/src/main/java/com/xkcoding/swagger/beauty/controller/UserController.java",
+    "line": 42,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.info(\"\u5355\u4e2a\u53c2\u6570\u7528  @ApiImplicitParam\");"
+  },
+  {
+    "file": "demo-swagger-beauty/src/main/java/com/xkcoding/swagger/beauty/controller/UserController.java",
+    "line": 56,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.info(\"\u5982\u679c\u662f POST PUT \u8fd9\u79cd\u5e26 @RequestBody \u7684\u53ef\u4ee5\u4e0d\u7528\u5199 @ApiImplicitParam\");"
+  },
+  {
+    "file": "demo-swagger-beauty/src/main/java/com/xkcoding/swagger/beauty/controller/UserController.java",
+    "line": 63,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.info(\"\u5982\u679c\u662f POST PUT \u8fd9\u79cd\u5e26 @RequestBody \u7684\u53ef\u4ee5\u4e0d\u7528\u5199 @ApiImplicitParam\");"
+  },
+  {
+    "file": "demo-swagger-beauty/src/main/java/com/xkcoding/swagger/beauty/controller/UserController.java",
+    "line": 71,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.info(\"\u5982\u679c\u662f POST PUT \u8fd9\u79cd\u5e26 @RequestBody \u7684\u53ef\u4ee5\u4e0d\u7528\u5199 @ApiImplicitParam\");"
+  },
+  {
+    "file": "demo-swagger-beauty/src/main/java/com/xkcoding/swagger/beauty/controller/UserController.java",
+    "line": 84,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.info(file.getContentType());"
+  },
+  {
+    "file": "demo-swagger-beauty/src/main/java/com/xkcoding/swagger/beauty/controller/UserController.java",
+    "line": 85,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.info(file.getName());"
+  },
+  {
+    "file": "demo-swagger-beauty/src/main/java/com/xkcoding/swagger/beauty/controller/UserController.java",
+    "line": 86,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.info(file.getOriginalFilename());"
+  },
+  {
+    "file": "demo-swagger/src/main/java/com/xkcoding/swagger/common/DataType.java",
+    "line": 23,
+    "rule_id": "java-hardcoded-credentials",
+    "cwe": "798",
+    "confidence": "Weak",
+    "snippet": "public final static String PASSWORD = \"password\";"
+  },
+  {
+    "file": "demo-swagger/src/main/java/com/xkcoding/swagger/controller/UserController.java",
+    "line": 42,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.info(\"\u5355\u4e2a\u53c2\u6570\u7528  @ApiImplicitParam\");"
+  },
+  {
+    "file": "demo-swagger/src/main/java/com/xkcoding/swagger/controller/UserController.java",
+    "line": 56,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.info(\"\u5982\u679c\u662f POST PUT \u8fd9\u79cd\u5e26 @RequestBody \u7684\u53ef\u4ee5\u4e0d\u7528\u5199 @ApiImplicitParam\");"
+  },
+  {
+    "file": "demo-swagger/src/main/java/com/xkcoding/swagger/controller/UserController.java",
+    "line": 63,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.info(\"\u5982\u679c\u662f POST PUT \u8fd9\u79cd\u5e26 @RequestBody \u7684\u53ef\u4ee5\u4e0d\u7528\u5199 @ApiImplicitParam\");"
+  },
+  {
+    "file": "demo-swagger/src/main/java/com/xkcoding/swagger/controller/UserController.java",
+    "line": 71,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.info(\"\u5982\u679c\u662f POST PUT \u8fd9\u79cd\u5e26 @RequestBody \u7684\u53ef\u4ee5\u4e0d\u7528\u5199 @ApiImplicitParam\");"
+  },
+  {
+    "file": "demo-swagger/src/main/java/com/xkcoding/swagger/controller/UserController.java",
+    "line": 84,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.info(file.getContentType());"
+  },
+  {
+    "file": "demo-swagger/src/main/java/com/xkcoding/swagger/controller/UserController.java",
+    "line": 85,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.info(file.getName());"
+  },
+  {
+    "file": "demo-swagger/src/main/java/com/xkcoding/swagger/controller/UserController.java",
+    "line": 86,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "High",
+    "snippet": "log.info(file.getOriginalFilename());"
+  },
+  {
+    "file": "demo-upload/src/main/java/com/xkcoding/upload/controller/UploadController.java",
+    "line": 61,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "Weak",
+    "snippet": "log.error(\"\u3010\u6587\u4ef6\u4e0a\u4f20\u81f3\u672c\u5730\u3011\u5931\u8d25\uff0c\u7edd\u5bf9\u8def\u5f84\uff1a{}\", localFilePath);"
+  },
+  {
+    "file": "demo-upload/src/main/java/com/xkcoding/upload/controller/UploadController.java",
+    "line": 65,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "Medium",
+    "snippet": "log.info(\"\u3010\u6587\u4ef6\u4e0a\u4f20\u81f3\u672c\u5730\u3011\u7edd\u5bf9\u8def\u5f84\uff1a{}\", localFilePath);"
+  },
+  {
+    "file": "demo-upload/src/main/java/com/xkcoding/upload/controller/UploadController.java",
+    "line": 89,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "Medium",
+    "snippet": "log.info(\"\u3010\u6587\u4ef6\u4e0a\u4f20\u81f3\u4e03\u725b\u4e91\u3011\u7edd\u5bf9\u8def\u5f84\uff1a{}\", yunFilePath);"
+  },
+  {
+    "file": "demo-upload/src/main/java/com/xkcoding/upload/controller/UploadController.java",
+    "line": 92,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "Weak",
+    "snippet": "log.error(\"\u3010\u6587\u4ef6\u4e0a\u4f20\u81f3\u4e03\u725b\u4e91\u3011\u5931\u8d25\uff0c{}\", JSONUtil.toJsonStr(response));"
+  },
+  {
+    "file": "demo-upload/src/main/java/com/xkcoding/upload/controller/UploadController.java",
+    "line": 97,
+    "rule_id": "java-log-injection",
+    "cwe": "117",
+    "confidence": "Weak",
+    "snippet": "log.error(\"\u3010\u6587\u4ef6\u4e0a\u4f20\u81f3\u4e03\u725b\u4e91\u3011\u5931\u8d25\uff0c\u7edd\u5bf9\u8def\u5f84\uff1a{}\", localFilePath);"
+  }
+]

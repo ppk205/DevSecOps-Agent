@@ -1,0 +1,986 @@
+[
+  {
+    "file": "inc/function.php",
+    "line": 8,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$string.=$element[rand(0,count($element)-1)];"
+  },
+  {
+    "file": "inc/function.php",
+    "line": 11,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$colorBg=imagecolorallocate($img,rand(200,255),rand(200,255),rand(200,255));"
+  },
+  {
+    "file": "inc/function.php",
+    "line": 12,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$colorBorder=imagecolorallocate($img,rand(200,255),rand(200,255),rand(200,255));"
+  },
+  {
+    "file": "inc/function.php",
+    "line": 13,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$colorString=imagecolorallocate($img,rand(10,100),rand(10,100),rand(10,100));"
+  },
+  {
+    "file": "inc/function.php",
+    "line": 16,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "imagesetpixel($img,rand(0,$width-1),rand(0,$height-1),imagecolorallocate($img,rand(100,200),rand(100,200),rand(100,200)));"
+  },
+  {
+    "file": "inc/function.php",
+    "line": 19,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "imageline($img,rand(0,$width/2),rand(0,$height),rand($width/2,$width),rand(0,$height),imagecolorallocate($img,rand(100,200),rand(100,200),rand(100,200)));"
+  },
+  {
+    "file": "inc/function.php",
+    "line": 22,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "imagettftext($img,$fontSize,rand(-5,5),rand(5,15),rand(30,35),$colorString,'../assets/fonts/ManyGifts.ttf',$string);"
+  },
+  {
+    "file": "inc/function.php",
+    "line": 34,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$pos = rand(0,35);"
+  },
+  {
+    "file": "inc/function.php",
+    "line": 47,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$line = ImageColorAllocate($img_handle,rand(0,255),rand(0,255),rand(0,255));"
+  },
+  {
+    "file": "inc/function.php",
+    "line": 48,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "Imageline($img_handle, rand(0,15), rand(0,15), rand(100,150),rand(10,50), $line);"
+  },
+  {
+    "file": "inc/function.php",
+    "line": 53,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$randcolor = ImageColorallocate($img_handle,rand(0,255),rand(0,255),rand(0,255));"
+  },
+  {
+    "file": "inc/function.php",
+    "line": 54,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "Imagesetpixel($img_handle, rand()%100 , rand()%50 , $randcolor);"
+  },
+  {
+    "file": "inc/function.php",
+    "line": 73,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$_SESSION['token']=str_replace('.','',uniqid(mt_rand(10000,99999),true));"
+  },
+  {
+    "file": "inc/function.php",
+    "line": 102,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$query=\"select * from member where username='{$_SESSION['csrf']['username']}' and sha1(pw)='{$_SESSION['csrf']['password']}'\";"
+  },
+  {
+    "file": "inc/function.php",
+    "line": 118,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$query=\"select * from member where username='{$_SESSION['sqli']['username']}' and sha1(pw)='{$_SESSION['sqli']['password']}'\";"
+  },
+  {
+    "file": "inc/function.php",
+    "line": 141,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$query=\"select * from users where username='$username' and sha1(password)='$password'\";"
+  },
+  {
+    "file": "inc/function.php",
+    "line": 163,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$query=\"select * from users where username='$username' and sha1(password)='$password'\";"
+  },
+  {
+    "file": "inc/function.php",
+    "line": 178,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$query=\"select * from member where username='{$_SESSION['op']['username']}' and sha1(pw)='{$_SESSION['op']['password']}'\";"
+  },
+  {
+    "file": "inc/function.php",
+    "line": 193,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$query=\"select * from users where username='{$_SESSION['op2']['username']}' and sha1(password)='{$_SESSION['op2']['password']}'\";"
+  },
+  {
+    "file": "inc/uploadfunction.php",
+    "line": 157,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$new_filename=str_replace('.','',uniqid(mt_rand(100000,999999),true));"
+  },
+  {
+    "file": "install.php",
+    "line": 54,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$insert_users = \"insert into `users` (`id`,`username`,`password`,`level`) values (1,'admin',md5('123456'),1),(2,'pikachu',md5('000000'),2),(3,'test',md5('abc123'),3)\";"
+  },
+  {
+    "file": "install.php",
+    "line": 108,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "(1, 'vince', md5('123456'), 'boy', '18626545453', 'chain', 'vince@pikachu.com'),"
+  },
+  {
+    "file": "install.php",
+    "line": 109,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "(2, 'allen', md5('123456'), 'boy', '13676767767', 'nba 76', 'allen@pikachu.com'),"
+  },
+  {
+    "file": "install.php",
+    "line": 110,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "(3, 'kobe', md5('123456'), 'boy', '15988767673', 'nba lakes', 'kobe@pikachu.com'),"
+  },
+  {
+    "file": "install.php",
+    "line": 111,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "(4, 'grady', md5('123456'), 'boy', '13676765545', 'nba hs', 'grady@pikachu.com'),"
+  },
+  {
+    "file": "install.php",
+    "line": 112,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "(5, 'kevin', md5('123456'), 'boy', '13677676754', 'Oklahoma City Thunder', 'kevin@pikachu.com'),"
+  },
+  {
+    "file": "install.php",
+    "line": 113,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "(6, 'lucy', md5('123456'), 'girl', '12345678922', 'usa', 'lucy@pikachu.com'),"
+  },
+  {
+    "file": "install.php",
+    "line": 114,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "(7, 'lili', md5('123456'), 'girl', '18656565545', 'usa', 'lili@pikachu.com')\";"
+  },
+  {
+    "file": "pkxss/inc/mysql.inc.php",
+    "line": 36,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$query=\"select * from users where username='{$_SESSION['pkxss']['username']}' and sha1(password)='{$_SESSION['pkxss']['password']}'\";"
+  },
+  {
+    "file": "pkxss/pkxss_install.php",
+    "line": 54,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$insert_users = \"insert into `users` (`id`,`username`,`password`,`level`) values (1,'admin',md5('123456'),1)\";"
+  },
+  {
+    "file": "pkxss/pkxss_login.php",
+    "line": 15,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$query=\"select * from users where username='$username' and password=md5('$password')\";"
+  },
+  {
+    "file": "pkxss/pkxss_login.php",
+    "line": 20,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$_SESSION['pkxss']['password']=sha1(md5($password));"
+  },
+  {
+    "file": "pkxss/rkeypress/rkserver.php",
+    "line": 16,
+    "rule_id": "php-sql-concatenation",
+    "cwe": "89",
+    "confidence": "Medium",
+    "snippet": "$result=mysqli_query($link,$query);"
+  },
+  {
+    "file": "pkxss/xcookie/cookie.php",
+    "line": 16,
+    "rule_id": "php-sql-concatenation",
+    "cwe": "89",
+    "confidence": "Medium",
+    "snippet": "$result=mysqli_query($link, $query);"
+  },
+  {
+    "file": "pkxss/xfish/xfish.php",
+    "line": 18,
+    "rule_id": "php-sql-concatenation",
+    "cwe": "89",
+    "confidence": "Medium",
+    "snippet": "$result=mysqli_query($link, $query);"
+  },
+  {
+    "file": "pkxss/xssmanager.php",
+    "line": 12,
+    "rule_id": "php-loose-comparison",
+    "cwe": "697",
+    "confidence": "High",
+    "snippet": "if(isset($_GET['logout']) && $_GET['logout'] == 1){"
+  },
+  {
+    "file": "vul/burteforce/bf_client.php",
+    "line": 26,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$sql = \"select * from users where username=? and password=md5(?)\";"
+  },
+  {
+    "file": "vul/burteforce/bf_client.php",
+    "line": 117,
+    "rule_id": "php-reflected-xss",
+    "cwe": "79",
+    "confidence": "Medium",
+    "snippet": "<?php echo $html;?>"
+  },
+  {
+    "file": "vul/burteforce/bf_form.php",
+    "line": 29,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$sql = \"select * from users where username=? and password=md5(?)\";"
+  },
+  {
+    "file": "vul/burteforce/bf_form.php",
+    "line": 114,
+    "rule_id": "php-reflected-xss",
+    "cwe": "79",
+    "confidence": "Medium",
+    "snippet": "<?php echo $html;?>"
+  },
+  {
+    "file": "vul/burteforce/bf_server.php",
+    "line": 45,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$sql = \"select * from users where username=? and password=md5(?)\";"
+  },
+  {
+    "file": "vul/burteforce/bf_server.php",
+    "line": 135,
+    "rule_id": "php-reflected-xss",
+    "cwe": "79",
+    "confidence": "Medium",
+    "snippet": "<?php echo $html;?>"
+  },
+  {
+    "file": "vul/burteforce/bf_token.php",
+    "line": 30,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$sql = \"select * from users where username=? and password=md5(?)\";"
+  },
+  {
+    "file": "vul/burteforce/bf_token.php",
+    "line": 115,
+    "rule_id": "php-reflected-xss",
+    "cwe": "79",
+    "confidence": "High",
+    "snippet": "<input type=\"hidden\" name=\"token\" value=\"<?php echo $_SESSION['token'];?>\" />"
+  },
+  {
+    "file": "vul/burteforce/bf_token.php",
+    "line": 120,
+    "rule_id": "php-reflected-xss",
+    "cwe": "79",
+    "confidence": "Medium",
+    "snippet": "<?php echo $html;?>"
+  },
+  {
+    "file": "vul/csrf/csrfget/csrf_get.php",
+    "line": 29,
+    "rule_id": "php-loose-comparison",
+    "cwe": "697",
+    "confidence": "High",
+    "snippet": "if(isset($_GET['logout']) && $_GET['logout'] == 1){"
+  },
+  {
+    "file": "vul/csrf/csrfget/csrf_get_login.php",
+    "line": 36,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$query=\"select * from member where username='$username' and pw=md5('$password')\";"
+  },
+  {
+    "file": "vul/csrf/csrfget/csrf_get_login.php",
+    "line": 41,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$_SESSION['csrf']['password']=sha1(md5($password));"
+  },
+  {
+    "file": "vul/csrf/csrfpost/csrf_post.php",
+    "line": 29,
+    "rule_id": "php-loose-comparison",
+    "cwe": "697",
+    "confidence": "High",
+    "snippet": "if(isset($_GET['logout']) && $_GET['logout'] == 1){"
+  },
+  {
+    "file": "vul/csrf/csrfpost/csrf_post_login.php",
+    "line": 36,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$query=\"select * from member where username='$username' and pw=md5('$password')\";"
+  },
+  {
+    "file": "vul/csrf/csrfpost/csrf_post_login.php",
+    "line": 41,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$_SESSION['csrf']['password']=sha1(md5($password));"
+  },
+  {
+    "file": "vul/csrf/csrftoken/token_get.php",
+    "line": 29,
+    "rule_id": "php-loose-comparison",
+    "cwe": "697",
+    "confidence": "High",
+    "snippet": "if(isset($_GET['logout']) && $_GET['logout'] == 1){"
+  },
+  {
+    "file": "vul/csrf/csrftoken/token_get_edit.php",
+    "line": 33,
+    "rule_id": "php-loose-comparison",
+    "cwe": "697",
+    "confidence": "High",
+    "snippet": "if($_GET['sex']!=null && $_GET['phonenum']!=null && $_GET['add']!=null && $_GET['email']!=null && $_GET['token']==$_SESSION['token']){"
+  },
+  {
+    "file": "vul/csrf/csrftoken/token_get_login.php",
+    "line": 38,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$query=\"select * from member where username='$username' and pw=md5('$password')\";"
+  },
+  {
+    "file": "vul/csrf/csrftoken/token_get_login.php",
+    "line": 43,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$_SESSION['csrf']['password']=sha1(md5($password));"
+  },
+  {
+    "file": "vul/dir/dir_list.php",
+    "line": 21,
+    "rule_id": "php-path-traversal",
+    "cwe": "22",
+    "confidence": "High",
+    "snippet": "//\u8fd9\u91cc\u76f4\u63a5\u628a\u4f20\u8fdb\u6765\u7684\u5185\u5bb9\u8fdb\u884c\u4e86require(),\u9020\u6210\u95ee\u9898"
+  },
+  {
+    "file": "vul/dir/dir_list.php",
+    "line": 22,
+    "rule_id": "php-path-traversal",
+    "cwe": "22",
+    "confidence": "High",
+    "snippet": "require \"soup/$filename\";"
+  },
+  {
+    "file": "vul/fileinclude/fi_local.php",
+    "line": 23,
+    "rule_id": "php-path-traversal",
+    "cwe": "22",
+    "confidence": "High",
+    "snippet": "include \"include/$filename\";//\u53d8\u91cf\u4f20\u8fdb\u6765\u76f4\u63a5\u5305\u542b,\u6ca1\u505a\u4efb\u4f55\u7684\u5b89\u5168\u9650\u5236"
+  },
+  {
+    "file": "vul/fileinclude/fi_local.php",
+    "line": 26,
+    "rule_id": "php-path-traversal",
+    "cwe": "22",
+    "confidence": "High",
+    "snippet": "//         include \"include/$filename\";"
+  },
+  {
+    "file": "vul/fileinclude/fi_local.php",
+    "line": 41,
+    "rule_id": "php-path-traversal",
+    "cwe": "22",
+    "confidence": "Weak",
+    "snippet": "<a href=\"fileinclude.php\">file include</a>"
+  },
+  {
+    "file": "vul/fileinclude/fi_remote.php",
+    "line": 37,
+    "rule_id": "php-path-traversal",
+    "cwe": "22",
+    "confidence": "High",
+    "snippet": "include \"$filename\";//\u53d8\u91cf\u4f20\u8fdb\u6765\u76f4\u63a5\u5305\u542b,\u6ca1\u505a\u4efb\u4f55\u7684\u5b89\u5168\u9650\u5236"
+  },
+  {
+    "file": "vul/fileinclude/fi_remote.php",
+    "line": 53,
+    "rule_id": "php-path-traversal",
+    "cwe": "22",
+    "confidence": "Weak",
+    "snippet": "<a href=\"fileinclude.php\">file include</a>"
+  },
+  {
+    "file": "vul/fileinclude/fi_remote.php",
+    "line": 74,
+    "rule_id": "php-path-traversal",
+    "cwe": "22",
+    "confidence": "Medium",
+    "snippet": "<option value=\"include/file5.php\">Ray Allen</option>"
+  },
+  {
+    "file": "vul/infoleak/abc.php",
+    "line": 18,
+    "rule_id": "php-loose-comparison",
+    "cwe": "697",
+    "confidence": "High",
+    "snippet": "if(isset($_GET['logout']) && $_GET['logout'] == '1'){"
+  },
+  {
+    "file": "vul/infoleak/findabc.php",
+    "line": 30,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$query=\"select * from member where username='$username' and pw=md5('$password')\";"
+  },
+  {
+    "file": "vul/infoleak/findabc.php",
+    "line": 35,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "setcookie('abc[pw]',md5($_GET['password']),time()+36000);"
+  },
+  {
+    "file": "vul/overpermission/op1/op1_login.php",
+    "line": 32,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$query=\"select * from member where username='$username' and pw=md5('$password')\";"
+  },
+  {
+    "file": "vul/overpermission/op1/op1_login.php",
+    "line": 37,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$_SESSION['op']['password']=sha1(md5($password));"
+  },
+  {
+    "file": "vul/overpermission/op1/op1_mem.php",
+    "line": 52,
+    "rule_id": "php-loose-comparison",
+    "cwe": "697",
+    "confidence": "High",
+    "snippet": "if(isset($_GET['logout']) && $_GET['logout'] == 1){"
+  },
+  {
+    "file": "vul/overpermission/op1/op1_mem.php",
+    "line": 88,
+    "rule_id": "php-reflected-xss",
+    "cwe": "79",
+    "confidence": "High",
+    "snippet": "<input type=\"hidden\" name=\"username\" value=\"<?php echo $_SESSION['op']['username']; ?>\" />"
+  },
+  {
+    "file": "vul/overpermission/op1/op1_mem.php",
+    "line": 91,
+    "rule_id": "php-reflected-xss",
+    "cwe": "79",
+    "confidence": "Weak",
+    "snippet": "<?php echo $html;?>"
+  },
+  {
+    "file": "vul/overpermission/op2/op2_admin.php",
+    "line": 36,
+    "rule_id": "php-loose-comparison",
+    "cwe": "697",
+    "confidence": "High",
+    "snippet": "if(isset($_GET['logout']) && $_GET['logout'] == 1){"
+  },
+  {
+    "file": "vul/overpermission/op2/op2_admin_edit.php",
+    "line": 29,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$query=\"insert into member(username,pw,sex,phonenum,email,address) values('{$getdata['username']}',md5('{$getdata['password']}'),'{$getdata['sex']}','{$getdata['phonenum']}','{$getdata['email']}','{$g"
+  },
+  {
+    "file": "vul/overpermission/op2/op2_admin_edit.php",
+    "line": 41,
+    "rule_id": "php-loose-comparison",
+    "cwe": "697",
+    "confidence": "High",
+    "snippet": "if(isset($_GET['logout']) && $_GET['logout'] == 1){"
+  },
+  {
+    "file": "vul/overpermission/op2/op2_login.php",
+    "line": 28,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$query=\"select * from users where username='$username' and password=md5('$password')\";"
+  },
+  {
+    "file": "vul/overpermission/op2/op2_login.php",
+    "line": 34,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$_SESSION['op2']['password']=sha1(md5($password));"
+  },
+  {
+    "file": "vul/overpermission/op2/op2_login.php",
+    "line": 40,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$_SESSION['op2']['password']=sha1(md5($password));"
+  },
+  {
+    "file": "vul/overpermission/op2/op2_user.php",
+    "line": 25,
+    "rule_id": "php-loose-comparison",
+    "cwe": "697",
+    "confidence": "High",
+    "snippet": "if(isset($_GET['logout']) && $_GET['logout'] == 1){"
+  },
+  {
+    "file": "vul/rce/rce_eval.php",
+    "line": 19,
+    "rule_id": "php-dynamic-eval",
+    "cwe": "95",
+    "confidence": "High",
+    "snippet": "if(@!eval($_POST['txt'])){"
+  },
+  {
+    "file": "vul/rce/rce_ping.php",
+    "line": 26,
+    "rule_id": "php-command-injection",
+    "cwe": "78",
+    "confidence": "High",
+    "snippet": "$result.=shell_exec('ping '.$ip);//\u76f4\u63a5\u5c06\u53d8\u91cf\u62fc\u63a5\u8fdb\u6765\uff0c\u6ca1\u505a\u5904\u7406"
+  },
+  {
+    "file": "vul/rce/rce_ping.php",
+    "line": 28,
+    "rule_id": "php-command-injection",
+    "cwe": "78",
+    "confidence": "High",
+    "snippet": "$result.=shell_exec('ping -c 4 '.$ip);"
+  },
+  {
+    "file": "vul/rce/rce_ping.php",
+    "line": 66,
+    "rule_id": "php-reflected-xss",
+    "cwe": "79",
+    "confidence": "Medium",
+    "snippet": "echo \"<pre>{$result}</pre>\";"
+  },
+  {
+    "file": "vul/sqli/sqli_blind_b.php",
+    "line": 29,
+    "rule_id": "php-sql-concatenation",
+    "cwe": "89",
+    "confidence": "Medium",
+    "snippet": "$result=mysqli_query($link, $query);//"
+  },
+  {
+    "file": "vul/sqli/sqli_blind_t.php",
+    "line": 29,
+    "rule_id": "php-sql-concatenation",
+    "cwe": "89",
+    "confidence": "Medium",
+    "snippet": "$result=mysqli_query($link, $query);//mysqi_query\u4e0d\u6253\u5370\u9519\u8bef\u63cf\u8ff0"
+  },
+  {
+    "file": "vul/sqli/sqli_del.php",
+    "line": 90,
+    "rule_id": "php-reflected-xss",
+    "cwe": "79",
+    "confidence": "Weak",
+    "snippet": "echo \"<p class='con'>{$content}</p><a href='sqli_del.php?id={$data['id']}'>\u5220\u9664</a>\";"
+  },
+  {
+    "file": "vul/sqli/sqli_header/sqli_header.php",
+    "line": 45,
+    "rule_id": "php-loose-comparison",
+    "cwe": "697",
+    "confidence": "High",
+    "snippet": "if(isset($_GET['logout']) && $_GET['logout'] == 1){"
+  },
+  {
+    "file": "vul/sqli/sqli_header/sqli_header_login.php",
+    "line": 32,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$query=\"select * from users where username='$username' and password=md5('$password')\";"
+  },
+  {
+    "file": "vul/sqli/sqli_header/sqli_header_login.php",
+    "line": 37,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "setcookie('ant[pw]',sha1(md5($_POST['password'])),time()+36000);"
+  },
+  {
+    "file": "vul/sqli/sqli_iu/sqli_login.php",
+    "line": 34,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$query=\"select * from member where username='$username' and pw=md5('$password')\";"
+  },
+  {
+    "file": "vul/sqli/sqli_iu/sqli_login.php",
+    "line": 39,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$_SESSION['sqli']['password']=sha1(md5($password));"
+  },
+  {
+    "file": "vul/sqli/sqli_iu/sqli_mem.php",
+    "line": 29,
+    "rule_id": "php-loose-comparison",
+    "cwe": "697",
+    "confidence": "High",
+    "snippet": "if(isset($_GET['logout']) && $_GET['logout'] == 1){"
+  },
+  {
+    "file": "vul/sqli/sqli_iu/sqli_reg.php",
+    "line": 31,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$query=\"insert into member(username,pw,sex,phonenum,email,address) values('{$getdata['username']}',md5('{$getdata['password']}'),'{$getdata['sex']}','{$getdata['phonenum']}','{$getdata['email']}','{$g"
+  },
+  {
+    "file": "vul/sqli/sqli_widebyte.php",
+    "line": 35,
+    "rule_id": "php-sql-concatenation",
+    "cwe": "89",
+    "confidence": "Medium",
+    "snippet": "$result=mysqli_query($link, $query);"
+  },
+  {
+    "file": "vul/ssrf/ssrf_curl.php",
+    "line": 31,
+    "rule_id": "php-ssrf",
+    "cwe": "918",
+    "confidence": "High",
+    "snippet": "$CH = curl_init($URL);"
+  },
+  {
+    "file": "vul/ssrf/ssrf_curl.php",
+    "line": 34,
+    "rule_id": "php-ssrf",
+    "cwe": "918",
+    "confidence": "Medium",
+    "snippet": "$RES = curl_exec($CH);"
+  },
+  {
+    "file": "vul/ssrf/ssrf_curl.php",
+    "line": 39,
+    "rule_id": "php-reflected-xss",
+    "cwe": "79",
+    "confidence": "Weak",
+    "snippet": "echo $RES;"
+  },
+  {
+    "file": "vul/ssrf/ssrf_fgc.php",
+    "line": 27,
+    "rule_id": "php-path-traversal",
+    "cwe": "22",
+    "confidence": "High",
+    "snippet": "$str = file_get_contents($filename);"
+  },
+  {
+    "file": "vul/ssrf/ssrf_fgc.php",
+    "line": 27,
+    "rule_id": "php-ssrf",
+    "cwe": "918",
+    "confidence": "High",
+    "snippet": "$str = file_get_contents($filename);"
+  },
+  {
+    "file": "vul/ssrf/ssrf_fgc.php",
+    "line": 28,
+    "rule_id": "php-reflected-xss",
+    "cwe": "79",
+    "confidence": "Medium",
+    "snippet": "echo $str;"
+  },
+  {
+    "file": "vul/unserilization/unser.php",
+    "line": 30,
+    "rule_id": "php-unsafe-deserialization",
+    "cwe": "502",
+    "confidence": "High",
+    "snippet": "if(!@$unser = unserialize($s)){"
+  },
+  {
+    "file": "vul/unserilization/unser.php",
+    "line": 64,
+    "rule_id": "php-reflected-xss",
+    "cwe": "79",
+    "confidence": "Weak",
+    "snippet": "<?php echo $html;?>"
+  },
+  {
+    "file": "vul/unserilization/unserilization.php",
+    "line": 61,
+    "rule_id": "php-unsafe-deserialization",
+    "cwe": "502",
+    "confidence": "High",
+    "snippet": "$u=unserialize(\"O:1:\"S\":1:{s:4:\"test\";s:7:\"pikachu\";}\");"
+  },
+  {
+    "file": "vul/unserilization/unserilization.php",
+    "line": 87,
+    "rule_id": "php-unsafe-deserialization",
+    "cwe": "502",
+    "confidence": "High",
+    "snippet": "@$unser = unserialize($a);"
+  },
+  {
+    "file": "vul/xss/fixxss.php",
+    "line": 88,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return preg_replace('/[0-9a-f]{4}/','\\u$0',bin2hex($u16));"
+  },
+  {
+    "file": "vul/xss/xss_01.php",
+    "line": 16,
+    "rule_id": "php-path-traversal",
+    "cwe": "22",
+    "confidence": "Medium",
+    "snippet": "include_once $PIKA_ROOT_DIR.'header.php';"
+  },
+  {
+    "file": "vul/xss/xss_01.php",
+    "line": 21,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "High",
+    "snippet": "$message=preg_replace('/<(.*)s(.*)c(.*)r(.*)i(.*)p(.*)t/', '', $_GET['message']);"
+  },
+  {
+    "file": "vul/xss/xss_01.php",
+    "line": 60,
+    "rule_id": "php-reflected-xss",
+    "cwe": "79",
+    "confidence": "Medium",
+    "snippet": "<?php echo $html;?>"
+  },
+  {
+    "file": "vul/xss/xss_03.php",
+    "line": 24,
+    "rule_id": "php-loose-comparison",
+    "cwe": "697",
+    "confidence": "High",
+    "snippet": "if($_GET['message'] == 'www.baidu.com'){"
+  },
+  {
+    "file": "vul/xss/xss_reflected_get.php",
+    "line": 24,
+    "rule_id": "php-loose-comparison",
+    "cwe": "697",
+    "confidence": "High",
+    "snippet": "if($_GET['message']=='kobe'){"
+  },
+  {
+    "file": "vul/xss/xss_stored.php",
+    "line": 39,
+    "rule_id": "php-reflected-xss",
+    "cwe": "79",
+    "confidence": "Weak",
+    "snippet": "echo \"<script type='text/javascript'>document.location.href='xss_stored.php'</script>\";"
+  },
+  {
+    "file": "vul/xss/xss_stored.php",
+    "line": 79,
+    "rule_id": "php-reflected-xss",
+    "cwe": "79",
+    "confidence": "High",
+    "snippet": "<?php echo $html;"
+  },
+  {
+    "file": "vul/xss/xss_stored.php",
+    "line": 83,
+    "rule_id": "php-reflected-xss",
+    "cwe": "79",
+    "confidence": "Weak",
+    "snippet": "echo \"<p class='con'>{$data['content']}</p><a href='xss_stored.php?id={$data['id']}'>\u5220\u9664</a>\";"
+  },
+  {
+    "file": "vul/xss/xssblind/admin.php",
+    "line": 39,
+    "rule_id": "php-loose-comparison",
+    "cwe": "697",
+    "confidence": "High",
+    "snippet": "if(isset($_GET['logout']) && $_GET['logout'] == '1'){"
+  },
+  {
+    "file": "vul/xss/xssblind/admin_login.php",
+    "line": 35,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$query=\"select * from users where username='$username' and password=md5('$password')\";"
+  },
+  {
+    "file": "vul/xss/xssblind/admin_login.php",
+    "line": 43,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "setcookie('ant[pw]',sha1(md5($_POST['password'])),time()+3600);"
+  },
+  {
+    "file": "vul/xss/xssblind/admin_login.php",
+    "line": 47,
+    "rule_id": "php-reflected-xss",
+    "cwe": "79",
+    "confidence": "Weak",
+    "snippet": "//            echo '\"<script>windows.location.href=\"xss_reflected_post.php\"</script>';"
+  },
+  {
+    "file": "vul/xss/xssblind/admin_login.php",
+    "line": 122,
+    "rule_id": "php-reflected-xss",
+    "cwe": "79",
+    "confidence": "Medium",
+    "snippet": "<?php echo $html;?>"
+  },
+  {
+    "file": "vul/xss/xsspost/post_login.php",
+    "line": 35,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "$query=\"select * from users where username='$username' and password=md5('$password')\";"
+  },
+  {
+    "file": "vul/xss/xsspost/post_login.php",
+    "line": 43,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "High",
+    "snippet": "setcookie('ant[pw]',sha1(md5($_POST['password'])),time()+3600);"
+  },
+  {
+    "file": "vul/xss/xsspost/post_login.php",
+    "line": 47,
+    "rule_id": "php-reflected-xss",
+    "cwe": "79",
+    "confidence": "Weak",
+    "snippet": "//            echo '\"<script>windows.location.href=\"xss_reflected_post.php\"</script>';"
+  },
+  {
+    "file": "vul/xss/xsspost/post_login.php",
+    "line": 122,
+    "rule_id": "php-reflected-xss",
+    "cwe": "79",
+    "confidence": "Medium",
+    "snippet": "<?php echo $html;?>"
+  },
+  {
+    "file": "vul/xss/xsspost/xss_reflected_post.php",
+    "line": 44,
+    "rule_id": "php-loose-comparison",
+    "cwe": "697",
+    "confidence": "High",
+    "snippet": "if($_POST['message']=='kobe'){"
+  },
+  {
+    "file": "vul/xss/xsspost/xss_reflected_post.php",
+    "line": 54,
+    "rule_id": "php-loose-comparison",
+    "cwe": "697",
+    "confidence": "High",
+    "snippet": "if(isset($_GET['logout']) && $_GET['logout'] == '1'){"
+  }
+]

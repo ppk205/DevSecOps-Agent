@@ -1,0 +1,82 @@
+[
+  {
+    "file": "demo/src/Multi.js",
+    "line": 63,
+    "rule_id": "js-nosql-injection",
+    "cwe": "943",
+    "confidence": "Weak",
+    "snippet": "example = examples.find(function(example) { return example.id === exampleId; });"
+  },
+  {
+    "file": "demo/src/Multi.js",
+    "line": 63,
+    "rule_id": "js-timing-unsafe-compare",
+    "cwe": "208",
+    "confidence": "Weak",
+    "snippet": "example = examples.find(function(example) { return example.id === exampleId; });"
+  },
+  {
+    "file": "demo/src/Multi.js",
+    "line": 85,
+    "rule_id": "js-timing-unsafe-compare",
+    "cwe": "208",
+    "confidence": "Medium",
+    "snippet": "return exampleId === exampleIds[0];"
+  },
+  {
+    "file": "examples/events.js",
+    "line": 150,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "console.log('mousedown at ' + mousePosition.x + ' ' + mousePosition.y);"
+  },
+  {
+    "file": "examples/events.js",
+    "line": 157,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "console.log('mouseup at ' + mousePosition.x + ' ' + mousePosition.y);"
+  },
+  {
+    "file": "examples/events.js",
+    "line": 162,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "console.log('startdrag', event);"
+  },
+  {
+    "file": "examples/events.js",
+    "line": 167,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "console.log('enddrag', event);"
+  },
+  {
+    "file": "examples/sleeping.js",
+    "line": 69,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "console.log('body id', body.id, 'sleeping:', body.isSleeping);"
+  },
+  {
+    "file": "src/body/Body.js",
+    "line": 634,
+    "rule_id": "js-jwt-weak-secret",
+    "cwe": "327",
+    "confidence": "Weak",
+    "snippet": "Body.setAngularVelocity(body, Common.sign(Body.getAngularVelocity(body)) * speed);"
+  },
+  {
+    "file": "test/Examples.spec.js",
+    "line": 78,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "console.log("
+  }
+]

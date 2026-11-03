@@ -1,0 +1,13 @@
+{
+  "native_lines": 0,
+  "semgrep_lines": 0,
+  "gitleaks_lines": 2,
+  "native_and_semgrep": 0,
+  "native_only": 0,
+  "semgrep_only": 0,
+  "gitleaks_only": 2,
+  "native_top_rules": [],
+  "semgrep_top_rules": [],
+  "native_time_s": 0.0,
+  "engine": "native-hunt fixed (heredoc/append/entry-mark)"
+}

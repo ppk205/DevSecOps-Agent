@@ -1,0 +1,142 @@
+[
+  {
+    "file": "examples\\amending_request_object.py",
+    "line": 12,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-weak-random-token",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "examples\\amending_request_object.py",
+    "line": 30,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-debug-mode-enabled",
+    "cwe": "CWECategory.DEBUG_INFO_EXPOSURE",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "examples\\blueprint_middlware_execution_order.py",
+    "line": 54,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-debug-mode-enabled",
+    "cwe": "CWECategory.DEBUG_INFO_EXPOSURE",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "examples\\blueprints.py",
+    "line": 41,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-debug-mode-enabled",
+    "cwe": "CWECategory.DEBUG_INFO_EXPOSURE",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "examples\\exception_monitoring.py",
+    "line": 55,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-debug-mode-enabled",
+    "cwe": "CWECategory.DEBUG_INFO_EXPOSURE",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "examples\\log_request_id.py",
+    "line": 77,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-debug-mode-enabled",
+    "cwe": "CWECategory.DEBUG_INFO_EXPOSURE",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "examples\\modify_header_example.py",
+    "line": 30,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-debug-mode-enabled",
+    "cwe": "CWECategory.DEBUG_INFO_EXPOSURE",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "examples\\simple_async_view.py",
+    "line": 41,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-debug-mode-enabled",
+    "cwe": "CWECategory.DEBUG_INFO_EXPOSURE",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "examples\\try_everything.py",
+    "line": 123,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-debug-mode-enabled",
+    "cwe": "CWECategory.DEBUG_INFO_EXPOSURE",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "examples\\url_for_example.py",
+    "line": 21,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-debug-mode-enabled",
+    "cwe": "CWECategory.DEBUG_INFO_EXPOSURE",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "examples\\websocket.py",
+    "line": 27,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-debug-mode-enabled",
+    "cwe": "CWECategory.DEBUG_INFO_EXPOSURE",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "guide\\public\\assets\\docs.js",
+    "line": 206,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+    "cwe": "CWECategory.DEBUG_LEFTOVER",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "guide\\public\\assets\\docs.js",
+    "line": 215,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+    "cwe": "CWECategory.DEBUG_LEFTOVER",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "guide\\webapp\\display\\search\\renderer.py",
+    "line": 50,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-ldap-injection",
+    "cwe": "CWECategory.LDAP_INJECTION",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "guide\\webapp\\worker\\livereload.js",
+    "line": 1239,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "guide\\webapp\\worker\\livereload.js",
+    "line": 2639,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+    "cwe": "CWECategory.DEBUG_LEFTOVER",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "guide\\webapp\\worker\\livereload.js",
+    "line": 2643,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+    "cwe": "CWECategory.DEBUG_LEFTOVER",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "sanic\\server\\goodbye.py",
+    "line": 31,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-weak-random-token",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "sanic\\worker\\manager.py",
+    "line": 188,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-weak-random-token",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "scripts\\release.py",
+    "line": 78,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-subprocess-shell-true",
+    "cwe": "CWECategory.COMMAND_INJECTION",
+    "severity": "Severity.MEDIUM"
+  }
+]

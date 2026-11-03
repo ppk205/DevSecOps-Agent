@@ -1,0 +1,9 @@
+[
+  {
+    "file": "D:/dev/bench-repos/easyappointments/system/libraries/Encryption.php",
+    "line": 803,
+    "rule_id": "generic-api-key",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  }
+]

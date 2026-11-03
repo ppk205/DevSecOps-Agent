@@ -1,0 +1,135 @@
+[
+  {
+    "file": "demo-codegen/pom.xml",
+    "line": 1,
+    "rule_id": "osv-GHSA-599f-7c49-w659",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "demo-rbac-shiro/pom.xml",
+    "line": 1,
+    "rule_id": "osv-GHSA-v98j-7crc-wvrj",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "demo-elasticsearch-rest-high-level-client/pom.xml",
+    "line": 1,
+    "rule_id": "osv-GHSA-285m-vhfq-xx4h",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "demo-elasticsearch-rest-high-level-client/pom.xml",
+    "line": 1,
+    "rule_id": "osv-GHSA-2cqf-6xv9-f22w",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "demo-elasticsearch-rest-high-level-client/pom.xml",
+    "line": 1,
+    "rule_id": "osv-GHSA-2hjr-vmf3-xwvp",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "demo-elasticsearch-rest-high-level-client/pom.xml",
+    "line": 1,
+    "rule_id": "osv-GHSA-3393-hvrj-w7v3",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "demo-elasticsearch-rest-high-level-client/pom.xml",
+    "line": 1,
+    "rule_id": "osv-GHSA-5v8f-xx9m-wj44",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "demo-elasticsearch-rest-high-level-client/pom.xml",
+    "line": 1,
+    "rule_id": "osv-GHSA-62ww-4p3p-7fhj",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "demo-elasticsearch-rest-high-level-client/pom.xml",
+    "line": 1,
+    "rule_id": "osv-GHSA-99pc-69q9-jxf2",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "demo-elasticsearch-rest-high-level-client/pom.xml",
+    "line": 1,
+    "rule_id": "osv-GHSA-c77j-p484-h84m",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "demo-elasticsearch-rest-high-level-client/pom.xml",
+    "line": 1,
+    "rule_id": "osv-GHSA-cqgv-256r-m9r8",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "demo-elasticsearch-rest-high-level-client/pom.xml",
+    "line": 1,
+    "rule_id": "osv-GHSA-g9fw-9x87-rmrj",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "demo-elasticsearch-rest-high-level-client/pom.xml",
+    "line": 1,
+    "rule_id": "osv-GHSA-gfv5-grx2-9jw2",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "demo-elasticsearch-rest-high-level-client/pom.xml",
+    "line": 1,
+    "rule_id": "osv-GHSA-hqqv-9x3v-mp7w",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "demo-elasticsearch-rest-high-level-client/pom.xml",
+    "line": 1,
+    "rule_id": "osv-GHSA-hxp8-r9g3-grfr",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "demo-elasticsearch-rest-high-level-client/pom.xml",
+    "line": 1,
+    "rule_id": "osv-GHSA-jgx4-7v3v-vwfm",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "demo-elasticsearch-rest-high-level-client/pom.xml",
+    "line": 1,
+    "rule_id": "osv-GHSA-mm3m-5497-xggg",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "demo-elasticsearch-rest-high-level-client/pom.xml",
+    "line": 1,
+    "rule_id": "osv-GHSA-qwrx-45xf-jjf7",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "demo-elasticsearch-rest-high-level-client/pom.xml",
+    "line": 1,
+    "rule_id": "osv-GHSA-w5gg-2q56-6h4f",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  }
+]

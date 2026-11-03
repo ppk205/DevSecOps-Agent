@@ -1,0 +1,261 @@
+[
+  {
+    "file": "projects\\cdk\\schematics\\ng-update\\v5\\steps\\migrate-breakpoint-service.ts",
+    "line": 14,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-hardcoded-secret",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\cdk\\schematics\\ng-update\\v5\\steps\\migrate-range-token.ts",
+    "line": 10,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-hardcoded-secret",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\cdk\\schematics\\ng-update\\v5\\steps\\migrate-tokens\\migrate-tokens.ts",
+    "line": 22,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-hardcoded-secret",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\demo\\src\\pages\\components\\combo-box\\examples\\5\\database.ts",
+    "line": 19,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\demo\\src\\pages\\components\\input-files\\examples\\1\\index.ts",
+    "line": 43,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\demo\\src\\pages\\components\\keypad\\examples\\3\\index.ts",
+    "line": 40,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\demo\\src\\pages\\components\\line-clamp\\examples\\4\\index.ts",
+    "line": 12,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\demo\\src\\pages\\components\\line-clamp\\examples\\6\\index.ts",
+    "line": 203,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\demo\\src\\pages\\components\\line-clamp\\examples\\6\\index.ts",
+    "line": 206,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\demo\\src\\pages\\components\\line-days-chart\\examples\\1\\index.ts",
+    "line": 44,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\demo\\src\\pages\\components\\line-days-chart\\examples\\2\\index.ts",
+    "line": 142,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\demo\\src\\pages\\components\\line-days-chart\\index.ts",
+    "line": 25,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\demo\\src\\pages\\components\\pdf-viewer\\examples\\3\\index.ts",
+    "line": 39,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\demo\\src\\pages\\components\\table\\examples\\4\\index.ts",
+    "line": 82,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\demo\\src\\pages\\components\\table\\examples\\4\\index.ts",
+    "line": 84,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\demo\\src\\pages\\components\\table\\examples\\4\\index.ts",
+    "line": 84,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\demo\\src\\pages\\components\\table\\examples\\4\\index.ts",
+    "line": 219,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\demo\\src\\pages\\components\\table\\examples\\5\\index.ts",
+    "line": 47,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\demo\\src\\pages\\components\\table\\examples\\5\\index.ts",
+    "line": 48,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\demo\\src\\pages\\components\\table\\examples\\5\\index.ts",
+    "line": 50,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\demo\\src\\pages\\components\\tree\\examples\\7\\index.ts",
+    "line": 27,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\demo\\src\\pages\\components\\tree\\examples\\7\\index.ts",
+    "line": 28,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\demo\\src\\pages\\components\\tree\\examples\\7\\index.ts",
+    "line": 29,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\demo\\src\\pages\\directives\\fluid-typography\\examples\\1\\index.ts",
+    "line": 20,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\demo\\src\\pages\\directives\\fluid-typography\\examples\\1\\index.ts",
+    "line": 21,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\kit\\directives\\sensitive\\sensitive.directive.ts",
+    "line": 43,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "projects\\kit\\directives\\skeleton\\skeleton.directive.ts",
+    "line": 73,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "scripts\\publish-canary.ts",
+    "line": 25,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-sql-concatenation",
+    "cwe": "CWECategory.SQL_INJECTION",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "scripts\\publish.ts",
+    "line": 36,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-sql-concatenation",
+    "cwe": "CWECategory.SQL_INJECTION",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "scripts\\publish.ts",
+    "line": 40,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-sql-concatenation",
+    "cwe": "CWECategory.SQL_INJECTION",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "scripts\\shared\\check-prettier-changes.ts",
+    "line": 4,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-sql-concatenation",
+    "cwe": "CWECategory.SQL_INJECTION",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "scripts\\shared\\get-all-tags.ts",
+    "line": 5,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-sql-concatenation",
+    "cwe": "CWECategory.SQL_INJECTION",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "scripts\\shared\\get-all-versions.ts",
+    "line": 6,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-sql-concatenation",
+    "cwe": "CWECategory.SQL_INJECTION",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "scripts\\shared\\git-commit-and-push.ts",
+    "line": 6,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-sql-concatenation",
+    "cwe": "CWECategory.SQL_INJECTION",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "scripts\\shared\\make-release-branch.ts",
+    "line": 6,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-sql-concatenation",
+    "cwe": "CWECategory.SQL_INJECTION",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "scripts\\shared\\run-standard-version.ts",
+    "line": 12,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-sql-concatenation",
+    "cwe": "CWECategory.SQL_INJECTION",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "scripts\\shared\\run-standard-version.ts",
+    "line": 21,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-sql-concatenation",
+    "cwe": "CWECategory.SQL_INJECTION",
+    "severity": "Severity.HIGH"
+  }
+]

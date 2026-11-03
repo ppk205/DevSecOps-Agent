@@ -1,0 +1,9 @@
+[
+  {
+    "file": "D:/dev/bench-repos/thelounge/test/fixtures/.thelounge/vapid.json",
+    "line": 3,
+    "rule_id": "generic-api-key",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  }
+]

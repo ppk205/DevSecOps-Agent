@@ -1,0 +1,14 @@
+{
+  "repo": "pikachu",
+  "url": "https://github.com/zhuifengshaonianhanlu/pikachu",
+  "clone_exit": 0,
+  "commit": "5e1e8d9d14a3ba61d62f28cf35531c4df4dd24fc",
+  "native_files": 114,
+  "native_skipped": 63,
+  "native_time_s": 6.8,
+  "semgrep_time_s": 19.4,
+  "semgrep_errors": [],
+  "gitleaks_time_s": 0.6,
+  "gitleaks_errors": [],
+  "osv_errors": []
+}

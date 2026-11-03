@@ -1,0 +1,47 @@
+{
+  "native_lines": 35,
+  "semgrep_lines": 36,
+  "gitleaks_lines": 1,
+  "native_and_semgrep": 26,
+  "native_only": 9,
+  "semgrep_only": 10,
+  "gitleaks_only": 1,
+  "native_top_rules": [
+    [
+      "js-insecure-random",
+      23
+    ],
+    [
+      "js-jwt-weak-secret",
+      4
+    ],
+    [
+      "js-debug-leftover",
+      3
+    ],
+    [
+      "js-hardcoded-secret",
+      3
+    ],
+    [
+      "js-generic-api-key",
+      1
+    ]
+  ],
+  "semgrep_top_rules": [
+    [
+      "js-insecure-random",
+      24
+    ],
+    [
+      "js-sql-concatenation",
+      10
+    ],
+    [
+      "js-hardcoded-secret",
+      3
+    ]
+  ],
+  "native_time_s": 38.6,
+  "engine": "native-hunt fixed (heredoc/append/entry-mark)"
+}

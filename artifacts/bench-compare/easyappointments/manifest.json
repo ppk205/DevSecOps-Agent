@@ -1,0 +1,14 @@
+{
+  "repo": "easyappointments",
+  "url": "https://github.com/alextselegidis/easyappointments",
+  "clone_exit": 0,
+  "commit": "f6c8a4c2f364bf8c64b1f913a531a7134dcfd3c6",
+  "native_files": 1149,
+  "native_skipped": 0,
+  "native_time_s": 58.0,
+  "semgrep_time_s": 9.3,
+  "semgrep_errors": [],
+  "gitleaks_time_s": 0.7,
+  "gitleaks_errors": [],
+  "osv_errors": []
+}

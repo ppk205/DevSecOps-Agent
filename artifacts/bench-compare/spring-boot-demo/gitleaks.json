@@ -1,0 +1,65 @@
+[
+  {
+    "file": "D:/dev/bench-repos/spring-boot-demo/demo-graylog/README.md",
+    "line": 45,
+    "rule_id": "generic-api-key",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/spring-boot-demo/demo-oauth/oauth-authorization-server/README.adoc",
+    "line": 90,
+    "rule_id": "curl-auth-header",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/spring-boot-demo/demo-oauth/oauth-authorization-server/README.adoc",
+    "line": 122,
+    "rule_id": "curl-auth-header",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/spring-boot-demo/demo-oauth/oauth-authorization-server/README.adoc",
+    "line": 137,
+    "rule_id": "curl-auth-header",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/spring-boot-demo/demo-oauth/oauth-authorization-server/README.adoc",
+    "line": 150,
+    "rule_id": "curl-auth-header",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/spring-boot-demo/demo-oauth/oauth-authorization-server/README.adoc",
+    "line": 195,
+    "rule_id": "curl-auth-header",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/spring-boot-demo/demo-oauth/oauth-authorization-server/README.adoc",
+    "line": 105,
+    "rule_id": "jwt",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/spring-boot-demo/demo-oauth/oauth-authorization-server/README.adoc",
+    "line": 107,
+    "rule_id": "jwt",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/spring-boot-demo/demo-oauth/oauth-authorization-server/README.adoc",
+    "line": 141,
+    "rule_id": "jwt",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  }
+]

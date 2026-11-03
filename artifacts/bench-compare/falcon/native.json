@@ -1,0 +1,170 @@
+[
+  {
+    "file": "examples/asgilook/tests/conftest.py",
+    "line": 65,
+    "rule_id": "py-weak-random-token",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "x0 = random.randint(20, 620)"
+  },
+  {
+    "file": "examples/asgilook/tests/conftest.py",
+    "line": 66,
+    "rule_id": "py-weak-random-token",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "y0 = random.randint(20, 340)"
+  },
+  {
+    "file": "examples/asgilook/tests/conftest.py",
+    "line": 67,
+    "rule_id": "py-weak-random-token",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "x1 = random.randint(20, 620)"
+  },
+  {
+    "file": "examples/asgilook/tests/conftest.py",
+    "line": 68,
+    "rule_id": "py-weak-random-token",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "y1 = random.randint(20, 340)"
+  },
+  {
+    "file": "falcon/bench/create.py",
+    "line": 56,
+    "rule_id": "py-header-injection",
+    "cwe": "113",
+    "confidence": "High",
+    "snippet": "user_agent = request.headers['User-Agent']  # NOQA"
+  },
+  {
+    "file": "falcon/bench/create.py",
+    "line": 71,
+    "rule_id": "py-header-injection",
+    "cwe": "113",
+    "confidence": "High",
+    "snippet": "user_agent = bottle.request.headers['User-Agent']  # NOQA"
+  },
+  {
+    "file": "falcon/bench/create.py",
+    "line": 92,
+    "rule_id": "py-header-injection",
+    "cwe": "113",
+    "confidence": "High",
+    "snippet": "user_agent = request.headers['User-Agent']  # NOQA"
+  },
+  {
+    "file": "falcon/bench/dj/dj/settings.py",
+    "line": 27,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "DEBUG = True"
+  },
+  {
+    "file": "falcon/testing/helpers.py",
+    "line": 1098,
+    "rule_id": "py-weak-random-token",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "remote_port = random.randint(49152, 65535)"
+  },
+  {
+    "file": "tests/_wsgi_test_app.py",
+    "line": 17,
+    "rule_id": "py-weak-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "sha1 = hashlib.sha1()"
+  },
+  {
+    "file": "tests/asgi/_asgi_test_app.py",
+    "line": 115,
+    "rule_id": "py-weak-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "sha1 = hashlib.sha1()"
+  },
+  {
+    "file": "tests/asgi/_asgi_test_app.py",
+    "line": 226,
+    "rule_id": "py-weak-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "sha1 = hashlib.sha1()"
+  },
+  {
+    "file": "tests/asgi/test_asgi_servers.py",
+    "line": 70,
+    "rule_id": "py-weak-random-token",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "size = random.randint(16 * _SIZE_1_MB, 32 * _SIZE_1_MB)"
+  },
+  {
+    "file": "tests/asgi/test_asgi_servers.py",
+    "line": 72,
+    "rule_id": "py-weak-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "digest = hashlib.sha1(data).hexdigest()"
+  },
+  {
+    "file": "tests/asgi/test_asgi_servers.py",
+    "line": 150,
+    "rule_id": "py-weak-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "assert resp.json().get('sha1') == hashlib.sha1(body).hexdigest()"
+  },
+  {
+    "file": "tests/asgi/test_asgi_servers.py",
+    "line": 626,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "config.debug = True"
+  },
+  {
+    "file": "tests/test_media_multipart.py",
+    "line": 601,
+    "rule_id": "py-weak-random-token",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "part_data = [os.urandom(random.randint(0, 2**18)) for _ in range(64)]"
+  },
+  {
+    "file": "tests/test_media_multipart.py",
+    "line": 630,
+    "rule_id": "py-weak-random-token",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "length = random.randint(2**20, 2**21)"
+  },
+  {
+    "file": "tests/test_utils.py",
+    "line": 43,
+    "rule_id": "py-weak-random-token",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "''.join([random.choice(uri._ALL_ALLOWED) for _ in range(length)])"
+  },
+  {
+    "file": "tests/test_wsgi_servers.py",
+    "line": 259,
+    "rule_id": "py-weak-random-token",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "size = random.randint(8 * _SIZE_1_MB, 15 * _SIZE_1_MB)"
+  },
+  {
+    "file": "tests/test_wsgi_servers.py",
+    "line": 261,
+    "rule_id": "py-weak-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "digest = hashlib.sha1(data).hexdigest()"
+  }
+]

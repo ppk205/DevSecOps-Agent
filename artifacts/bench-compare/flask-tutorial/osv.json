@@ -1,0 +1,198 @@
+[
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-GHSA-cpwx-vrp4-4pq7",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-GHSA-gmj6-6f8f-6699",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-GHSA-h5c8-rqwp-cp95",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-GHSA-h75v-3vvj-5mfj",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-GHSA-q2x7-8rv6-6q7h",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-PYSEC-2026-1471",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-PYSEC-2026-1472",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-PYSEC-2026-1473",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-PYSEC-2026-1474",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-PYSEC-2026-1475",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-GHSA-5wmx-573v-2qwq",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-PYSEC-2026-89",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-GHSA-xvg9-69gf-fjrf",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-PYSEC-2026-3864",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-GHSA-5239-wwwm-4pmq",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-GHSA-mrwq-x4v8-fh7p",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-PYSEC-2023-117",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-PYSEC-2026-2987",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-GHSA-9xwg-3r6f-jcx2",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-GHSA-gm37-52c6-37mw",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-GHSA-jh85-wwv9-24hv",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-GHSA-r6h4-mm7h-8pmq",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-PYSEC-2026-1824",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-PYSEC-2026-1825",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-PYSEC-2026-3609",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-PYSEC-2026-3654",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-GHSA-jfmj-5v4g-7637",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  },
+  {
+    "file": "requirements.txt",
+    "line": 1,
+    "rule_id": "osv-PYSEC-2026-2074",
+    "severity": "Severity.HIGH",
+    "cwe": "CWECategory.DEPENDENCY_VULNERABILITY"
+  }
+]

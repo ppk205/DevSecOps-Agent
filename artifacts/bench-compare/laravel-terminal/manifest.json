@@ -1,0 +1,14 @@
+{
+  "repo": "laravel-terminal",
+  "url": "https://github.com/recca0120/laravel-terminal",
+  "clone_exit": 0,
+  "commit": "a807a856c15ae7b3db87457f8333206012f9e9ec",
+  "native_files": 45,
+  "native_skipped": 1,
+  "native_time_s": 1.2,
+  "semgrep_time_s": 5.8,
+  "semgrep_errors": [],
+  "gitleaks_time_s": 1.8,
+  "gitleaks_errors": [],
+  "osv_errors": []
+}

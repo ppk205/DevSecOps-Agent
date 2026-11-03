@@ -1,0 +1,23 @@
+{
+  "native_lines": 1,
+  "semgrep_lines": 1,
+  "gitleaks_lines": 0,
+  "native_and_semgrep": 1,
+  "native_only": 0,
+  "semgrep_only": 0,
+  "gitleaks_only": 0,
+  "native_top_rules": [
+    [
+      "java-stack-trace-exposure",
+      1
+    ]
+  ],
+  "semgrep_top_rules": [
+    [
+      "java-stack-trace-exposure",
+      1
+    ]
+  ],
+  "native_time_s": 2.7,
+  "engine": "native-hunt fixed (heredoc/append/entry-mark)"
+}

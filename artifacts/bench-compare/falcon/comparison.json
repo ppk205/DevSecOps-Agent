@@ -1,0 +1,39 @@
+{
+  "native_lines": 21,
+  "semgrep_lines": 2,
+  "gitleaks_lines": 0,
+  "native_and_semgrep": 2,
+  "native_only": 19,
+  "semgrep_only": 0,
+  "gitleaks_only": 0,
+  "native_top_rules": [
+    [
+      "py-weak-random-token",
+      10
+    ],
+    [
+      "py-weak-hash",
+      6
+    ],
+    [
+      "py-header-injection",
+      3
+    ],
+    [
+      "py-debug-mode-enabled",
+      2
+    ]
+  ],
+  "semgrep_top_rules": [
+    [
+      "py-debug-mode-enabled",
+      1
+    ],
+    [
+      "py-weak-random-token",
+      1
+    ]
+  ],
+  "native_time_s": 11.6,
+  "engine": "native-hunt fixed (heredoc/append/entry-mark)"
+}

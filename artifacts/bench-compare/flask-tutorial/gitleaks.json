@@ -1,0 +1,16 @@
+[
+  {
+    "file": "D:/dev/bench-repos/flask-tutorial/chapters/zh/11-deployment.md",
+    "line": 141,
+    "rule_id": "generic-api-key",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  },
+  {
+    "file": "D:/dev/bench-repos/flask-tutorial/chapters/en/11-deployment.md",
+    "line": 139,
+    "rule_id": "generic-api-key",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.HIGH"
+  }
+]

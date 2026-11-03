@@ -1,0 +1,55 @@
+{
+  "native_lines": 69,
+  "semgrep_lines": 20,
+  "gitleaks_lines": 16,
+  "native_and_semgrep": 17,
+  "native_only": 52,
+  "semgrep_only": 3,
+  "gitleaks_only": 16,
+  "native_top_rules": [
+    [
+      "py-debug-mode-enabled",
+      28
+    ],
+    [
+      "js-debug-leftover",
+      14
+    ],
+    [
+      "py-weak-random-token",
+      11
+    ],
+    [
+      "py-hardcoded-secret",
+      7
+    ],
+    [
+      "py-unsafe-deserialization",
+      3
+    ]
+  ],
+  "semgrep_top_rules": [
+    [
+      "py-debug-mode-enabled",
+      10
+    ],
+    [
+      "js-debug-leftover",
+      4
+    ],
+    [
+      "py-weak-random-token",
+      3
+    ],
+    [
+      "py-ldap-injection",
+      1
+    ],
+    [
+      "js-insecure-random",
+      1
+    ]
+  ],
+  "native_time_s": 13.5,
+  "engine": "native-hunt fixed (heredoc/append/entry-mark)"
+}

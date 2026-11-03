@@ -1,0 +1,1314 @@
+[
+  {
+    "file": "application/controllers/Booking.php",
+    "line": 192,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$theme = preg_replace('/[^a-zA-Z0-9_\\-]/', '', $theme);"
+  },
+  {
+    "file": "application/controllers/Booking.php",
+    "line": 271,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$customer_token = md5(uniqid(mt_rand(), true));"
+  },
+  {
+    "file": "application/controllers/Booking.php",
+    "line": 271,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$customer_token = md5(uniqid(mt_rand(), true));"
+  },
+  {
+    "file": "application/controllers/Localization.php",
+    "line": 47,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$language = preg_replace('/[^a-zA-Z0-9_-]/', '', $language);"
+  },
+  {
+    "file": "application/helpers/password_helper.php",
+    "line": 107,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$salt = hash('sha256', uniqid(rand(), true));"
+  },
+  {
+    "file": "application/helpers/security_helper.php",
+    "line": 37,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$filename = preg_replace('/[^a-zA-Z0-9_\\-\\.]/', '', $filename);"
+  },
+  {
+    "file": "application/libraries/Caldav_sync.php",
+    "line": 953,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$date_time = preg_replace('/TZID=[^:]+:/', '', $caldav_date_time);"
+  },
+  {
+    "file": "application/libraries/Google_sync.php",
+    "line": 245,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$create_request->setRequestId(uniqid('meet_', true));"
+  },
+  {
+    "file": "application/libraries/Google_sync.php",
+    "line": 334,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$create_request->setRequestId(uniqid('meet_', true));"
+  },
+  {
+    "file": "application/libraries/Ics_file.php",
+    "line": 247,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "return 'ea-' . md5($db_record_id);"
+  },
+  {
+    "file": "application/views/components/company_color_style.php",
+    "line": 65,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$company_color = '#' . preg_replace('/[^0-9A-Fa-f]/', '', $company_color);"
+  },
+  {
+    "file": "gulpfile.js",
+    "line": 92,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "console.log('Zip Error', error);"
+  },
+  {
+    "file": "system/core/Common.php",
+    "line": 103,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$file = rtrim($file, '/').'/'.md5(mt_rand());"
+  },
+  {
+    "file": "system/core/Common.php",
+    "line": 103,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$file = rtrim($file, '/').'/'.md5(mt_rand());"
+  },
+  {
+    "file": "system/core/Common.php",
+    "line": 744,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace($non_displayables, '', $str, -1, $count);"
+  },
+  {
+    "file": "system/core/Lang.php",
+    "line": 104,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$langfile = preg_replace('/_lang$/', '', $langfile).'_lang';"
+  },
+  {
+    "file": "system/core/Loader.php",
+    "line": 617,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$filename = strtolower(preg_replace('#(_helper)?(\\.php)?$#i', '', $filename)).'_helper';"
+  },
+  {
+    "file": "system/core/Output.php",
+    "line": 523,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$output = preg_replace('|</body>.*?</html>|is', '', $output, -1, $count).$CI->profiler->run();"
+  },
+  {
+    "file": "system/core/Output.php",
+    "line": 581,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$cache_path .= md5($uri);"
+  },
+  {
+    "file": "system/core/Output.php",
+    "line": 675,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$filepath = $cache_path.md5($uri);"
+  },
+  {
+    "file": "system/core/Output.php",
+    "line": 764,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$cache_path .= md5($CI->config->item('base_url').$CI->config->slash_item('index_page').ltrim($uri, '/'));"
+  },
+  {
+    "file": "system/core/Router.php",
+    "line": 415,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$val = preg_replace('#^'.$key.'$#', $val, $uri);"
+  },
+  {
+    "file": "system/core/Security.php",
+    "line": 436,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace('/<\\?(php)/i', '&lt;?\\\\1', $str);"
+  },
+  {
+    "file": "system/core/Security.php",
+    "line": 492,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace('#</*(?:script|xss).*?>#si', '[removed]', $str);"
+  },
+  {
+    "file": "system/core/Security.php",
+    "line": 543,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace("
+  },
+  {
+    "file": "system/core/Security.php",
+    "line": 551,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace("
+  },
+  {
+    "file": "system/core/Security.php",
+    "line": 595,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "? md5(uniqid(mt_rand(), TRUE))"
+  },
+  {
+    "file": "system/core/Security.php",
+    "line": 595,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "? md5(uniqid(mt_rand(), TRUE))"
+  },
+  {
+    "file": "system/core/Security.php",
+    "line": 713,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "preg_replace('/(&#(?:x0*[0-9a-f]{2,5}(?![0-9a-f;])|(?:0*\\d{2,4}(?![0-9;]))))/iS', '$1;', $str),"
+  },
+  {
+    "file": "system/core/Security.php",
+    "line": 763,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return preg_replace("
+  },
+  {
+    "file": "system/core/Security.php",
+    "line": 785,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$nospaces = preg_replace('#\\s+#', '', $input);"
+  },
+  {
+    "file": "system/core/Security.php",
+    "line": 805,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return preg_replace('/\\s+/s', '', $matches[1]).$matches[2];"
+  },
+  {
+    "file": "system/core/Security.php",
+    "line": 864,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$matches['attributes'] = preg_replace('#^[^a-z]+#i', '', $matches['attributes']);"
+  },
+  {
+    "file": "system/core/Security.php",
+    "line": 918,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "preg_replace("
+  },
+  {
+    "file": "system/core/Security.php",
+    "line": 946,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "preg_replace("
+  },
+  {
+    "file": "system/core/Security.php",
+    "line": 988,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$out .= preg_replace('#/\\*.*?\\*/#s', '', $match);"
+  },
+  {
+    "file": "system/core/Security.php",
+    "line": 1008,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$match = preg_replace('|\\&([a-z\\_0-9\\-]+)\\=([a-z\\_0-9\\-/]+)|i', $this->xss_hash().'\\\\1=\\\\2', $match[0]);"
+  },
+  {
+    "file": "system/core/Security.php",
+    "line": 1033,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace('#'.$regex.'#is', '[removed]', $str);"
+  },
+  {
+    "file": "system/core/Security.php",
+    "line": 1055,
+    "rule_id": "php-loose-comparison",
+    "cwe": "697",
+    "confidence": "High",
+    "snippet": "&& preg_match('#^[0-9a-f]{32}$#iS', $_COOKIE[$this->_csrf_cookie_name]) === 1)"
+  },
+  {
+    "file": "system/core/Security.php",
+    "line": 1062,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "? md5(uniqid(mt_rand(), TRUE))"
+  },
+  {
+    "file": "system/core/Security.php",
+    "line": 1062,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "? md5(uniqid(mt_rand(), TRUE))"
+  },
+  {
+    "file": "system/core/URI.php",
+    "line": 270,
+    "rule_id": "php-parse-str-pollution",
+    "cwe": "20",
+    "confidence": "High",
+    "snippet": "parse_str($_SERVER['QUERY_STRING'], $_GET);"
+  },
+  {
+    "file": "system/core/URI.php",
+    "line": 305,
+    "rule_id": "php-parse-str-pollution",
+    "cwe": "20",
+    "confidence": "High",
+    "snippet": "parse_str($_SERVER['QUERY_STRING'], $_GET);"
+  },
+  {
+    "file": "system/database/DB_cache.php",
+    "line": 144,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$filepath = $this->db->cachedir.$segment_one.'+'.$segment_two.'/'.md5($sql);"
+  },
+  {
+    "file": "system/database/DB_cache.php",
+    "line": 168,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$filename = md5($sql);"
+  },
+  {
+    "file": "system/database/DB_driver.php",
+    "line": 606,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$sql = preg_replace('/(\\W)'.$this->swap_pre.'(\\S+?)/', '\\\\1'.$this->dbprefix.'\\\\2', $sql);"
+  },
+  {
+    "file": "system/database/DB_driver.php",
+    "line": 1395,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return preg_replace('#'.$preg_ec[0].'?([^'.$preg_ec[1].'\\.]+)'.$preg_ec[1].'?\\.#i', $preg_ec[2].'$1'.$preg_ec[3].'.', $item);"
+  },
+  {
+    "file": "system/database/DB_driver.php",
+    "line": 1401,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return preg_replace('#'.$preg_ec[0].'?([^'.$preg_ec[1].$dot.']+)'.$preg_ec[1].'?(\\.)?#i', $preg_ec[2].'$1'.$preg_ec[3].'$2', $item);"
+  },
+  {
+    "file": "system/database/DB_driver.php",
+    "line": 1808,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$item = preg_replace('/\\s+/', ' ', trim($item));"
+  },
+  {
+    "file": "system/database/DB_driver.php",
+    "line": 1899,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$parts[$i] = preg_replace('#^'.$ec.preg_quote($this->swap_pre).'(\\S+?)#', '\\\\1'.$this->dbprefix.'\\\\2', $parts[$i]);"
+  },
+  {
+    "file": "system/database/DB_driver.php",
+    "line": 1925,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$item = preg_replace('/^'.$this->swap_pre.'(\\S+?)/', $this->dbprefix.'\\\\1', $item);"
+  },
+  {
+    "file": "system/database/DB_query_builder.php",
+    "line": 2360,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$table = preg_replace('/\\s+AS\\s+/i', ' ', $table);"
+  },
+  {
+    "file": "system/database/drivers/ibase/ibase_driver.php",
+    "line": 381,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return preg_replace('`SELECT`i', 'SELECT '.$select, $sql, 1);"
+  },
+  {
+    "file": "system/database/drivers/mssql/mssql_driver.php",
+    "line": 463,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": ".preg_replace('/^(SELECT( DISTINCT)?)/i', '\\\\1 ROW_NUMBER() OVER('.trim($orderby).') AS '.$this->escape_identifiers('CI_rownum').', ', $sql)"
+  },
+  {
+    "file": "system/database/drivers/mssql/mssql_driver.php",
+    "line": 468,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return preg_replace('/(^\\SELECT (DISTINCT)?)/i','\\\\1 TOP '.$limit.' ', $sql);"
+  },
+  {
+    "file": "system/database/drivers/mysql/mysql_utility.php",
+    "line": 166,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$field_str = preg_replace('/, $/' , '', $field_str);"
+  },
+  {
+    "file": "system/database/drivers/mysql/mysql_utility.php",
+    "line": 193,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$val_str = preg_replace('/, $/' , '', $val_str);"
+  },
+  {
+    "file": "system/database/drivers/mysqli/mysqli_utility.php",
+    "line": 166,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$field_str = preg_replace('/, $/' , '', $field_str);"
+  },
+  {
+    "file": "system/database/drivers/mysqli/mysqli_utility.php",
+    "line": 193,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$val_str = preg_replace('/, $/' , '', $val_str);"
+  },
+  {
+    "file": "system/database/drivers/pdo/subdrivers/pdo_dblib_driver.php",
+    "line": 306,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": ".preg_replace('/^(SELECT( DISTINCT)?)/i', '\\\\1 ROW_NUMBER() OVER('.trim($orderby).') AS '.$this->escape_identifiers('CI_rownum').', ', $sql)"
+  },
+  {
+    "file": "system/database/drivers/pdo/subdrivers/pdo_dblib_driver.php",
+    "line": 311,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return preg_replace('/(^\\SELECT (DISTINCT)?)/i','\\\\1 TOP '.$limit.' ', $sql);"
+  },
+  {
+    "file": "system/database/drivers/pdo/subdrivers/pdo_firebird_driver.php",
+    "line": 260,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return preg_replace('`SELECT`i', 'SELECT '.$select, $sql);"
+  },
+  {
+    "file": "system/database/drivers/pdo/subdrivers/pdo_informix_driver.php",
+    "line": 306,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return preg_replace('/^(SELECT\\s)/i', $select, $sql, 1);"
+  },
+  {
+    "file": "system/database/drivers/pdo/subdrivers/pdo_sqlsrv_driver.php",
+    "line": 338,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": ".preg_replace('/^(SELECT( DISTINCT)?)/i', '\\\\1 ROW_NUMBER() OVER('.trim($orderby).') AS '.$this->escape_identifiers('CI_rownum').', ', $sql)"
+  },
+  {
+    "file": "system/database/drivers/pdo/subdrivers/pdo_sqlsrv_driver.php",
+    "line": 343,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return preg_replace('/(^\\SELECT (DISTINCT)?)/i','\\\\1 TOP '.$limit.' ', $sql);"
+  },
+  {
+    "file": "system/database/drivers/sqlsrv/sqlsrv_driver.php",
+    "line": 500,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": ".preg_replace('/^(SELECT( DISTINCT)?)/i', '\\\\1 ROW_NUMBER() OVER('.trim($orderby).') AS '.$this->escape_identifiers('CI_rownum').', ', $sql)"
+  },
+  {
+    "file": "system/database/drivers/sqlsrv/sqlsrv_driver.php",
+    "line": 505,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return preg_replace('/(^\\SELECT (DISTINCT)?)/i','\\\\1 TOP '.$limit.' ', $sql);"
+  },
+  {
+    "file": "system/helpers/captcha_helper.php",
+    "line": 189,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "// No, I do not care that the fallback to mt_rand() can"
+  },
+  {
+    "file": "system/helpers/captcha_helper.php",
+    "line": 229,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "// Sadly, this means fallback to mt_rand()"
+  },
+  {
+    "file": "system/helpers/captcha_helper.php",
+    "line": 251,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$word .= $pool[mt_rand(0, $rand_max)];"
+  },
+  {
+    "file": "system/helpers/captcha_helper.php",
+    "line": 263,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$angle\t= ($length >= 6) ? mt_rand(-($length - 6), ($length - 6)) : 0;"
+  },
+  {
+    "file": "system/helpers/captcha_helper.php",
+    "line": 264,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$x_axis\t= mt_rand(6, (360 / $length)-16);"
+  },
+  {
+    "file": "system/helpers/captcha_helper.php",
+    "line": 265,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$y_axis = ($angle >= 0) ? mt_rand($img_height, $img_width) : mt_rand(6, $img_height);"
+  },
+  {
+    "file": "system/helpers/captcha_helper.php",
+    "line": 320,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$x = mt_rand(0, $img_width / ($length / 3));"
+  },
+  {
+    "file": "system/helpers/captcha_helper.php",
+    "line": 326,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$x = mt_rand(0, $img_width / ($length / 1.5));"
+  },
+  {
+    "file": "system/helpers/captcha_helper.php",
+    "line": 334,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$y = mt_rand(0 , $img_height / 2);"
+  },
+  {
+    "file": "system/helpers/captcha_helper.php",
+    "line": 340,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$y = mt_rand($img_height / 2, $img_height - 3);"
+  },
+  {
+    "file": "system/helpers/date_helper.php",
+    "line": 116,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "preg_replace('/([a-z]+?){1}/i', '\\\\\\\\\\\\1', $datestr)"
+  },
+  {
+    "file": "system/helpers/date_helper.php",
+    "line": 422,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$datestr = preg_replace('/\\040+/', ' ', trim($datestr));"
+  },
+  {
+    "file": "system/helpers/form_helper.php",
+    "line": 112,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$noise = mt_rand(-128, 127);"
+  },
+  {
+    "file": "system/helpers/form_helper.php",
+    "line": 126,
+    "rule_id": "php-reflected-xss",
+    "cwe": "79",
+    "confidence": "Weak",
+    "snippet": "$form .= sprintf("
+  },
+  {
+    "file": "system/helpers/inflector_helper.php",
+    "line": 106,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$result = preg_replace($rule, $replacement, $result);"
+  },
+  {
+    "file": "system/helpers/inflector_helper.php",
+    "line": 163,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$result = preg_replace($rule, $replacement, $result);"
+  },
+  {
+    "file": "system/helpers/inflector_helper.php",
+    "line": 186,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return strtolower($str[0]).substr(str_replace(' ', '', ucwords(preg_replace('/[\\s_]+/', ' ', $str))), 1);"
+  },
+  {
+    "file": "system/helpers/inflector_helper.php",
+    "line": 204,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return preg_replace('/[\\s]+/', '_', trim(MB_ENABLED ? mb_strtolower($str) : strtolower($str)));"
+  },
+  {
+    "file": "system/helpers/inflector_helper.php",
+    "line": 223,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return ucwords(preg_replace('/['.preg_quote($separator).']+/', ' ', trim(MB_ENABLED ? mb_strtolower($str) : strtolower($str))));"
+  },
+  {
+    "file": "system/helpers/string_helper.php",
+    "line": 135,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return preg_replace('#(^|[^:])//+#', '\\\\1/', $str);"
+  },
+  {
+    "file": "system/helpers/string_helper.php",
+    "line": 161,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace('#'.preg_quote($character, '#').'{2,}#', $character, $str);"
+  },
+  {
+    "file": "system/helpers/string_helper.php",
+    "line": 182,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "return mt_rand();"
+  },
+  {
+    "file": "system/helpers/string_helper.php",
+    "line": 205,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "return md5(uniqid(mt_rand()));"
+  },
+  {
+    "file": "system/helpers/string_helper.php",
+    "line": 205,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "return md5(uniqid(mt_rand()));"
+  },
+  {
+    "file": "system/helpers/string_helper.php",
+    "line": 208,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "return sha1(uniqid(mt_rand(), TRUE));"
+  },
+  {
+    "file": "system/helpers/string_helper.php",
+    "line": 208,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "return sha1(uniqid(mt_rand(), TRUE));"
+  },
+  {
+    "file": "system/helpers/text_helper.php",
+    "line": 105,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace('/ {2,}/', ' ', str_replace(array(\"\\r\", \"\\n\", \"\\t\", \"\\v\", \"\\f\"), ' ', $str));"
+  },
+  {
+    "file": "system/helpers/text_helper.php",
+    "line": 284,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace("
+  },
+  {
+    "file": "system/helpers/text_helper.php",
+    "line": 342,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace("
+  },
+  {
+    "file": "system/helpers/text_helper.php",
+    "line": 383,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "? preg_replace('/('.preg_quote($phrase, '/').')/i'.(UTF8_ENABLED ? 'u' : ''), $tag_open.'\\\\1'.$tag_close, $str)"
+  },
+  {
+    "file": "system/helpers/text_helper.php",
+    "line": 426,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return preg_replace($array_from, $array_to, $str);"
+  },
+  {
+    "file": "system/helpers/text_helper.php",
+    "line": 451,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace('| +|', ' ', $str);"
+  },
+  {
+    "file": "system/helpers/url_helper.php",
+    "line": 503,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace('#'.$key.'#i'.(UTF8_ENABLED ? 'u' : ''), $val, $str);"
+  },
+  {
+    "file": "system/helpers/xml_helper.php",
+    "line": 67,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace('/&#(\\d+);/', $temp.'\\\\1;', $str);"
+  },
+  {
+    "file": "system/helpers/xml_helper.php",
+    "line": 71,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace('/&(\\w+);/', $temp.'\\\\1;', $str);"
+  },
+  {
+    "file": "system/helpers/xml_helper.php",
+    "line": 81,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace('/'.$temp.'(\\d+);/', '&#\\\\1;', $str);"
+  },
+  {
+    "file": "system/helpers/xml_helper.php",
+    "line": 85,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return preg_replace('/'.$temp.'(\\w+);/', '&\\\\1;', $str);"
+  },
+  {
+    "file": "system/libraries/Calendar.php",
+    "line": 246,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$this->next_prev_url = preg_replace('/(.+?)\\/*$/', '\\\\1/', $this->next_prev_url);"
+  },
+  {
+    "file": "system/libraries/Email.php",
+    "line": 737,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$this->_attachments[$i]['cid'] = uniqid(basename($this->_attachments[$i]['name'][0]).'@');"
+  },
+  {
+    "file": "system/libraries/Email.php",
+    "line": 888,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "return '<'.uniqid('').strstr($from, '@').'>';"
+  },
+  {
+    "file": "system/libraries/Email.php",
+    "line": 1077,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$body = str_replace(\"\\t\", '', preg_replace('#<!--(.*)--\\>#', '', trim(strip_tags($body))));"
+  },
+  {
+    "file": "system/libraries/Email.php",
+    "line": 1085,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$body = preg_replace('| +|', ' ', $body);"
+  },
+  {
+    "file": "system/libraries/Email.php",
+    "line": 1116,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace('| +\\n|', \"\\n\", $str);"
+  },
+  {
+    "file": "system/libraries/Email.php",
+    "line": 1285,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$boundary = uniqid('B_ALT_');"
+  },
+  {
+    "file": "system/libraries/Email.php",
+    "line": 1320,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$boundary = uniqid('B_ATC_');"
+  },
+  {
+    "file": "system/libraries/Email.php",
+    "line": 1341,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$alt_boundary = uniqid('B_ALT_');"
+  },
+  {
+    "file": "system/libraries/Email.php",
+    "line": 1346,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$atc_boundary = uniqid('B_ATC_');"
+  },
+  {
+    "file": "system/libraries/Email.php",
+    "line": 1353,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$rel_boundary = uniqid('B_REL_');"
+  },
+  {
+    "file": "system/libraries/Email.php",
+    "line": 1505,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace(array('| +|', '/\\x00+/'), array(' ', ''), $str);"
+  },
+  {
+    "file": "system/libraries/Email.php",
+    "line": 1976,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$this->_send_data($this->_header_str.preg_replace('/^\\./m', '..$1', $this->_finalbody));"
+  },
+  {
+    "file": "system/libraries/Encrypt.php",
+    "line": 131,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "return md5($key);"
+  },
+  {
+    "file": "system/libraries/Ftp.php",
+    "line": 137,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$this->hostname = preg_replace('|.+?://|', '', $this->hostname);"
+  },
+  {
+    "file": "system/libraries/Ftp.php",
+    "line": 482,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$filepath = preg_replace('/(.+?)\\/*$/', '\\\\1/', $filepath);"
+  },
+  {
+    "file": "system/libraries/Image_lib.php",
+    "line": 1828,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return preg_replace('/\\D/', '', $gd_version['GD Version']);"
+  },
+  {
+    "file": "system/libraries/Pagination.php",
+    "line": 655,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$output = preg_replace('#([^:\"])//+#', '\\\\1/', $output);"
+  },
+  {
+    "file": "system/libraries/Profiler.php",
+    "line": 307,
+    "rule_id": "php-loose-comparison",
+    "cwe": "697",
+    "confidence": "High",
+    "snippet": "if (count($_GET) === 0)"
+  },
+  {
+    "file": "system/libraries/Profiler.php",
+    "line": 347,
+    "rule_id": "php-loose-comparison",
+    "cwe": "697",
+    "confidence": "High",
+    "snippet": "if (count($_POST) === 0 && count($_FILES) === 0)"
+  },
+  {
+    "file": "system/libraries/Session/Session.php",
+    "line": 145,
+    "rule_id": "php-loose-comparison",
+    "cwe": "697",
+    "confidence": "High",
+    "snippet": "elseif (isset($_COOKIE[$this->_config['cookie_name']]) && $_COOKIE[$this->_config['cookie_name']] === session_id())"
+  },
+  {
+    "file": "system/libraries/Session/Session.php",
+    "line": 145,
+    "rule_id": "php-session-fixation",
+    "cwe": "384",
+    "confidence": "High",
+    "snippet": "elseif (isset($_COOKIE[$this->_config['cookie_name']]) && $_COOKIE[$this->_config['cookie_name']] === session_id())"
+  },
+  {
+    "file": "system/libraries/Session/drivers/Session_database_driver.php",
+    "line": 180,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$this->_fingerprint = md5('');"
+  },
+  {
+    "file": "system/libraries/Session/drivers/Session_database_driver.php",
+    "line": 191,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$this->_fingerprint = md5($result);"
+  },
+  {
+    "file": "system/libraries/Session/drivers/Session_database_driver.php",
+    "line": 239,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$this->_fingerprint = md5($session_data);"
+  },
+  {
+    "file": "system/libraries/Session/drivers/Session_database_driver.php",
+    "line": 254,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "if ($this->_fingerprint !== md5($session_data))"
+  },
+  {
+    "file": "system/libraries/Session/drivers/Session_database_driver.php",
+    "line": 263,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$this->_fingerprint = md5($session_data);"
+  },
+  {
+    "file": "system/libraries/Session/drivers/Session_database_driver.php",
+    "line": 382,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$arg = md5($session_id.($this->_config['match_ip'] ? '_'.$_SERVER['REMOTE_ADDR'] : ''));"
+  },
+  {
+    "file": "system/libraries/Session/drivers/Session_files_driver.php",
+    "line": 152,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": ".($this->_config['match_ip'] ? md5($_SERVER['REMOTE_ADDR']) : '');"
+  },
+  {
+    "file": "system/libraries/Session/drivers/Session_files_driver.php",
+    "line": 198,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$this->_fingerprint = md5('');"
+  },
+  {
+    "file": "system/libraries/Session/drivers/Session_files_driver.php",
+    "line": 228,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$this->_fingerprint = md5($session_data);"
+  },
+  {
+    "file": "system/libraries/Session/drivers/Session_files_driver.php",
+    "line": 257,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "elseif ($this->_fingerprint === md5($session_data))"
+  },
+  {
+    "file": "system/libraries/Session/drivers/Session_files_driver.php",
+    "line": 282,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$this->_fingerprint = md5(substr($session_data, 0, $written));"
+  },
+  {
+    "file": "system/libraries/Session/drivers/Session_files_driver.php",
+    "line": 288,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$this->_fingerprint = md5($session_data);"
+  },
+  {
+    "file": "system/libraries/Session/drivers/Session_memcached_driver.php",
+    "line": 171,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$this->_fingerprint = md5($session_data);"
+  },
+  {
+    "file": "system/libraries/Session/drivers/Session_memcached_driver.php",
+    "line": 203,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$this->_fingerprint = md5('');"
+  },
+  {
+    "file": "system/libraries/Session/drivers/Session_memcached_driver.php",
+    "line": 210,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "if ($this->_fingerprint !== ($fingerprint = md5($session_data)))"
+  },
+  {
+    "file": "system/libraries/Session/drivers/Session_redis_driver.php",
+    "line": 250,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$this->_fingerprint = md5($session_data);"
+  },
+  {
+    "file": "system/libraries/Session/drivers/Session_redis_driver.php",
+    "line": 287,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "if ($this->_fingerprint !== ($fingerprint = md5($session_data)) OR $this->_key_exists === FALSE)"
+  },
+  {
+    "file": "system/libraries/Trackback.php",
+    "line": 215,
+    "rule_id": "php-loose-comparison",
+    "cwe": "697",
+    "confidence": "High",
+    "snippet": "$_POST[$val] = ($val !== 'url') ? $this->convert_xml(strip_tags($_POST[$val])) : strip_tags($_POST[$val]);"
+  },
+  {
+    "file": "system/libraries/Trackback.php",
+    "line": 350,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$urls = str_replace(',,', ',', preg_replace('/\\s*(\\S+)\\s*/', '\\\\1,', $urls));"
+  },
+  {
+    "file": "system/libraries/Trackback.php",
+    "line": 432,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace(array('/&#(\\d+);/', '/&(\\w+);/'), $temp.'\\\\1;', $str);"
+  },
+  {
+    "file": "system/libraries/Trackback.php",
+    "line": 438,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return preg_replace(array('/'.$temp.'(\\d+);/', '/'.$temp.'(\\w+);/'), array('&#\\\\1;', '&\\\\1;'), $str);"
+  },
+  {
+    "file": "system/libraries/Trackback.php",
+    "line": 460,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace('/\\s+/', ' ', str_replace(array(\"\\r\\n\", \"\\r\", \"\\n\"), ' ', $str));"
+  },
+  {
+    "file": "system/libraries/Typography.php",
+    "line": 125,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace(\"/\\n\\n+/\", \"\\n\\n\", $str);"
+  },
+  {
+    "file": "system/libraries/Typography.php",
+    "line": 158,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace('#<(/*)('.$this->inline_elements.')([ >])#i', '{@TAG}\\\\1\\\\2\\\\3', $str);"
+  },
+  {
+    "file": "system/libraries/Typography.php",
+    "line": 215,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace('/^(.*?)<('.$this->block_elements.')/i', '<p>$1</p><$2', $str);"
+  },
+  {
+    "file": "system/libraries/Typography.php",
+    "line": 227,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace('#(?(?=<p>\\{@HC'.$i.'\\})<p>\\{@HC'.$i.'\\}(\\s*</p>)|\\{@HC'.$i.'\\})#s', $html_comments[$i], $str);"
+  },
+  {
+    "file": "system/libraries/Typography.php",
+    "line": 277,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return preg_replace(array_keys($table), $table, $str);"
+  },
+  {
+    "file": "system/libraries/Typography.php",
+    "line": 343,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return preg_replace(array_keys($table), $table, $str);"
+  },
+  {
+    "file": "system/libraries/Typography.php",
+    "line": 367,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$str = preg_replace(\"/([^\\n])(\\n)([^\\n])/\", '\\\\1<br />\\\\2\\\\3', $str);"
+  },
+  {
+    "file": "system/libraries/Typography.php",
+    "line": 380,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "return preg_replace('/<p><\\/p>(.*)/', '\\\\1', $str, 1);"
+  },
+  {
+    "file": "system/libraries/Upload.php",
+    "line": 457,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$this->file_type = preg_replace('/^(.+?);.*$/', '\\\\1', $this->file_type);"
+  },
+  {
+    "file": "system/libraries/Upload.php",
+    "line": 526,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$this->file_name = preg_replace('/\\s+/', '_', $this->file_name);"
+  },
+  {
+    "file": "system/libraries/Upload.php",
+    "line": 656,
+    "rule_id": "php-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "$filename = md5(uniqid(mt_rand())).$this->file_ext;"
+  },
+  {
+    "file": "system/libraries/Upload.php",
+    "line": 656,
+    "rule_id": "php-weak-password-hash",
+    "cwe": "328",
+    "confidence": "Weak",
+    "snippet": "$filename = md5(uniqid(mt_rand())).$this->file_ext;"
+  },
+  {
+    "file": "system/libraries/Upload.php",
+    "line": 1012,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$this->upload_path = preg_replace('/(.+?)\\/*$/', '\\\\1/',  $this->upload_path);"
+  },
+  {
+    "file": "system/libraries/User_agent.php",
+    "line": 379,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$this->languages = explode(',', preg_replace('/(;\\s?q=[0-9\\.]+)|\\s/i', '', strtolower(trim($_SERVER['HTTP_ACCEPT_LANGUAGE']))));"
+  },
+  {
+    "file": "system/libraries/User_agent.php",
+    "line": 399,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$this->charsets = explode(',', preg_replace('/(;\\s?q=.+)|\\s/i', '', strtolower(trim($_SERVER['HTTP_ACCEPT_CHARSET']))));"
+  },
+  {
+    "file": "system/libraries/Zip.php",
+    "line": 328,
+    "rule_id": "php-preg-replace-eval",
+    "cwe": "95",
+    "confidence": "Weak",
+    "snippet": "$name = preg_replace('|.*/(.+)|', '\\\\1', $name);"
+  }
+]

@@ -1,0 +1,554 @@
+[
+  {
+    "file": "examples/amending_request_object.py",
+    "line": 30,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "app.run(host=\"0.0.0.0\", port=8000, debug=True)"
+  },
+  {
+    "file": "examples/blueprint_middlware_execution_order.py",
+    "line": 54,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "app.run(host=\"0.0.0.0\", port=8000, debug=True, auto_reload=False)"
+  },
+  {
+    "file": "examples/blueprints.py",
+    "line": 41,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "app.run(host=\"0.0.0.0\", port=9999, debug=True)"
+  },
+  {
+    "file": "examples/exception_monitoring.py",
+    "line": 55,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "app.run(host=\"0.0.0.0\", port=8000, debug=True)"
+  },
+  {
+    "file": "examples/http_redirect.py",
+    "line": 74,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "https.run(port=HTTPS_PORT, debug=True)"
+  },
+  {
+    "file": "examples/log_request_id.py",
+    "line": 77,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "app.run(port=9999, debug=True)"
+  },
+  {
+    "file": "examples/modify_header_example.py",
+    "line": 30,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "app.run(host=\"0.0.0.0\", port=8000, debug=True)"
+  },
+  {
+    "file": "examples/simple_async_view.py",
+    "line": 41,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "app.run(host=\"0.0.0.0\", port=8000, debug=True)"
+  },
+  {
+    "file": "examples/try_everything.py",
+    "line": 123,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "High",
+    "snippet": "app.run(host=\"0.0.0.0\", port=8000, debug=True)"
+  },
+  {
+    "file": "examples/url_for_example.py",
+    "line": 21,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "app.run(host=\"0.0.0.0\", port=8000, debug=True)"
+  },
+  {
+    "file": "examples/websocket.py",
+    "line": 27,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "app.run(host=\"0.0.0.0\", port=8000, debug=True)"
+  },
+  {
+    "file": "guide/public/assets/docs.js",
+    "line": 206,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "console.log(\"beforeRequest\")"
+  },
+  {
+    "file": "guide/public/assets/docs.js",
+    "line": 215,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "console.log(\"afterRequest\")"
+  },
+  {
+    "file": "guide/webapp/display/search/renderer.py",
+    "line": 50,
+    "rule_id": "py-ldap-injection",
+    "cwe": "90",
+    "confidence": "High",
+    "snippet": "results = searcher.search(query, language)"
+  },
+  {
+    "file": "guide/webapp/worker/livereload.js",
+    "line": 1239,
+    "rule_id": "js-insecure-random",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "var px = Math.random();"
+  },
+  {
+    "file": "guide/webapp/worker/livereload.js",
+    "line": 2528,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "this.host.console.log('LiveReload is asking LESS to recompile all stylesheets');"
+  },
+  {
+    "file": "guide/webapp/worker/livereload.js",
+    "line": 2639,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "return console.log(\"\".concat(e.message, \".\"));"
+  },
+  {
+    "file": "guide/webapp/worker/livereload.js",
+    "line": 2643,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "return console.log(\"LiveReload internal error: \".concat(e.message));"
+  },
+  {
+    "file": "guide/webapp/worker/livereload.js",
+    "line": 2687,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "return this.console.log(\"\".concat(message));"
+  },
+  {
+    "file": "guide/webapp/worker/livereload.js",
+    "line": 3468,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "this.console.log(\"LiveReload found \".concat(links.length, \" LINKed stylesheets, \").concat(imported.length, \" @imported stylesheets\"));"
+  },
+  {
+    "file": "guide/webapp/worker/livereload.js",
+    "line": 3474,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "this.console.log(\"LiveReload is reloading imported stylesheet: \".concat(match.object.href));"
+  },
+  {
+    "file": "guide/webapp/worker/livereload.js",
+    "line": 3477,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "this.console.log(\"LiveReload is reloading stylesheet: \".concat(this.linkHref(match.object)));"
+  },
+  {
+    "file": "guide/webapp/worker/livereload.js",
+    "line": 3482,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "this.console.log(\"LiveReload will reload all stylesheets because path '\".concat(path, \"' did not match any specific one. To disable this behavior, set 'options.reloadMissingCSS' to 'false'.\"));"
+  },
+  {
+    "file": "guide/webapp/worker/livereload.js",
+    "line": 3488,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "this.console.log(\"LiveReload will not reload path '\".concat(path, \"' because the stylesheet was not found on the page and 'options.reloadMissingCSS' was set to 'false'.\"));"
+  },
+  {
+    "file": "guide/webapp/worker/livereload.js",
+    "line": 3543,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "_this5.console.log('LiveReload: the new stylesheet has finished loading');"
+  },
+  {
+    "file": "guide/webapp/worker/livereload.js",
+    "line": 3552,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "_this5.console.log('LiveReload is polling until the new CSS finishes loading...');"
+  },
+  {
+    "file": "guide/webapp/worker/livereload.js",
+    "line": 3689,
+    "rule_id": "js-debug-leftover",
+    "cwe": "489",
+    "confidence": "Weak",
+    "snippet": "this.console.log(\"LiveReload is overriding source URL \".concat(originalUrl, \" with \").concat(url));"
+  },
+  {
+    "file": "sanic/mixins/startup.py",
+    "line": 365,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "debug = True"
+  },
+  {
+    "file": "sanic/server/goodbye.py",
+    "line": 31,
+    "rule_id": "py-weak-random-token",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "return random.choice(list(phrases))  # nosec: B311"
+  },
+  {
+    "file": "scripts/release.py",
+    "line": 56,
+    "rule_id": "py-ssti-jinja2",
+    "cwe": "1336",
+    "confidence": "Weak",
+    "snippet": ").from_string(RELEASE_NOTE_TEMPLATE)"
+  },
+  {
+    "file": "scripts/release.py",
+    "line": 79,
+    "rule_id": "py-subprocess-shell-true",
+    "cwe": "78",
+    "confidence": "Weak",
+    "snippet": "command, stderr=PIPE, stdout=PIPE, stdin=PIPE, shell=True"
+  },
+  {
+    "file": "tests/conftest.py",
+    "line": 64,
+    "rule_id": "py-weak-random-token",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "[random.choice(string.ascii_lowercase) for _ in range(4)]"
+  },
+  {
+    "file": "tests/conftest.py",
+    "line": 66,
+    "rule_id": "py-weak-random-token",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "\"int\": lambda: random.choice(range(1000000)),"
+  },
+  {
+    "file": "tests/conftest.py",
+    "line": 67,
+    "rule_id": "py-weak-random-token",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "\"float\": lambda: random.random(),"
+  },
+  {
+    "file": "tests/conftest.py",
+    "line": 69,
+    "rule_id": "py-weak-random-token",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "[random.choice(string.ascii_lowercase) for _ in range(4)]"
+  },
+  {
+    "file": "tests/conftest.py",
+    "line": 90,
+    "rule_id": "py-weak-random-token",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "route_detail = (random.choice(self.HTTP_METHODS), route)"
+  },
+  {
+    "file": "tests/conftest.py",
+    "line": 104,
+    "rule_id": "py-weak-random-token",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "random.choice(self.ROUTE_PARAM_TYPES),"
+  },
+  {
+    "file": "tests/conftest.py",
+    "line": 185,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "debug=True, return_asyncio_server=True, port=PORT"
+  },
+  {
+    "file": "tests/performance/sanic/varied_server.py",
+    "line": 72,
+    "rule_id": "py-hardcoded-secret",
+    "cwe": "798",
+    "confidence": "Weak",
+    "snippet": "#           password='zomgdev',"
+  },
+  {
+    "file": "tests/test_app.py",
+    "line": 266,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "request, response = app.test_client.get(\"/\", debug=True)"
+  },
+  {
+    "file": "tests/test_exceptions.py",
+    "line": 223,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "\"/error_in_error_handler_handler\", debug=True"
+  },
+  {
+    "file": "tests/test_exceptions.py",
+    "line": 255,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "_, response = exception_app.test_client.get(\"/tempest\", debug=True)"
+  },
+  {
+    "file": "tests/test_exceptions.py",
+    "line": 391,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "_, response = app.test_client.post(\"/coffee\", debug=True)"
+  },
+  {
+    "file": "tests/test_exceptions_handler.py",
+    "line": 118,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "request, response = exception_handler_app.test_client.get(\"/4\", debug=True)"
+  },
+  {
+    "file": "tests/test_exceptions_handler.py",
+    "line": 140,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "\"/6/0\", debug=True"
+  },
+  {
+    "file": "tests/test_logging.py",
+    "line": 300,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "app.test_client.get(\"/\", debug=True)"
+  },
+  {
+    "file": "tests/test_multiprocessing.py",
+    "line": 34,
+    "rule_id": "py-weak-random-token",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "num_workers = random.choice(range(2, multiprocessing.cpu_count() * 2 + 1))"
+  },
+  {
+    "file": "tests/test_multiprocessing.py",
+    "line": 49,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "app.run(HOST, port, workers=num_workers, debug=True)"
+  },
+  {
+    "file": "tests/test_multiprocessing.py",
+    "line": 64,
+    "rule_id": "py-weak-random-token",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "num_workers = random.choice(range(2, multiprocessing.cpu_count() * 2 + 1))"
+  },
+  {
+    "file": "tests/test_multiprocessing.py",
+    "line": 82,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "app.run(HOST, port, workers=num_workers, debug=True)"
+  },
+  {
+    "file": "tests/test_multiprocessing.py",
+    "line": 106,
+    "rule_id": "py-unsafe-deserialization",
+    "cwe": "502",
+    "confidence": "Weak",
+    "snippet": "up_p_app = pickle.loads(p_app)"
+  },
+  {
+    "file": "tests/test_multiprocessing.py",
+    "line": 121,
+    "rule_id": "py-unsafe-deserialization",
+    "cwe": "502",
+    "confidence": "Weak",
+    "snippet": "up_p_app = pickle.loads(p_app)"
+  },
+  {
+    "file": "tests/test_multiprocessing.py",
+    "line": 135,
+    "rule_id": "py-unsafe-deserialization",
+    "cwe": "502",
+    "confidence": "Weak",
+    "snippet": "up_p_app = pickle.loads(p_app)"
+  },
+  {
+    "file": "tests/test_multiprocessing.py",
+    "line": 146,
+    "rule_id": "py-weak-random-token",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "num_workers = random.choice(range(2, multiprocessing.cpu_count() * 2 + 1))"
+  },
+  {
+    "file": "tests/test_request_data.py",
+    "line": 68,
+    "rule_id": "py-weak-random-token",
+    "cwe": "330",
+    "confidence": "Weak",
+    "snippet": "expected = random.choice(range(0, 100))"
+  },
+  {
+    "file": "tests/test_requests.py",
+    "line": 547,
+    "rule_id": "py-hardcoded-secret",
+    "cwe": "798",
+    "confidence": "High",
+    "snippet": "app.config.FORWARDED_SECRET = \"mySecret\""
+  },
+  {
+    "file": "tests/test_requests.py",
+    "line": 562,
+    "rule_id": "py-header-injection",
+    "cwe": "113",
+    "confidence": "High",
+    "snippet": "headers[\"Forwarded\"] = \"\""
+  },
+  {
+    "file": "tests/test_requests.py",
+    "line": 580,
+    "rule_id": "py-hardcoded-secret",
+    "cwe": "798",
+    "confidence": "High",
+    "snippet": "headers = {\"Forwarded\": 'Secret=\"mySecret\";For=127.0.0.4;Port=1234'}"
+  },
+  {
+    "file": "tests/test_requests.py",
+    "line": 627,
+    "rule_id": "py-hardcoded-secret",
+    "cwe": "798",
+    "confidence": "Medium",
+    "snippet": "app.config.FORWARDED_SECRET = \"_proxySecret\""
+  },
+  {
+    "file": "tests/test_requests.py",
+    "line": 661,
+    "rule_id": "py-hardcoded-secret",
+    "cwe": "798",
+    "confidence": "High",
+    "snippet": "app.config.FORWARDED_SECRET = \"mySecret\""
+  },
+  {
+    "file": "tests/test_requests.py",
+    "line": 676,
+    "rule_id": "py-header-injection",
+    "cwe": "113",
+    "confidence": "High",
+    "snippet": "headers[\"Forwarded\"] = \"\""
+  },
+  {
+    "file": "tests/test_requests.py",
+    "line": 696,
+    "rule_id": "py-hardcoded-secret",
+    "cwe": "798",
+    "confidence": "High",
+    "snippet": "headers = {\"Forwarded\": 'Secret=\"mySecret\";For=127.0.0.4;Port=1234'}"
+  },
+  {
+    "file": "tests/test_requests.py",
+    "line": 743,
+    "rule_id": "py-hardcoded-secret",
+    "cwe": "798",
+    "confidence": "Medium",
+    "snippet": "app.config.FORWARDED_SECRET = \"_proxySecret\""
+  },
+  {
+    "file": "tests/test_requests.py",
+    "line": 1490,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Medium",
+    "snippet": "data=payload, headers=headers, debug=True"
+  },
+  {
+    "file": "tests/test_requests.py",
+    "line": 1530,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Medium",
+    "snippet": "data=payload, headers=headers, debug=True"
+  },
+  {
+    "file": "tests/test_server_events.py",
+    "line": 120,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "debug=True, return_asyncio_server=True, port=port"
+  },
+  {
+    "file": "tests/test_server_events.py",
+    "line": 179,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "return_asyncio_server=True, sock=sock, debug=True"
+  },
+  {
+    "file": "tests/test_server_events.py",
+    "line": 210,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "debug=True, return_asyncio_server=True, port=port"
+  },
+  {
+    "file": "tests/test_tls.py",
+    "line": 674,
+    "rule_id": "py-debug-mode-enabled",
+    "cwe": "215",
+    "confidence": "Weak",
+    "snippet": "#         app.run(version=3, debug=True)"
+  }
+]

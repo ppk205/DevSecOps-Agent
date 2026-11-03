@@ -1,0 +1,163 @@
+[
+  {
+    "file": "client\\js\\keybinds.ts",
+    "line": 152,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+    "cwe": "CWECategory.DEBUG_LEFTOVER",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "defaults\\config.js",
+    "line": 365,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-hardcoded-secret",
+    "cwe": "CWECategory.HARD_CODED_SECRET",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "scripts\\changelog.js",
+    "line": 84,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+    "cwe": "CWECategory.DEBUG_LEFTOVER",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "scripts\\changelog.js",
+    "line": 87,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+    "cwe": "CWECategory.DEBUG_LEFTOVER",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "scripts\\changelog.js",
+    "line": 90,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+    "cwe": "CWECategory.DEBUG_LEFTOVER",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "scripts\\generate-config-doc.js",
+    "line": 38,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+    "cwe": "CWECategory.DEBUG_LEFTOVER",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "scripts\\generate-config-doc.js",
+    "line": 41,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+    "cwe": "CWECategory.DEBUG_LEFTOVER",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "scripts\\generate-config-doc.js",
+    "line": 44,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+    "cwe": "CWECategory.DEBUG_LEFTOVER",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "server\\client.ts",
+    "line": 218,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "server\\config.ts",
+    "line": 169,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "server\\log.ts",
+    "line": 19,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+    "cwe": "CWECategory.DEBUG_LEFTOVER",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "server\\log.ts",
+    "line": 22,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+    "cwe": "CWECategory.DEBUG_LEFTOVER",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "server\\log.ts",
+    "line": 25,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+    "cwe": "CWECategory.DEBUG_LEFTOVER",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "server\\plugins\\changelog.ts",
+    "line": 108,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "server\\plugins\\irc-events\\error.ts",
+    "line": 65,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "server\\plugins\\uploader.ts",
+    "line": 93,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-timing-unsafe-compare",
+    "cwe": "CWECategory.TIMING_ATTACK",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "server\\plugins\\uploader.ts",
+    "line": 115,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-timing-unsafe-compare",
+    "cwe": "CWECategory.TIMING_ATTACK",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "server\\plugins\\uploader.ts",
+    "line": 117,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-timing-unsafe-compare",
+    "cwe": "CWECategory.TIMING_ATTACK",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "server\\plugins\\uploader.ts",
+    "line": 119,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-timing-unsafe-compare",
+    "cwe": "CWECategory.TIMING_ATTACK",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "server\\plugins\\uploader.ts",
+    "line": 121,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-timing-unsafe-compare",
+    "cwe": "CWECategory.TIMING_ATTACK",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "server\\server.ts",
+    "line": 61,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+    "cwe": "CWECategory.INSECURE_RANDOMNESS",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "server\\server.ts",
+    "line": 111,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-timing-unsafe-compare",
+    "cwe": "CWECategory.TIMING_ATTACK",
+    "severity": "Severity.MEDIUM"
+  },
+  {
+    "file": "server\\server.ts",
+    "line": 111,
+    "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-timing-unsafe-compare",
+    "cwe": "CWECategory.TIMING_ATTACK",
+    "severity": "Severity.MEDIUM"
+  }
+]
