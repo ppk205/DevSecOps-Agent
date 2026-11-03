@@ -354,12 +354,17 @@ def hunt_vulns(
     family: str = "java",
     max_rounds: int = 12,
     max_findings: int = 20,
+    deep: bool = False,
 ) -> dict[str, Any]:
     """One tool-loop: model explores via tools, ends with a JSON list.
 
     Returns {"candidates": [...], "rounds": int, "usage": {...},
     "status": "completed"|"partial"|"failed"}. Each candidate holds
     title, file, line, cwe, severity, rationale, evidence.
+
+    With deep=True the fast-path verdict becomes the starting point,
+    not the finish: the model must then drive the tool loop to dig for
+    more, and both batches merge (deduped) at the end.
     """
     fam = _HUNT_FAMILIES.get(family, _HUNT_FAMILIES["generic"])
     focus = str(fam["focus"])
@@ -371,6 +376,7 @@ def hunt_vulns(
     rounds = 0
     total_tokens = 0
     last_content = ""
+    fast_candidates: list[dict[str, Any]] = []
     tool_evidence: list[str] = []
     trace: list[dict[str, Any]] = []
     try:
@@ -432,7 +438,7 @@ def hunt_vulns(
                     )
                 else:
                     candidates = parse_hunt_list(opening.content or "", max_findings)
-                    if candidates:
+                    if candidates and not deep:
                         return {
                             "candidates": candidates,
                             "rounds": rounds,
@@ -442,6 +448,27 @@ def hunt_vulns(
                             "trace": trace,
                         }
                     last_content = opening.content or ""
+                    if candidates:
+                        # Deep mode: fast path is seed, not verdict. Keep the
+                        # batch and force the model into the tool loop.
+                        tool_evidence.append(f"fast-path batch -> {json.dumps(candidates)[:1500]}")
+                        fast_candidates = list(candidates)
+                        messages.append(ChatMessage(role="assistant", content=last_content))
+                        messages.append(
+                            ChatMessage(
+                                role="user",
+                                content=(
+                                    f"Good start: {len(candidates)} candidates. "
+                                    "Now use list_files/grep_code/inspect_code "
+                                    "to hunt for MORE vulnerabilities in parts "
+                                    "of the snapshot you have not examined yet "
+                                    "(different files, sinks, and CWE classes). "
+                                    "Do not stop after one or two files — keep "
+                                    "digging until the tools stop yielding new "
+                                    "leads, then end with the full JSON array."
+                                ),
+                            )
+                        )
             except Exception as exc:  # noqa: BLE001 - fast path is best-effort
                 logger.warning("hunt fast path failed: %s", exc)
         for _ in range(max(1, max_rounds)):
@@ -506,14 +533,18 @@ def hunt_vulns(
                     )
                 )
         else:
-            candidates = parse_hunt_list(last_content, max_findings)
+            candidates = dedupe_candidates(
+                [*fast_candidates, *parse_hunt_list(last_content, max_findings)]
+            )[: max(1, max_findings)]
             return {
                 "candidates": candidates,
                 "rounds": rounds,
                 "usage": {"total_tokens": total_tokens},
                 "status": "partial",
             }
-        candidates = parse_hunt_list(last_content, max_findings)
+        candidates = dedupe_candidates(
+            [*fast_candidates, *parse_hunt_list(last_content, max_findings)]
+        )[: max(1, max_findings)]
         detail = f"loop ended with {len(candidates)} candidates"
         if not candidates:
             # Reasoning-only gateways return no usable content when tools are
@@ -552,7 +583,9 @@ def hunt_vulns(
                         total_tokens += int(closing.usage.get("total_tokens", 0))
                     except (TypeError, ValueError):
                         pass
-                candidates = parse_hunt_list(closing.content or "", max_findings)
+                candidates = dedupe_candidates(
+                    [*fast_candidates, *parse_hunt_list(closing.content or "", max_findings)]
+                )[: max(1, max_findings)]
                 reply = closing.content or ""
                 detail = (
                     f"closing call parsed {len(candidates)} candidates "
@@ -579,7 +612,12 @@ def hunt_vulns(
                                 total_tokens += int(retry.usage.get("total_tokens", 0))
                             except (TypeError, ValueError):
                                 pass
-                        candidates = parse_hunt_list(retry.content or "", max_findings)
+                        candidates = dedupe_candidates(
+                            [
+                                *fast_candidates,
+                                *parse_hunt_list(retry.content or "", max_findings),
+                            ]
+                        )[: max(1, max_findings)]
                         detail = (
                             f"retry parsed {len(candidates)} candidates "
                             f"(reply {(retry.content or '')[:150]})"
@@ -622,13 +660,16 @@ def hunt_all(
     families: list[str] | None = None,
     logic_pass: bool = True,
     max_rounds: int = 12,
-    max_findings: int = 20,
+    max_findings: int = 60,
+    deep: bool = True,
 ) -> dict[str, Any]:
     """Model-first hunt over every extension family in the snapshot.
 
     One sequential pass per family (fail-soft each), then dedupe across
-    passes. The model is the primary finder; deterministic scanners
-    corroborate downstream. Never raises for provider problems.
+    passes. Deep mode (default): the fast-path batch seeds a full tool
+    loop per pass instead of ending it. The model is the primary finder;
+    deterministic scanners corroborate downstream. Never raises for
+    provider problems.
     """
     inventory: list[str] = []
     try:
@@ -655,6 +696,7 @@ def hunt_all(
                 family=fam,
                 max_rounds=max_rounds,
                 max_findings=max_findings,
+                deep=deep,
             )
         except Exception as exc:  # noqa: BLE001 - one family never kills the hunt
             logger.warning("hunt pass %s failed: %s", fam, exc)

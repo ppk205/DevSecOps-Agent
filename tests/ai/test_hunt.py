@@ -382,3 +382,85 @@ class TestHuntAll:
             families=["java"],
         )
         assert [p["family"] for p in result["passes"]] == ["java", "logic"]
+
+
+class TestDeepHunt:
+    def test_deep_continues_after_fast_path(self, tmp_path):
+        import json as _json
+
+        from vulnscan.ai.hunt import hunt_vulns
+        from vulnscan.providers.client import ChatResponse
+
+        _snapshot(tmp_path)
+        first = {
+            "title": "SQLi",
+            "file": "src/LoginServlet.java",
+            "line": 5,
+            "cwe": "CWE-89",
+            "severity": "high",
+            "rationale": "r",
+            "evidence": "stmt.executeQuery(q);",
+        }
+        second = {
+            "title": "XSS",
+            "file": "src/LoginServlet.java",
+            "line": 6,
+            "cwe": "CWE-79",
+            "severity": "high",
+            "rationale": "r2",
+            "evidence": "out.println(q);",
+        }
+
+        def _call(name, args, call_id):
+            return {
+                "id": call_id,
+                "type": "function",
+                "function": {"name": name, "arguments": _json.dumps(args)},
+            }
+
+        script = [
+            ChatResponse(content=_json.dumps([first]), tool_calls=[], usage={}),
+            ChatResponse(
+                content="",
+                tool_calls=[_call("grep_code", {"pattern": "println"}, "c1")],
+                usage={},
+            ),
+            ChatResponse(content=_json.dumps([first, second]), tool_calls=[], usage={}),
+        ]
+
+        class _DeepClient:
+            def chat(self, messages, **kwargs):
+                if kwargs.get("tools"):
+                    return script.pop(0)
+                return script.pop(0)
+
+        result = hunt_vulns(snapshot_root=str(tmp_path), client=_DeepClient(), model="m", deep=True)
+        assert result["status"] == "completed"
+        assert result["rounds"] > 1
+        assert len(result["candidates"]) == 2
+
+    def test_shallow_unchanged(self, tmp_path):
+        import json as _json
+
+        from vulnscan.ai.hunt import hunt_vulns
+        from vulnscan.providers.client import ChatResponse
+
+        _snapshot(tmp_path)
+        first = {
+            "title": "SQLi",
+            "file": "src/LoginServlet.java",
+            "line": 5,
+            "cwe": "CWE-89",
+            "severity": "high",
+            "rationale": "r",
+            "evidence": "stmt.executeQuery(q);",
+        }
+
+        class _ShallowClient:
+            def chat(self, messages, **kwargs):
+                return ChatResponse(content=_json.dumps([first]), tool_calls=[], usage={})
+
+        result = hunt_vulns(snapshot_root=str(tmp_path), client=_ShallowClient(), model="m")
+        assert result["status"] == "completed"
+        assert result["rounds"] == 1
+        assert len(result["candidates"]) == 1
