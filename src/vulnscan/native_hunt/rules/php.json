@@ -63,7 +63,9 @@
       ],
       "source": "src/vulnscan/scanners/rules/php.yml#php-command-injection",
       "taint_sinks": [
-        "(?<![\\w:>])(?:system|exec|shell_exec|passthru|popen|proc_open)\\s*\\("
+        "(?<![\\w:>])(?:system|exec|shell_exec|passthru|popen|proc_open)\\s*\\(",
+        "(?<![\\w:>])(?:passthru|popen|proc_open|pcntl_exec)\\s*\\(",
+        "shell_exec\\s*\\("
       ],
       "mode": "taint"
     },
@@ -84,7 +86,13 @@
         "\\breadfile\\s*\\("
       ],
       "source": "src/vulnscan/scanners/rules/php.yml#php-path-traversal",
-      "mode": "taint"
+      "mode": "taint",
+      "taint_sinks": [
+        "(?:include|require)(?:_once)?\\s*[(\"]",
+        "file_get_contents\\s*\\(",
+        "(?<![\\w>])readfile\\s*\\(",
+        "fopen\\s*\\("
+      ]
     },
     {
       "id": "php-ssrf",
@@ -100,7 +108,12 @@
         "CURLOPT_URL"
       ],
       "source": "src/vulnscan/scanners/rules/php.yml#php-ssrf",
-      "mode": "taint"
+      "mode": "taint",
+      "taint_sinks": [
+        "file_get_contents\\s*\\(",
+        "curl_exec\\s*\\(",
+        "fsockopen\\s*\\("
+      ]
     },
     {
       "id": "php-unsafe-deserialization",
@@ -216,7 +229,10 @@
         "header\\s*\\(\\s*[\\\"']Location"
       ],
       "source": "src/vulnscan/scanners/rules/php.yml#php-open-redirect",
-      "mode": "taint"
+      "mode": "taint",
+      "taint_sinks": [
+        "header\\s*\\(\\s*[\\'\"]Location"
+      ]
     },
     {
       "id": "php-insecure-random",
@@ -264,7 +280,10 @@
         "create_function\\s*\\("
       ],
       "source": "src/vulnscan/scanners/rules/php.yml#php-create-function-injection",
-      "mode": "taint"
+      "mode": "taint",
+      "taint_sinks": [
+        "create_function\\s*\\("
+      ]
     },
     {
       "id": "php-dynamic-callable",
@@ -279,7 +298,10 @@
         "call_user_func(_array)?\\s*\\("
       ],
       "source": "src/vulnscan/scanners/rules/php.yml#php-dynamic-callable",
-      "mode": "taint"
+      "mode": "taint",
+      "taint_sinks": [
+        "call_user_func\\w*\\s*\\("
+      ]
     },
     {
       "id": "php-parse-str-pollution",
@@ -294,7 +316,11 @@
         "(mb_)?parse_str\\s*\\("
       ],
       "source": "src/vulnscan/scanners/rules/php.yml#php-parse-str-pollution",
-      "mode": "taint"
+      "mode": "taint",
+      "taint_sinks": [
+        "parse_str\\s*\\(",
+        "mb_parse_str\\s*\\("
+      ]
     },
     {
       "id": "php-preg-replace-eval",
@@ -339,7 +365,10 @@
         "session_id\\s*\\("
       ],
       "source": "src/vulnscan/scanners/rules/php.yml#php-session-fixation",
-      "mode": "taint"
+      "mode": "taint",
+      "taint_sinks": [
+        "session_id\\s*\\("
+      ]
     },
     {
       "id": "php-jwt-token",

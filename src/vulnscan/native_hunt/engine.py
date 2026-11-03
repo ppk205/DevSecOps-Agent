@@ -70,12 +70,14 @@ _DEF_RE = re.compile(
 )
 
 #: A definition line carrying one of these marks user-controlled entry
-#: data (Spring annotations, servlet/request objects); all its parameters
-#: start tainted. Framework-aware, engine-level, rule-independent.
+#: data (framework annotations, servlet objects, explicit user-input
+#: accessors). Only these taint all parameters — a bare word like
+#: ``request`` alone is NOT enough (every framework handler takes one).
 _ENTRY_MARK_RE = re.compile(
     r"@RequestParam|@RequestBody|@PathVariable|@RequestHeader|@CookieValue|"
     r"HttpServletRequest|HttpServletResponse|MultipartFile|"
-    r"\breq\s*[:=]|\brequest\b"
+    r"request\.(?:args|form|values|json|data|GET|POST|query|body|params)\b|"
+    r"req\.(?:query|body|params)\b"
 )
 
 _CALL_RE = re.compile(r"(?P<name>[A-Za-z_]\w*)\s*\((?P<args>[^();]*)\)")
@@ -293,10 +295,10 @@ def _scan_rule(
     for lineno, raw in enumerate(lines, start=1):
         window = joined[lineno - 1]
         sink_hit = any(rx.search(raw) is not None for rx in rule.sink_res)
-        taint_hit = any(
-            rx.search(raw) is not None or rx.search(window) is not None
-            for rx in rule.taint_sink_res
-        )
+        # The taint_sink pattern itself must sit on the reported line; the
+        # 3-line window only helps find the tainted argument (prevents a
+        # neighbor line's sink from claiming this line as its own).
+        taint_hit = any(rx.search(raw) is not None for rx in rule.taint_sink_res)
         if not sink_hit and not taint_hit:
             continue
         if _line_sanitized(raw, rule):

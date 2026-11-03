@@ -1,20 +1,29 @@
 # Đóng góp mới: engine săn lỗ hổng tự xây (native-hunt)
 
-> Số liệu trên WebGoat `3284a8e` (291 file Java + static JS), so với semgrep 1.78.0
-> cùng 85 rules. Tái hiện: `scan_snapshot('harness/WebGoat', [...])`.
+> Số liệu trên WebGoat `3284a8e` (291 file Java + static JS), pikachu và
+> sanic (shallow clone, Nov-2026). So với Semgrep 1.78.0 cùng 85 rules.
+> Tái hiện: `scan_snapshot(<root>, [...])` + `scripts/bench_compare.py`
+> (12 repo, kết quả đầy đủ trong `artifacts/bench-compare/<slug>/`).
 
-## Kết quả ablation (đếm theo dòng file+line)
+## Ablation A/B (đếm theo dòng file+line)
 
-| Cấu hình | Dòng có finding |
-|---|---|
-| A. Semgrep (baseline, đồ có sẵn) | 49 |
-| B. Native-hunt (đồ tự xây) | 159 |
-| Giao nhau A ∩ B | 43 (88% của A) |
-| Chỉ A có (6) | 4 bundle vendored minified (bỏ qua có chủ đích — chính semgrep cũng timeout trên ace.js) + 1 lệch dòng cùng finding (KID, tolerance ±3) + 1 chuỗi process-I/O (giới hạn v1, đã ghi nhận) |
-| Chỉ B có, High/Medium | 34+ (SQLi Lesson2/3/4, ChallengeLogin, KID JWT, log-injection, reflection, default-encoding...) mà semgrep mù |
+| Repo | A semgrep | B native | Giao nhau | Chỉ A | Chỉ B |
+|---|---|---|---|---|---|
+| WebGoat (Java) | 49 | 141 | 43 (88%) | 6 | 98 |
+| pikachu (PHP vuln-bench) | 78 | 122 | 64 | 14 | 58 |
+| sanic (Python framework) | 20 | 69 | 17 | 3 | 52 |
 
-Đọc đúng: native **bao phủ 88% semgrep và tìm thêm** các luồng taint đa bước
-(inter-procedural, multi-line) mà pattern một dòng của semgrep bỏ sót.
+Chỉ-A giải thích được hết: 4 bundle vendored minified (bỏ qua có chủ
+đích — chính semgrep cũng timeout trên ace.js), 1 lệch dòng cùng finding
+(KID JWT, tolerance ±3), 1 chuỗi process-I/O (giới hạn v1 đã ghi nhận).
+Chỉ-B High/Medium là TP semgrep mù: SQLi Lesson2/3/4, ChallengeLogin,
+KID multi-line, 6a inter-procedural, log-injection, default-charset,
+XSS heredoc PHP — đã spot-check từng nhóm.
+
+Đọc đúng: native **bao phủ phần lớn semgrep và tìm thêm** các luồng taint
+đa bước (inter-procedural, multi-line, heredoc) mà pattern một dòng của
+semgrep bỏ sót. Native-only Weak (pattern search-mode) có ồn hơn —
+báo cáo nên ưu tiên High/Medium, Weak dùng làm lane verify.
 
 ## Cái gì là mới (đồ án tự làm, không dùng engine ngoài)
 

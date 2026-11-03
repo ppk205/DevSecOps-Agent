@@ -40,7 +40,12 @@
         "\\.insertAdjacentHTML\\s*\\("
       ],
       "source": "src/vulnscan/scanners/rules/javascript.yml#js-xss-innerhtml",
-      "mode": "taint"
+      "mode": "taint",
+      "taint_sinks": [
+        "\\.innerHTML\\s*=",
+        "\\.outerHTML\\s*=",
+        "document\\.write\\w*\\s*\\("
+      ]
     },
     {
       "id": "js-command-injection",
@@ -79,7 +84,12 @@
         "\\.writeFile(Sync)?\\s*\\("
       ],
       "source": "src/vulnscan/scanners/rules/javascript.yml#js-path-traversal",
-      "mode": "taint"
+      "mode": "taint",
+      "taint_sinks": [
+        "readFileSync?\\s*\\(",
+        "createReadStream\\s*\\(",
+        "sendFile\\s*\\("
+      ]
     },
     {
       "id": "js-ssrf-fetch",
@@ -100,7 +110,12 @@
         "\\bhttps\\.get\\s*\\("
       ],
       "source": "src/vulnscan/scanners/rules/javascript.yml#js-ssrf-fetch",
-      "mode": "taint"
+      "mode": "taint",
+      "taint_sinks": [
+        "(?<![\\w.])fetch\\s*\\(",
+        "axios\\.(?:get|post|request)\\s*\\(",
+        "https?\\.(?:get|request)\\s*\\("
+      ]
     },
     {
       "id": "js-open-redirect",
@@ -117,7 +132,12 @@
         "location\\.assign\\s*\\("
       ],
       "source": "src/vulnscan/scanners/rules/javascript.yml#js-open-redirect",
-      "mode": "taint"
+      "mode": "taint",
+      "taint_sinks": [
+        "location\\.href\\s*=",
+        "location\\.replace\\s*\\(",
+        "res\\.redirect\\s*\\("
+      ]
     },
     {
       "id": "js-eval-injection",
@@ -135,7 +155,9 @@
       ],
       "source": "src/vulnscan/scanners/rules/javascript.yml#js-eval-injection",
       "taint_sinks": [
-        "(?<![\\w.])eval\\s*\\("
+        "(?<![\\w.])eval\\s*\\(",
+        "(?<![\\w.])Function\\s*\\(",
+        "vm\\.runIn\\w*\\s*\\("
       ],
       "mode": "taint"
     },
@@ -186,7 +208,10 @@
         "\\.defaultsDeep\\s*\\("
       ],
       "source": "src/vulnscan/scanners/rules/javascript.yml#js-prototype-pollution",
-      "mode": "taint"
+      "mode": "taint",
+      "taint_sinks": [
+        "__proto__"
+      ]
     },
     {
       "id": "js-redos-dynamic-regexp",
@@ -203,7 +228,10 @@
         "(^|[^\\w.])RegExp\\s*\\("
       ],
       "source": "src/vulnscan/scanners/rules/javascript.yml#js-redos-dynamic-regexp",
-      "mode": "taint"
+      "mode": "taint",
+      "taint_sinks": [
+        "new\\s+RegExp\\s*\\("
+      ]
     },
     {
       "id": "js-implied-eval",
@@ -221,7 +249,10 @@
         "\\bvm\\.(runInThisContext|runInNewContext|runInContext|compileFunction)\\s*\\("
       ],
       "source": "src/vulnscan/scanners/rules/javascript.yml#js-implied-eval",
-      "mode": "taint"
+      "mode": "taint",
+      "taint_sinks": [
+        "set(?:Timeout|Interval)\\s*\\("
+      ]
     },
     {
       "id": "js-shell-spawn",
@@ -239,7 +270,11 @@
         "shell\\s*:\\s*true"
       ],
       "source": "src/vulnscan/scanners/rules/javascript.yml#js-shell-spawn",
-      "mode": "taint"
+      "mode": "taint",
+      "taint_sinks": [
+        "(?<![\\w.])(?:spawn|spawnSync)\\s*\\(",
+        "execFileSync?\\s*\\("
+      ]
     },
     {
       "id": "js-nosql-injection",
@@ -376,7 +411,10 @@
         "noent\\s*:\\s*true"
       ],
       "source": "native-addition (no javascript.yml XXE rule to port)",
-      "mode": "taint"
+      "mode": "taint",
+      "taint_sinks": [
+        "parseFromString\\s*\\("
+      ]
     },
     {
       "id": "js-unsafe-deserialization",

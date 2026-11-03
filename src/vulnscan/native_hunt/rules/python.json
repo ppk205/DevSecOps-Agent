@@ -35,7 +35,12 @@
         "(?<!\\.)Markup\\s*\\("
       ],
       "source": "src/vulnscan/scanners/rules/python.yml#py-xss-markup-bypass",
-      "mode": "taint"
+      "mode": "taint",
+      "taint_sinks": [
+        "Markup\\s*\\(",
+        "render_template_string\\s*\\(",
+        "response\\.write\\s*\\("
+      ]
     },
     {
       "id": "py-command-injection",
@@ -54,7 +59,10 @@
       "source": "src/vulnscan/scanners/rules/python.yml#py-command-injection",
       "taint_sinks": [
         "os\\.system\\s*\\(",
-        "subprocess\\.(?:call|run|Popen)\\s*\\("
+        "subprocess\\.(?:call|run|Popen)\\s*\\(",
+        "os\\.popen\\s*\\(",
+        "commands\\.get\\w+\\s*\\(",
+        "pty\\.spawn\\s*\\("
       ],
       "mode": "taint"
     },
@@ -91,7 +99,11 @@
         "\\bopen\\s*\\("
       ],
       "source": "src/vulnscan/scanners/rules/python.yml#py-path-traversal-open",
-      "mode": "taint"
+      "mode": "taint",
+      "taint_sinks": [
+        "(?<![\\w.])open\\s*\\(",
+        "os\\.path\\.join\\s*\\("
+      ]
     },
     {
       "id": "py-ssrf-requests",
@@ -107,7 +119,12 @@
         "urllib\\.request\\.urlopen\\s*\\("
       ],
       "source": "src/vulnscan/scanners/rules/python.yml#py-ssrf-requests",
-      "mode": "taint"
+      "mode": "taint",
+      "taint_sinks": [
+        "requests\\.(?:get|post|put|delete|request)\\s*\\(",
+        "urlopen\\s*\\(",
+        "urlretrieve\\s*\\("
+      ]
     },
     {
       "id": "py-ssti-jinja2",
@@ -190,7 +207,10 @@
         "\\.search(_s|_st)?\\s*\\("
       ],
       "source": "src/vulnscan/scanners/rules/python.yml#py-ldap-injection",
-      "mode": "taint"
+      "mode": "taint",
+      "taint_sinks": [
+        "search(?:_s|_ext_s?)?\\s*\\("
+      ]
     },
     {
       "id": "py-xxe-xml-parser",
@@ -224,7 +244,11 @@
         "\\.headers\\.(set|append)\\s*\\("
       ],
       "source": "src/vulnscan/scanners/rules/python.yml#py-header-injection",
-      "mode": "taint"
+      "mode": "taint",
+      "taint_sinks": [
+        "set_header\\s*\\(",
+        "headers\\["
+      ]
     },
     {
       "id": "py-open-redirect",
@@ -240,7 +264,11 @@
         "HttpResponseRedirect\\s*\\("
       ],
       "source": "src/vulnscan/scanners/rules/python.yml#py-open-redirect",
-      "mode": "taint"
+      "mode": "taint",
+      "taint_sinks": [
+        "redirect\\s*\\(",
+        "HttpResponseRedirect\\s*\\("
+      ]
     },
     {
       "id": "py-weak-hash",

@@ -31,7 +31,7 @@ RULES_DIR = Path(__file__).resolve().parent / "rules"
 #: Default source regexes applied to ported (sink-only) rules per family.
 _FAMILY_SOURCES: dict[str, list[str]] = {
     "python": [r"request\.(args|form|values|json|data|GET|POST)", r"\binput\s*\("],
-    "javascript": [r"req\.(query|body|params)", r"location\.(search|hash)", r"document\.URL"],
+    "javascript": [r"req\.(query|body|params)", r"location\.(search|hash)", r"document\.URL", r"event\.data", r"window\.name"],
     "java": [
         r"request\.getParameter",
         r"getParameter\s*\(",
