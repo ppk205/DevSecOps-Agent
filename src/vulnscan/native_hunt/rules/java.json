@@ -469,6 +469,22 @@
         "(?i)(api[_-]?key|client[_-]?secret|auth[_-]?token|access[_-]?token)\\s*[:=]\\s*[\\'\"][A-Za-z0-9_\\-]{16,}[\\'\"]"
       ],
       "source": "native-addition:gitleaks-generic-api-key"
+    },
+    {
+      "id": "java-unclosed-resource",
+      "languages": [
+        "java"
+      ],
+      "severity": "WARNING",
+      "message": "Resource opened but never closed in-file; use try-with-resources.",
+      "cwe": "404",
+      "attack": "resource_leak",
+      "mode": "search",
+      "resource_check": true,
+      "patterns": [
+        "."
+      ],
+      "source": "native-addition:spotbugs-OBL"
     }
   ]
 }

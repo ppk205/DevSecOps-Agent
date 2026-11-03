@@ -44,6 +44,9 @@ _FAMILY_SOURCES: dict[str, list[str]] = {
         r"\.get\s*\(\s*\"kid\"",
         r"header\.get\s*\(",
         r"claims\.get\s*\(",
+        r"getUsername\s*\(",
+        r"\.getName\s*\(",
+        r"getPrincipal\s*\(",
     ],
     "php": [r"\$_(GET|POST|REQUEST|COOKIE)"],
     "generic": [r"\brequest\b", r"\binput\s*\(", r"\bargv\b"],
@@ -82,6 +85,11 @@ class Rule:
     sanitizers: list[Sanitizer] = field(default_factory=list)
     message: str = ""
     source_ref: str = ""
+    # Resource-leak check (OBL family): rule carries no patterns; the engine
+    # flags `new <ResourceType>(...)` / getConnection assignments whose
+    # variable never gets `.close()` later in the file (try-with-resources
+    # assignments excluded — they close implicitly).
+    resource_check: bool = False
     # taint: sink fires only with tainted data; search: pattern alone is
     # Weak evidence. Ported from the Semgrep rule's own mode; hand-built
     # rules default by shape (sources present = taint).
@@ -191,6 +199,7 @@ def _parse_rule(item: Any, path: Path, family: str, ported: bool) -> Rule:
         taint_sinks=_str_list(item.get("taint_sinks"), f"{rule_id!r} 'taint_sinks'", path),
         pattern_only=pattern_only,
         mode=raw_mode,
+        resource_check=bool(item.get("resource_check", False)),
         sanitizers=sanitizers,
         message=_opt_str(item.get("message", ""), f"{rule_id!r} 'message'", path),
         source_ref=_opt_str(item.get("source", ""), f"{rule_id!r} 'source'", path),

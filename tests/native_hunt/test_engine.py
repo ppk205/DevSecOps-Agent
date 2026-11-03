@@ -194,3 +194,33 @@ def test_condition_assignment_taints(tmp_path) -> None:
     assert any(
         f.rule_id == "java-sql-concatenation" and f.line == 3 for f in findings
     )
+
+
+def test_resource_check_flags_unclosed(tmp_path) -> None:
+    from vulnscan.native_hunt import load_rules, scan_file
+
+    target = tmp_path / "R.java"
+    target.write_text(
+        "import java.io.*;\n"
+        "class R {\n"
+        "    void a() throws Exception {\n"
+        "        BufferedReader r = new BufferedReader(new FileReader(\"x\"));\n"
+        "        System.out.println(r.readLine());\n"
+        "    }\n"
+        "    void b() throws Exception {\n"
+        "        try (BufferedReader q = new BufferedReader(new FileReader(\"y\"))) {\n"
+        "            System.out.println(q.readLine());\n"
+        "        }\n"
+        "    }\n"
+        "    void c() throws Exception {\n"
+        "        BufferedReader s = new BufferedReader(new FileReader(\"z\"));\n"
+        "        s.close();\n"
+        "    }\n"
+        "}\n",
+        encoding="utf-8",
+    )
+    findings = scan_file(target, load_rules("java"))
+    lines = {f.line for f in findings if f.rule_id == "java-unclosed-resource"}
+    assert 4 in lines
+    assert 8 not in lines
+    assert 13 not in lines

@@ -282,12 +282,70 @@ def _scan_rule(
     return findings
 
 
+_RESOURCE_CTOR_RE = re.compile(
+    r"=\s*new\s+(FileInputStream|FileOutputStream|BufferedReader|BufferedWriter|"
+    r"InputStreamReader|OutputStreamWriter|PrintWriter|PrintStream|Scanner|"
+    r"Formatter|RandomAccessFile|FileChannel|Socket|ZipFile)\s*\("
+)
+_RESOURCE_CALL_RE = re.compile(
+    r"=\s*(?:\w+\.)?(?:getConnection|createStatement|prepareStatement|openConnection)\s*\("
+)
+_RESOURCE_CLOSE_RE = re.compile(r"\.(?:close|disconnect|release)\s*\(")
+
+
+def _scan_resources(name: str, lines: list[str], rule: Rule) -> list[Finding]:
+    """Flag resource assignments never followed by `.close()` in-file.
+
+    Best-effort OBL approximation: try-with-resources assignments
+    (``try (Type var = ...)``) close implicitly and are skipped. Findings
+    are Weak — cross-method closes are invisible to a file-local scan.
+    """
+    out: list[Finding] = []
+    for lineno, raw in enumerate(lines, start=1):
+        if "try (" in raw or "try(" in raw:
+            continue
+        opened = _RESOURCE_CTOR_RE.search(raw) or _RESOURCE_CALL_RE.search(raw)
+        if opened is None:
+            continue
+        match = _ASSIGN_RE.match(raw) or _COND_ASSIGN_RE.search(raw)
+        if match is None:
+            continue
+        var = match.group("var")
+        if var in {"in", "out", "err"}:
+            continue
+        closed = any(
+            _word_rx(var).search(later) is not None and _RESOURCE_CLOSE_RE.search(later) is not None
+            for later in lines[lineno:]
+        )
+        if closed:
+            continue
+        out.append(
+            Finding(
+                rule_id=rule.id,
+                cwe=rule.cwe,
+                attack=rule.attack,
+                severity=rule.severity,
+                file=name,
+                line=lineno,
+                snippet=raw.strip()[:200],
+                confidence="Weak",
+                source_line=None,
+                message=rule.message,
+                source_ref=rule.source_ref,
+            )
+        )
+    return out
+
+
 def _scan_text(name: str, text: str, rules: Sequence[Rule]) -> list[Finding]:
     lines = text.splitlines()
     out: list[Finding] = []
     defs = _collect_defs(lines)
     for rule in rules:
-        out.extend(_scan_rule(name, lines, rule, defs))
+        if rule.resource_check:
+            out.extend(_scan_resources(name, lines, rule))
+        else:
+            out.extend(_scan_rule(name, lines, rule, defs))
     out.sort(key=lambda f: (f.file, f.line, f.rule_id))
     return out
 
