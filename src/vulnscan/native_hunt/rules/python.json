@@ -19,7 +19,8 @@
       "taint_sinks": [
         "\\.execute\\s*\\(",
         "\\.executemany\\s*\\("
-      ]
+      ],
+      "mode": "search"
     },
     {
       "id": "py-xss-markup-bypass",
@@ -33,7 +34,8 @@
       "patterns": [
         "(?<!\\.)Markup\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/python.yml#py-xss-markup-bypass"
+      "source": "src/vulnscan/scanners/rules/python.yml#py-xss-markup-bypass",
+      "mode": "taint"
     },
     {
       "id": "py-command-injection",
@@ -53,7 +55,8 @@
       "taint_sinks": [
         "os\\.system\\s*\\(",
         "subprocess\\.(?:call|run|Popen)\\s*\\("
-      ]
+      ],
+      "mode": "taint"
     },
     {
       "id": "py-code-injection-eval",
@@ -72,7 +75,8 @@
       "taint_sinks": [
         "(?<![\\w.])eval\\s*\\(",
         "(?<![\\w.])exec\\s*\\("
-      ]
+      ],
+      "mode": "taint"
     },
     {
       "id": "py-path-traversal-open",
@@ -86,7 +90,8 @@
       "patterns": [
         "\\bopen\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/python.yml#py-path-traversal-open"
+      "source": "src/vulnscan/scanners/rules/python.yml#py-path-traversal-open",
+      "mode": "taint"
     },
     {
       "id": "py-ssrf-requests",
@@ -101,7 +106,8 @@
         "requests\\.(get|post|put|delete|patch|head|request)\\s*\\(",
         "urllib\\.request\\.urlopen\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/python.yml#py-ssrf-requests"
+      "source": "src/vulnscan/scanners/rules/python.yml#py-ssrf-requests",
+      "mode": "taint"
     },
     {
       "id": "py-ssti-jinja2",
@@ -116,7 +122,8 @@
         "jinja2\\.Template\\s*\\(",
         "from_string\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/python.yml#py-ssti-jinja2"
+      "source": "src/vulnscan/scanners/rules/python.yml#py-ssti-jinja2",
+      "mode": "search"
     },
     {
       "id": "py-unsafe-deserialization",
@@ -137,7 +144,8 @@
       "taint_sinks": [
         "pickle\\.loads\\s*\\(",
         "yaml\\.load\\s*\\("
-      ]
+      ],
+      "mode": "search"
     },
     {
       "id": "py-hardcoded-secret",
@@ -151,7 +159,8 @@
       "patterns": [
         "(?i)(password|passwd|secret|api_key|apikey|access_token)\\s*=\\s*['\\\"][^'\\\"]+['\\\"]"
       ],
-      "source": "src/vulnscan/scanners/rules/python.yml#py-hardcoded-secret"
+      "source": "src/vulnscan/scanners/rules/python.yml#py-hardcoded-secret",
+      "mode": "search"
     },
     {
       "id": "py-weak-random-token",
@@ -165,7 +174,8 @@
       "patterns": [
         "random\\.(random|randint|randrange|choice|uniform)\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/python.yml#py-weak-random-token"
+      "source": "src/vulnscan/scanners/rules/python.yml#py-weak-random-token",
+      "mode": "search"
     },
     {
       "id": "py-ldap-injection",
@@ -179,7 +189,8 @@
       "patterns": [
         "\\.search(_s|_st)?\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/python.yml#py-ldap-injection"
+      "source": "src/vulnscan/scanners/rules/python.yml#py-ldap-injection",
+      "mode": "taint"
     },
     {
       "id": "py-xxe-xml-parser",
@@ -196,7 +207,8 @@
         "ElementTree\\.(fromstring|parse)\\s*\\(",
         "(^|[\\s(=])ET\\.(fromstring|parse)\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/python.yml#py-xxe-xml-parser"
+      "source": "src/vulnscan/scanners/rules/python.yml#py-xxe-xml-parser",
+      "mode": "search"
     },
     {
       "id": "py-header-injection",
@@ -211,7 +223,8 @@
         "\\.headers\\s*\\[",
         "\\.headers\\.(set|append)\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/python.yml#py-header-injection"
+      "source": "src/vulnscan/scanners/rules/python.yml#py-header-injection",
+      "mode": "taint"
     },
     {
       "id": "py-open-redirect",
@@ -226,7 +239,8 @@
         "\\bredirect\\s*\\(",
         "HttpResponseRedirect\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/python.yml#py-open-redirect"
+      "source": "src/vulnscan/scanners/rules/python.yml#py-open-redirect",
+      "mode": "taint"
     },
     {
       "id": "py-weak-hash",
@@ -240,7 +254,8 @@
       "patterns": [
         "hashlib\\.(md5|sha1|sha)\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/python.yml#py-weak-hash"
+      "source": "src/vulnscan/scanners/rules/python.yml#py-weak-hash",
+      "mode": "search"
     },
     {
       "id": "py-jwt-hardcoded-secret",
@@ -254,7 +269,8 @@
       "patterns": [
         "jwt\\.(encode|decode)\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/python.yml#py-jwt-hardcoded-secret"
+      "source": "src/vulnscan/scanners/rules/python.yml#py-jwt-hardcoded-secret",
+      "mode": "search"
     },
     {
       "id": "py-pickle-variant-loads",
@@ -272,7 +288,8 @@
         "cPickle\\.(loads|load)\\s*\\(",
         "_pickle\\.(loads|load)\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/python.yml#py-pickle-variant-loads"
+      "source": "src/vulnscan/scanners/rules/python.yml#py-pickle-variant-loads",
+      "mode": "search"
     },
     {
       "id": "py-debug-mode-enabled",
@@ -287,7 +304,8 @@
         "debug\\s*=\\s*True",
         "\\bDEBUG\\s*=\\s*True"
       ],
-      "source": "src/vulnscan/scanners/rules/python.yml#py-debug-mode-enabled"
+      "source": "src/vulnscan/scanners/rules/python.yml#py-debug-mode-enabled",
+      "mode": "search"
     },
     {
       "id": "py-subprocess-shell-true",
@@ -301,7 +319,8 @@
       "patterns": [
         "shell\\s*=\\s*True"
       ],
-      "source": "src/vulnscan/scanners/rules/python.yml#py-subprocess-shell-true"
+      "source": "src/vulnscan/scanners/rules/python.yml#py-subprocess-shell-true",
+      "mode": "search"
     },
     {
       "id": "py-tls-verify-disabled",
@@ -316,7 +335,8 @@
         "verify\\s*=\\s*False",
         "_create_unverified_context\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/python.yml#py-tls-verify-disabled"
+      "source": "src/vulnscan/scanners/rules/python.yml#py-tls-verify-disabled",
+      "mode": "search"
     }
   ]
 }

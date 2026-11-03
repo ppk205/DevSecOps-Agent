@@ -70,6 +70,13 @@ class Rule:
     sanitizers: list[Sanitizer] = field(default_factory=list)
     message: str = ""
     source_ref: str = ""
+    # taint: sink fires only with tainted data; search: pattern alone is
+    # Weak evidence. Ported from the Semgrep rule's own mode; hand-built
+    # rules default by shape (sources present = taint).
+    mode: str = ""
+    # True when sources were filled from family defaults (ported
+    # pattern-only rules): sink matches fire Weak without taint evidence.
+    pattern_only: bool = False
     source_res: list[re.Pattern[str]] = field(init=False, repr=False, compare=False)
     sink_res: list[re.Pattern[str]] = field(init=False, repr=False, compare=False)
     taint_sink_res: list[re.Pattern[str]] = field(init=False, repr=False, compare=False)
@@ -78,6 +85,8 @@ class Rule:
     )
 
     def __post_init__(self) -> None:
+        if self.mode not in ("taint", "search"):
+            self.mode = "taint" if self.sources else "search"
         self.source_res = [_compile(p, self.id) for p in self.sources]
         self.sink_res = [_compile(p, self.id) for p in self.sinks]
         self.taint_sink_res = [_compile(p, self.id) for p in self.taint_sinks]
@@ -128,11 +137,19 @@ def _parse_rule(item: Any, path: Path, family: str, ported: bool) -> Rule:
         raise ValueError(f"native_hunt: {path} rule {rule_id!r} has no 'sinks' (or 'patterns')")
     if "sources" in item:
         sources = _str_list(item.get("sources"), f"{rule_id!r} 'sources'", path)
+        pattern_only = False
     elif ported:
         sources = list(_FAMILY_SOURCES.get(family, _FAMILY_SOURCES["generic"]))
+        pattern_only = True
     else:
         sources = []
+        pattern_only = False
     attack = _opt_str(item.get("attack", ""), f"{rule_id!r} 'attack'", path)
+    raw_mode = _opt_str(item.get("mode", ""), f"{rule_id!r} 'mode'", path).lower()
+    if raw_mode not in ("", "taint", "search"):
+        raise ValueError(f"native_hunt: {path} rule {rule_id!r} has unknown mode {raw_mode!r}")
+    if not raw_mode:
+        raw_mode = "taint" if (sources and not pattern_only) else "search"
     if "sanitizers" in item:
         raw_sans = item.get("sanitizers")
         if not isinstance(raw_sans, list):
@@ -160,6 +177,8 @@ def _parse_rule(item: Any, path: Path, family: str, ported: bool) -> Rule:
         sources=sources,
         sinks=sinks,
         taint_sinks=_str_list(item.get("taint_sinks"), f"{rule_id!r} 'taint_sinks'", path),
+        pattern_only=pattern_only,
+        mode=raw_mode,
         sanitizers=sanitizers,
         message=_opt_str(item.get("message", ""), f"{rule_id!r} 'message'", path),
         source_ref=_opt_str(item.get("source", ""), f"{rule_id!r} 'source'", path),

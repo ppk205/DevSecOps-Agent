@@ -173,12 +173,14 @@ class AdapterRegistry:
         from .codeql_adapter import CodeQLAdapter
         from .dependency_check_adapter import DependencyCheckAdapter
         from .gitleaks_adapter import GitleaksAdapter
+        from .native_hunt_adapter import NativeHuntAdapter
         from .semgrep_adapter import SemgrepAdapter
         from .spotbugs_adapter import SpotBugsAdapter
 
         registry = cls()
         for adapter in (
             SemgrepAdapter(),
+            NativeHuntAdapter(),
             SpotBugsAdapter(),
             DependencyCheckAdapter(),
             GitleaksAdapter(),

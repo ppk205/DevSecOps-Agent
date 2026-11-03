@@ -20,7 +20,8 @@
         "mysqli?_query\\s*\\(",
         "->query\\s*\\(",
         "->exec\\s*\\("
-      ]
+      ],
+      "mode": "taint"
     },
     {
       "id": "php-reflected-xss",
@@ -40,7 +41,8 @@
       "taint_sinks": [
         "echo\\s",
         "print\\s"
-      ]
+      ],
+      "mode": "taint"
     },
     {
       "id": "php-command-injection",
@@ -62,7 +64,8 @@
       "source": "src/vulnscan/scanners/rules/php.yml#php-command-injection",
       "taint_sinks": [
         "(?<![\\w:>])(?:system|exec|shell_exec|passthru|popen|proc_open)\\s*\\("
-      ]
+      ],
+      "mode": "taint"
     },
     {
       "id": "php-path-traversal",
@@ -80,7 +83,8 @@
         "\\bfopen\\s*\\(",
         "\\breadfile\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/php.yml#php-path-traversal"
+      "source": "src/vulnscan/scanners/rules/php.yml#php-path-traversal",
+      "mode": "taint"
     },
     {
       "id": "php-ssrf",
@@ -95,7 +99,8 @@
         "curl_init\\s*\\(",
         "CURLOPT_URL"
       ],
-      "source": "src/vulnscan/scanners/rules/php.yml#php-ssrf"
+      "source": "src/vulnscan/scanners/rules/php.yml#php-ssrf",
+      "mode": "taint"
     },
     {
       "id": "php-unsafe-deserialization",
@@ -112,7 +117,8 @@
       "source": "src/vulnscan/scanners/rules/php.yml#php-unsafe-deserialization",
       "taint_sinks": [
         "unserialize\\s*\\("
-      ]
+      ],
+      "mode": "taint"
     },
     {
       "id": "php-dynamic-eval",
@@ -130,7 +136,8 @@
       "source": "src/vulnscan/scanners/rules/php.yml#php-dynamic-eval",
       "taint_sinks": [
         "(?<![\\w:>])(?:eval|assert|create_function)\\s*\\("
-      ]
+      ],
+      "mode": "taint"
     },
     {
       "id": "php-weak-password-hash",
@@ -145,7 +152,8 @@
         "\\bmd5\\s*\\(",
         "\\bsha1\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/php.yml#php-weak-password-hash"
+      "source": "src/vulnscan/scanners/rules/php.yml#php-weak-password-hash",
+      "mode": "search"
     },
     {
       "id": "php-loose-comparison",
@@ -160,7 +168,8 @@
         "\\$_(GET|POST|REQUEST|COOKIE)\\b[^;]*==[^=]",
         "[^=]==[^=]*\\$_(GET|POST|REQUEST|COOKIE)\\b"
       ],
-      "source": "src/vulnscan/scanners/rules/php.yml#php-loose-comparison"
+      "source": "src/vulnscan/scanners/rules/php.yml#php-loose-comparison",
+      "mode": "search"
     },
     {
       "id": "php-dangerous-extract",
@@ -174,7 +183,8 @@
       "patterns": [
         "\\bextract\\s*\\(\\s*\\$_(GET|POST|REQUEST|COOKIE)"
       ],
-      "source": "src/vulnscan/scanners/rules/php.yml#php-dangerous-extract"
+      "source": "src/vulnscan/scanners/rules/php.yml#php-dangerous-extract",
+      "mode": "search"
     },
     {
       "id": "php-xxe-external-entity",
@@ -190,7 +200,8 @@
         "\\$DOC->load\\s*\\(",
         "libxml_disable_entity_loader\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/php.yml#php-xxe-external-entity"
+      "source": "src/vulnscan/scanners/rules/php.yml#php-xxe-external-entity",
+      "mode": "search"
     },
     {
       "id": "php-open-redirect",
@@ -204,7 +215,8 @@
       "patterns": [
         "header\\s*\\(\\s*[\\\"']Location"
       ],
-      "source": "src/vulnscan/scanners/rules/php.yml#php-open-redirect"
+      "source": "src/vulnscan/scanners/rules/php.yml#php-open-redirect",
+      "mode": "taint"
     },
     {
       "id": "php-insecure-random",
@@ -221,7 +233,8 @@
         "\\bsrand\\s*\\(",
         "uniqid\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/php.yml#php-insecure-random"
+      "source": "src/vulnscan/scanners/rules/php.yml#php-insecure-random",
+      "mode": "search"
     },
     {
       "id": "php-jwt-weak-secret",
@@ -235,7 +248,8 @@
       "patterns": [
         "JWT::(encode|decode)\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/php.yml#php-jwt-weak-secret"
+      "source": "src/vulnscan/scanners/rules/php.yml#php-jwt-weak-secret",
+      "mode": "search"
     },
     {
       "id": "php-create-function-injection",
@@ -249,7 +263,8 @@
       "patterns": [
         "create_function\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/php.yml#php-create-function-injection"
+      "source": "src/vulnscan/scanners/rules/php.yml#php-create-function-injection",
+      "mode": "taint"
     },
     {
       "id": "php-dynamic-callable",
@@ -263,7 +278,8 @@
       "patterns": [
         "call_user_func(_array)?\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/php.yml#php-dynamic-callable"
+      "source": "src/vulnscan/scanners/rules/php.yml#php-dynamic-callable",
+      "mode": "taint"
     },
     {
       "id": "php-parse-str-pollution",
@@ -277,7 +293,8 @@
       "patterns": [
         "(mb_)?parse_str\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/php.yml#php-parse-str-pollution"
+      "source": "src/vulnscan/scanners/rules/php.yml#php-parse-str-pollution",
+      "mode": "taint"
     },
     {
       "id": "php-preg-replace-eval",
@@ -291,7 +308,8 @@
       "patterns": [
         "preg_replace\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/php.yml#php-preg-replace-eval"
+      "source": "src/vulnscan/scanners/rules/php.yml#php-preg-replace-eval",
+      "mode": "search"
     },
     {
       "id": "php-dangerous-phar-wrapper",
@@ -305,7 +323,8 @@
       "patterns": [
         "(phar|expect)://"
       ],
-      "source": "src/vulnscan/scanners/rules/php.yml#php-dangerous-phar-wrapper"
+      "source": "src/vulnscan/scanners/rules/php.yml#php-dangerous-phar-wrapper",
+      "mode": "search"
     },
     {
       "id": "php-session-fixation",
@@ -319,7 +338,8 @@
       "patterns": [
         "session_id\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/php.yml#php-session-fixation"
+      "source": "src/vulnscan/scanners/rules/php.yml#php-session-fixation",
+      "mode": "taint"
     }
   ]
 }

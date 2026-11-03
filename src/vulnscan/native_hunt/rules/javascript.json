@@ -20,7 +20,8 @@
       "taint_sinks": [
         "\\.query\\s*\\(",
         "\\.execute\\s*\\("
-      ]
+      ],
+      "mode": "search"
     },
     {
       "id": "js-xss-innerhtml",
@@ -38,7 +39,8 @@
         "document\\.write(ln)?\\s*\\(",
         "\\.insertAdjacentHTML\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/javascript.yml#js-xss-innerhtml"
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-xss-innerhtml",
+      "mode": "taint"
     },
     {
       "id": "js-command-injection",
@@ -58,7 +60,8 @@
         "exec\\s*\\(",
         "execFile\\s*\\(",
         "spawn\\s*\\("
-      ]
+      ],
+      "mode": "taint"
     },
     {
       "id": "js-path-traversal",
@@ -75,7 +78,8 @@
         "\\.createReadStream\\s*\\(",
         "\\.writeFile(Sync)?\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/javascript.yml#js-path-traversal"
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-path-traversal",
+      "mode": "taint"
     },
     {
       "id": "js-ssrf-fetch",
@@ -95,7 +99,8 @@
         "\\bhttp\\.get\\s*\\(",
         "\\bhttps\\.get\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/javascript.yml#js-ssrf-fetch"
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-ssrf-fetch",
+      "mode": "taint"
     },
     {
       "id": "js-open-redirect",
@@ -111,7 +116,8 @@
         "\\.redirect\\s*\\(",
         "location\\.assign\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/javascript.yml#js-open-redirect"
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-open-redirect",
+      "mode": "taint"
     },
     {
       "id": "js-eval-injection",
@@ -130,7 +136,8 @@
       "source": "src/vulnscan/scanners/rules/javascript.yml#js-eval-injection",
       "taint_sinks": [
         "(?<![\\w.])eval\\s*\\("
-      ]
+      ],
+      "mode": "taint"
     },
     {
       "id": "js-insecure-random",
@@ -145,7 +152,8 @@
       "patterns": [
         "Math\\.random\\s*\\(\\s*\\)"
       ],
-      "source": "src/vulnscan/scanners/rules/javascript.yml#js-insecure-random"
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-insecure-random",
+      "mode": "search"
     },
     {
       "id": "js-hardcoded-secret",
@@ -160,7 +168,8 @@
       "patterns": [
         "(?i)(password|passwd|secret|api[_-]?key|token)\\s*=\\s*['\\\"][^'\\\"]+['\\\"]"
       ],
-      "source": "src/vulnscan/scanners/rules/javascript.yml#js-hardcoded-secret"
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-hardcoded-secret",
+      "mode": "search"
     },
     {
       "id": "js-prototype-pollution",
@@ -176,7 +185,8 @@
         "\\.merge(With)?\\s*\\(",
         "\\.defaultsDeep\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/javascript.yml#js-prototype-pollution"
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-prototype-pollution",
+      "mode": "taint"
     },
     {
       "id": "js-redos-dynamic-regexp",
@@ -192,7 +202,8 @@
         "new\\s+RegExp\\s*\\(",
         "(^|[^\\w.])RegExp\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/javascript.yml#js-redos-dynamic-regexp"
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-redos-dynamic-regexp",
+      "mode": "taint"
     },
     {
       "id": "js-implied-eval",
@@ -209,7 +220,8 @@
         "\\bsetInterval\\s*\\(",
         "\\bvm\\.(runInThisContext|runInNewContext|runInContext|compileFunction)\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/javascript.yml#js-implied-eval"
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-implied-eval",
+      "mode": "taint"
     },
     {
       "id": "js-shell-spawn",
@@ -226,7 +238,8 @@
         "\\.execFile\\s*\\(",
         "shell\\s*:\\s*true"
       ],
-      "source": "src/vulnscan/scanners/rules/javascript.yml#js-shell-spawn"
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-shell-spawn",
+      "mode": "taint"
     },
     {
       "id": "js-nosql-injection",
@@ -245,7 +258,8 @@
       "taint_sinks": [
         "findOne\\s*\\(",
         "find\\s*\\("
-      ]
+      ],
+      "mode": "taint"
     },
     {
       "id": "js-jwt-weak-secret",
@@ -260,7 +274,8 @@
       "patterns": [
         "\\.sign\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/javascript.yml#js-jwt-weak-secret"
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-jwt-weak-secret",
+      "mode": "search"
     },
     {
       "id": "js-postmessage-wildcard",
@@ -275,7 +290,8 @@
       "patterns": [
         "\\.postMessage\\s*\\([^)]*,\\s*\\\"\\*\\\""
       ],
-      "source": "src/vulnscan/scanners/rules/javascript.yml#js-postmessage-wildcard"
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-postmessage-wildcard",
+      "mode": "search"
     },
     {
       "id": "js-timing-unsafe-compare",
@@ -290,7 +306,8 @@
       "patterns": [
         "\\S+\\s+===?\\s+\\S+"
       ],
-      "source": "src/vulnscan/scanners/rules/javascript.yml#js-timing-unsafe-compare"
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-timing-unsafe-compare",
+      "mode": "taint"
     },
     {
       "id": "js-debug-leftover",
@@ -306,7 +323,8 @@
         "\\bdebugger\\s*;",
         "console\\.(log|debug)\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/javascript.yml#js-debug-leftover"
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-debug-leftover",
+      "mode": "search"
     },
     {
       "id": "js-weak-hash",
@@ -322,7 +340,8 @@
         "createHash\\s*\\(\\s*\"(md5|sha1)\"",
         "createCipher\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/javascript.yml#js-weak-hash"
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-weak-hash",
+      "mode": "search"
     },
     {
       "id": "js-cors-wildcard",
@@ -337,7 +356,8 @@
       "patterns": [
         "Access-Control-Allow-Origin\"\\s*,\\s*\"\\*\""
       ],
-      "source": "src/vulnscan/scanners/rules/javascript.yml#js-cors-wildcard"
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-cors-wildcard",
+      "mode": "search"
     },
     {
       "id": "js-xxe-xml-parser",
@@ -355,7 +375,8 @@
         "sax\\.(parser|parse)\\s*\\(",
         "noent\\s*:\\s*true"
       ],
-      "source": "native-addition (no javascript.yml XXE rule to port)"
+      "source": "native-addition (no javascript.yml XXE rule to port)",
+      "mode": "taint"
     },
     {
       "id": "js-unsafe-deserialization",
@@ -376,7 +397,8 @@
       "taint_sinks": [
         "unserialize\\s*\\(",
         "JSON\\.parse\\s*\\("
-      ]
+      ],
+      "mode": "taint"
     }
   ]
 }

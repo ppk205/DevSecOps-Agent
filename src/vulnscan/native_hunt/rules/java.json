@@ -20,7 +20,8 @@
         "\\.executeQuery\\s*\\(",
         "\\.executeUpdate\\s*\\(",
         "\\.execute\\s*\\("
-      ]
+      ],
+      "mode": "search"
     },
     {
       "id": "java-xss-response-writer",
@@ -39,7 +40,8 @@
       "taint_sinks": [
         "\\.getWriter\\s*\\(\\s*\\)\\s*\\.print",
         "\\.println\\s*\\("
-      ]
+      ],
+      "mode": "taint"
     },
     {
       "id": "java-path-traversal-file",
@@ -51,10 +53,12 @@
       "cwe": "22",
       "attack": "path_traversal",
       "patterns": [
-        "new\\s+java\\.io\\.File\\w*\\s*\\(",
-        "new\\s+File\\w*\\s*\\("
+        "new\\s+(?:java\\.io\\.)?File\\w*\\s*\\([^)]*\\+",
+        "new\\s+(?:java\\.io\\.)?File(?:Input|Output)Stream\\s*\\([^)]*\\+",
+        "Paths\\.get\\s*\\([^)]*\\+"
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-path-traversal-file"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-path-traversal-file",
+      "mode": "search"
     },
     {
       "id": "java-command-execution",
@@ -72,7 +76,8 @@
       "taint_sinks": [
         "Runtime\\.getRuntime\\s*\\(\\s*\\)\\s*\\.exec\\s*\\(",
         "new\\s+ProcessBuilder\\s*\\("
-      ]
+      ],
+      "mode": "search"
     },
     {
       "id": "java-xxe-document-builder",
@@ -87,7 +92,8 @@
         "DocumentBuilderFactory\\s*\\.\\s*newInstance\\s*\\(",
         "TransformerFactory\\s*\\.\\s*newInstance\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-xxe-document-builder"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-xxe-document-builder",
+      "mode": "search"
     },
     {
       "id": "java-weak-digest",
@@ -102,7 +108,8 @@
         "MessageDigest\\s*\\.\\s*getInstance\\s*\\(\\s*\"MD5\"",
         "MessageDigest\\s*\\.\\s*getInstance\\s*\\(\\s*\"SHA-1\""
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-weak-digest"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-weak-digest",
+      "mode": "search"
     },
     {
       "id": "java-weak-cipher",
@@ -116,7 +123,8 @@
       "patterns": [
         "Cipher\\s*\\.\\s*getInstance\\s*\\(\\s*\"(DES|3DES|DESede|Blowfish)\""
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-weak-cipher"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-weak-cipher",
+      "mode": "search"
     },
     {
       "id": "java-weak-cipher-secret-key",
@@ -131,7 +139,8 @@
         "new\\s+[\\w.]+\\.SecretKeySpec\\s*\\([^)]*\\\"(DES|3DES|DESede)\\\"",
         "new\\s+SecretKeySpec\\s*\\([^)]*\\\"(DES|3DES|DESede)\\\""
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-weak-cipher-secret-key"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-weak-cipher-secret-key",
+      "mode": "search"
     },
     {
       "id": "java-unsafe-deserialization",
@@ -145,7 +154,8 @@
       "patterns": [
         "\\.readObject\\s*\\(\\s*\\)"
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-unsafe-deserialization"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-unsafe-deserialization",
+      "mode": "search"
     },
     {
       "id": "java-unsafe-deserialization-objectmapper",
@@ -160,7 +170,8 @@
         "\\.enableDefaultTyping\\s*\\(",
         "\\.activateDefaultTyping\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-unsafe-deserialization-objectmapper"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-unsafe-deserialization-objectmapper",
+      "mode": "search"
     },
     {
       "id": "java-insecure-random",
@@ -175,7 +186,8 @@
         "new\\s+(java\\.util\\.)?Random\\s*\\(",
         "Math\\.random\\s*\\(\\s*\\)"
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-insecure-random"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-insecure-random",
+      "mode": "search"
     },
     {
       "id": "java-trust-all-certificates",
@@ -191,7 +203,8 @@
         "setHostnameVerifier\\s*\\(",
         "checkServerTrusted\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-trust-all-certificates"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-trust-all-certificates",
+      "mode": "search"
     },
     {
       "id": "java-permissive-cors",
@@ -205,7 +218,8 @@
       "patterns": [
         "Access-Control-Allow-Origin\"\\s*,\\s*\"\\*\""
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-permissive-cors"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-permissive-cors",
+      "mode": "search"
     },
     {
       "id": "java-ldap-injection",
@@ -219,7 +233,8 @@
       "patterns": [
         "\\.search\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-ldap-injection"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-ldap-injection",
+      "mode": "taint"
     },
     {
       "id": "java-xpath-injection",
@@ -234,7 +249,8 @@
         "\\.evaluate\\s*\\(",
         "\\.compile\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-xpath-injection"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-xpath-injection",
+      "mode": "taint"
     },
     {
       "id": "java-ssrf-url-connection",
@@ -248,7 +264,8 @@
       "patterns": [
         "new\\s+(java\\.net\\.)?URL\\s*\\([^)]*\\)\\s*\\.\\s*open(Connection|Stream)\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-ssrf-url-connection"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-ssrf-url-connection",
+      "mode": "taint"
     },
     {
       "id": "java-command-injection-processbuilder",
@@ -263,7 +280,8 @@
         "new\\s+(java\\.lang\\.)?ProcessBuilder\\s*\\(",
         "\\.command\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-command-injection-processbuilder"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-command-injection-processbuilder",
+      "mode": "taint"
     },
     {
       "id": "java-open-redirect",
@@ -277,7 +295,8 @@
       "patterns": [
         "\\.sendRedirect\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-open-redirect"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-open-redirect",
+      "mode": "taint"
     },
     {
       "id": "java-unsafe-reflection",
@@ -293,7 +312,8 @@
         "\\.getDeclaredMethod\\s*\\(",
         "\\.getMethod\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-unsafe-reflection"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-unsafe-reflection",
+      "mode": "taint"
     },
     {
       "id": "java-log-injection",
@@ -307,7 +327,8 @@
       "patterns": [
         "\\.(trace|debug|info|warn|error)\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-log-injection"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-log-injection",
+      "mode": "taint"
     },
     {
       "id": "java-insecure-cookie",
@@ -322,7 +343,8 @@
         "\\.setSecure\\s*\\(\\s*false\\s*\\)",
         "\\.setHttpOnly\\s*\\(\\s*false\\s*\\)"
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-insecure-cookie"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-insecure-cookie",
+      "mode": "search"
     },
     {
       "id": "java-hardcoded-credentials",
@@ -336,7 +358,8 @@
       "patterns": [
         "(?i)(password|passwd|secret|api[_-]?key|access[_-]?token)\\s*=\\s*\\\"[^\\\"]+\\\""
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-hardcoded-credentials"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-hardcoded-credentials",
+      "mode": "search"
     },
     {
       "id": "java-stack-trace-exposure",
@@ -350,7 +373,8 @@
       "patterns": [
         "\\.printStackTrace\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-stack-trace-exposure"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-stack-trace-exposure",
+      "mode": "search"
     },
     {
       "id": "java-xxe-sax-parser",
@@ -365,7 +389,8 @@
         "SAXParserFactory\\s*\\.\\s*newInstance\\s*\\(",
         "XMLReaderFactory\\s*\\.\\s*createXMLReader\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-xxe-sax-parser"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-xxe-sax-parser",
+      "mode": "search"
     },
     {
       "id": "java-path-traversal-nio",
@@ -377,10 +402,11 @@
       "cwe": "22",
       "attack": "path_traversal",
       "patterns": [
-        "Paths\\s*\\.\\s*get\\s*\\(",
-        "FileSystems\\s*\\.\\s*getDefault"
+        "Paths\\.get\\s*\\([^)]*\\+",
+        "FileSystems\\.getDefault"
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-path-traversal-nio"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-path-traversal-nio",
+      "mode": "search"
     }
   ]
 }

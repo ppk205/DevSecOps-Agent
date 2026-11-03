@@ -236,9 +236,11 @@ def _scan_rule(
                 if best_ref is None or hops < best_ref[1]:
                     best_ref = (origin, hops)
             if best_ref is None:
-                # Sink-only rules (no source model) fire Weak on pattern;
-                # taint_sinks never fire without tainted data on the line.
-                if not sink_hit or rule.source_res:
+                # Search-mode rules fire Weak on pattern alone; taint-mode
+                # rules (and taint_sinks) never fire without tainted data.
+                if taint_hit and not sink_hit:
+                    continue
+                if not sink_hit or rule.mode == "taint":
                     continue
                 confidence = "Weak"
                 source_line = None

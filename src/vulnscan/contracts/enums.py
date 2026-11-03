@@ -195,6 +195,7 @@ class ToolName(str, Enum):
     """Deterministic scanners supported by the pipeline."""
 
     SEMGREP = "semgrep"
+    NATIVE_HUNT = "native-hunt"
     SPOTBUGS = "spotbugs"
     FIND_SEC_BUGS = "findsecbugs"
     OWASP_DEPENDENCY_CHECK = "owasp-dependency-check"

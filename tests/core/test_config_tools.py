@@ -6,7 +6,11 @@ from vulnscan.core.config import ScanConfig
 
 def test_default_tools_come_from_profile() -> None:
     spec = ScanConfig(profile="fast").specification(".", "abc", "local")
-    assert {c.tool for c in spec.tools} == {ToolName.SEMGREP, ToolName.GITLEAKS}
+    assert {c.tool for c in spec.tools} == {
+        ToolName.SEMGREP,
+        ToolName.NATIVE_HUNT,
+        ToolName.GITLEAKS,
+    }
 
 
 def test_tools_override_subset() -> None:
