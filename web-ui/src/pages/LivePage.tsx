@@ -17,6 +17,7 @@ import type {
   ScanEvent,
 } from "../api/types";
 import { EmptyState } from "../components/EmptyState";
+import { ProvenanceChip, provenanceOf } from "../components/ProvenanceChip";
 import { SeverityBadge } from "../components/SeverityBadge";
 import { StripeDivider } from "../components/StripeDivider";
 import { onTabListKeyDown } from "../components/Tabs";
@@ -210,7 +211,9 @@ export function LivePage() {
     const ran = new Set<string>();
     for (const s of live.data?.stages ?? []) {
       const name = String(s.name ?? "");
-      if (["semgrep", "gitleaks", "spotbugs", "owasp-dependency-check"].includes(name)) {
+      if (
+        ["semgrep", "native-hunt", "gitleaks", "spotbugs", "owasp-dependency-check"].includes(name)
+      ) {
         ran.add(name);
       }
     }
@@ -363,6 +366,12 @@ export function LivePage() {
           {LIVE_NODES.map((node) => {
             const nodeStatus = statuses[node.key];
             const selected = selectedNode === node.key;
+            const tone =
+              nodeStatus === "running" ? "text-ink"
+              : nodeStatus === "completed" ? "text-success"
+              : nodeStatus === "partial" ? "text-warning"
+              : nodeStatus === "failed" ? "text-[#e22718]"
+              : "text-muted";
             return (
               <div key={node.key} role="listitem">
               <button
@@ -372,10 +381,15 @@ export function LivePage() {
                 onClick={() => setSelectedNode((prev) => (prev === node.key ? null : node.key))}
                 className={`w-full border p-3 text-left transition-colors duration-150 ease-out ${
                   selected ? "border-ink" : "border-hairline"
-                } bg-soft hover:border-body`}
+                } ${nodeStatus === "running" ? "bg-soft" : ""} hover:border-body`}
               >
-                <div className="label-m text-[11px] text-ink">{node.label}</div>
-                <div className="mt-1 text-[11px] uppercase tracking-widest text-muted">{nodeStatus}</div>
+                <div className="flex items-center justify-between gap-1">
+                  <div className={`label-m text-[11px] ${tone}`}>{node.label}</div>
+                  {nodeStatus === "running" && (
+                    <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-ink" />
+                  )}
+                </div>
+                <div className={`mt-1 text-[11px] uppercase tracking-widest ${tone}`}>{nodeStatus}</div>
                 <div
                   aria-hidden
                   className={`mt-2 h-1 w-full ${nodeStatus === "running" ? "stage-running" : "bg-hairline"}`}
@@ -450,9 +464,23 @@ export function LivePage() {
             ) : (
               <ul className="space-y-2">
                 {scannerLanes.map(([tool, count]) => (
-                  <li key={tool} className="flex items-center justify-between text-sm">
-                    <span className="font-mono text-body">{tool}</span>
-                    <span className="text-ink">{count}</span>
+                  <li key={tool} className="flex items-center justify-between gap-2 text-sm">
+                    <span className="flex min-w-0 items-center gap-2">
+                      <span
+                        aria-hidden
+                        className={`h-2 w-2 shrink-0 rounded-full ${
+                          tool === "native-hunt"
+                            ? "bg-[#8b5cf6]"
+                            : count > 0
+                              ? "bg-warning"
+                              : "bg-success"
+                        }`}
+                      />
+                      <span className="truncate font-mono text-body" title={tool}>
+                        {tool}
+                      </span>
+                    </span>
+                    <span className="font-mono text-ink">{count}</span>
                   </li>
                 ))}
               </ul>
@@ -519,6 +547,12 @@ export function LivePage() {
               </div>
             ))}
             <h3 className="label-m mb-2 mt-6 text-[11px] text-muted">{en.live.modelCandidates}</h3>
+            {huntCandidates.length > 0 && (
+              <p data-testid="hunt-verdict-summary" className="mb-2 font-mono text-xs text-body">
+                {huntCandidates.filter((c) => c.verdict === "agreed").length} corroborated ·{" "}
+                {huntCandidates.filter((c) => c.verdict !== "agreed").length} model-only
+              </p>
+            )}
             {huntCandidates.length === 0 ? (
               <p className="text-sm text-muted">{en.live.noModelCandidates}</p>
             ) : (
@@ -603,7 +637,10 @@ export function LivePage() {
                   <div className="flex items-center gap-2">
                     <SeverityBadge severity={item.severity} />
                     <span className="font-mono text-xs text-muted">{item.id}</span>
-                    <span className="label-m ml-auto text-[10px] text-muted">{item.status}</span>
+                    <span className="ml-auto flex items-center gap-2">
+                      <ProvenanceChip value={provenanceOf(item)} />
+                      <span className="label-m text-[10px] text-muted">{item.status}</span>
+                    </span>
                   </div>
                   <p className="mt-1 text-sm text-ink">{item.title}</p>
                   <p className="mt-1 font-mono text-xs text-muted">
