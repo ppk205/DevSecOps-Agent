@@ -1,0 +1,362 @@
+{
+  "language": "javascript",
+  "rules": [
+    {
+      "id": "js-sql-concatenation",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "severity": "ERROR",
+      "message": "SQL built through concatenation or interpolation; use a parameterized query.",
+      "cwe": "89",
+      "attack": "sql_injection",
+      "patterns": [
+        "\\.query\\s*\\([^)]*\\+",
+        "\\.execute\\s*\\([^)]*\\+",
+        "\\.query\\s*\\(\\s*`[^`]*\\$\\{"
+      ],
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-sql-concatenation"
+    },
+    {
+      "id": "js-xss-innerhtml",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "severity": "ERROR",
+      "message": "Request data reaches an HTML sink without escaping; encode output or sanitize with DOMPurify.",
+      "cwe": "79",
+      "attack": "xss",
+      "patterns": [
+        "\\.innerHTML\\s*=",
+        "\\.outerHTML\\s*=",
+        "document\\.write(ln)?\\s*\\(",
+        "\\.insertAdjacentHTML\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-xss-innerhtml"
+    },
+    {
+      "id": "js-command-injection",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "severity": "ERROR",
+      "message": "Externally controlled input reaches a shell command; use execFile/spawn with an argument list.",
+      "cwe": "78",
+      "attack": "command_injection",
+      "patterns": [
+        "\\.exec(Sync)?\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-command-injection"
+    },
+    {
+      "id": "js-path-traversal",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "severity": "ERROR",
+      "message": "File path includes externally controlled input; validate or canonicalize.",
+      "cwe": "22",
+      "attack": "path_traversal",
+      "patterns": [
+        "\\.readFile(Sync)?\\s*\\(",
+        "\\.createReadStream\\s*\\(",
+        "\\.writeFile(Sync)?\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-path-traversal"
+    },
+    {
+      "id": "js-ssrf-fetch",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "severity": "ERROR",
+      "message": "Request data reaches an outbound HTTP call; validate against an allowlist.",
+      "cwe": "918",
+      "attack": "ssrf",
+      "patterns": [
+        "\\bfetch\\s*\\(",
+        "axios\\s*[.(]",
+        "\\bhttp\\.request\\s*\\(",
+        "\\bhttps\\.request\\s*\\(",
+        "\\bhttp\\.get\\s*\\(",
+        "\\bhttps\\.get\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-ssrf-fetch"
+    },
+    {
+      "id": "js-open-redirect",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "severity": "ERROR",
+      "message": "Request data reaches a redirect target; validate against an allowlist.",
+      "cwe": "601",
+      "attack": "open_redirect",
+      "patterns": [
+        "\\.redirect\\s*\\(",
+        "location\\.assign\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-open-redirect"
+    },
+    {
+      "id": "js-eval-injection",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "severity": "ERROR",
+      "message": "Request data reaches dynamic code execution; avoid eval/Function with untrusted input.",
+      "cwe": "95",
+      "attack": "code_injection",
+      "patterns": [
+        "\\beval\\s*\\(",
+        "new\\s+Function\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-eval-injection"
+    },
+    {
+      "id": "js-insecure-random",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "severity": "WARNING",
+      "message": "Math.random is predictable in security contexts; use crypto.randomBytes/getRandomValues.",
+      "cwe": "330",
+      "attack": "crypto",
+      "patterns": [
+        "Math\\.random\\s*\\(\\s*\\)"
+      ],
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-insecure-random"
+    },
+    {
+      "id": "js-hardcoded-secret",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "severity": "WARNING",
+      "message": "Hardcoded credential in source; load secrets from the environment or a vault.",
+      "cwe": "798",
+      "attack": "secrets",
+      "patterns": [
+        "(?i)(password|passwd|secret|api[_-]?key|token)\\s*=\\s*['\\\"][^'\\\"]+['\\\"]"
+      ],
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-hardcoded-secret"
+    },
+    {
+      "id": "js-prototype-pollution",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "severity": "WARNING",
+      "message": "Untrusted data reaches a recursive merge; validate keys or freeze the prototype.",
+      "cwe": "1321",
+      "attack": "prototype_pollution",
+      "patterns": [
+        "\\.merge(With)?\\s*\\(",
+        "\\.defaultsDeep\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-prototype-pollution"
+    },
+    {
+      "id": "js-redos-dynamic-regexp",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "severity": "WARNING",
+      "message": "Request data builds a regular expression; anchor the pattern or escape it first.",
+      "cwe": "1333",
+      "attack": "redos",
+      "patterns": [
+        "new\\s+RegExp\\s*\\(",
+        "(^|[^\\w.])RegExp\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-redos-dynamic-regexp"
+    },
+    {
+      "id": "js-implied-eval",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "severity": "ERROR",
+      "message": "Request data reaches a string-evaluated callback or vm API; pass a function reference instead.",
+      "cwe": "95",
+      "attack": "code_injection",
+      "patterns": [
+        "\\bsetTimeout\\s*\\(",
+        "\\bsetInterval\\s*\\(",
+        "\\bvm\\.(runInThisContext|runInNewContext|runInContext|compileFunction)\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-implied-eval"
+    },
+    {
+      "id": "js-shell-spawn",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "severity": "ERROR",
+      "message": "Externally controlled input reaches a shell-enabled spawn; drop shell:true or allowlist the command.",
+      "cwe": "78",
+      "attack": "command_injection",
+      "patterns": [
+        "\\.spawn(Sync)?\\s*\\(",
+        "\\.execFile\\s*\\(",
+        "shell\\s*:\\s*true"
+      ],
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-shell-spawn"
+    },
+    {
+      "id": "js-nosql-injection",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "severity": "ERROR",
+      "message": "Request data reaches a NoSQL query operator; cast to a primitive or sanitize the filter.",
+      "cwe": "943",
+      "attack": "nosql_injection",
+      "patterns": [
+        "\\.(find|findOne|findOneAndUpdate|updateOne|updateMany|deleteOne|deleteMany)\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-nosql-injection"
+    },
+    {
+      "id": "js-jwt-weak-secret",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "severity": "ERROR",
+      "message": "JWT signed with an empty or weak literal secret or none algorithm; use a strong env secret.",
+      "cwe": "327",
+      "attack": "secrets",
+      "patterns": [
+        "\\.sign\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-jwt-weak-secret"
+    },
+    {
+      "id": "js-postmessage-wildcard",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "severity": "WARNING",
+      "message": "postMessage targets any origin; pin the recipient origin explicitly.",
+      "cwe": "940",
+      "attack": "postmessage",
+      "patterns": [
+        "\\.postMessage\\s*\\([^)]*,\\s*\\\"\\*\\\""
+      ],
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-postmessage-wildcard"
+    },
+    {
+      "id": "js-timing-unsafe-compare",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "severity": "WARNING",
+      "message": "Secret compared with equality leaks timing information; use crypto.timingSafeEqual.",
+      "cwe": "208",
+      "attack": "crypto",
+      "patterns": [
+        "\\S+\\s+===?\\s+\\S+"
+      ],
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-timing-unsafe-compare"
+    },
+    {
+      "id": "js-debug-leftover",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "severity": "WARNING",
+      "message": "Leftover debugger or console call ships debug output; remove it before release.",
+      "cwe": "489",
+      "attack": "debug",
+      "patterns": [
+        "\\bdebugger\\s*;",
+        "console\\.(log|debug)\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-debug-leftover"
+    },
+    {
+      "id": "js-weak-hash",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "severity": "WARNING",
+      "message": "MD5, SHA-1 and createCipher are broken for security use; use SHA-256 or createCipheriv.",
+      "cwe": "328",
+      "attack": "crypto",
+      "patterns": [
+        "createHash\\s*\\(\\s*\"(md5|sha1)\"",
+        "createCipher\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-weak-hash"
+    },
+    {
+      "id": "js-cors-wildcard",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "severity": "WARNING",
+      "message": "CORS allows any origin; restrict to an explicit allowlist.",
+      "cwe": "942",
+      "attack": "cors",
+      "patterns": [
+        "Access-Control-Allow-Origin\"\\s*,\\s*\"\\*\""
+      ],
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-cors-wildcard"
+    },
+    {
+      "id": "js-xxe-xml-parser",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "severity": "ERROR",
+      "message": "XML parser resolves external entities; disable them or use an allowlist.",
+      "cwe": "611",
+      "attack": "xxe",
+      "patterns": [
+        "libxmljs\\.parseXml\\s*\\(",
+        "xml2js\\.parseString\\s*\\(",
+        "sax\\.(parser|parse)\\s*\\(",
+        "noent\\s*:\\s*true"
+      ],
+      "source": "native-addition (no javascript.yml XXE rule to port)"
+    },
+    {
+      "id": "js-unsafe-deserialization",
+      "languages": [
+        "javascript",
+        "typescript"
+      ],
+      "severity": "ERROR",
+      "message": "Unsafe deserialization of untrusted data; validate input before reviving objects.",
+      "cwe": "502",
+      "attack": "deserialization",
+      "patterns": [
+        "node-serialize",
+        "\\.unserialize\\s*\\(",
+        "eval\\s*\\(\\s*.*serial"
+      ],
+      "source": "native-addition (no javascript.yml deserialization rule to port)"
+    }
+  ]
+}

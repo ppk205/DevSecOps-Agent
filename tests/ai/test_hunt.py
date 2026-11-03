@@ -265,7 +265,9 @@ class TestHunt:
                 raise ProviderError("gateway down")
 
         result = hunt_vulns(snapshot_root=str(tmp_path), client=_BoomClient(), model="m")
-        assert result["status"] == "failed"
+        # Loop/closing calls degrade to partial (fail-soft per call); a pass
+        # with zero candidates is still a failed hunt at the hunt_all level.
+        assert result["status"] == "partial"
         assert result["candidates"] == []
 
 

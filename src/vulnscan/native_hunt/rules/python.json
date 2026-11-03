@@ -1,0 +1,306 @@
+{
+  "language": "python",
+  "rules": [
+    {
+      "id": "py-sql-injection",
+      "languages": [
+        "python"
+      ],
+      "severity": "ERROR",
+      "message": "SQL built with string formatting; use a parameterized query.",
+      "cwe": "89",
+      "attack": "sql_injection",
+      "patterns": [
+        "\\.execute\\s*\\([^)]*%[^)]*\\)",
+        "\\.execute\\s*\\([^)]*\\+[^)]*\\)",
+        "\\.execute\\s*\\(\\s*f[\\\"']"
+      ],
+      "source": "src/vulnscan/scanners/rules/python.yml#py-sql-injection"
+    },
+    {
+      "id": "py-xss-markup-bypass",
+      "languages": [
+        "python"
+      ],
+      "severity": "ERROR",
+      "message": "Request data reaches Markup() without escaping; use escape().",
+      "cwe": "79",
+      "attack": "xss",
+      "patterns": [
+        "(?<!\\.)Markup\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/python.yml#py-xss-markup-bypass"
+    },
+    {
+      "id": "py-command-injection",
+      "languages": [
+        "python"
+      ],
+      "severity": "ERROR",
+      "message": "Request data reaches a shell command; use an argument list or shlex.quote().",
+      "cwe": "78",
+      "attack": "command_injection",
+      "patterns": [
+        "os\\.system\\s*\\(",
+        "os\\.popen\\s*\\(",
+        "subprocess\\.(call|run|Popen|check_output|check_call)\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/python.yml#py-command-injection"
+    },
+    {
+      "id": "py-code-injection-eval",
+      "languages": [
+        "python"
+      ],
+      "severity": "ERROR",
+      "message": "Request data reaches eval()/exec(); never execute untrusted code.",
+      "cwe": "95",
+      "attack": "code_injection",
+      "patterns": [
+        "\\beval\\s*\\(",
+        "\\bexec\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/python.yml#py-code-injection-eval"
+    },
+    {
+      "id": "py-path-traversal-open",
+      "languages": [
+        "python"
+      ],
+      "severity": "ERROR",
+      "message": "File path includes externally controlled input; validate or confine it.",
+      "cwe": "22",
+      "attack": "path_traversal",
+      "patterns": [
+        "\\bopen\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/python.yml#py-path-traversal-open"
+    },
+    {
+      "id": "py-ssrf-requests",
+      "languages": [
+        "python"
+      ],
+      "severity": "ERROR",
+      "message": "Request data reaches an outbound HTTP call; restrict to an allowlist.",
+      "cwe": "918",
+      "attack": "ssrf",
+      "patterns": [
+        "requests\\.(get|post|put|delete|patch|head|request)\\s*\\(",
+        "urllib\\.request\\.urlopen\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/python.yml#py-ssrf-requests"
+    },
+    {
+      "id": "py-ssti-jinja2",
+      "languages": [
+        "python"
+      ],
+      "severity": "ERROR",
+      "message": "Rendering a template built from a string enables SSTI; use get_template().",
+      "cwe": "1336",
+      "attack": "ssti",
+      "patterns": [
+        "jinja2\\.Template\\s*\\(",
+        "from_string\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/python.yml#py-ssti-jinja2"
+    },
+    {
+      "id": "py-unsafe-deserialization",
+      "languages": [
+        "python"
+      ],
+      "severity": "ERROR",
+      "message": "Unsafe deserialization of untrusted data; use json or yaml.safe_load.",
+      "cwe": "502",
+      "attack": "deserialization",
+      "patterns": [
+        "pickle\\.(loads|load)\\s*\\(",
+        "marshal\\.(loads|load)\\s*\\(",
+        "yaml\\.load\\s*\\(",
+        "shelve\\.open\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/python.yml#py-unsafe-deserialization"
+    },
+    {
+      "id": "py-hardcoded-secret",
+      "languages": [
+        "python"
+      ],
+      "severity": "WARNING",
+      "message": "Hardcoded credential; load secrets from the environment or a vault.",
+      "cwe": "798",
+      "attack": "secrets",
+      "patterns": [
+        "(?i)(password|passwd|secret|api_key|apikey|access_token)\\s*=\\s*['\\\"][^'\\\"]+['\\\"]"
+      ],
+      "source": "src/vulnscan/scanners/rules/python.yml#py-hardcoded-secret"
+    },
+    {
+      "id": "py-weak-random-token",
+      "languages": [
+        "python"
+      ],
+      "severity": "WARNING",
+      "message": "random is predictable in security contexts; use the secrets module.",
+      "cwe": "330",
+      "attack": "crypto",
+      "patterns": [
+        "random\\.(random|randint|randrange|choice|uniform)\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/python.yml#py-weak-random-token"
+    },
+    {
+      "id": "py-ldap-injection",
+      "languages": [
+        "python"
+      ],
+      "severity": "ERROR",
+      "message": "Request data reaches an LDAP filter; escape it with escape_filter_chars().",
+      "cwe": "90",
+      "attack": "ldap_injection",
+      "patterns": [
+        "\\.search(_s|_st)?\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/python.yml#py-ldap-injection"
+    },
+    {
+      "id": "py-xxe-xml-parser",
+      "languages": [
+        "python"
+      ],
+      "severity": "ERROR",
+      "message": "XML parser resolves external entities; use defusedxml or disable them.",
+      "cwe": "611",
+      "attack": "xxe",
+      "patterns": [
+        "lxml\\.etree\\.(fromstring|XML|parse)\\s*\\(",
+        "(^|[\\s(=])etree\\.(fromstring|XML|parse)\\s*\\(",
+        "ElementTree\\.(fromstring|parse)\\s*\\(",
+        "(^|[\\s(=])ET\\.(fromstring|parse)\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/python.yml#py-xxe-xml-parser"
+    },
+    {
+      "id": "py-header-injection",
+      "languages": [
+        "python"
+      ],
+      "severity": "ERROR",
+      "message": "Request data reaches a response header; strip CR/LF or allowlist values.",
+      "cwe": "113",
+      "attack": "header_injection",
+      "patterns": [
+        "\\.headers\\s*\\[",
+        "\\.headers\\.(set|append)\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/python.yml#py-header-injection"
+    },
+    {
+      "id": "py-open-redirect",
+      "languages": [
+        "python"
+      ],
+      "severity": "ERROR",
+      "message": "Request data reaches a redirect target; validate against an allowlist.",
+      "cwe": "601",
+      "attack": "open_redirect",
+      "patterns": [
+        "\\bredirect\\s*\\(",
+        "HttpResponseRedirect\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/python.yml#py-open-redirect"
+    },
+    {
+      "id": "py-weak-hash",
+      "languages": [
+        "python"
+      ],
+      "severity": "WARNING",
+      "message": "md5/sha1 are broken for security use; prefer sha256 or bcrypt.",
+      "cwe": "328",
+      "attack": "crypto",
+      "patterns": [
+        "hashlib\\.(md5|sha1|sha)\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/python.yml#py-weak-hash"
+    },
+    {
+      "id": "py-jwt-hardcoded-secret",
+      "languages": [
+        "python"
+      ],
+      "severity": "ERROR",
+      "message": "JWT signed with a hardcoded secret; load the key from the environment.",
+      "cwe": "798",
+      "attack": "secrets",
+      "patterns": [
+        "jwt\\.(encode|decode)\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/python.yml#py-jwt-hardcoded-secret"
+    },
+    {
+      "id": "py-pickle-variant-loads",
+      "languages": [
+        "python"
+      ],
+      "severity": "ERROR",
+      "message": "Unsafe deserialization via dill/cloudpickle/joblib; use json instead.",
+      "cwe": "502",
+      "attack": "deserialization",
+      "patterns": [
+        "dill\\.(loads|load)\\s*\\(",
+        "cloudpickle\\.(loads|load)\\s*\\(",
+        "joblib\\.load\\s*\\(",
+        "cPickle\\.(loads|load)\\s*\\(",
+        "_pickle\\.(loads|load)\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/python.yml#py-pickle-variant-loads"
+    },
+    {
+      "id": "py-debug-mode-enabled",
+      "languages": [
+        "python"
+      ],
+      "severity": "WARNING",
+      "message": "Debug mode leaks tracebacks; never enable it in production.",
+      "cwe": "215",
+      "attack": "debug",
+      "patterns": [
+        "debug\\s*=\\s*True",
+        "\\bDEBUG\\s*=\\s*True"
+      ],
+      "source": "src/vulnscan/scanners/rules/python.yml#py-debug-mode-enabled"
+    },
+    {
+      "id": "py-subprocess-shell-true",
+      "languages": [
+        "python"
+      ],
+      "severity": "WARNING",
+      "message": "shell=True hands parsing to the shell; use an argument list instead.",
+      "cwe": "78",
+      "attack": "command_injection",
+      "patterns": [
+        "shell\\s*=\\s*True"
+      ],
+      "source": "src/vulnscan/scanners/rules/python.yml#py-subprocess-shell-true"
+    },
+    {
+      "id": "py-tls-verify-disabled",
+      "languages": [
+        "python"
+      ],
+      "severity": "ERROR",
+      "message": "TLS verification is disabled; keep verify=True or a pinned CA bundle.",
+      "cwe": "295",
+      "attack": "tls",
+      "patterns": [
+        "verify\\s*=\\s*False",
+        "_create_unverified_context\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/python.yml#py-tls-verify-disabled"
+    }
+  ]
+}

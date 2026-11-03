@@ -472,7 +472,12 @@ def hunt_vulns(
             except Exception as exc:  # noqa: BLE001 - fast path is best-effort
                 logger.warning("hunt fast path failed: %s", exc)
         for _ in range(max(1, max_rounds)):
-            resp = client.chat(messages, model=model, tools=TOOL_SCHEMAS, tool_choice="auto")
+            try:
+                resp = client.chat(messages, model=model, tools=TOOL_SCHEMAS, tool_choice="auto")
+            except Exception as exc:  # noqa: BLE001 - flaky upstream must not kill the pass
+                logger.warning("hunt loop call failed, falling back to closing: %s", exc)
+                detail = f"loop call failed ({type(exc).__name__}), using closing verdict"
+                break
             rounds += 1
             trace.append(
                 {
