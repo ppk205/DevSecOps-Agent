@@ -138,3 +138,25 @@ def test_both_schemas_agree_on_the_same_finding() -> None:
 
     assert legacy[0].cwe_category == sarif[0].cwe_category
     assert legacy[0].location.file_path == sarif[0].location.file_path
+
+
+class TestPartitionSemgrepErrors:
+    def test_timeouts_filtered_from_both_sources(self):
+        from vulnscan.scanners.semgrep_adapter import partition_semgrep_errors
+
+        hard, timed = partition_semgrep_errors(
+            [
+                "Timeout when running rule.js-x on src/a.js:",
+                "Config error: bad rule",
+            ],
+            stderr="Timeout when running rule.js-y on src/b.js:\n",
+        )
+        assert hard == ["Config error: bad rule"]
+        assert timed == {"src/a.js", "src/b.js"}
+
+    def test_clean_errors_pass_through(self):
+        from vulnscan.scanners.semgrep_adapter import partition_semgrep_errors
+
+        hard, timed = partition_semgrep_errors(["boom"])
+        assert hard == ["boom"]
+        assert timed == set()

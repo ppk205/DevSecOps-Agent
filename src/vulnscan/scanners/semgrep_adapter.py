@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -57,6 +58,28 @@ _SEVERITY_MAP: dict[str, Severity] = {
 
 def _map_severity(raw: str) -> Severity:
     return _SEVERITY_MAP.get(raw.upper().strip(), Severity.UNDETERMINED)
+
+
+_TIMEOUT_RE = re.compile(r"Timeout when running \S+ on (\S+?)(?::\s*$|\s*$)")
+
+
+def partition_semgrep_errors(messages: list[str], stderr: str = "") -> tuple[list[str], set[str]]:
+    """Split semgrep errors into hard failures vs rule-timeout coverage notes.
+
+    Timeouts (a rule giving up on one oversized file) are coverage
+    limitations recorded per-unit, never run failures. Pure function.
+    """
+    timed_out: set[str] = set()
+    for line in (stderr or "").splitlines():
+        m = _TIMEOUT_RE.search(line)
+        if m:
+            timed_out.add(m.group(1).replace("\\", "/"))
+    for message in messages:
+        m = _TIMEOUT_RE.search(message)
+        if m:
+            timed_out.add(m.group(1).replace("\\", "/"))
+    hard = [m for m in messages if not _TIMEOUT_RE.search(m)]
+    return hard, timed_out
 
 
 def _make_observation_id(rule_id: str, file_path: str, line: int) -> str:
@@ -325,6 +348,10 @@ class SemgrepAdapter(ScannerAdapter):
         # Build output copied into the snapshot (target/classes, jars) is not
         # source: keep semgrep out or big vendored .js times out rules.
         argv += ["--exclude", "target"]
+        # Minified bundles are never meaningfully pattern-scanned (a single
+        # 400KB line like ace.js times out taint rules file-wide); exclude
+        # up front. Completion still records each as unsupported with reason.
+        argv += ["--exclude", "*.min.js"]
         if tool_cfg and tool_cfg.rule_paths:
             for rp in tool_cfg.rule_paths:
                 argv += ["--config", rp]
@@ -411,14 +438,12 @@ class SemgrepAdapter(ScannerAdapter):
         # it analyzed. Files semgrep demonstrably skipped (rule timeouts,
         # minified bundles) get unsupported records with a reason instead of
         # vanishing into false "missing coverage" errors.
-        import re as _re
+        # Rule timeouts surface both on stderr and as JSON errors; both are
+        # coverage limitations, never run failures.
+        semgrep_errors = [str(e.get("message", "Semgrep error")) for e in data.get("errors", [])]
+        hard_errors, timed_out = partition_semgrep_errors(semgrep_errors, result.stderr or "")
 
         scanned = {c.unit_path.replace("\\", "/") for c in coverage_records}
-        timed_out = set()
-        for line in (result.stderr or "").splitlines():
-            m = _re.search(r"Timeout when running \S+ on (\S+?)(?::\s*$|\s*$)", line)
-            if m:
-                timed_out.add(m.group(1).replace("\\", "/"))
         manifest = (spec.metadata or {}).get("manifest") or {}
         for name in manifest.get("inventory", []) or []:
             norm = name.replace("\\", "/")
@@ -481,7 +506,7 @@ class SemgrepAdapter(ScannerAdapter):
             ),
             skipped_units=0,
             failed_units=0,
-            errors=[str(e.get("message", "Semgrep error")) for e in data.get("errors", [])],
+            errors=hard_errors,
             warnings=[],
             duration_ms=result.duration_ms,
             metadata={"source_format": "sarif" if "runs" in data else "json"},
