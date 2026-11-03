@@ -177,3 +177,20 @@ def test_entry_param_and_call_propagation(tmp_path) -> None:
     assert any(
         f.rule_id == "java-sql-concatenation" and f.line == 6 for f in findings
     )
+
+
+def test_condition_assignment_taints(tmp_path) -> None:
+    from vulnscan.native_hunt import load_rules, scan_file
+
+    target = tmp_path / "C.java"
+    target.write_text(
+        "String q = null;\n"
+        "while ((q = req.getParameter(\"x\")) != null) {\n"
+        "    st.executeQuery(q);\n"
+        "}\n",
+        encoding="utf-8",
+    )
+    findings = scan_file(target, load_rules("java"))
+    assert any(
+        f.rule_id == "java-sql-concatenation" and f.line == 3 for f in findings
+    )

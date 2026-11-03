@@ -80,6 +80,11 @@ _ENTRY_MARK_RE = re.compile(
 
 _CALL_RE = re.compile(r"(?P<name>[A-Za-z_]\w*)\s*\((?P<args>[^();]*)\)")
 
+#: Fallback for assignments buried in conditions/calls
+#: (``while ((line = in.readLine()) != null)``). Used only when the
+#: line-start assignment misses; same guards against ==/!=/=>.
+_COND_ASSIGN_RE = re.compile(r"(?<![\w=!<>])(?P<var>[A-Za-z_]\w*)\s*=\s*(?![=>])(?P<rhs>[^;]+)")
+
 
 def _split_params(raw: str) -> list[str]:
     """Last token of each comma part, annotations stripped."""
@@ -189,6 +194,8 @@ def _scan_rule(
                         break
             match = _ASSIGN_RE.match(raw)
             if match is None:
+                match = _COND_ASSIGN_RE.search(raw)
+            if match is None:
                 continue
             var, rhs = match.group("var"), match.group("rhs")
             if _line_sanitized(raw, rule):
@@ -218,9 +225,19 @@ def _scan_rule(
             break
 
     findings: list[Finding] = []
+    joined = [""] * len(lines)
+    for i, raw in enumerate(lines):
+        # Statement continuation window: multi-line calls keep the sink on
+        # one line and tainted args on the next (builder-style chains).
+        window = "\n".join(lines[i : i + 3])
+        joined[i] = window
     for lineno, raw in enumerate(lines, start=1):
+        window = joined[lineno - 1]
         sink_hit = any(rx.search(raw) is not None for rx in rule.sink_res)
-        taint_hit = any(rx.search(raw) is not None for rx in rule.taint_sink_res)
+        taint_hit = any(
+            rx.search(raw) is not None or rx.search(window) is not None
+            for rx in rule.taint_sink_res
+        )
         if not sink_hit and not taint_hit:
             continue
         if _line_sanitized(raw, rule):
@@ -231,7 +248,7 @@ def _scan_rule(
         else:
             best_ref: tuple[int, int] | None = None
             for tvar, (origin, hops) in tainted.items():
-                if _word_rx(tvar).search(raw) is None:
+                if _word_rx(tvar).search(window) is None:
                     continue
                 if best_ref is None or hops < best_ref[1]:
                     best_ref = (origin, hops)

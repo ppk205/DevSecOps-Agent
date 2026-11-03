@@ -32,7 +32,19 @@ RULES_DIR = Path(__file__).resolve().parent / "rules"
 _FAMILY_SOURCES: dict[str, list[str]] = {
     "python": [r"request\.(args|form|values|json|data|GET|POST)", r"\binput\s*\("],
     "javascript": [r"req\.(query|body|params)", r"location\.(search|hash)", r"document\.URL"],
-    "java": [r"request\.getParameter", r"getParameter\s*\("],
+    "java": [
+        r"request\.getParameter",
+        r"getParameter\s*\(",
+        r"request\.getHeader",
+        r"getHeader\s*\(",
+        r"request\.getCookies",
+        r"getCookies\s*\(\s*\)",
+        r"request\.getQueryString",
+        r"getQueryString\s*\(\s*\)",
+        r"\.get\s*\(\s*\"kid\"",
+        r"header\.get\s*\(",
+        r"claims\.get\s*\(",
+    ],
     "php": [r"\$_(GET|POST|REQUEST|COOKIE)"],
     "generic": [r"\brequest\b", r"\binput\s*\(", r"\bargv\b"],
 }
