@@ -1,0 +1,111 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "automationDetails": {
+        "id": "run-4e61efadc7bd4df98c618217186d493a"
+      },
+      "tool": {
+        "driver": {
+          "name": "devsecops-agent",
+          "version": "0.2.0"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.java-stack-trace-exposure",
+          "ruleName": "CWE-209 at .mvn/wrapper/MavenWrapperDownloader.java:92",
+          "level": "warning",
+          "message": {
+            "text": "printStackTrace exposes internals; log through a logger instead."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".mvn/wrapper/MavenWrapperDownloader.java"
+                },
+                "region": {
+                  "startLine": 92,
+                  "endLine": 92,
+                  "startColumn": 13,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".mvn/wrapper/MavenWrapperDownloader.java"
+                },
+                "region": {
+                  "startLine": 92,
+                  "endLine": 92
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "b3350357fb12a6d2d7e627a4c7ea5d63ec4b81652c1a1e8268fba07b8f3e8d75"
+          },
+          "properties": {
+            "findingId": "b3350357fb12a6d2",
+            "cwe": "CWE-209"
+          }
+        }
+      ],
+      "artifacts": [],
+      "properties": {
+        "counts": {
+          "version": "0.1.0",
+          "total": 1,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0,
+          "unprocessed": 1
+        },
+        "commit": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+        "target": "D:\\dev\\bench-repos\\problem-spring-web",
+        "status": "failed",
+        "gate": "failed",
+        "errors": [
+          "spotbugs: required scanner did not complete successfully"
+        ],
+        "configuration": {
+          "schema_version": 1,
+          "profile": "full",
+          "fail_on": "high",
+          "output_dir": "artifacts/deep-compare/problem-spring-web/mine",
+          "timezone": "Asia/Saigon",
+          "timeout": 3600,
+          "max_files": 100000,
+          "allow_dirty": true,
+          "ci": false,
+          "laya": true,
+          "laya_config_path": null,
+          "ai_review": false,
+          "provider_profile": null,
+          "provider_model": null,
+          "ai_report": false,
+          "max_ai_findings": 10,
+          "mode": "hunt",
+          "tools": null
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": false,
+          "toolExecutionNotifications": [
+            {
+              "level": "error",
+              "message": {
+                "text": "spotbugs: required scanner did not complete successfully"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

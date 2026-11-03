@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Security assessment run-b441d7dc3f7f4d7cb1699c3b0add0473</title>
+<style>
+:root{--bg:#0e1319;--card:#161d24;--ink:#e8edf2;--muted:#9aa7b4;--hairline:#2a3440;
+--accent:#1c69d4;--green:#22c55e;--yellow:#f59e0b;--red:#e22718;--code:#0b0f14}
+*{box-sizing:border-box}html{scrollbar-color:#3a4654 var(--bg)}
+body{font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:1100px;
+margin:40px auto;padding:0 20px;background:var(--bg);color:var(--ink)}
+h1{font-size:28px;margin:0 0 4px}h2{font-size:19px;margin:36px 0 12px;
+padding-bottom:8px;border-bottom:1px solid var(--hairline)}
+a{color:#6ea8fe}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+font-size:.86em;background:var(--code);border:1px solid var(--hairline);
+border-radius:4px;padding:2px 6px}
+.meta{color:var(--muted);font-size:13px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.chip{font-size:12px;border:1px solid var(--hairline);border-radius:999px;padding:3px 12px;color:var(--muted)}
+.counts{display:flex;flex-wrap:wrap;gap:12px;padding:0;list-style:none;margin:20px 0}
+.counts li{flex:1 1 140px;background:var(--card);border:1px solid var(--hairline);
+border-left:4px solid var(--muted);border-radius:6px;padding:10px 14px}
+.counts li.ok{border-left-color:var(--green)}.counts li.warn{border-left-color:var(--yellow)}
+.counts li.bad{border-left-color:var(--red)}
+.count{font-size:28px;font-weight:700;line-height:1.1}.counts small{color:var(--muted)}
+.finding{background:var(--card);border:1px solid var(--hairline);border-radius:8px;
+padding:18px 20px;margin:14px 0}
+.finding h3{margin:0 0 6px;font-size:16px}
+.st{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
+border-radius:4px;padding:2px 8px;margin-right:6px}
+.st-confirmed{background:rgba(34,197,94,.15);color:var(--green);border:1px solid var(--green)}
+.st-unresolved,.st-unprocessed{background:rgba(245,158,11,.13);color:var(--yellow);border:1px solid var(--yellow)}
+.st-rejected{background:rgba(154,167,180,.13);color:var(--muted);border:1px solid var(--muted)}
+.sev-high{color:var(--red)}.sev-medium{color:var(--yellow)}.sev-low{color:#6ea8fe}
+pre{background:var(--code);border:1px solid var(--hairline);border-radius:6px;
+padding:12px 14px;overflow-x:auto;font-size:13px;line-height:1.5;scrollbar-color:#3a4654 var(--code)}
+pre::-webkit-scrollbar{height:10px}pre::-webkit-scrollbar-track{background:var(--code)}
+pre::-webkit-scrollbar-thumb{background:#3a4654;border-radius:5px}
+pre::-webkit-scrollbar-thumb:hover{background:#4d5c6e}
+::-webkit-scrollbar{width:12px;height:12px}::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#3a4654;border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:#4d5c6e}
+.cover{background:var(--card);border:1px solid var(--hairline);border-radius:8px;
+padding:12px 16px;margin:10px 0}
+.cover b{color:var(--ink)}.cover ul{margin:6px 0 0;padding-left:20px;color:var(--muted)}
+@media print{body{margin:20px;background:#fff;color:#000}.finding,.counts li,.cover{break-inside:avoid}}
+</style></head><body>
+<h1>Security assessment <code>run-b441d7dc3f7f4d7cb1699c3b0add0473</code></h1>
+<p class="meta">devsecops-agent 0.2.0</p>
+<div class="chips"><span class="chip">commit: bf4795cefe225780cd26f51e270e65780c5a9323</span><span class="chip">target: D:\dev\bench-repos\vue-mdc</span><span class="chip">status: failed</span><span class="chip">gate: failed</span><span class="chip">errors: [&#34;spotbugs: classes directory not found: C:\\Users\\MINH KHOI\\AppData\\Local\\Temp\\vulnscan-snapshot-sfoikmtr\\target\\classes (run &#39;mvn compile&#39; first)&#34;, &#39;owasp-dependency-check: missing coverage for pom.xml&#39;, &#39;spotbugs: required scanner did not complete successfully&#39;]</span><span class="chip">configuration: {&#39;schema_version&#39;: 1, &#39;profile&#39;: &#39;full&#39;, &#39;fail_on&#39;: &#39;high&#39;, &#39;output_dir&#39;: &#39;artifacts/deep-compare/vue-mdc/mine&#39;, &#39;timezone&#39;: &#39;Asia/Saigon&#39;, &#39;timeout&#39;: 3600, &#39;max_files&#39;: 100000, &#39;allow_dirty&#39;: True, &#39;ci&#39;: False, &#39;laya&#39;: True, &#39;laya_config_path&#39;: None, &#39;ai_review&#39;: False, &#39;provider_profile&#39;: None, &#39;provider_model&#39;: None, &#39;ai_report&#39;: False, &#39;max_ai_findings&#39;: 10, &#39;mode&#39;: &#39;hunt&#39;, &#39;tools&#39;: None}</span></div>
+<ul class="counts">
+<li class="ok"><span class="count">2</span><br><small>Total</small></li>
+<li class="ok"><span class="count">0</span><br><small>Confirmed</small></li>
+<li><span class="count">0</span><br><small>Rejected</small></li>
+<li class="warn"><span class="count">0</span><br><small>Unresolved</small></li>
+<li class="warn"><span class="count">2</span><br><small>Unprocessed</small></li>
+</ul>
+<h2>Coverage</h2>
+<div class="cover"><b>semgrep</b>
+<span class="meta"> — 35/35 units analyzed</span>
+</div><div class="cover"><b>native-hunt</b>
+<span class="meta"> — 52/52 units analyzed</span>
+</div><div class="cover"><b>gitleaks</b>
+<span class="meta"> — 35/35 units analyzed</span>
+</div><div class="cover"><b>spotbugs</b>
+<span class="meta"> — 0/0 units analyzed</span>
+</div><div class="cover"><b>owasp-dependency-check</b>
+<span class="meta"> — 0/0 units analyzed</span>
+</div>
+
+<h2>Findings</h2>
+<section class="finding"><h3>CWE-489 at build/utils/log.js:2</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · b7ce082f6401 · CWE-489</span></p>
+<p>js-debug-leftover: Leftover debugger or console call ships debug output; remove it before release.</p>
+<p class="meta">native-hunt / js-debug-leftover / build/utils/log.js:2</p>
+<pre>console.log(e)
+}</pre>
+</section><section class="finding"><h3>CWE-489 at build/utils/write.js:9</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 8235e0bedfd3 · CWE-489</span></p>
+<p>js-debug-leftover: Leftover debugger or console call ships debug output; remove it before release.</p>
+<p class="meta">native-hunt / js-debug-leftover / build/utils/write.js:9</p>
+<pre>console.log(blue(dest) + &#39; &#39; + getSize(code))
+      resolve(code)
+    })</pre>
+</section>
+</body></html>

@@ -1,0 +1,62 @@
+[
+  {
+    "repo": "problem-spring-web",
+    "lang": "Java",
+    "mine": 1,
+    "semgrep_auto": 0,
+    "semgrep_auto_ov": 0,
+    "semgrep_auto_out": 6,
+    "bandit_med": 0,
+    "bandit_med_ov": 0,
+    "njsscan": 0,
+    "njsscan_ov": 0
+  },
+  {
+    "repo": "thelounge",
+    "lang": "JavaScript",
+    "mine": 42,
+    "semgrep_auto": 24,
+    "semgrep_auto_ov": 1,
+    "semgrep_auto_out": 8,
+    "bandit_med": 0,
+    "bandit_med_ov": 0,
+    "njsscan": 2,
+    "njsscan_ov": 0
+  },
+  {
+    "repo": "vue-mdc",
+    "lang": "TypeScript",
+    "mine": 2,
+    "semgrep_auto": 0,
+    "semgrep_auto_ov": 0,
+    "semgrep_auto_out": 0,
+    "bandit_med": 0,
+    "bandit_med_ov": 0,
+    "njsscan": 0,
+    "njsscan_ov": 0
+  },
+  {
+    "repo": "falcon",
+    "lang": "Python",
+    "mine": 21,
+    "semgrep_auto": 7,
+    "semgrep_auto_ov": 0,
+    "semgrep_auto_out": 5,
+    "bandit_med": 29,
+    "bandit_med_ov": 6,
+    "njsscan": 0,
+    "njsscan_ov": 0
+  },
+  {
+    "repo": "pikachu",
+    "lang": "PHP",
+    "mine": 136,
+    "semgrep_auto": 103,
+    "semgrep_auto_ov": 20,
+    "semgrep_auto_out": 1,
+    "bandit_med": 0,
+    "bandit_med_ov": 0,
+    "njsscan": 0,
+    "njsscan_ov": 0
+  }
+]

@@ -1,0 +1,9 @@
+{
+  "repo": "pikachu",
+  "lang": "PHP",
+  "url": "https://github.com/zhuifengshaonianhanlu/pikachu",
+  "commit": "5e1e8d9d14a3ba61d62f28cf35531c4df4dd24fc",
+  "mine_exit": 2,
+  "mine_tail": "    \"final-report\": \"D:\\\\New folder\\\\DevSecOps-Agent\\\\artifacts\\\\deep-compare\\\\pikachu\\\\mine\\\\run-b5d303e3425d41cea00f9cedcca7680e\\\\final-report.md\"\n  },\n  \"summary_path\": \"D:\\\\New folder\\\\DevSecOps-Agent\\\\artifacts\\\\deep-compare\\\\pikachu\\\\mine\\\\run-b5d303e3425d41cea00f9cedcca7680e\\\\summary.json\"\n}\n",
+  "semgrep_auto_n": 108
+}

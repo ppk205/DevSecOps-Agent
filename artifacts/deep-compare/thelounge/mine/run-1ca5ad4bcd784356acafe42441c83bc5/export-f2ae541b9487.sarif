@@ -1,0 +1,1493 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "automationDetails": {
+        "id": "run-1ca5ad4bcd784356acafe42441c83bc5"
+      },
+      "tool": {
+        "driver": {
+          "name": "devsecops-agent",
+          "version": "0.2.0"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+          "ruleName": "CWE-489 at client/js/keybinds.ts:152",
+          "level": "warning",
+          "message": {
+            "text": "Leftover debugger or console call ships debug output; remove it before release."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "client/js/keybinds.ts"
+                },
+                "region": {
+                  "startLine": 152,
+                  "endLine": 152,
+                  "startColumn": 34,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "client/js/keybinds.ts"
+                },
+                "region": {
+                  "startLine": 152,
+                  "endLine": 152
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "2f58264d8af6b2fcc11771a9f58d405f89e39d855ffb66ebbf54750edec492ab"
+          },
+          "properties": {
+            "findingId": "2f58264d8af6b2fc",
+            "cwe": "CWE-489"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-hardcoded-secret",
+          "ruleName": "CWE-798 at defaults/config.js:365",
+          "level": "warning",
+          "message": {
+            "text": "Hardcoded credential in source; load secrets from the environment or a vault."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "defaults/config.js"
+                },
+                "region": {
+                  "startLine": 365,
+                  "endLine": 365,
+                  "startColumn": 21,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "defaults/config.js"
+                },
+                "region": {
+                  "startLine": 365,
+                  "endLine": 365
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "78dd4b94331729ce36d11933e5df89c929c904d5bc0ec3f335aa76de51d9a7a0"
+          },
+          "properties": {
+            "findingId": "78dd4b94331729ce",
+            "cwe": "CWE-798"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+          "ruleName": "CWE-489 at scripts/changelog.js:84",
+          "level": "warning",
+          "message": {
+            "text": "Leftover debugger or console call ships debug output; remove it before release."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/changelog.js"
+                },
+                "region": {
+                  "startLine": 84,
+                  "endLine": 84,
+                  "startColumn": 3,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/changelog.js"
+                },
+                "region": {
+                  "startLine": 84,
+                  "endLine": 84
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "0df911fa7c2fce43d54796675c61c96a8c68a3bd86c2bf7e14b9b37b4f4b12df"
+          },
+          "properties": {
+            "findingId": "0df911fa7c2fce43",
+            "cwe": "CWE-489"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+          "ruleName": "CWE-489 at scripts/changelog.js:87",
+          "level": "warning",
+          "message": {
+            "text": "Leftover debugger or console call ships debug output; remove it before release."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/changelog.js"
+                },
+                "region": {
+                  "startLine": 87,
+                  "endLine": 87,
+                  "startColumn": 3,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/changelog.js"
+                },
+                "region": {
+                  "startLine": 87,
+                  "endLine": 87
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "5d69c5519a97bb4cfd65477ff9f36c1cc9d52e60411a91ea92c833d499000b59"
+          },
+          "properties": {
+            "findingId": "5d69c5519a97bb4c",
+            "cwe": "CWE-489"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+          "ruleName": "CWE-489 at scripts/changelog.js:90",
+          "level": "warning",
+          "message": {
+            "text": "Leftover debugger or console call ships debug output; remove it before release."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/changelog.js"
+                },
+                "region": {
+                  "startLine": 90,
+                  "endLine": 90,
+                  "startColumn": 3,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/changelog.js"
+                },
+                "region": {
+                  "startLine": 90,
+                  "endLine": 90
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "c40fef0fe7927c05e33f6b9f98362f0e13b0e98e53f13acd7971a0f99ade0a54"
+          },
+          "properties": {
+            "findingId": "c40fef0fe7927c05",
+            "cwe": "CWE-489"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+          "ruleName": "CWE-489 at scripts/generate-config-doc.js:38",
+          "level": "warning",
+          "message": {
+            "text": "Leftover debugger or console call ships debug output; remove it before release."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/generate-config-doc.js"
+                },
+                "region": {
+                  "startLine": 38,
+                  "endLine": 38,
+                  "startColumn": 3,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/generate-config-doc.js"
+                },
+                "region": {
+                  "startLine": 38,
+                  "endLine": 38
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "90ae2c9e58434b6c7f75e7bb2a7d0bc62fd3106a1f82bb940209a7325a1a2029"
+          },
+          "properties": {
+            "findingId": "90ae2c9e58434b6c",
+            "cwe": "CWE-489"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+          "ruleName": "CWE-489 at scripts/generate-config-doc.js:41",
+          "level": "warning",
+          "message": {
+            "text": "Leftover debugger or console call ships debug output; remove it before release."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/generate-config-doc.js"
+                },
+                "region": {
+                  "startLine": 41,
+                  "endLine": 41,
+                  "startColumn": 3,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/generate-config-doc.js"
+                },
+                "region": {
+                  "startLine": 41,
+                  "endLine": 41
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "8781c2fa342842ebe7cabefc8e3e8e7c1336e72c6ca1f623ed69934656a78861"
+          },
+          "properties": {
+            "findingId": "8781c2fa342842eb",
+            "cwe": "CWE-489"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+          "ruleName": "CWE-489 at scripts/generate-config-doc.js:44",
+          "level": "warning",
+          "message": {
+            "text": "Leftover debugger or console call ships debug output; remove it before release."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/generate-config-doc.js"
+                },
+                "region": {
+                  "startLine": 44,
+                  "endLine": 44,
+                  "startColumn": 3,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/generate-config-doc.js"
+                },
+                "region": {
+                  "startLine": 44,
+                  "endLine": 44
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "1d69851e544c72e9255f2f74c13be817e50719599f8b978cf661697fcf320e33"
+          },
+          "properties": {
+            "findingId": "1d69851e544c72e9",
+            "cwe": "CWE-489"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+          "ruleName": "CWE-330 at server/client.ts:218",
+          "level": "warning",
+          "message": {
+            "text": "Math.random is predictable in security contexts; use crypto.randomBytes/getRandomValues."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/client.ts"
+                },
+                "region": {
+                  "startLine": 218,
+                  "endLine": 218,
+                  "startColumn": 32,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/client.ts"
+                },
+                "region": {
+                  "startLine": 218,
+                  "endLine": 218
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "31b99133678171cac07f1345575e6932eb99f2a576717ec1c43697ab885dd4ff"
+          },
+          "properties": {
+            "findingId": "31b99133678171ca",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+          "ruleName": "CWE-330 at server/config.ts:169",
+          "level": "warning",
+          "message": {
+            "text": "Math.random is predictable in security contexts; use crypto.randomBytes/getRandomValues."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/config.ts"
+                },
+                "region": {
+                  "startLine": 169,
+                  "endLine": 169,
+                  "startColumn": 15,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/config.ts"
+                },
+                "region": {
+                  "startLine": 169,
+                  "endLine": 169
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "96ea10f456f804f176084897570bb43c950552e31abcf72ac1333146eb7d772c"
+          },
+          "properties": {
+            "findingId": "96ea10f456f804f1",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+          "ruleName": "CWE-489 at server/log.ts:19",
+          "level": "warning",
+          "message": {
+            "text": "Leftover debugger or console call ships debug output; remove it before release."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/log.ts"
+                },
+                "region": {
+                  "startLine": 19,
+                  "endLine": 19,
+                  "startColumn": 3,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/log.ts"
+                },
+                "region": {
+                  "startLine": 19,
+                  "endLine": 19
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "e68147367476794bf92c2f8d0899f82b2670d694cba1a94457ce0ce0c80bcfbf"
+          },
+          "properties": {
+            "findingId": "e68147367476794b",
+            "cwe": "CWE-489"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+          "ruleName": "CWE-489 at server/log.ts:22",
+          "level": "warning",
+          "message": {
+            "text": "Leftover debugger or console call ships debug output; remove it before release."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/log.ts"
+                },
+                "region": {
+                  "startLine": 22,
+                  "endLine": 22,
+                  "startColumn": 3,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/log.ts"
+                },
+                "region": {
+                  "startLine": 22,
+                  "endLine": 22
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "29bf240466942013e150d52cdcdeb84e550170fdba71251d4ec269a2e409fbd0"
+          },
+          "properties": {
+            "findingId": "29bf240466942013",
+            "cwe": "CWE-489"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover",
+          "ruleName": "CWE-489 at server/log.ts:25",
+          "level": "warning",
+          "message": {
+            "text": "Leftover debugger or console call ships debug output; remove it before release."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/log.ts"
+                },
+                "region": {
+                  "startLine": 25,
+                  "endLine": 25,
+                  "startColumn": 3,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/log.ts"
+                },
+                "region": {
+                  "startLine": 25,
+                  "endLine": 25
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "838f6ae035ee242596279df71f418a061c973cbabc2a2a98e8826f3dab493d92"
+          },
+          "properties": {
+            "findingId": "838f6ae035ee2425",
+            "cwe": "CWE-489"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+          "ruleName": "CWE-330 at server/plugins/changelog.ts:108",
+          "level": "warning",
+          "message": {
+            "text": "Math.random is predictable in security contexts; use crypto.randomBytes/getRandomValues."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/plugins/changelog.ts"
+                },
+                "region": {
+                  "startLine": 108,
+                  "endLine": 108,
+                  "startColumn": 36,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/plugins/changelog.ts"
+                },
+                "region": {
+                  "startLine": 108,
+                  "endLine": 108
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "37c277ac00b69348e30b51af68357954face42513a3d255d3b7180df0c21fda2"
+          },
+          "properties": {
+            "findingId": "37c277ac00b69348",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+          "ruleName": "CWE-330 at server/plugins/irc-events/error.ts:65",
+          "level": "warning",
+          "message": {
+            "text": "Math.random is predictable in security contexts; use crypto.randomBytes/getRandomValues."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/plugins/irc-events/error.ts"
+                },
+                "region": {
+                  "startLine": 65,
+                  "endLine": 65,
+                  "startColumn": 61,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/plugins/irc-events/error.ts"
+                },
+                "region": {
+                  "startLine": 65,
+                  "endLine": 65
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "1f5643647a3ce605cd476a8b85c8e3457071ef3658ad2968154715d1908b5756"
+          },
+          "properties": {
+            "findingId": "1f5643647a3ce605",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-timing-unsafe-compare",
+          "ruleName": "CWE-208 at server/plugins/uploader.ts:93",
+          "level": "warning",
+          "message": {
+            "text": "Secret compared with equality leaks timing information; use crypto.timingSafeEqual."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/plugins/uploader.ts"
+                },
+                "region": {
+                  "startLine": 93,
+                  "endLine": 93,
+                  "startColumn": 7,
+                  "endColumn": 32
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "2d2e4602050c409ec65f728bb909cb62c58922ffa3e3da347a974077f1488e09"
+          },
+          "properties": {
+            "findingId": "2d2e4602050c409e",
+            "cwe": "CWE-208"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-timing-unsafe-compare",
+          "ruleName": "CWE-208 at server/plugins/uploader.ts:115",
+          "level": "warning",
+          "message": {
+            "text": "Secret compared with equality leaks timing information; use crypto.timingSafeEqual."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/plugins/uploader.ts"
+                },
+                "region": {
+                  "startLine": 115,
+                  "endLine": 115,
+                  "startColumn": 7,
+                  "endColumn": 44
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "a45cd6f217e07c34e7d08c7cc16b54faf0bc9065d5ddc4b8da3e41c072989a7a"
+          },
+          "properties": {
+            "findingId": "a45cd6f217e07c34",
+            "cwe": "CWE-208"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-timing-unsafe-compare",
+          "ruleName": "CWE-208 at server/plugins/uploader.ts:117",
+          "level": "warning",
+          "message": {
+            "text": "Secret compared with equality leaks timing information; use crypto.timingSafeEqual."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/plugins/uploader.ts"
+                },
+                "region": {
+                  "startLine": 117,
+                  "endLine": 117,
+                  "startColumn": 14,
+                  "endColumn": 49
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "84ab6632cb3b4401d0f03b8047ccb9b2945ae8fcf2e1462404a52c31ec1d933b"
+          },
+          "properties": {
+            "findingId": "84ab6632cb3b4401",
+            "cwe": "CWE-208"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-timing-unsafe-compare",
+          "ruleName": "CWE-208 at server/plugins/uploader.ts:119",
+          "level": "warning",
+          "message": {
+            "text": "Secret compared with equality leaks timing information; use crypto.timingSafeEqual."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/plugins/uploader.ts"
+                },
+                "region": {
+                  "startLine": 119,
+                  "endLine": 119,
+                  "startColumn": 14,
+                  "endColumn": 48
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "e9c8120f34810233f788d4a20eb9175570afad699a3879987b177bb6868ed65b"
+          },
+          "properties": {
+            "findingId": "e9c8120f34810233",
+            "cwe": "CWE-208"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-timing-unsafe-compare",
+          "ruleName": "CWE-208 at server/plugins/uploader.ts:121",
+          "level": "warning",
+          "message": {
+            "text": "Secret compared with equality leaks timing information; use crypto.timingSafeEqual."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/plugins/uploader.ts"
+                },
+                "region": {
+                  "startLine": 121,
+                  "endLine": 121,
+                  "startColumn": 14,
+                  "endColumn": 52
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "8c7427a0e5e61d5250175d50cfb8f636441a7a4938ff4438bc94430dd0ca45b9"
+          },
+          "properties": {
+            "findingId": "8c7427a0e5e61d52",
+            "cwe": "CWE-208"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random",
+          "ruleName": "CWE-330 at server/server.ts:61",
+          "level": "warning",
+          "message": {
+            "text": "Math.random is predictable in security contexts; use crypto.randomBytes/getRandomValues."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/server.ts"
+                },
+                "region": {
+                  "startLine": 61,
+                  "endLine": 61,
+                  "startColumn": 44,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/server.ts"
+                },
+                "region": {
+                  "startLine": 61,
+                  "endLine": 61
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "42e1a4131fa710048e4246559abcb759f50184a2ba840d9f1df7c6d456e7c23d"
+          },
+          "properties": {
+            "findingId": "42e1a4131fa71004",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-timing-unsafe-compare",
+          "ruleName": "CWE-208 at server/server.ts:111",
+          "level": "warning",
+          "message": {
+            "text": "Secret compared with equality leaks timing information; use crypto.timingSafeEqual."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/server.ts"
+                },
+                "region": {
+                  "startLine": 111,
+                  "endLine": 111,
+                  "startColumn": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/server.ts"
+                },
+                "region": {
+                  "startLine": 111,
+                  "endLine": 111,
+                  "startColumn": 30,
+                  "endColumn": 58
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "cb726c568714caeef0de5bcc468b9764a426a21f85f0bb74772c850e6178a624"
+          },
+          "properties": {
+            "findingId": "cb726c568714caee",
+            "cwe": "CWE-208"
+          }
+        },
+        {
+          "ruleId": "js-debug-leftover",
+          "ruleName": "CWE-489 at client/components/MessageCondensed.vue:74",
+          "level": "warning",
+          "message": {
+            "text": "js-debug-leftover: Leftover debugger or console call ships debug output; remove it before release."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "client/components/MessageCondensed.vue"
+                },
+                "region": {
+                  "startLine": 74,
+                  "endLine": 74
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "251627c6d83ce4b5d12f0f8d0dd60e8b37e07b2e174b5ea83e3398e3dc9aa797"
+          },
+          "properties": {
+            "findingId": "251627c6d83ce4b5",
+            "cwe": "CWE-489"
+          }
+        },
+        {
+          "ruleId": "js-timing-unsafe-compare",
+          "ruleName": "CWE-208 at client/js/router.ts:134",
+          "level": "warning",
+          "message": {
+            "text": "js-timing-unsafe-compare: Secret compared with equality leaks timing information; use crypto.timingSafeEqual."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "client/js/router.ts"
+                },
+                "region": {
+                  "startLine": 134,
+                  "endLine": 134
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "f16b856b8089e97b9e8f60bf47c8606db8df40b092167ff3b218c84586c2c0fa"
+          },
+          "properties": {
+            "findingId": "f16b856b8089e97b",
+            "cwe": "CWE-208"
+          }
+        },
+        {
+          "ruleId": "js-timing-unsafe-compare",
+          "ruleName": "CWE-208 at client/js/router.ts:139",
+          "level": "warning",
+          "message": {
+            "text": "js-timing-unsafe-compare: Secret compared with equality leaks timing information; use crypto.timingSafeEqual."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "client/js/router.ts"
+                },
+                "region": {
+                  "startLine": 139,
+                  "endLine": 139
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "7610762d471ce6a6823f4531d58b9607b25fab0cfc05908b620bc17419f98f99"
+          },
+          "properties": {
+            "findingId": "7610762d471ce6a6",
+            "cwe": "CWE-208"
+          }
+        },
+        {
+          "ruleId": "js-timing-unsafe-compare",
+          "ruleName": "CWE-208 at client/js/router.ts:189",
+          "level": "warning",
+          "message": {
+            "text": "js-timing-unsafe-compare: Secret compared with equality leaks timing information; use crypto.timingSafeEqual."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "client/js/router.ts"
+                },
+                "region": {
+                  "startLine": 189,
+                  "endLine": 189
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "ecd5a9cbacb543ecc8670ffc47bcae8f8e5ebfd5949c2e2cb7e180fce8784aef"
+          },
+          "properties": {
+            "findingId": "ecd5a9cbacb543ec",
+            "cwe": "CWE-208"
+          }
+        },
+        {
+          "ruleId": "js-timing-unsafe-compare",
+          "ruleName": "CWE-208 at client/js/upload.ts:99",
+          "level": "warning",
+          "message": {
+            "text": "js-timing-unsafe-compare: Secret compared with equality leaks timing information; use crypto.timingSafeEqual."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "client/js/upload.ts"
+                },
+                "region": {
+                  "startLine": 99,
+                  "endLine": 99
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "2ce4e5ed6e32cad3bcf4590073848a59f742a2b03e8fe6e154b4d07667fe49b4"
+          },
+          "properties": {
+            "findingId": "2ce4e5ed6e32cad3",
+            "cwe": "CWE-208"
+          }
+        },
+        {
+          "ruleId": "js-timing-unsafe-compare",
+          "ruleName": "CWE-208 at client/js/upload.ts:104",
+          "level": "warning",
+          "message": {
+            "text": "js-timing-unsafe-compare: Secret compared with equality leaks timing information; use crypto.timingSafeEqual."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "client/js/upload.ts"
+                },
+                "region": {
+                  "startLine": 104,
+                  "endLine": 104
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "21c25843c89d035ed0bbe14609e6f5bb6678bec7f1e558bb263c8e58b14181d2"
+          },
+          "properties": {
+            "findingId": "21c25843c89d035e",
+            "cwe": "CWE-208"
+          }
+        },
+        {
+          "ruleId": "js-timing-unsafe-compare",
+          "ruleName": "CWE-208 at client/js/upload.ts:146",
+          "level": "warning",
+          "message": {
+            "text": "js-timing-unsafe-compare: Secret compared with equality leaks timing information; use crypto.timingSafeEqual."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "client/js/upload.ts"
+                },
+                "region": {
+                  "startLine": 146,
+                  "endLine": 146
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "8a4a76f0ccf5322cbc76663bf6a4fe6dcb682fcc660410728181754c3f267d35"
+          },
+          "properties": {
+            "findingId": "8a4a76f0ccf5322c",
+            "cwe": "CWE-208"
+          }
+        },
+        {
+          "ruleId": "js-implied-eval",
+          "ruleName": "CWE-95 at client/js/upload.ts:175",
+          "level": "error",
+          "message": {
+            "text": "js-implied-eval: Request data reaches a string-evaluated callback or vm API; pass a function reference instead."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "client/js/upload.ts"
+                },
+                "region": {
+                  "startLine": 175,
+                  "endLine": 175
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "e6ce86cc5436d46e4120747788cff2c6f695d288a0795f3d068c0142fae90cc7"
+          },
+          "properties": {
+            "findingId": "e6ce86cc5436d46e",
+            "cwe": "CWE-95"
+          }
+        },
+        {
+          "ruleId": "js-timing-unsafe-compare",
+          "ruleName": "CWE-208 at client/js/upload.ts:236",
+          "level": "warning",
+          "message": {
+            "text": "js-timing-unsafe-compare: Secret compared with equality leaks timing information; use crypto.timingSafeEqual."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "client/js/upload.ts"
+                },
+                "region": {
+                  "startLine": 236,
+                  "endLine": 236
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "36098c9db1b10daa3c3ac547dbdee9993dd8a27588fe4de07467233fd34e9798"
+          },
+          "properties": {
+            "findingId": "36098c9db1b10daa",
+            "cwe": "CWE-208"
+          }
+        },
+        {
+          "ruleId": "js-unsafe-deserialization",
+          "ruleName": "CWE-502 at client/js/upload.ts:240",
+          "level": "error",
+          "message": {
+            "text": "js-unsafe-deserialization: Unsafe deserialization of untrusted data; validate input before reviving objects."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "client/js/upload.ts"
+                },
+                "region": {
+                  "startLine": 240,
+                  "endLine": 240
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "c4f87575219dbdfbbb367e554e639bda1c1cc012f83ffb4245ed892f40d24749"
+          },
+          "properties": {
+            "findingId": "c4f87575219dbdfb",
+            "cwe": "CWE-502"
+          }
+        },
+        {
+          "ruleId": "js-timing-unsafe-compare",
+          "ruleName": "CWE-208 at client/public/js/loading-error-handlers.js:115",
+          "level": "warning",
+          "message": {
+            "text": "js-timing-unsafe-compare: Secret compared with equality leaks timing information; use crypto.timingSafeEqual."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "client/public/js/loading-error-handlers.js"
+                },
+                "region": {
+                  "startLine": 115,
+                  "endLine": 115
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "9c7b6b9e3770217952d8736f5318364e17ff5a41bb25c0a6fb31e2207e21527e"
+          },
+          "properties": {
+            "findingId": "9c7b6b9e37702179",
+            "cwe": "CWE-208"
+          }
+        },
+        {
+          "ruleId": "js-jwt-weak-secret",
+          "ruleName": "CWE-327 at server/plugins/clientCertificate.ts:127",
+          "level": "error",
+          "message": {
+            "text": "js-jwt-weak-secret: [REDACTED] signed with an empty or weak literal secret or none algorithm; use a strong env secret."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/plugins/clientCertificate.ts"
+                },
+                "region": {
+                  "startLine": 127,
+                  "endLine": 127
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "b77fc69ae9a2c2c853ec8c126f89fba2b934129d287ae8540e31726c0ac83f7f"
+          },
+          "properties": {
+            "findingId": "b77fc69ae9a2c2c8",
+            "cwe": "CWE-327"
+          }
+        },
+        {
+          "ruleId": "js-path-traversal",
+          "ruleName": "CWE-22 at server/plugins/uploader.ts:129",
+          "level": "error",
+          "message": {
+            "text": "js-path-traversal: File path includes externally controlled input; validate or canonicalize."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/plugins/uploader.ts"
+                },
+                "region": {
+                  "startLine": 129,
+                  "endLine": 129
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "1a5497a860074ebbdc992aeebee93e3f5b050c06c9d9726181a93a8aba0a3872"
+          },
+          "properties": {
+            "findingId": "1a5497a860074ebb",
+            "cwe": "CWE-22"
+          }
+        },
+        {
+          "ruleId": "js-path-traversal",
+          "ruleName": "CWE-22 at server/server.ts:128",
+          "level": "error",
+          "message": {
+            "text": "js-path-traversal: File path includes externally controlled input; validate or canonicalize."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/server.ts"
+                },
+                "region": {
+                  "startLine": 128,
+                  "endLine": 128
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "a995bfbfd175b955a2643ee9a37366cdb26485ab7804398573d63527c04118f3"
+          },
+          "properties": {
+            "findingId": "a995bfbfd175b955",
+            "cwe": "CWE-22"
+          }
+        },
+        {
+          "ruleId": "js-timing-unsafe-compare",
+          "ruleName": "CWE-208 at server/server.ts:246",
+          "level": "warning",
+          "message": {
+            "text": "js-timing-unsafe-compare: Secret compared with equality leaks timing information; use crypto.timingSafeEqual."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "server/server.ts"
+                },
+                "region": {
+                  "startLine": 246,
+                  "endLine": 246
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "728d112662df82bb3957b818ad79f41e310e7da6527c0e4c43f69b5bb79922fc"
+          },
+          "properties": {
+            "findingId": "728d112662df82bb",
+            "cwe": "CWE-208"
+          }
+        },
+        {
+          "ruleId": "js-hardcoded-secret",
+          "ruleName": "CWE-798 at test/plugins/auth/ldap.ts:12",
+          "level": "warning",
+          "message": {
+            "text": "js-hardcoded-secret: [REDACTED] credential in source; load secrets from the environment or a vault."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "test/plugins/auth/ldap.ts"
+                },
+                "region": {
+                  "startLine": 12,
+                  "endLine": 12
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "c767bae05e6e4def312f949922a0b794d5eae580f361343f155e534205cce8e3"
+          },
+          "properties": {
+            "findingId": "c767bae05e6e4def",
+            "cwe": "CWE-798"
+          }
+        },
+        {
+          "ruleId": "js-hardcoded-secret",
+          "ruleName": "CWE-798 at test/plugins/auth/ldap.ts:13",
+          "level": "warning",
+          "message": {
+            "text": "js-hardcoded-secret: [REDACTED] credential in source; load secrets from the environment or a vault."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "test/plugins/auth/ldap.ts"
+                },
+                "region": {
+                  "startLine": 13,
+                  "endLine": 13
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "a7cb249b5fcf00a4ecab4b95b675d6babdc46e78108fc0057c5f9383f413ec94"
+          },
+          "properties": {
+            "findingId": "a7cb249b5fcf00a4",
+            "cwe": "CWE-798"
+          }
+        },
+        {
+          "ruleId": "js-private-key",
+          "ruleName": "CWE-798 at test/plugins/clientCertificate.ts:20",
+          "level": "error",
+          "message": {
+            "text": "js-private-key: Embedded private key material."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "test/plugins/clientCertificate.ts"
+                },
+                "region": {
+                  "startLine": 20,
+                  "endLine": 20
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "a7c6d923e18db713ca8bdd39c9e4a7d45f387240667dbd38bc59a0ed4257ec72"
+          },
+          "properties": {
+            "findingId": "a7c6d923e18db713",
+            "cwe": "CWE-798"
+          }
+        },
+        {
+          "ruleId": "js-hardcoded-secret",
+          "ruleName": "CWE-798 at test/tests/passwords.ts:5",
+          "level": "warning",
+          "message": {
+            "text": "js-hardcoded-secret: [REDACTED] credential in source; load secrets from the environment or a vault."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "test/tests/passwords.ts"
+                },
+                "region": {
+                  "startLine": 5,
+                  "endLine": 5
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "7791203d868135b7e4a5481f8e6670ff0cb26f5840025edee825c5bacb70661f"
+          },
+          "properties": {
+            "findingId": "7791203d868135b7",
+            "cwe": "CWE-798"
+          }
+        },
+        {
+          "ruleId": "generic-api-key",
+          "ruleName": "CWE-798 at test/fixtures/.thelounge/vapid.json:3",
+          "level": "error",
+          "message": {
+            "text": "Secret found: Detected a Generic API Key, potentially exposing access to various services and sensitive operations."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "test/fixtures/.thelounge/vapid.json"
+                },
+                "region": {
+                  "startLine": 3,
+                  "endLine": 3
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "56ca3a899d67d7117ccfae2a566fb533845e53eac700b5c888011b042f849716"
+          },
+          "properties": {
+            "findingId": "56ca3a899d67d711",
+            "cwe": "CWE-798"
+          }
+        }
+      ],
+      "artifacts": [],
+      "properties": {
+        "counts": {
+          "version": "0.1.0",
+          "total": 42,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0,
+          "unprocessed": 42
+        },
+        "commit": "70db8bcb6faf98e9c2a09018e26c28ae3eaa0b09",
+        "target": "D:\\dev\\bench-repos\\thelounge",
+        "status": "failed",
+        "gate": "failed",
+        "errors": [
+          "spotbugs: classes directory not found: C:\\Users\\MINH KHOI\\AppData\\Local\\Temp\\vulnscan-snapshot-d1jwex_u\\target\\classes (run 'mvn compile' first)",
+          "owasp-dependency-check: missing coverage for pom.xml",
+          "spotbugs: required scanner did not complete successfully"
+        ],
+        "configuration": {
+          "schema_version": 1,
+          "profile": "full",
+          "fail_on": "high",
+          "output_dir": "artifacts/deep-compare/thelounge/mine",
+          "timezone": "Asia/Saigon",
+          "timeout": 3600,
+          "max_files": 100000,
+          "allow_dirty": true,
+          "ci": false,
+          "laya": true,
+          "laya_config_path": null,
+          "ai_review": false,
+          "provider_profile": null,
+          "provider_model": null,
+          "ai_report": false,
+          "max_ai_findings": 10,
+          "mode": "hunt",
+          "tools": null
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": false,
+          "toolExecutionNotifications": [
+            {
+              "level": "error",
+              "message": {
+                "text": "spotbugs: classes directory not found: C:\\Users\\MINH KHOI\\AppData\\Local\\Temp\\vulnscan-snapshot-d1jwex_u\\target\\classes (run 'mvn compile' first)"
+              }
+            },
+            {
+              "level": "error",
+              "message": {
+                "text": "owasp-dependency-check: missing coverage for pom.xml"
+              }
+            },
+            {
+              "level": "error",
+              "message": {
+                "text": "spotbugs: required scanner did not complete successfully"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

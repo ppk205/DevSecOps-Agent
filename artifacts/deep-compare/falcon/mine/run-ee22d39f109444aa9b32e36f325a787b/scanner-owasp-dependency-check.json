@@ -1,0 +1,52 @@
+{
+  "version": "0.1.0",
+  "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+  "tool": "owasp-dependency-check",
+  "tool_version": "osv.dev",
+  "adapter_version": "0.2.0",
+  "status": "completed",
+  "started_at": "2026-11-03T13:40:25.355804Z",
+  "finished_at": "2026-11-03T13:40:25.368319Z",
+  "observations": [],
+  "coverage_records": [
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "owasp-dependency-check",
+      "tool_version": "osv.dev",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples/requirements.txt",
+      "unit_language": "other",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "dependency_graph",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-1104"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:40:25.368319Z",
+      "miss_reasons": [],
+      "metadata": {}
+    }
+  ],
+  "raw_output_refs": [],
+  "coverage_percent": 100.0,
+  "eligible_units": 1,
+  "analyzed_units": 1,
+  "skipped_units": 0,
+  "failed_units": 0,
+  "errors": [],
+  "warnings": [],
+  "duration_ms": 12,
+  "metadata": {
+    "advisory_data_source": "osv.dev",
+    "packages_queried": 0,
+    "manifests": [
+      "examples/requirements.txt"
+    ]
+  }
+}

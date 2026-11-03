@@ -1,0 +1,9 @@
+{
+  "repo": "thelounge",
+  "lang": "JavaScript",
+  "url": "https://github.com/thelounge/thelounge",
+  "commit": "70db8bcb6faf98e9c2a09018e26c28ae3eaa0b09",
+  "mine_exit": 2,
+  "mine_tail": "\"final-report\": \"D:\\\\New folder\\\\DevSecOps-Agent\\\\artifacts\\\\deep-compare\\\\thelounge\\\\mine\\\\run-1ca5ad4bcd784356acafe42441c83bc5\\\\final-report.md\"\n  },\n  \"summary_path\": \"D:\\\\New folder\\\\DevSecOps-Agent\\\\artifacts\\\\deep-compare\\\\thelounge\\\\mine\\\\run-1ca5ad4bcd784356acafe42441c83bc5\\\\summary.json\"\n}\n",
+  "semgrep_auto_n": 44
+}

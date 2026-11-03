@@ -1,0 +1,2811 @@
+{
+  "version": "0.1.0",
+  "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+  "tool": "semgrep",
+  "tool_version": "1.178.0",
+  "adapter_version": "0.2.0",
+  "status": "completed",
+  "started_at": "2026-11-03T13:34:40.328484Z",
+  "finished_at": "2026-11-03T13:34:43.863603Z",
+  "observations": [
+    {
+      "version": "0.1.0",
+      "observation_id": "obs-79150d48fa977d68",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.java-stack-trace-exposure",
+      "rule_pack_version": "0.2.0",
+      "cwe_category": "CWE-209",
+      "severity": "medium",
+      "native_severity": "WARNING",
+      "message": "printStackTrace exposes internals; log through a logger instead.",
+      "confidence": 1.0,
+      "location": {
+        "version": "0.1.0",
+        "file_path": ".mvn/wrapper/MavenWrapperDownloader.java",
+        "language": "java",
+        "line_start": 92,
+        "line_end": 92,
+        "column_start": 13,
+        "column_end": 32,
+        "symbol": null,
+        "snippet": "e.printStackTrace();\n            System.exit(1);\n        }"
+      },
+      "dependency_identity": null,
+      "raw_output_ref": "D:\\New folder\\DevSecOps-Agent\\artifacts\\deep-compare\\problem-spring-web\\mine\\run-4e61efadc7bd4df98c618217186d493a\\scanner-semgrep.json",
+      "detected_at": "2026-11-03T13:34:43.863603Z",
+      "metadata": {
+        "code_excerpt": "requires login"
+      }
+    }
+  ],
+  "coverage_records": [
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": ".mvn\\wrapper\\MavenWrapperDownloader.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-common\\src\\main\\java\\org\\zalando\\problem\\spring\\common\\AdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-common\\src\\main\\java\\org\\zalando\\problem\\spring\\common\\AdviceTraits.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-common\\src\\main\\java\\org\\zalando\\problem\\spring\\common\\HttpStatusAdapter.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-common\\src\\main\\java\\org\\zalando\\problem\\spring\\common\\Lists.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-common\\src\\main\\java\\org\\zalando\\problem\\spring\\common\\MediaTypes.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-common\\src\\main\\java\\org\\zalando\\problem\\spring\\common\\package-info.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-common\\src\\main\\java\\org\\zalando\\problem\\spring\\common\\ResponseStatusAdapter.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\AdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\ContentNegotiation.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\custom\\CustomAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\custom\\package-info.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\FallbackContentNegotiationStrategy.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\general\\GeneralAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\general\\package-info.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\general\\ProblemAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\general\\ResponseStatusAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\general\\ThrowableAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\general\\UnsupportedOperationAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\http\\HttpAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\http\\MethodNotAllowedAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\http\\NotAcceptableAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\http\\package-info.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\http\\UnsupportedMediaTypeAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\io\\IOAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\io\\MessageNotReadableAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\io\\MultipartAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\io\\package-info.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\io\\TypeMismatchAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\io\\TypeMistmatchAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\network\\CircuitBreakerOpenAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\network\\NetworkAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\network\\package-info.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\network\\SocketTimeoutAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\package-info.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\ProblemHandling.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\routing\\MissingServletRequestParameterAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\routing\\MissingServletRequestPartAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\routing\\NoHandlerFoundAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\routing\\package-info.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\routing\\RoutingAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\routing\\ServletRequestBindingAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\security\\AccessDeniedAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\security\\AuthenticationAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\security\\SecurityAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\security\\SecurityProblemSupport.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\SpringAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\validation\\BaseBindingResultAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\validation\\BaseValidationAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\validation\\BindAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\validation\\ConstraintViolationAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\validation\\MethodArgumentNotValidAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\validation\\OpenApiValidationAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\validation\\package-info.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\advice\\validation\\ValidationAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web-autoconfigure\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\autoconfigure\\ExceptionHandling.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web-autoconfigure\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\autoconfigure\\ProblemAutoConfiguration.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web-autoconfigure\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\autoconfigure\\ProblemJacksonAutoConfiguration.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web-autoconfigure\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\autoconfigure\\ProblemJacksonWebMvcAutoConfiguration.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web-autoconfigure\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\autoconfigure\\security\\ProblemHttpConfigurer.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web-autoconfigure\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\autoconfigure\\security\\ProblemSecurityAutoConfiguration.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web-autoconfigure\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\autoconfigure\\security\\ProblemSecurityBeanPostProcessor.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-web-autoconfigure\\src\\main\\java\\org\\zalando\\problem\\spring\\web\\autoconfigure\\security\\SecurityExceptionHandling.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\AdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\custom\\CustomAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\custom\\package-info.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\general\\GeneralAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\general\\package-info.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\general\\ProblemAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\general\\ThrowableAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\general\\UnsupportedOperationAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\http\\HttpAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\http\\MethodNotAllowedAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\http\\NotAcceptableAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\http\\package-info.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\http\\ResponseStatusAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\http\\UnsupportedMediaTypeAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\network\\CircuitBreakerOpenAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\network\\NetworkAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\network\\package-info.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\network\\SocketTimeoutAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\package-info.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\ProblemExceptionHandler.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\ProblemHandling.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\security\\AccessDeniedAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\security\\AuthenticationAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\security\\SecurityAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\security\\SecurityProblemSupport.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\SpringAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\utils\\AdviceUtils.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\validation\\BaseBindingResultAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\validation\\BaseValidationAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\validation\\BindAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\validation\\ConstraintViolationAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\validation\\OpenApiValidationAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\validation\\package-info.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-spring-webflux\\src\\main\\java\\org\\zalando\\problem\\spring\\webflux\\advice\\validation\\ValidationAdviceTrait.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-violations\\src\\main\\java\\org\\zalando\\problem\\violations\\ConstraintViolationProblem.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-violations\\src\\main\\java\\org\\zalando\\problem\\violations\\ConstraintViolationProblemMixIn.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-violations\\src\\main\\java\\org\\zalando\\problem\\violations\\ConstraintViolationProblemModule.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-violations\\src\\main\\java\\org\\zalando\\problem\\violations\\Violation.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-4e61efadc7bd4df98c618217186d493a",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "236613007ccc54e9cc7dfd4cf993b8e41ecab811",
+      "unit_path": "problem-violations\\src\\main\\java\\org\\zalando\\problem\\violations\\ViolationMixIn.java",
+      "unit_language": "java",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:34:43.863603Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    }
+  ],
+  "raw_output_refs": [],
+  "coverage_percent": 100.0,
+  "eligible_units": 102,
+  "analyzed_units": 102,
+  "skipped_units": 0,
+  "failed_units": 0,
+  "errors": [],
+  "warnings": [],
+  "duration_ms": 3532,
+  "metadata": {
+    "source_format": "json"
+  }
+}

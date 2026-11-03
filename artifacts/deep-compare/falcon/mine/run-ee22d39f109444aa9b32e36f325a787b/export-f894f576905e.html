@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Security assessment run-ee22d39f109444aa9b32e36f325a787b</title>
+<style>
+:root{--bg:#0e1319;--card:#161d24;--ink:#e8edf2;--muted:#9aa7b4;--hairline:#2a3440;
+--accent:#1c69d4;--green:#22c55e;--yellow:#f59e0b;--red:#e22718;--code:#0b0f14}
+*{box-sizing:border-box}html{scrollbar-color:#3a4654 var(--bg)}
+body{font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:1100px;
+margin:40px auto;padding:0 20px;background:var(--bg);color:var(--ink)}
+h1{font-size:28px;margin:0 0 4px}h2{font-size:19px;margin:36px 0 12px;
+padding-bottom:8px;border-bottom:1px solid var(--hairline)}
+a{color:#6ea8fe}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+font-size:.86em;background:var(--code);border:1px solid var(--hairline);
+border-radius:4px;padding:2px 6px}
+.meta{color:var(--muted);font-size:13px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.chip{font-size:12px;border:1px solid var(--hairline);border-radius:999px;padding:3px 12px;color:var(--muted)}
+.counts{display:flex;flex-wrap:wrap;gap:12px;padding:0;list-style:none;margin:20px 0}
+.counts li{flex:1 1 140px;background:var(--card);border:1px solid var(--hairline);
+border-left:4px solid var(--muted);border-radius:6px;padding:10px 14px}
+.counts li.ok{border-left-color:var(--green)}.counts li.warn{border-left-color:var(--yellow)}
+.counts li.bad{border-left-color:var(--red)}
+.count{font-size:28px;font-weight:700;line-height:1.1}.counts small{color:var(--muted)}
+.finding{background:var(--card);border:1px solid var(--hairline);border-radius:8px;
+padding:18px 20px;margin:14px 0}
+.finding h3{margin:0 0 6px;font-size:16px}
+.st{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
+border-radius:4px;padding:2px 8px;margin-right:6px}
+.st-confirmed{background:rgba(34,197,94,.15);color:var(--green);border:1px solid var(--green)}
+.st-unresolved,.st-unprocessed{background:rgba(245,158,11,.13);color:var(--yellow);border:1px solid var(--yellow)}
+.st-rejected{background:rgba(154,167,180,.13);color:var(--muted);border:1px solid var(--muted)}
+.sev-high{color:var(--red)}.sev-medium{color:var(--yellow)}.sev-low{color:#6ea8fe}
+pre{background:var(--code);border:1px solid var(--hairline);border-radius:6px;
+padding:12px 14px;overflow-x:auto;font-size:13px;line-height:1.5;scrollbar-color:#3a4654 var(--code)}
+pre::-webkit-scrollbar{height:10px}pre::-webkit-scrollbar-track{background:var(--code)}
+pre::-webkit-scrollbar-thumb{background:#3a4654;border-radius:5px}
+pre::-webkit-scrollbar-thumb:hover{background:#4d5c6e}
+::-webkit-scrollbar{width:12px;height:12px}::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#3a4654;border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:#4d5c6e}
+.cover{background:var(--card);border:1px solid var(--hairline);border-radius:8px;
+padding:12px 16px;margin:10px 0}
+.cover b{color:var(--ink)}.cover ul{margin:6px 0 0;padding-left:20px;color:var(--muted)}
+@media print{body{margin:20px;background:#fff;color:#000}.finding,.counts li,.cover{break-inside:avoid}}
+</style></head><body>
+<h1>Security assessment <code>run-ee22d39f109444aa9b32e36f325a787b</code></h1>
+<p class="meta">devsecops-agent 0.2.0</p>
+<div class="chips"><span class="chip">commit: 8d3aa53a6ac69331060b945050ce0fad616fc553</span><span class="chip">target: D:\dev\bench-repos\falcon</span><span class="chip">status: failed</span><span class="chip">gate: failed</span><span class="chip">errors: [&#34;spotbugs: classes directory not found: C:\\Users\\MINH KHOI\\AppData\\Local\\Temp\\vulnscan-snapshot-bkqzmzam\\target\\classes (run &#39;mvn compile&#39; first)&#34;, &#39;owasp-dependency-check: missing coverage for pom.xml&#39;, &#39;spotbugs: required scanner did not complete successfully&#39;]</span><span class="chip">configuration: {&#39;schema_version&#39;: 1, &#39;profile&#39;: &#39;full&#39;, &#39;fail_on&#39;: &#39;high&#39;, &#39;output_dir&#39;: &#39;artifacts/deep-compare/falcon/mine&#39;, &#39;timezone&#39;: &#39;Asia/Saigon&#39;, &#39;timeout&#39;: 3600, &#39;max_files&#39;: 100000, &#39;allow_dirty&#39;: True, &#39;ci&#39;: False, &#39;laya&#39;: True, &#39;laya_config_path&#39;: None, &#39;ai_review&#39;: False, &#39;provider_profile&#39;: None, &#39;provider_model&#39;: None, &#39;ai_report&#39;: False, &#39;max_ai_findings&#39;: 10, &#39;mode&#39;: &#39;hunt&#39;, &#39;tools&#39;: None}</span></div>
+<ul class="counts">
+<li class="ok"><span class="count">21</span><br><small>Total</small></li>
+<li class="ok"><span class="count">0</span><br><small>Confirmed</small></li>
+<li><span class="count">0</span><br><small>Rejected</small></li>
+<li class="warn"><span class="count">0</span><br><small>Unresolved</small></li>
+<li class="warn"><span class="count">21</span><br><small>Unprocessed</small></li>
+</ul>
+<h2>Coverage</h2>
+<div class="cover"><b>semgrep</b>
+<span class="meta"> — 166/166 units analyzed</span>
+</div><div class="cover"><b>native-hunt</b>
+<span class="meta"> — 270/270 units analyzed</span>
+</div><div class="cover"><b>gitleaks</b>
+<span class="meta"> — 166/166 units analyzed</span>
+</div><div class="cover"><b>spotbugs</b>
+<span class="meta"> — 0/0 units analyzed</span>
+</div><div class="cover"><b>owasp-dependency-check</b>
+<span class="meta"> — 1/1 units analyzed</span>
+</div>
+
+<h2>Findings</h2>
+<section class="finding"><h3>CWE-215 at falcon/bench/dj/dj/settings.py:27</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · cb9ac53a46f9 · CWE-215</span></p>
+<p>Debug mode leaks tracebacks; never enable it in production.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-debug-mode-enabled / falcon/bench/dj/dj/settings.py:27:1</p>
+<pre>DEBUG = True
+
+ALLOWED_HOSTS = [&#39;*&#39;]</pre><p class="meta">native-hunt / py-debug-mode-enabled / falcon/bench/dj/dj/settings.py:27</p>
+<pre>DEBUG = True
+
+ALLOWED_HOSTS = [&#39;*&#39;]</pre>
+</section><section class="finding"><h3>CWE-330 at falcon/testing/helpers.py:1098</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 344e77edd54f · CWE-330</span></p>
+<p>random is predictable in security contexts; use the secrets module.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-weak-random-token / falcon/testing/helpers.py:1098:23</p>
+<pre>remote_port = random.randint(49152, 65535)
+
+        # NOTE(kgriffs): Expose as an iterable to ensure the framework/app</pre><p class="meta">native-hunt / py-weak-random-token / falcon/testing/helpers.py:1098</p>
+<pre>remote_port = random.randint(49152, 65535)
+
+        # NOTE(kgriffs): Expose as an iterable to ensure the framework/app</pre>
+</section><section class="finding"><h3>CWE-330 at examples/asgilook/tests/conftest.py:65</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 0bd01d97cf5e · CWE-330</span></p>
+<p>py-weak-random-token: [REDACTED] is predictable in security contexts; use the secrets module.</p>
+<p class="meta">native-hunt / py-weak-random-token / examples/asgilook/tests/conftest.py:65</p>
+<pre>x0 = random.randint(20, 620)
+        y0 = random.randint(20, 340)
+        x1 = random.randint(20, 620)</pre>
+</section><section class="finding"><h3>CWE-330 at examples/asgilook/tests/conftest.py:66</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · d84f4ec40cfb · CWE-330</span></p>
+<p>py-weak-random-token: [REDACTED] is predictable in security contexts; use the secrets module.</p>
+<p class="meta">native-hunt / py-weak-random-token / examples/asgilook/tests/conftest.py:66</p>
+<pre>y0 = random.randint(20, 340)
+        x1 = random.randint(20, 620)
+        y1 = random.randint(20, 340)</pre>
+</section><section class="finding"><h3>CWE-330 at examples/asgilook/tests/conftest.py:67</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · d5b9cf6a1013 · CWE-330</span></p>
+<p>py-weak-random-token: [REDACTED] is predictable in security contexts; use the secrets module.</p>
+<p class="meta">native-hunt / py-weak-random-token / examples/asgilook/tests/conftest.py:67</p>
+<pre>x1 = random.randint(20, 620)
+        y1 = random.randint(20, 340)
+        if x0 &gt; x1:</pre>
+</section><section class="finding"><h3>CWE-330 at examples/asgilook/tests/conftest.py:68</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 62b4e7cf64bf · CWE-330</span></p>
+<p>py-weak-random-token: [REDACTED] is predictable in security contexts; use the secrets module.</p>
+<p class="meta">native-hunt / py-weak-random-token / examples/asgilook/tests/conftest.py:68</p>
+<pre>y1 = random.randint(20, 340)
+        if x0 &gt; x1:
+            x0, x1 = x1, x0</pre>
+</section><section class="finding"><h3>CWE-113 at falcon/bench/create.py:56</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · e9103f8524be · CWE-113</span></p>
+<p>py-header-injection: Request data reaches a response header; strip CR/LF or allowlist values.</p>
+<p class="meta">native-hunt / py-header-injection / falcon/bench/create.py:56</p>
+<pre>user_agent = request.headers[&#39;User-Agent&#39;]  # NOQA
+        limit = request.args.get(&#39;limit&#39;, &#39;10&#39;)  # NOQA</pre>
+</section><section class="finding"><h3>CWE-113 at falcon/bench/create.py:71</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 5a237ea1a9b0 · CWE-113</span></p>
+<p>py-header-injection: Request data reaches a response header; strip CR/LF or allowlist values.</p>
+<p class="meta">native-hunt / py-header-injection / falcon/bench/create.py:71</p>
+<pre>user_agent = bottle.request.headers[&#39;User-Agent&#39;]  # NOQA
+        limit = bottle.request.query.limit or &#39;10&#39;  # NOQA</pre>
+</section><section class="finding"><h3>CWE-113 at falcon/bench/create.py:92</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · b04fdb8139ee · CWE-113</span></p>
+<p>py-header-injection: Request data reaches a response header; strip CR/LF or allowlist values.</p>
+<p class="meta">native-hunt / py-header-injection / falcon/bench/create.py:92</p>
+<pre>user_agent = request.headers[&#39;User-Agent&#39;]  # NOQA
+        limit = request.args.get(&#39;limit&#39;, &#39;10&#39;)  # NOQA
+        adapter = url_map.bind_to_environ(request.environ)  # NOQA</pre>
+</section><section class="finding"><h3>CWE-328 at tests/_wsgi_test_app.py:17</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · eca2c0171a0a · CWE-328</span></p>
+<p>py-weak-hash: md5/sha1 are broken for security use; prefer sha256 or bcrypt.</p>
+<p class="meta">native-hunt / py-weak-hash / tests/_wsgi_test_app.py:17</p>
+<pre>sha1 = hashlib.sha1()
+            while True:
+                chunk = part.stream.read(io.DEFAULT_BUFFER_SIZE)</pre>
+</section><section class="finding"><h3>CWE-328 at tests/asgi/_asgi_test_app.py:115</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · c93b65bda61d · CWE-328</span></p>
+<p>py-weak-hash: md5/sha1 are broken for security use; prefer sha256 or bcrypt.</p>
+<p class="meta">native-hunt / py-weak-hash / tests/asgi/_asgi_test_app.py:115</p>
+<pre>sha1 = hashlib.sha1()
+
+        drops = 0</pre>
+</section><section class="finding"><h3>CWE-328 at tests/asgi/_asgi_test_app.py:226</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 168962ec24a0 · CWE-328</span></p>
+<p>py-weak-hash: md5/sha1 are broken for security use; prefer sha256 or bcrypt.</p>
+<p class="meta">native-hunt / py-weak-hash / tests/asgi/_asgi_test_app.py:226</p>
+<pre>sha1 = hashlib.sha1()
+            async for chunk in part.stream:
+                sha1.update(chunk)</pre>
+</section><section class="finding"><h3>CWE-330 at tests/asgi/test_asgi_servers.py:70</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 28ee42787f52 · CWE-330</span></p>
+<p>py-weak-random-token: [REDACTED] is predictable in security contexts; use the secrets module.</p>
+<p class="meta">native-hunt / py-weak-random-token / tests/asgi/test_asgi_servers.py:70</p>
+<pre>size = random.randint(16 * _SIZE_1_MB, 32 * _SIZE_1_MB)
+        data = os.urandom(size)
+        digest = hashlib.sha1(data).hexdigest()</pre>
+</section><section class="finding"><h3>CWE-328 at tests/asgi/test_asgi_servers.py:72</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · a2dfcba1f443 · CWE-328</span></p>
+<p>py-weak-hash: md5/sha1 are broken for security use; prefer sha256 or bcrypt.</p>
+<p class="meta">native-hunt / py-weak-hash / tests/asgi/test_asgi_servers.py:72</p>
+<pre>digest = hashlib.sha1(data).hexdigest()
+        files = {
+            &#39;random&#39;: (&#39;random.dat&#39;, data),</pre>
+</section><section class="finding"><h3>CWE-328 at tests/asgi/test_asgi_servers.py:150</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · e98cf1e0b57a · CWE-328</span></p>
+<p>py-weak-hash: md5/sha1 are broken for security use; prefer sha256 or bcrypt.</p>
+<p class="meta">native-hunt / py-weak-hash / tests/asgi/test_asgi_servers.py:150</p>
+<pre>assert resp.json().get(&#39;sha1&#39;) == hashlib.sha1(body).hexdigest()
+
+    def test_post_read_bounded_stream_no_body(self, server_base_url, requests):</pre>
+</section><section class="finding"><h3>CWE-215 at tests/asgi/test_asgi_servers.py:626</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 7c98e7f83609 · CWE-215</span></p>
+<p>py-debug-mode-enabled: Debug mode leaks tracebacks; never enable it in production.</p>
+<p class="meta">native-hunt / py-debug-mode-enabled / tests/asgi/test_asgi_servers.py:626</p>
+<pre>config.debug = True
+run(config)
+&#34;&#34;&#34;</pre>
+</section><section class="finding"><h3>CWE-330 at tests/test_media_multipart.py:601</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · ce43df764eb1 · CWE-330</span></p>
+<p>py-weak-random-token: [REDACTED] is predictable in security contexts; use the secrets module.</p>
+<p class="meta">native-hunt / py-weak-random-token / tests/test_media_multipart.py:601</p>
+<pre>part_data = [os.urandom(random.randint(0, 2**18)) for _ in range(64)]
+    form_data = (
+        b&#39;&#39;.join(</pre>
+</section><section class="finding"><h3>CWE-330 at tests/test_media_multipart.py:630</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 2ff600dfa6b8 · CWE-330</span></p>
+<p>py-weak-random-token: [REDACTED] is predictable in security contexts; use the secrets module.</p>
+<p class="meta">native-hunt / py-weak-random-token / tests/test_media_multipart.py:630</p>
+<pre>length = random.randint(2**20, 2**21)
+    resp = client.simulate_post(
+        &#39;/submit&#39;,</pre>
+</section><section class="finding"><h3>CWE-330 at tests/test_utils.py:43</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 44ac818cb2ae · CWE-330</span></p>
+<p>py-weak-random-token: [REDACTED] is predictable in security contexts; use the secrets module.</p>
+<p class="meta">native-hunt / py-weak-random-token / tests/test_utils.py:43</p>
+<pre>&#39;&#39;.join([random.choice(uri._ALL_ALLOWED) for _ in range(length)])
+        for __ in range(count)
+    )</pre>
+</section><section class="finding"><h3>CWE-330 at tests/test_wsgi_servers.py:259</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · c53389e16fc7 · CWE-330</span></p>
+<p>py-weak-random-token: [REDACTED] is predictable in security contexts; use the secrets module.</p>
+<p class="meta">native-hunt / py-weak-random-token / tests/test_wsgi_servers.py:259</p>
+<pre>size = random.randint(8 * _SIZE_1_MB, 15 * _SIZE_1_MB)
+        data = os.urandom(size)
+        digest = hashlib.sha1(data).hexdigest()</pre>
+</section><section class="finding"><h3>CWE-328 at tests/test_wsgi_servers.py:261</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · c7914c908e34 · CWE-328</span></p>
+<p>py-weak-hash: md5/sha1 are broken for security use; prefer sha256 or bcrypt.</p>
+<p class="meta">native-hunt / py-weak-hash / tests/test_wsgi_servers.py:261</p>
+<pre>digest = hashlib.sha1(data).hexdigest()
+        files = {
+            &#39;random&#39;: (&#39;random.dat&#39;, data),</pre>
+</section>
+</body></html>

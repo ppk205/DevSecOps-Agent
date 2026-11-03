@@ -1,0 +1,4570 @@
+{
+  "version": "0.1.0",
+  "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+  "tool": "semgrep",
+  "tool_version": "1.178.0",
+  "adapter_version": "0.2.0",
+  "status": "completed",
+  "started_at": "2026-11-03T13:39:43.891224Z",
+  "finished_at": "2026-11-03T13:39:47.960918Z",
+  "observations": [
+    {
+      "version": "0.1.0",
+      "observation_id": "obs-9999487e5602a0aa",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-debug-mode-enabled",
+      "rule_pack_version": "0.2.0",
+      "cwe_category": "CWE-215",
+      "severity": "medium",
+      "native_severity": "WARNING",
+      "message": "Debug mode leaks tracebacks; never enable it in production.",
+      "confidence": 1.0,
+      "location": {
+        "version": "0.1.0",
+        "file_path": "falcon/bench/dj/dj/settings.py",
+        "language": "python",
+        "line_start": 27,
+        "line_end": 27,
+        "column_start": 1,
+        "column_end": 13,
+        "symbol": null,
+        "snippet": "DEBUG = True\n\nALLOWED_HOSTS = ['*']"
+      },
+      "dependency_identity": null,
+      "raw_output_ref": "D:\\New folder\\DevSecOps-Agent\\artifacts\\deep-compare\\falcon\\mine\\run-ee22d39f109444aa9b32e36f325a787b\\scanner-semgrep.json",
+      "detected_at": "2026-11-03T13:39:47.961335Z",
+      "metadata": {
+        "code_excerpt": "requires login"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "observation_id": "obs-f93556a9fbb493f8",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "rule_id": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-weak-random-token",
+      "rule_pack_version": "0.2.0",
+      "cwe_category": "CWE-330",
+      "severity": "medium",
+      "native_severity": "WARNING",
+      "message": "random is predictable in security contexts; use the secrets module.",
+      "confidence": 1.0,
+      "location": {
+        "version": "0.1.0",
+        "file_path": "falcon/testing/helpers.py",
+        "language": "python",
+        "line_start": 1098,
+        "line_end": 1098,
+        "column_start": 23,
+        "column_end": 51,
+        "symbol": null,
+        "snippet": "remote_port = random.randint(49152, 65535)\n\n        # NOTE(kgriffs): Expose as an iterable to ensure the framework/app"
+      },
+      "dependency_identity": null,
+      "raw_output_ref": "D:\\New folder\\DevSecOps-Agent\\artifacts\\deep-compare\\falcon\\mine\\run-ee22d39f109444aa9b32e36f325a787b\\scanner-semgrep.json",
+      "detected_at": "2026-11-03T13:39:47.961335Z",
+      "metadata": {
+        "code_excerpt": "requires login"
+      }
+    }
+  ],
+  "coverage_records": [
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "docs\\_static\\custom-icons.js",
+      "unit_language": "javascript",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "docs\\conf.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "docs\\ext\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "docs\\ext\\autodoc_customizations.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "docs\\ext\\cibuildwheel.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "docs\\ext\\doorway.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "docs\\ext\\falcon_releases.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "docs\\ext\\newsfragments.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "docs\\ext\\private_args.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "docs\\ext\\rfc.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "docs\\ext\\workarounds.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "e2e-tests\\conftest.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "e2e-tests\\server\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "e2e-tests\\server\\app.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "e2e-tests\\server\\chat.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "e2e-tests\\server\\hub.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "e2e-tests\\server\\ping.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "e2e-tests\\static\\main.js",
+      "unit_language": "javascript",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "e2e-tests\\test_e2e.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\asgilook\\asgilook\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\asgilook\\asgilook\\app.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\asgilook\\asgilook\\asgi.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\asgilook\\asgilook\\cache.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\asgilook\\asgilook\\config.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\asgilook\\asgilook\\images.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\asgilook\\asgilook\\store.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\look\\look\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\look\\look\\app.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\look\\look\\images.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\quote.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\recipes\\header_name_case_app.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\recipes\\header_name_case_mw.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\recipes\\msgspec_json_handler.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\recipes\\msgspec_main.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\recipes\\msgspec_media_validation.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\recipes\\msgspec_msgpack_handler.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\recipes\\multipart_mixed_intro.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\recipes\\multipart_mixed_main.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\recipes\\output_csv_stream_asgi.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\recipes\\output_csv_stream_wsgi.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\recipes\\output_csv_text_asgi.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\recipes\\output_csv_text_wsgi.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\recipes\\plain_text_main.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\recipes\\pretty_json_intro.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\recipes\\pretty_json_main.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\recipes\\raw_url_path_asgi.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\recipes\\raw_url_path_wsgi.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\recipes\\request_id_context.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\recipes\\request_id_log.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\recipes\\request_id_middleware.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\recipes\\request_id_structlog.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\things.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\things_advanced.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\things_advanced_asgi.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\things_asgi.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\ws_tutorial\\ws_tutorial\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\ws_tutorial\\ws_tutorial\\app.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\ws_tutorial\\ws_tutorial\\client.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "examples\\ws_tutorial\\ws_tutorial\\reports_client.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\_typing.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\app.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\app_helpers.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\asgi\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\asgi\\_asgi_helpers.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\asgi\\_request_helpers.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\asgi\\app.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\asgi\\multipart.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\asgi\\reader.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\asgi\\request.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\asgi\\response.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\asgi\\stream.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\asgi\\structures.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\asgi\\ws.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\asgi_spec.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\bench.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\create.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\dj\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\dj\\dj\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\dj\\dj\\settings.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\dj\\dj\\urls.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\dj\\dj\\wsgi.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\dj\\hello\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\dj\\hello\\admin.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\dj\\hello\\apps.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\dj\\hello\\migrations\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\dj\\hello\\models.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\dj\\hello\\tests.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\dj\\hello\\views.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\dj\\manage.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\nuts\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\nuts\\config.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\nuts\\nuts\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\nuts\\nuts\\app.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\nuts\\nuts\\controllers\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\nuts\\nuts\\controllers\\root.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\nuts\\nuts\\model\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\nuts\\setup.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\queues\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\queues\\api.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\queues\\claims.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\queues\\messages.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\queues\\queues.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\bench\\queues\\stats.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\cmd\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\cmd\\bench.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\cmd\\inspect_app.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\constants.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\cyutil\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\errors.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\forwarded.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\hooks.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\http_error.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\http_status.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\inspect.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\media\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\media\\base.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\media\\handlers.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\media\\json.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\media\\msgpack.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\media\\multipart.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\media\\urlencoded.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\media\\validators\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\media\\validators\\jsonschema.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\middleware.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\redirects.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\request.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\request_helpers.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\responders.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\response.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\response_helpers.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\routing\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\routing\\compiled.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\routing\\converters.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\routing\\static.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\routing\\util.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\status_codes.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\stream.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\testing\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\testing\\client.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\testing\\helpers.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\testing\\resource.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\testing\\srmock.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\testing\\test_case.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\typing.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\uri.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\util\\__init__.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\util\\deprecation.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\util\\mediatypes.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\util\\misc.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\util\\reader.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\util\\structures.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\util\\sync.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\util\\time.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\util\\uri.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "falcon\\version.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "setup.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "tools\\add_contributors.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "tools\\check_dist.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "tools\\clean.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "tools\\sed_coverage_rc.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "tools\\test_dist.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "tools\\towncrier_draft.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "run_id": "run-ee22d39f109444aa9b32e36f325a787b",
+      "tool": "semgrep",
+      "tool_version": "1.178.0",
+      "source_snapshot": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+      "unit_path": "tools\\tox_sdist.py",
+      "unit_language": "python",
+      "eligible": true,
+      "status": "analyzed",
+      "limitation_reason": null,
+      "extraction_mode": "pattern",
+      "diagnostics": [],
+      "unresolved_calls": [],
+      "cwe_capabilities": [
+        "CWE-89",
+        "CWE-78",
+        "CWE-327"
+      ],
+      "cwe_limitations": [],
+      "duration_ms": null,
+      "analyzed_at": "2026-11-03T13:39:47.961335Z",
+      "miss_reasons": [],
+      "metadata": {
+        "rules_pack_version": "0.2.0"
+      }
+    }
+  ],
+  "raw_output_refs": [],
+  "coverage_percent": 100.0,
+  "eligible_units": 166,
+  "analyzed_units": 166,
+  "skipped_units": 0,
+  "failed_units": 0,
+  "errors": [],
+  "warnings": [],
+  "duration_ms": 4062,
+  "metadata": {
+    "source_format": "json"
+  }
+}

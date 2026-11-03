@@ -1,0 +1,1405 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Security assessment run-b5d303e3425d41cea00f9cedcca7680e</title>
+<style>
+:root{--bg:#0e1319;--card:#161d24;--ink:#e8edf2;--muted:#9aa7b4;--hairline:#2a3440;
+--accent:#1c69d4;--green:#22c55e;--yellow:#f59e0b;--red:#e22718;--code:#0b0f14}
+*{box-sizing:border-box}html{scrollbar-color:#3a4654 var(--bg)}
+body{font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:1100px;
+margin:40px auto;padding:0 20px;background:var(--bg);color:var(--ink)}
+h1{font-size:28px;margin:0 0 4px}h2{font-size:19px;margin:36px 0 12px;
+padding-bottom:8px;border-bottom:1px solid var(--hairline)}
+a{color:#6ea8fe}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+font-size:.86em;background:var(--code);border:1px solid var(--hairline);
+border-radius:4px;padding:2px 6px}
+.meta{color:var(--muted);font-size:13px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.chip{font-size:12px;border:1px solid var(--hairline);border-radius:999px;padding:3px 12px;color:var(--muted)}
+.counts{display:flex;flex-wrap:wrap;gap:12px;padding:0;list-style:none;margin:20px 0}
+.counts li{flex:1 1 140px;background:var(--card);border:1px solid var(--hairline);
+border-left:4px solid var(--muted);border-radius:6px;padding:10px 14px}
+.counts li.ok{border-left-color:var(--green)}.counts li.warn{border-left-color:var(--yellow)}
+.counts li.bad{border-left-color:var(--red)}
+.count{font-size:28px;font-weight:700;line-height:1.1}.counts small{color:var(--muted)}
+.finding{background:var(--card);border:1px solid var(--hairline);border-radius:8px;
+padding:18px 20px;margin:14px 0}
+.finding h3{margin:0 0 6px;font-size:16px}
+.st{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
+border-radius:4px;padding:2px 8px;margin-right:6px}
+.st-confirmed{background:rgba(34,197,94,.15);color:var(--green);border:1px solid var(--green)}
+.st-unresolved,.st-unprocessed{background:rgba(245,158,11,.13);color:var(--yellow);border:1px solid var(--yellow)}
+.st-rejected{background:rgba(154,167,180,.13);color:var(--muted);border:1px solid var(--muted)}
+.sev-high{color:var(--red)}.sev-medium{color:var(--yellow)}.sev-low{color:#6ea8fe}
+pre{background:var(--code);border:1px solid var(--hairline);border-radius:6px;
+padding:12px 14px;overflow-x:auto;font-size:13px;line-height:1.5;scrollbar-color:#3a4654 var(--code)}
+pre::-webkit-scrollbar{height:10px}pre::-webkit-scrollbar-track{background:var(--code)}
+pre::-webkit-scrollbar-thumb{background:#3a4654;border-radius:5px}
+pre::-webkit-scrollbar-thumb:hover{background:#4d5c6e}
+::-webkit-scrollbar{width:12px;height:12px}::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#3a4654;border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:#4d5c6e}
+.cover{background:var(--card);border:1px solid var(--hairline);border-radius:8px;
+padding:12px 16px;margin:10px 0}
+.cover b{color:var(--ink)}.cover ul{margin:6px 0 0;padding-left:20px;color:var(--muted)}
+@media print{body{margin:20px;background:#fff;color:#000}.finding,.counts li,.cover{break-inside:avoid}}
+</style></head><body>
+<h1>Security assessment <code>run-b5d303e3425d41cea00f9cedcca7680e</code></h1>
+<p class="meta">devsecops-agent 0.2.0</p>
+<div class="chips"><span class="chip">commit: 5e1e8d9d14a3ba61d62f28cf35531c4df4dd24fc</span><span class="chip">target: D:\dev\bench-repos\pikachu</span><span class="chip">status: failed</span><span class="chip">gate: failed</span><span class="chip">errors: [&#34;spotbugs: classes directory not found: C:\\Users\\MINH KHOI\\AppData\\Local\\Temp\\vulnscan-snapshot-ohb2ar2r\\target\\classes (run &#39;mvn compile&#39; first)&#34;, &#39;owasp-dependency-check: missing coverage for pom.xml&#39;, &#39;spotbugs: required scanner did not complete successfully&#39;]</span><span class="chip">configuration: {&#39;schema_version&#39;: 1, &#39;profile&#39;: &#39;full&#39;, &#39;fail_on&#39;: &#39;high&#39;, &#39;output_dir&#39;: &#39;artifacts/deep-compare/pikachu/mine&#39;, &#39;timezone&#39;: &#39;Asia/Saigon&#39;, &#39;timeout&#39;: 3600, &#39;max_files&#39;: 100000, &#39;allow_dirty&#39;: True, &#39;ci&#39;: False, &#39;laya&#39;: True, &#39;laya_config_path&#39;: None, &#39;ai_review&#39;: False, &#39;provider_profile&#39;: None, &#39;provider_model&#39;: None, &#39;ai_report&#39;: False, &#39;max_ai_findings&#39;: 10, &#39;mode&#39;: &#39;hunt&#39;, &#39;tools&#39;: None}</span></div>
+<ul class="counts">
+<li class="ok"><span class="count">137</span><br><small>Total</small></li>
+<li class="ok"><span class="count">0</span><br><small>Confirmed</small></li>
+<li><span class="count">0</span><br><small>Rejected</small></li>
+<li class="warn"><span class="count">0</span><br><small>Unresolved</small></li>
+<li class="warn"><span class="count">137</span><br><small>Unprocessed</small></li>
+</ul>
+<h2>Coverage</h2>
+<div class="cover"><b>semgrep</b>
+<span class="meta"> — 116/177 units analyzed</span>
+<ul><li>minified bundle: pattern scan skipped</li></ul></div><div class="cover"><b>native-hunt</b>
+<span class="meta"> — 114/177 units analyzed</span>
+<ul><li>minified bundle: pattern scan skipped</li><li>oversized lines (minified/vendored): pattern scan skipped</li><li>skipped</li></ul></div><div class="cover"><b>gitleaks</b>
+<span class="meta"> — 177/177 units analyzed</span>
+</div><div class="cover"><b>spotbugs</b>
+<span class="meta"> — 0/0 units analyzed</span>
+</div><div class="cover"><b>owasp-dependency-check</b>
+<span class="meta"> — 0/0 units analyzed</span>
+</div>
+
+<h2>Findings</h2>
+<section class="finding"><h3>CWE-330 at inc/function.php:8</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 0f887ee71198 · CWE-330</span></p>
+<p>rand/mt_rand are predictable; use random_int or random_bytes.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:8:21</p>
+<pre>$string.=$element[rand(0,count($element)-1)];
+	}
+	$img=imagecreatetruecolor($width, $height);</pre><p class="meta">native-hunt / php-insecure-random / inc/function.php:8</p>
+<pre>$string.=$element[rand(0,count($element)-1)];
+	}
+	$img=imagecreatetruecolor($width, $height);</pre>
+</section><section class="finding"><h3>CWE-330 at inc/function.php:11</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 9461b55c9f3a · CWE-330</span></p>
+<p>rand/mt_rand are predictable; use random_int or random_bytes.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:11:35</p>
+<pre>$colorBg=imagecolorallocate($img,rand(200,255),rand(200,255),rand(200,255));
+	$colorBorder=imagecolorallocate($img,rand(200,255),rand(200,255),rand(200,255));
+	$colorString=imagecolorallocate($img,rand(10,100),rand(10,100),rand(10,100));</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:11:49</p>
+<pre>$colorBg=imagecolorallocate($img,rand(200,255),rand(200,255),rand(200,255));
+	$colorBorder=imagecolorallocate($img,rand(200,255),rand(200,255),rand(200,255));
+	$colorString=imagecolorallocate($img,rand(10,100),rand(10,100),rand(10,100));</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:11:63</p>
+<pre>$colorBg=imagecolorallocate($img,rand(200,255),rand(200,255),rand(200,255));
+	$colorBorder=imagecolorallocate($img,rand(200,255),rand(200,255),rand(200,255));
+	$colorString=imagecolorallocate($img,rand(10,100),rand(10,100),rand(10,100));</pre><p class="meta">native-hunt / php-insecure-random / inc/function.php:11</p>
+<pre>$colorBg=imagecolorallocate($img,rand(200,255),rand(200,255),rand(200,255));
+	$colorBorder=imagecolorallocate($img,rand(200,255),rand(200,255),rand(200,255));
+	$colorString=imagecolorallocate($img,rand(10,100),rand(10,100),rand(10,100));</pre>
+</section><section class="finding"><h3>CWE-330 at inc/function.php:12</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 6deea2bfb7d2 · CWE-330</span></p>
+<p>rand/mt_rand are predictable; use random_int or random_bytes.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:12:39</p>
+<pre>$colorBorder=imagecolorallocate($img,rand(200,255),rand(200,255),rand(200,255));
+	$colorString=imagecolorallocate($img,rand(10,100),rand(10,100),rand(10,100));
+	imagefill($img,0,0,$colorBg);</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:12:53</p>
+<pre>$colorBorder=imagecolorallocate($img,rand(200,255),rand(200,255),rand(200,255));
+	$colorString=imagecolorallocate($img,rand(10,100),rand(10,100),rand(10,100));
+	imagefill($img,0,0,$colorBg);</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:12:67</p>
+<pre>$colorBorder=imagecolorallocate($img,rand(200,255),rand(200,255),rand(200,255));
+	$colorString=imagecolorallocate($img,rand(10,100),rand(10,100),rand(10,100));
+	imagefill($img,0,0,$colorBg);</pre><p class="meta">native-hunt / php-insecure-random / inc/function.php:12</p>
+<pre>$colorBorder=imagecolorallocate($img,rand(200,255),rand(200,255),rand(200,255));
+	$colorString=imagecolorallocate($img,rand(10,100),rand(10,100),rand(10,100));
+	imagefill($img,0,0,$colorBg);</pre>
+</section><section class="finding"><h3>CWE-330 at inc/function.php:13</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · c4ceb257dd9a · CWE-330</span></p>
+<p>rand/mt_rand are predictable; use random_int or random_bytes.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:13:39</p>
+<pre>$colorString=imagecolorallocate($img,rand(10,100),rand(10,100),rand(10,100));
+	imagefill($img,0,0,$colorBg);
+	for($i=0;$i&lt;$countPixel;$i++){</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:13:52</p>
+<pre>$colorString=imagecolorallocate($img,rand(10,100),rand(10,100),rand(10,100));
+	imagefill($img,0,0,$colorBg);
+	for($i=0;$i&lt;$countPixel;$i++){</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:13:65</p>
+<pre>$colorString=imagecolorallocate($img,rand(10,100),rand(10,100),rand(10,100));
+	imagefill($img,0,0,$colorBg);
+	for($i=0;$i&lt;$countPixel;$i++){</pre><p class="meta">native-hunt / php-insecure-random / inc/function.php:13</p>
+<pre>$colorString=imagecolorallocate($img,rand(10,100),rand(10,100),rand(10,100));
+	imagefill($img,0,0,$colorBg);
+	for($i=0;$i&lt;$countPixel;$i++){</pre>
+</section><section class="finding"><h3>CWE-330 at inc/function.php:16</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 7ac7b5caf0f3 · CWE-330</span></p>
+<p>rand/mt_rand are predictable; use random_int or random_bytes.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:16:22</p>
+<pre>imagesetpixel($img,rand(0,$width-1),rand(0,$height-1),imagecolorallocate($img,rand(100,200),rand(100,200),rand(100,200)));
+	}
+	for($i=0;$i&lt;$countLine;$i++){</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:16:39</p>
+<pre>imagesetpixel($img,rand(0,$width-1),rand(0,$height-1),imagecolorallocate($img,rand(100,200),rand(100,200),rand(100,200)));
+	}
+	for($i=0;$i&lt;$countLine;$i++){</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:16:81</p>
+<pre>imagesetpixel($img,rand(0,$width-1),rand(0,$height-1),imagecolorallocate($img,rand(100,200),rand(100,200),rand(100,200)));
+	}
+	for($i=0;$i&lt;$countLine;$i++){</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:16:95</p>
+<pre>imagesetpixel($img,rand(0,$width-1),rand(0,$height-1),imagecolorallocate($img,rand(100,200),rand(100,200),rand(100,200)));
+	}
+	for($i=0;$i&lt;$countLine;$i++){</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:16:109</p>
+<pre>imagesetpixel($img,rand(0,$width-1),rand(0,$height-1),imagecolorallocate($img,rand(100,200),rand(100,200),rand(100,200)));
+	}
+	for($i=0;$i&lt;$countLine;$i++){</pre><p class="meta">native-hunt / php-insecure-random / inc/function.php:16</p>
+<pre>imagesetpixel($img,rand(0,$width-1),rand(0,$height-1),imagecolorallocate($img,rand(100,200),rand(100,200),rand(100,200)));
+	}
+	for($i=0;$i&lt;$countLine;$i++){</pre>
+</section><section class="finding"><h3>CWE-330 at inc/function.php:19</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 52c9a9df4010 · CWE-330</span></p>
+<p>rand/mt_rand are predictable; use random_int or random_bytes.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:19:18</p>
+<pre>imageline($img,rand(0,$width/2),rand(0,$height),rand($width/2,$width),rand(0,$height),imagecolorallocate($img,rand(100,200),rand(100,200),rand(100,200)));
+	}
+	//imagestring($img,5,0,0,&#39;abcd&#39;,$colorString);</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:19:35</p>
+<pre>imageline($img,rand(0,$width/2),rand(0,$height),rand($width/2,$width),rand(0,$height),imagecolorallocate($img,rand(100,200),rand(100,200),rand(100,200)));
+	}
+	//imagestring($img,5,0,0,&#39;abcd&#39;,$colorString);</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:19:51</p>
+<pre>imageline($img,rand(0,$width/2),rand(0,$height),rand($width/2,$width),rand(0,$height),imagecolorallocate($img,rand(100,200),rand(100,200),rand(100,200)));
+	}
+	//imagestring($img,5,0,0,&#39;abcd&#39;,$colorString);</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:19:73</p>
+<pre>imageline($img,rand(0,$width/2),rand(0,$height),rand($width/2,$width),rand(0,$height),imagecolorallocate($img,rand(100,200),rand(100,200),rand(100,200)));
+	}
+	//imagestring($img,5,0,0,&#39;abcd&#39;,$colorString);</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:19:113</p>
+<pre>imageline($img,rand(0,$width/2),rand(0,$height),rand($width/2,$width),rand(0,$height),imagecolorallocate($img,rand(100,200),rand(100,200),rand(100,200)));
+	}
+	//imagestring($img,5,0,0,&#39;abcd&#39;,$colorString);</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:19:127</p>
+<pre>imageline($img,rand(0,$width/2),rand(0,$height),rand($width/2,$width),rand(0,$height),imagecolorallocate($img,rand(100,200),rand(100,200),rand(100,200)));
+	}
+	//imagestring($img,5,0,0,&#39;abcd&#39;,$colorString);</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:19:141</p>
+<pre>imageline($img,rand(0,$width/2),rand(0,$height),rand($width/2,$width),rand(0,$height),imagecolorallocate($img,rand(100,200),rand(100,200),rand(100,200)));
+	}
+	//imagestring($img,5,0,0,&#39;abcd&#39;,$colorString);</pre><p class="meta">native-hunt / php-insecure-random / inc/function.php:19</p>
+<pre>imageline($img,rand(0,$width/2),rand(0,$height),rand($width/2,$width),rand(0,$height),imagecolorallocate($img,rand(100,200),rand(100,200),rand(100,200)));
+	}
+	//imagestring($img,5,0,0,&#39;abcd&#39;,$colorString);</pre>
+</section><section class="finding"><h3>CWE-330 at inc/function.php:22</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 8b72ff4e87b0 · CWE-330</span></p>
+<p>rand/mt_rand are predictable; use random_int or random_bytes.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:22:30</p>
+<pre>imagettftext($img,$fontSize,rand(-5,5),rand(5,15),rand(30,35),$colorString,&#39;../assets/fonts/ManyGifts.ttf&#39;,$string);
+	imagejpeg($img);
+	imagedestroy($img);</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:22:41</p>
+<pre>imagettftext($img,$fontSize,rand(-5,5),rand(5,15),rand(30,35),$colorString,&#39;../assets/fonts/ManyGifts.ttf&#39;,$string);
+	imagejpeg($img);
+	imagedestroy($img);</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:22:52</p>
+<pre>imagettftext($img,$fontSize,rand(-5,5),rand(5,15),rand(30,35),$colorString,&#39;../assets/fonts/ManyGifts.ttf&#39;,$string);
+	imagejpeg($img);
+	imagedestroy($img);</pre><p class="meta">native-hunt / php-insecure-random / inc/function.php:22</p>
+<pre>imagettftext($img,$fontSize,rand(-5,5),rand(5,15),rand(30,35),$colorString,&#39;../assets/fonts/ManyGifts.ttf&#39;,$string);
+	imagejpeg($img);
+	imagedestroy($img);</pre>
+</section><section class="finding"><h3>CWE-330 at inc/function.php:34</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 3432a2033fa4 · CWE-330</span></p>
+<p>rand/mt_rand are predictable; use random_int or random_bytes.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:34:17</p>
+<pre>$pos = rand(0,35);
+        	$str .= $string[$pos];
+    	}</pre><p class="meta">native-hunt / php-insecure-random / inc/function.php:34</p>
+<pre>$pos = rand(0,35);
+        	$str .= $string[$pos];
+    	}</pre>
+</section><section class="finding"><h3>CWE-330 at inc/function.php:47</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · e1957692bae0 · CWE-330</span></p>
+<p>rand/mt_rand are predictable; use random_int or random_bytes.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:47:49</p>
+<pre>$line = ImageColorAllocate($img_handle,rand(0,255),rand(0,255),rand(0,255));
+        	Imageline($img_handle, rand(0,15), rand(0,15), rand(100,150),rand(10,50), $line);
+    	}</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:47:61</p>
+<pre>$line = ImageColorAllocate($img_handle,rand(0,255),rand(0,255),rand(0,255));
+        	Imageline($img_handle, rand(0,15), rand(0,15), rand(100,150),rand(10,50), $line);
+    	}</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:47:73</p>
+<pre>$line = ImageColorAllocate($img_handle,rand(0,255),rand(0,255),rand(0,255));
+        	Imageline($img_handle, rand(0,15), rand(0,15), rand(100,150),rand(10,50), $line);
+    	}</pre><p class="meta">native-hunt / php-insecure-random / inc/function.php:47</p>
+<pre>$line = ImageColorAllocate($img_handle,rand(0,255),rand(0,255),rand(0,255));
+        	Imageline($img_handle, rand(0,15), rand(0,15), rand(100,150),rand(10,50), $line);
+    	}</pre>
+</section><section class="finding"><h3>CWE-330 at inc/function.php:48</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · f5df9a53f08d · CWE-330</span></p>
+<p>rand/mt_rand are predictable; use random_int or random_bytes.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:48:33</p>
+<pre>Imageline($img_handle, rand(0,15), rand(0,15), rand(100,150),rand(10,50), $line);
+    	}
+    //加入干扰象素</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:48:45</p>
+<pre>Imageline($img_handle, rand(0,15), rand(0,15), rand(100,150),rand(10,50), $line);
+    	}
+    //加入干扰象素</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:48:57</p>
+<pre>Imageline($img_handle, rand(0,15), rand(0,15), rand(100,150),rand(10,50), $line);
+    	}
+    //加入干扰象素</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:48:71</p>
+<pre>Imageline($img_handle, rand(0,15), rand(0,15), rand(100,150),rand(10,50), $line);
+    	}
+    //加入干扰象素</pre><p class="meta">native-hunt / php-insecure-random / inc/function.php:48</p>
+<pre>Imageline($img_handle, rand(0,15), rand(0,15), rand(100,150),rand(10,50), $line);
+    	}
+    //加入干扰象素</pre>
+</section><section class="finding"><h3>CWE-330 at inc/function.php:53</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 59e8ca9a5961 · CWE-330</span></p>
+<p>rand/mt_rand are predictable; use random_int or random_bytes.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:53:54</p>
+<pre>$randcolor = ImageColorallocate($img_handle,rand(0,255),rand(0,255),rand(0,255));
+        	Imagesetpixel($img_handle, rand()%100 , rand()%50 , $randcolor);
+    	}</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:53:66</p>
+<pre>$randcolor = ImageColorallocate($img_handle,rand(0,255),rand(0,255),rand(0,255));
+        	Imagesetpixel($img_handle, rand()%100 , rand()%50 , $randcolor);
+    	}</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:53:78</p>
+<pre>$randcolor = ImageColorallocate($img_handle,rand(0,255),rand(0,255),rand(0,255));
+        	Imagesetpixel($img_handle, rand()%100 , rand()%50 , $randcolor);
+    	}</pre><p class="meta">native-hunt / php-insecure-random / inc/function.php:53</p>
+<pre>$randcolor = ImageColorallocate($img_handle,rand(0,255),rand(0,255),rand(0,255));
+        	Imagesetpixel($img_handle, rand()%100 , rand()%50 , $randcolor);
+    	}</pre>
+</section><section class="finding"><h3>CWE-330 at inc/function.php:54</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 0fda6fe3e712 · CWE-330</span></p>
+<p>rand/mt_rand are predictable; use random_int or random_bytes.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:54:37</p>
+<pre>Imagesetpixel($img_handle, rand()%100 , rand()%50 , $randcolor);
+    	}</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:54:50</p>
+<pre>Imagesetpixel($img_handle, rand()%100 , rand()%50 , $randcolor);
+    	}</pre><p class="meta">native-hunt / php-insecure-random / inc/function.php:54</p>
+<pre>Imagesetpixel($img_handle, rand()%100 , rand()%50 , $randcolor);
+    	}</pre>
+</section><section class="finding"><h3>CWE-330 at inc/function.php:73</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 54b548245efd · CWE-330</span></p>
+<p>rand/mt_rand are predictable; use random_int or random_bytes.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:73:43</p>
+<pre>$_SESSION[&#39;token&#39;]=str_replace(&#39;.&#39;,&#39;&#39;,uniqid(mt_rand(10000,99999),true));
+}</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/function.php:73:50</p>
+<pre>$_SESSION[&#39;token&#39;]=str_replace(&#39;.&#39;,&#39;&#39;,uniqid(mt_rand(10000,99999),true));
+}</pre><p class="meta">native-hunt / php-insecure-random / inc/function.php:73</p>
+<pre>$_SESSION[&#39;token&#39;]=str_replace(&#39;.&#39;,&#39;&#39;,uniqid(mt_rand(10000,99999),true));
+}</pre>
+</section><section class="finding"><h3>CWE-330 at inc/uploadfunction.php:157</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 305e793ee8df · CWE-330</span></p>
+<p>rand/mt_rand are predictable; use random_int or random_bytes.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/uploadfunction.php:157:38</p>
+<pre>$new_filename=str_replace(&#39;.&#39;,&#39;&#39;,uniqid(mt_rand(100000,999999),true));
+    if($arr_filename[&#39;extension&#39;]!=&#39;&#39;){
+        $arr_filename[&#39;extension&#39;]=strtolower($arr_filename[&#39;extension&#39;]);//小写保存</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random / inc/uploadfunction.php:157:45</p>
+<pre>$new_filename=str_replace(&#39;.&#39;,&#39;&#39;,uniqid(mt_rand(100000,999999),true));
+    if($arr_filename[&#39;extension&#39;]!=&#39;&#39;){
+        $arr_filename[&#39;extension&#39;]=strtolower($arr_filename[&#39;extension&#39;]);//小写保存</pre><p class="meta">native-hunt / php-insecure-random / inc/uploadfunction.php:157</p>
+<pre>$new_filename=str_replace(&#39;.&#39;,&#39;&#39;,uniqid(mt_rand(100000,999999),true));
+    if($arr_filename[&#39;extension&#39;]!=&#39;&#39;){
+        $arr_filename[&#39;extension&#39;]=strtolower($arr_filename[&#39;extension&#39;]);//小写保存</pre>
+</section><section class="finding"><h3>CWE-328 at pkxss/pkxss_login.php:20</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · e52c10051d45 · CWE-328</span></p>
+<p>md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / pkxss/pkxss_login.php:20:44</p>
+<pre>$_SESSION[&#39;pkxss&#39;][&#39;password&#39;]=sha1(md5($password));
+            header(&#34;location:xssmanager.php&#34;);
+        }else{</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / pkxss/pkxss_login.php:20:49</p>
+<pre>$_SESSION[&#39;pkxss&#39;][&#39;password&#39;]=sha1(md5($password));
+            header(&#34;location:xssmanager.php&#34;);
+        }else{</pre><p class="meta">native-hunt / php-weak-password-hash / pkxss/pkxss_login.php:20</p>
+<pre>$_SESSION[&#39;pkxss&#39;][&#39;password&#39;]=sha1(md5($password));
+            header(&#34;location:xssmanager.php&#34;);
+        }else{</pre>
+</section><section class="finding"><h3>CWE-89 at pkxss/rkeypress/rkserver.php:16</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · ab8e97ee8b8f · CWE-89</span></p>
+<p>User input reaches a SQL query; use prepared statements with bound parameters.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-sql-concatenation / pkxss/rkeypress/rkserver.php:16:9</p>
+<pre>$result=mysqli_query($link,$query);</pre><p class="meta">native-hunt / php-sql-concatenation / pkxss/rkeypress/rkserver.php:16</p>
+<pre>$result=mysqli_query($link,$query);</pre>
+</section><section class="finding"><h3>CWE-89 at pkxss/xcookie/cookie.php:16</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · a2adf422777c · CWE-89</span></p>
+<p>User input reaches a SQL query; use prepared statements with bound parameters.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-sql-concatenation / pkxss/xcookie/cookie.php:16:13</p>
+<pre>$result=mysqli_query($link, $query);
+}
+header(&#34;Location:http://192.168.1.4/pikachu/index.php&#34;);//重定向到一个可信的网站</pre><p class="meta">native-hunt / php-sql-concatenation / pkxss/xcookie/cookie.php:16</p>
+<pre>$result=mysqli_query($link, $query);
+}
+header(&#34;Location:http://192.168.1.4/pikachu/index.php&#34;);//重定向到一个可信的网站</pre>
+</section><section class="finding"><h3>CWE-89 at pkxss/xfish/xfish.php:18</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 0016650bd1ad · CWE-89</span></p>
+<p>User input reaches a SQL query; use prepared statements with bound parameters.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-sql-concatenation / pkxss/xfish/xfish.php:18:13</p>
+<pre>$result=mysqli_query($link, $query);
+}</pre><p class="meta">native-hunt / php-sql-concatenation / pkxss/xfish/xfish.php:18</p>
+<pre>$result=mysqli_query($link, $query);
+}</pre>
+</section><section class="finding"><h3>CWE-697 at pkxss/xssmanager.php:12</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · ae71ed794dda · CWE-697</span></p>
+<p>Loose == comparison with user input allows type juggling; use === or hash_equals.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison / pkxss/xssmanager.php:12:30</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == 1){
+    session_unset();
+    session_destroy();</pre><p class="meta">native-hunt / php-loose-comparison / pkxss/xssmanager.php:12</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == 1){
+    session_unset();
+    session_destroy();</pre>
+</section><section class="finding"><h3>CWE-697 at vul/csrf/csrfget/csrf_get.php:29</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · cb7322d6d31c · CWE-697</span></p>
+<p>Loose == comparison with user input allows type juggling; use === or hash_equals.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison / vul/csrf/csrfget/csrf_get.php:29:30</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == 1){
+    session_unset();
+    session_destroy();</pre><p class="meta">native-hunt / php-loose-comparison / vul/csrf/csrfget/csrf_get.php:29</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == 1){
+    session_unset();
+    session_destroy();</pre>
+</section><section class="finding"><h3>CWE-328 at vul/csrf/csrfget/csrf_get_login.php:41</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 085d817a903c · CWE-328</span></p>
+<p>md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / vul/csrf/csrfget/csrf_get_login.php:41:43</p>
+<pre>$_SESSION[&#39;csrf&#39;][&#39;password&#39;]=sha1(md5($password));
+            header(&#34;location:csrf_get.php&#34;);
+        }else{</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / vul/csrf/csrfget/csrf_get_login.php:41:48</p>
+<pre>$_SESSION[&#39;csrf&#39;][&#39;password&#39;]=sha1(md5($password));
+            header(&#34;location:csrf_get.php&#34;);
+        }else{</pre><p class="meta">native-hunt / php-weak-password-hash / vul/csrf/csrfget/csrf_get_login.php:41</p>
+<pre>$_SESSION[&#39;csrf&#39;][&#39;password&#39;]=sha1(md5($password));
+            header(&#34;location:csrf_get.php&#34;);
+        }else{</pre>
+</section><section class="finding"><h3>CWE-697 at vul/csrf/csrfpost/csrf_post.php:29</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · c48a008d1e6e · CWE-697</span></p>
+<p>Loose == comparison with user input allows type juggling; use === or hash_equals.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison / vul/csrf/csrfpost/csrf_post.php:29:30</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == 1){
+    session_unset();
+    session_destroy();</pre><p class="meta">native-hunt / php-loose-comparison / vul/csrf/csrfpost/csrf_post.php:29</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == 1){
+    session_unset();
+    session_destroy();</pre>
+</section><section class="finding"><h3>CWE-328 at vul/csrf/csrfpost/csrf_post_login.php:41</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · fa49d3f0d5d7 · CWE-328</span></p>
+<p>md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / vul/csrf/csrfpost/csrf_post_login.php:41:43</p>
+<pre>$_SESSION[&#39;csrf&#39;][&#39;password&#39;]=sha1(md5($password));
+            header(&#34;location:csrf_post.php&#34;);
+        }else{</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / vul/csrf/csrfpost/csrf_post_login.php:41:48</p>
+<pre>$_SESSION[&#39;csrf&#39;][&#39;password&#39;]=sha1(md5($password));
+            header(&#34;location:csrf_post.php&#34;);
+        }else{</pre><p class="meta">native-hunt / php-weak-password-hash / vul/csrf/csrfpost/csrf_post_login.php:41</p>
+<pre>$_SESSION[&#39;csrf&#39;][&#39;password&#39;]=sha1(md5($password));
+            header(&#34;location:csrf_post.php&#34;);
+        }else{</pre>
+</section><section class="finding"><h3>CWE-697 at vul/csrf/csrftoken/token_get.php:29</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 492a376768fe · CWE-697</span></p>
+<p>Loose == comparison with user input allows type juggling; use === or hash_equals.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison / vul/csrf/csrftoken/token_get.php:29:30</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == 1){
+    session_unset();
+    session_destroy();</pre><p class="meta">native-hunt / php-loose-comparison / vul/csrf/csrftoken/token_get.php:29</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == 1){
+    session_unset();
+    session_destroy();</pre>
+</section><section class="finding"><h3>CWE-697 at vul/csrf/csrftoken/token_get_edit.php:33</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 35e6e80ea278 · CWE-697</span></p>
+<p>Loose == comparison with user input allows type juggling; use === or hash_equals.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison / vul/csrf/csrftoken/token_get_edit.php:33:103</p>
+<pre>if($_GET[&#39;sex&#39;]!=null &amp;&amp; $_GET[&#39;phonenum&#39;]!=null &amp;&amp; $_GET[&#39;add&#39;]!=null &amp;&amp; $_GET[&#39;email&#39;]!=null &amp;&amp; $_GET[&#39;token&#39;]==$_SESSION[&#39;token&#39;]){
+        //转义
+        $getdata=escape($link, $_GET);</pre><p class="meta">native-hunt / php-loose-comparison / vul/csrf/csrftoken/token_get_edit.php:33</p>
+<pre>if($_GET[&#39;sex&#39;]!=null &amp;&amp; $_GET[&#39;phonenum&#39;]!=null &amp;&amp; $_GET[&#39;add&#39;]!=null &amp;&amp; $_GET[&#39;email&#39;]!=null &amp;&amp; $_GET[&#39;token&#39;]==$_SESSION[&#39;token&#39;]){
+        //转义
+        $getdata=escape($link, $_GET);</pre>
+</section><section class="finding"><h3>CWE-328 at vul/csrf/csrftoken/token_get_login.php:43</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · f37523709648 · CWE-328</span></p>
+<p>md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / vul/csrf/csrftoken/token_get_login.php:43:43</p>
+<pre>$_SESSION[&#39;csrf&#39;][&#39;password&#39;]=sha1(md5($password));
+            header(&#34;location:token_get.php&#34;);
+        }else{</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / vul/csrf/csrftoken/token_get_login.php:43:48</p>
+<pre>$_SESSION[&#39;csrf&#39;][&#39;password&#39;]=sha1(md5($password));
+            header(&#34;location:token_get.php&#34;);
+        }else{</pre><p class="meta">native-hunt / php-weak-password-hash / vul/csrf/csrftoken/token_get_login.php:43</p>
+<pre>$_SESSION[&#39;csrf&#39;][&#39;password&#39;]=sha1(md5($password));
+            header(&#34;location:token_get.php&#34;);
+        }else{</pre>
+</section><section class="finding"><h3>CWE-22 at vul/dir/dir_list.php:22</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 1f09fdeeafe8 · CWE-22</span></p>
+<p>User input reaches a filesystem path; validate against an allowlist.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-path-traversal / vul/dir/dir_list.php:22:5</p>
+<pre>require &#34;soup/$filename&#34;;
+//    echo $html;
+}</pre><p class="meta">native-hunt / php-path-traversal / vul/dir/dir_list.php:22</p>
+<pre>require &#34;soup/$filename&#34;;
+//    echo $html;
+}</pre>
+</section><section class="finding"><h3>CWE-22 at vul/fileinclude/fi_local.php:23</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 0107ebd377e9 · CWE-22</span></p>
+<p>User input reaches a filesystem path; validate against an allowlist.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-path-traversal / vul/fileinclude/fi_local.php:23:5</p>
+<pre>include &#34;include/$filename&#34;;//变量传进来直接包含,没做任何的安全限制
+//     //安全的写法,使用白名单，严格指定包含的文件名
+//     if($filename==&#39;file1.php&#39; || $filename==&#39;file2.php&#39; || $filename==&#39;file3.php&#39; || $filename==&#39;file4.php&#39; || $filename==&#39;file5.php&#39;){</pre><p class="meta">native-hunt / php-path-traversal / vul/fileinclude/fi_local.php:23</p>
+<pre>include &#34;include/$filename&#34;;//变量传进来直接包含,没做任何的安全限制
+//     //安全的写法,使用白名单，严格指定包含的文件名
+//     if($filename==&#39;file1.php&#39; || $filename==&#39;file2.php&#39; || $filename==&#39;file3.php&#39; || $filename==&#39;file4.php&#39; || $filename==&#39;file5.php&#39;){</pre>
+</section><section class="finding"><h3>CWE-22 at vul/fileinclude/fi_remote.php:37</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 956ba77059f0 · CWE-22</span></p>
+<p>User input reaches a filesystem path; validate against an allowlist.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-path-traversal / vul/fileinclude/fi_remote.php:37:5</p>
+<pre>include &#34;$filename&#34;;//变量传进来直接包含,没做任何的安全限制</pre><p class="meta">native-hunt / php-path-traversal / vul/fileinclude/fi_remote.php:37</p>
+<pre>include &#34;$filename&#34;;//变量传进来直接包含,没做任何的安全限制</pre>
+</section><section class="finding"><h3>CWE-697 at vul/infoleak/abc.php:18</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · aac529c0958c · CWE-697</span></p>
+<p>Loose == comparison with user input allows type juggling; use === or hash_equals.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison / vul/infoleak/abc.php:18:30</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == &#39;1&#39;){
+    setcookie(&#39;abc[uname]&#39;,&#39;&#39;);
+    setcookie(&#39;abc[pw]&#39;,&#39;&#39;);</pre><p class="meta">native-hunt / php-loose-comparison / vul/infoleak/abc.php:18</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == &#39;1&#39;){
+    setcookie(&#39;abc[uname]&#39;,&#39;&#39;);
+    setcookie(&#39;abc[pw]&#39;,&#39;&#39;);</pre>
+</section><section class="finding"><h3>CWE-328 at vul/infoleak/findabc.php:35</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 114580e3a710 · CWE-328</span></p>
+<p>md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / vul/infoleak/findabc.php:35:33</p>
+<pre>setcookie(&#39;abc[pw]&#39;,md5($_GET[&#39;password&#39;]),time()+36000);
+            //登录时，生成cookie,10个小时有效期，供其他页面判断
+            header(&#34;location:abc.php&#34;);</pre><p class="meta">native-hunt / php-weak-password-hash / vul/infoleak/findabc.php:35</p>
+<pre>setcookie(&#39;abc[pw]&#39;,md5($_GET[&#39;password&#39;]),time()+36000);
+            //登录时，生成cookie,10个小时有效期，供其他页面判断
+            header(&#34;location:abc.php&#34;);</pre>
+</section><section class="finding"><h3>CWE-328 at vul/overpermission/op1/op1_login.php:37</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · db6d3ab3bd63 · CWE-328</span></p>
+<p>md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / vul/overpermission/op1/op1_login.php:37:41</p>
+<pre>$_SESSION[&#39;op&#39;][&#39;password&#39;]=sha1(md5($password));
+            header(&#34;location:op1_mem.php&#34;);
+        }else{</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / vul/overpermission/op1/op1_login.php:37:46</p>
+<pre>$_SESSION[&#39;op&#39;][&#39;password&#39;]=sha1(md5($password));
+            header(&#34;location:op1_mem.php&#34;);
+        }else{</pre><p class="meta">native-hunt / php-weak-password-hash / vul/overpermission/op1/op1_login.php:37</p>
+<pre>$_SESSION[&#39;op&#39;][&#39;password&#39;]=sha1(md5($password));
+            header(&#34;location:op1_mem.php&#34;);
+        }else{</pre>
+</section><section class="finding"><h3>CWE-697 at vul/overpermission/op1/op1_mem.php:52</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 1368057cf6de · CWE-697</span></p>
+<p>Loose == comparison with user input allows type juggling; use === or hash_equals.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison / vul/overpermission/op1/op1_mem.php:52:30</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == 1){
+    session_unset();
+    session_destroy();</pre><p class="meta">native-hunt / php-loose-comparison / vul/overpermission/op1/op1_mem.php:52</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == 1){
+    session_unset();
+    session_destroy();</pre>
+</section><section class="finding"><h3>CWE-79 at vul/overpermission/op1/op1_mem.php:91</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 05291fca2d54 · CWE-79</span></p>
+<p>Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss / vul/overpermission/op1/op1_mem.php:91:23</p>
+<pre>&lt;?php echo $html;?&gt;
+
+            &lt;/div&gt;</pre><p class="meta">native-hunt / php-reflected-xss / vul/overpermission/op1/op1_mem.php:91</p>
+<pre>&lt;?php echo $html;?&gt;
+
+            &lt;/div&gt;</pre>
+</section><section class="finding"><h3>CWE-697 at vul/overpermission/op2/op2_admin.php:36</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 2002ff9e31ce · CWE-697</span></p>
+<p>Loose == comparison with user input allows type juggling; use === or hash_equals.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison / vul/overpermission/op2/op2_admin.php:36:30</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == 1){
+    session_unset();
+    session_destroy();</pre><p class="meta">native-hunt / php-loose-comparison / vul/overpermission/op2/op2_admin.php:36</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == 1){
+    session_unset();
+    session_destroy();</pre>
+</section><section class="finding"><h3>CWE-697 at vul/overpermission/op2/op2_admin_edit.php:41</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 64cfb6c726c8 · CWE-697</span></p>
+<p>Loose == comparison with user input allows type juggling; use === or hash_equals.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison / vul/overpermission/op2/op2_admin_edit.php:41:30</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == 1){
+    session_unset();
+    session_destroy();</pre><p class="meta">native-hunt / php-loose-comparison / vul/overpermission/op2/op2_admin_edit.php:41</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == 1){
+    session_unset();
+    session_destroy();</pre>
+</section><section class="finding"><h3>CWE-328 at vul/overpermission/op2/op2_login.php:34</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · bbfd79606c7c · CWE-328</span></p>
+<p>md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / vul/overpermission/op2/op2_login.php:34:46</p>
+<pre>$_SESSION[&#39;op2&#39;][&#39;password&#39;]=sha1(md5($password));
+                $_SESSION[&#39;op2&#39;][&#39;level&#39;]=1;
+                header(&#34;location:op2_admin.php&#34;);</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / vul/overpermission/op2/op2_login.php:34:51</p>
+<pre>$_SESSION[&#39;op2&#39;][&#39;password&#39;]=sha1(md5($password));
+                $_SESSION[&#39;op2&#39;][&#39;level&#39;]=1;
+                header(&#34;location:op2_admin.php&#34;);</pre><p class="meta">native-hunt / php-weak-password-hash / vul/overpermission/op2/op2_login.php:34</p>
+<pre>$_SESSION[&#39;op2&#39;][&#39;password&#39;]=sha1(md5($password));
+                $_SESSION[&#39;op2&#39;][&#39;level&#39;]=1;
+                header(&#34;location:op2_admin.php&#34;);</pre>
+</section><section class="finding"><h3>CWE-328 at vul/overpermission/op2/op2_login.php:40</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 4aa4773a267b · CWE-328</span></p>
+<p>md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / vul/overpermission/op2/op2_login.php:40:46</p>
+<pre>$_SESSION[&#39;op2&#39;][&#39;password&#39;]=sha1(md5($password));
+                $_SESSION[&#39;op2&#39;][&#39;level&#39;]=2;
+                header(&#34;location:op2_user.php&#34;);</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / vul/overpermission/op2/op2_login.php:40:51</p>
+<pre>$_SESSION[&#39;op2&#39;][&#39;password&#39;]=sha1(md5($password));
+                $_SESSION[&#39;op2&#39;][&#39;level&#39;]=2;
+                header(&#34;location:op2_user.php&#34;);</pre><p class="meta">native-hunt / php-weak-password-hash / vul/overpermission/op2/op2_login.php:40</p>
+<pre>$_SESSION[&#39;op2&#39;][&#39;password&#39;]=sha1(md5($password));
+                $_SESSION[&#39;op2&#39;][&#39;level&#39;]=2;
+                header(&#34;location:op2_user.php&#34;);</pre>
+</section><section class="finding"><h3>CWE-697 at vul/overpermission/op2/op2_user.php:25</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · f9ce87e7e50b · CWE-697</span></p>
+<p>Loose == comparison with user input allows type juggling; use === or hash_equals.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison / vul/overpermission/op2/op2_user.php:25:30</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == 1){
+    session_unset();
+    session_destroy();</pre><p class="meta">native-hunt / php-loose-comparison / vul/overpermission/op2/op2_user.php:25</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == 1){
+    session_unset();
+    session_destroy();</pre>
+</section><section class="finding"><h3>CWE-95 at vul/rce/rce_eval.php:19</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 6095a0c2af62 · CWE-95</span></p>
+<p>User input reaches eval; never execute dynamically built code.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-dynamic-eval / vul/rce/rce_eval.php:19:10</p>
+<pre>if(@!eval($_POST[&#39;txt&#39;])){
+        $html.=&#34;&lt;p&gt;你喜欢的字符还挺奇怪的!&lt;/p&gt;&#34;;</pre><p class="meta">native-hunt / php-dynamic-eval / vul/rce/rce_eval.php:19</p>
+<pre>if(@!eval($_POST[&#39;txt&#39;])){
+        $html.=&#34;&lt;p&gt;你喜欢的字符还挺奇怪的!&lt;/p&gt;&#34;;</pre>
+</section><section class="finding"><h3>CWE-78 at vul/rce/rce_ping.php:26</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 7b674837c9dd · CWE-78</span></p>
+<p>User input reaches a shell command; use escapeshellarg or avoid the shell.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-command-injection / vul/rce/rce_ping.php:26:18</p>
+<pre>$result.=shell_exec(&#39;ping &#39;.$ip);//直接将变量拼接进来，没做处理
+    }else {
+        $result.=shell_exec(&#39;ping -c 4 &#39;.$ip);</pre><p class="meta">native-hunt / php-command-injection / vul/rce/rce_ping.php:26</p>
+<pre>$result.=shell_exec(&#39;ping &#39;.$ip);//直接将变量拼接进来，没做处理
+    }else {
+        $result.=shell_exec(&#39;ping -c 4 &#39;.$ip);</pre>
+</section><section class="finding"><h3>CWE-78 at vul/rce/rce_ping.php:28</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 6ee6eea46d4d · CWE-78</span></p>
+<p>User input reaches a shell command; use escapeshellarg or avoid the shell.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-command-injection / vul/rce/rce_ping.php:28:18</p>
+<pre>$result.=shell_exec(&#39;ping -c 4 &#39;.$ip);
+    }</pre><p class="meta">native-hunt / php-command-injection / vul/rce/rce_ping.php:28</p>
+<pre>$result.=shell_exec(&#39;ping -c 4 &#39;.$ip);
+    }</pre>
+</section><section class="finding"><h3>CWE-79 at vul/rce/rce_ping.php:66</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 064034230a88 · CWE-79</span></p>
+<p>Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss / vul/rce/rce_ping.php:66:25</p>
+<pre>echo &#34;&lt;pre&gt;{$result}&lt;/pre&gt;&#34;;
+                    }
+                    ?&gt;</pre><p class="meta">native-hunt / php-reflected-xss / vul/rce/rce_ping.php:66</p>
+<pre>echo &#34;&lt;pre&gt;{$result}&lt;/pre&gt;&#34;;
+                    }
+                    ?&gt;</pre>
+</section><section class="finding"><h3>CWE-89 at vul/sqli/sqli_blind_b.php:29</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 1cd0d4a7fb59 · CWE-89</span></p>
+<p>User input reaches a SQL query; use prepared statements with bound parameters.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-sql-concatenation / vul/sqli/sqli_blind_b.php:29:13</p>
+<pre>$result=mysqli_query($link, $query);//
+//     $result=execute($link, $query);
+    if($result &amp;&amp; mysqli_num_rows($result)==1){</pre><p class="meta">native-hunt / php-sql-concatenation / vul/sqli/sqli_blind_b.php:29</p>
+<pre>$result=mysqli_query($link, $query);//
+//     $result=execute($link, $query);
+    if($result &amp;&amp; mysqli_num_rows($result)==1){</pre>
+</section><section class="finding"><h3>CWE-79 at vul/sqli/sqli_blind_b.php:72</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · a7cfa34cc7e0 · CWE-79</span></p>
+<p>Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss / vul/sqli/sqli_blind_b.php:72:23</p>
+<pre>&lt;?php echo $html;?&gt;
+            &lt;/div&gt;</pre>
+</section><section class="finding"><h3>CWE-89 at vul/sqli/sqli_blind_t.php:29</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 89917cb5d15b · CWE-89</span></p>
+<p>User input reaches a SQL query; use prepared statements with bound parameters.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-sql-concatenation / vul/sqli/sqli_blind_t.php:29:13</p>
+<pre>$result=mysqli_query($link, $query);//mysqi_query不打印错误描述
+//     $result=execute($link, $query);
+//    $html.=&#34;&lt;p class=&#39;notice&#39;&gt;i don&#39;t care who you are!&lt;/p&gt;&#34;;</pre><p class="meta">native-hunt / php-sql-concatenation / vul/sqli/sqli_blind_t.php:29</p>
+<pre>$result=mysqli_query($link, $query);//mysqi_query不打印错误描述
+//     $result=execute($link, $query);
+//    $html.=&#34;&lt;p class=&#39;notice&#39;&gt;i don&#39;t care who you are!&lt;/p&gt;&#34;;</pre>
+</section><section class="finding"><h3>CWE-697 at vul/sqli/sqli_header/sqli_header.php:45</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 69bc3e6e9a56 · CWE-697</span></p>
+<p>Loose == comparison with user input allows type juggling; use === or hash_equals.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison / vul/sqli/sqli_header/sqli_header.php:45:30</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == 1){
+    setcookie(&#39;ant[uname]&#39;,&#39;&#39;,time()-3600);
+    setcookie(&#39;ant[pw]&#39;,&#39;&#39;,time()-3600);</pre><p class="meta">native-hunt / php-loose-comparison / vul/sqli/sqli_header/sqli_header.php:45</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == 1){
+    setcookie(&#39;ant[uname]&#39;,&#39;&#39;,time()-3600);
+    setcookie(&#39;ant[pw]&#39;,&#39;&#39;,time()-3600);</pre>
+</section><section class="finding"><h3>CWE-328 at vul/sqli/sqli_header/sqli_header_login.php:37</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · e9588f88e311 · CWE-328</span></p>
+<p>md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / vul/sqli/sqli_header/sqli_header_login.php:37:33</p>
+<pre>setcookie(&#39;ant[pw]&#39;,sha1(md5($_POST[&#39;password&#39;])),time()+36000);
+            //登录时，生成cookie,10个小时有效期，供其他页面判断
+            header(&#34;location:sqli_header.php&#34;);</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / vul/sqli/sqli_header/sqli_header_login.php:37:38</p>
+<pre>setcookie(&#39;ant[pw]&#39;,sha1(md5($_POST[&#39;password&#39;])),time()+36000);
+            //登录时，生成cookie,10个小时有效期，供其他页面判断
+            header(&#34;location:sqli_header.php&#34;);</pre><p class="meta">native-hunt / php-weak-password-hash / vul/sqli/sqli_header/sqli_header_login.php:37</p>
+<pre>setcookie(&#39;ant[pw]&#39;,sha1(md5($_POST[&#39;password&#39;])),time()+36000);
+            //登录时，生成cookie,10个小时有效期，供其他页面判断
+            header(&#34;location:sqli_header.php&#34;);</pre>
+</section><section class="finding"><h3>CWE-79 at vul/sqli/sqli_id.php:80</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 1c54480e213a · CWE-79</span></p>
+<p>Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss / vul/sqli/sqli_id.php:80:23</p>
+<pre>&lt;?php echo $html;?&gt;
+            &lt;/div&gt;</pre>
+</section><section class="finding"><h3>CWE-328 at vul/sqli/sqli_iu/sqli_login.php:39</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 45793a84c1d7 · CWE-328</span></p>
+<p>md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / vul/sqli/sqli_iu/sqli_login.php:39:43</p>
+<pre>$_SESSION[&#39;sqli&#39;][&#39;password&#39;]=sha1(md5($password));
+            header(&#34;location:sqli_mem.php&#34;);
+        }else{</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / vul/sqli/sqli_iu/sqli_login.php:39:48</p>
+<pre>$_SESSION[&#39;sqli&#39;][&#39;password&#39;]=sha1(md5($password));
+            header(&#34;location:sqli_mem.php&#34;);
+        }else{</pre><p class="meta">native-hunt / php-weak-password-hash / vul/sqli/sqli_iu/sqli_login.php:39</p>
+<pre>$_SESSION[&#39;sqli&#39;][&#39;password&#39;]=sha1(md5($password));
+            header(&#34;location:sqli_mem.php&#34;);
+        }else{</pre>
+</section><section class="finding"><h3>CWE-697 at vul/sqli/sqli_iu/sqli_mem.php:29</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 3a20571846a1 · CWE-697</span></p>
+<p>Loose == comparison with user input allows type juggling; use === or hash_equals.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison / vul/sqli/sqli_iu/sqli_mem.php:29:30</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == 1){
+    session_unset();
+    session_destroy();</pre><p class="meta">native-hunt / php-loose-comparison / vul/sqli/sqli_iu/sqli_mem.php:29</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == 1){
+    session_unset();
+    session_destroy();</pre>
+</section><section class="finding"><h3>CWE-79 at vul/sqli/sqli_search.php:78</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 8afa43dc5f8f · CWE-79</span></p>
+<p>Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss / vul/sqli/sqli_search.php:78:23</p>
+<pre>&lt;?php echo $html2;echo $html1;?&gt;
+            &lt;/div&gt;</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss / vul/sqli/sqli_search.php:78:35</p>
+<pre>&lt;?php echo $html2;echo $html1;?&gt;
+            &lt;/div&gt;</pre>
+</section><section class="finding"><h3>CWE-79 at vul/sqli/sqli_str.php:73</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 20bb3e81bdd9 · CWE-79</span></p>
+<p>Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss / vul/sqli/sqli_str.php:73:23</p>
+<pre>&lt;?php echo $html;?&gt;
+            &lt;/div&gt;</pre>
+</section><section class="finding"><h3>CWE-89 at vul/sqli/sqli_widebyte.php:35</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 581819fa82a7 · CWE-89</span></p>
+<p>User input reaches a SQL query; use prepared statements with bound parameters.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-sql-concatenation / vul/sqli/sqli_widebyte.php:35:13</p>
+<pre>$result=mysqli_query($link, $query);
+    if(mysqli_num_rows($result) &gt;= 1){
+        while ($data=mysqli_fetch_assoc($result)){</pre><p class="meta">native-hunt / php-sql-concatenation / vul/sqli/sqli_widebyte.php:35</p>
+<pre>$result=mysqli_query($link, $query);
+    if(mysqli_num_rows($result) &gt;= 1){
+        while ($data=mysqli_fetch_assoc($result)){</pre>
+</section><section class="finding"><h3>CWE-79 at vul/sqli/sqli_widebyte.php:78</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 3875d74116f6 · CWE-79</span></p>
+<p>Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss / vul/sqli/sqli_widebyte.php:78:23</p>
+<pre>&lt;?php echo $html;?&gt;
+            &lt;/div&gt;</pre>
+</section><section class="finding"><h3>CWE-79 at vul/sqli/sqli_x.php:72</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · aa2e04869dc6 · CWE-79</span></p>
+<p>Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss / vul/sqli/sqli_x.php:72:23</p>
+<pre>&lt;?php echo $html;?&gt;
+            &lt;/div&gt;</pre>
+</section><section class="finding"><h3>CWE-918 at vul/ssrf/ssrf_curl.php:31</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 9f1f380fcae6 · CWE-918</span></p>
+<p>User input controls an outbound request URL; restrict to an allowlist.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-ssrf / vul/ssrf/ssrf_curl.php:31:11</p>
+<pre>$CH = curl_init($URL);
+    curl_setopt($CH, CURLOPT_HEADER, FALSE);
+    curl_setopt($CH, CURLOPT_SSL_VERIFYPEER, FALSE);</pre><p class="meta">native-hunt / php-ssrf / vul/ssrf/ssrf_curl.php:31</p>
+<pre>$CH = curl_init($URL);
+    curl_setopt($CH, CURLOPT_HEADER, FALSE);
+    curl_setopt($CH, CURLOPT_SSL_VERIFYPEER, FALSE);</pre>
+</section><section class="finding"><h3>CWE-79 at vul/ssrf/ssrf_curl.php:39</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · dbbc92d7c0cd · CWE-79</span></p>
+<p>Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss / vul/ssrf/ssrf_curl.php:39:5</p>
+<pre>echo $RES;
+
+}</pre><p class="meta">native-hunt / php-reflected-xss / vul/ssrf/ssrf_curl.php:39</p>
+<pre>echo $RES;
+
+}</pre>
+</section><section class="finding"><h3>CWE-22 at vul/ssrf/ssrf_fgc.php:27</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 0d0c5d472d56 · CWE-22</span></p>
+<p>User input reaches a filesystem path; validate against an allowlist.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-path-traversal / vul/ssrf/ssrf_fgc.php:27:12</p>
+<pre>$str = file_get_contents($filename);
+    echo $str;
+}</pre><p class="meta">native-hunt / php-path-traversal / vul/ssrf/ssrf_fgc.php:27</p>
+<pre>$str = file_get_contents($filename);
+    echo $str;
+}</pre>
+</section><section class="finding"><h3>CWE-79 at vul/ssrf/ssrf_fgc.php:28</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 36f6a3c86032 · CWE-79</span></p>
+<p>Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss / vul/ssrf/ssrf_fgc.php:28:5</p>
+<pre>echo $str;
+}</pre><p class="meta">native-hunt / php-reflected-xss / vul/ssrf/ssrf_fgc.php:28</p>
+<pre>echo $str;
+}</pre>
+</section><section class="finding"><h3>CWE-22 at vul/unsafedownload/execdownload.php:19</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 63d957744504 · CWE-22</span></p>
+<p>User input reaches a filesystem path; validate against an allowlist.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-path-traversal / vul/unsafedownload/execdownload.php:19:5</p>
+<pre>$fp=fopen($file_path,&#34;rb&#34;);
+$file_size=filesize($file_path);
+//下载文件需要用到的头</pre>
+</section><section class="finding"><h3>CWE-79 at vul/unsafedownload/execdownload.php:37</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · e03398ba248a · CWE-79</span></p>
+<p>Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss / vul/unsafedownload/execdownload.php:37:5</p>
+<pre>echo $file_con;
+}
+fclose($fp);</pre>
+</section><section class="finding"><h3>CWE-502 at vul/unserilization/unser.php:30</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 2093c6d2dd33 · CWE-502</span></p>
+<p>unserialize on user input enables object injection; use json_decode.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-unsafe-deserialization / vul/unserilization/unser.php:30:19</p>
+<pre>if(!@$unser = unserialize($s)){
+        $html.=&#34;&lt;p&gt;大兄弟,来点劲爆点儿的!&lt;/p&gt;&#34;;
+    }else{</pre><p class="meta">native-hunt / php-unsafe-deserialization / vul/unserilization/unser.php:30</p>
+<pre>if(!@$unser = unserialize($s)){
+        $html.=&#34;&lt;p&gt;大兄弟,来点劲爆点儿的!&lt;/p&gt;&#34;;
+    }else{</pre>
+</section><section class="finding"><h3>CWE-79 at vul/unserilization/unser.php:64</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 8f9e29f3933f · CWE-79</span></p>
+<p>Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss / vul/unserilization/unser.php:64:19</p>
+<pre>&lt;?php echo $html;?&gt;</pre><p class="meta">native-hunt / php-reflected-xss / vul/unserilization/unser.php:64</p>
+<pre>&lt;?php echo $html;?&gt;</pre>
+</section><section class="finding"><h3>CWE-79 at vul/xss/fixxss.php:126</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 7e834ff344fb · CWE-79</span></p>
+<p>Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss / vul/xss/fixxss.php:126:36</p>
+<pre>&lt;input name=&#34;msg&#34; value=&#34;&lt;?php echo $msg;?&gt;&#34;&gt;</pre>
+</section><section class="finding"><h3>CWE-79 at vul/xss/fixxss.php:146</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · f466a3f015c3 · CWE-79</span></p>
+<p>Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss / vul/xss/fixxss.php:146:25</p>
+<pre>var echoxy = &#39;&lt;?php echo $name;?&gt;&#39;;
+//    alert(echoxy);
+    if (echoxy === &#39;&gt;中国&#39;){</pre>
+</section><section class="finding"><h3>CWE-79 at vul/xss/xss_01.php:60</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 3a880140c8f6 · CWE-79</span></p>
+<p>Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss / vul/xss/xss_01.php:60:23</p>
+<pre>&lt;?php echo $html;?&gt;
+            &lt;/div&gt;</pre><p class="meta">native-hunt / php-reflected-xss / vul/xss/xss_01.php:60</p>
+<pre>&lt;?php echo $html;?&gt;
+            &lt;/div&gt;</pre>
+</section><section class="finding"><h3>CWE-697 at vul/xss/xss_03.php:24</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 6942068dabd2 · CWE-697</span></p>
+<p>Loose == comparison with user input allows type juggling; use === or hash_equals.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison / vul/xss/xss_03.php:24:8</p>
+<pre>if($_GET[&#39;message&#39;] == &#39;www.baidu.com&#39;){
+        $html.=&#34;&lt;p class=&#39;notice&#39;&gt;我靠,我真想不到你是这样的一个人&lt;/p&gt;&#34;;
+    }else {</pre><p class="meta">native-hunt / php-loose-comparison / vul/xss/xss_03.php:24</p>
+<pre>if($_GET[&#39;message&#39;] == &#39;www.baidu.com&#39;){
+        $html.=&#34;&lt;p class=&#39;notice&#39;&gt;我靠,我真想不到你是这样的一个人&lt;/p&gt;&#34;;
+    }else {</pre>
+</section><section class="finding"><h3>CWE-79 at vul/xss/xss_04.php:81</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · ec18641bd3fa · CWE-79</span></p>
+<p>Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss / vul/xss/xss_04.php:81:16</p>
+<pre>$ms=&#39;&lt;?php echo $jsvar;?&gt;&#39;;
+    if($ms.length != 0){
+        if($ms == &#39;tmac&#39;){</pre>
+</section><section class="finding"><h3>CWE-697 at vul/xss/xss_reflected_get.php:24</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · ea8515969488 · CWE-697</span></p>
+<p>Loose == comparison with user input allows type juggling; use === or hash_equals.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison / vul/xss/xss_reflected_get.php:24:12</p>
+<pre>if($_GET[&#39;message&#39;]==&#39;kobe&#39;){
+            $html.=&#34;&lt;p class=&#39;notice&#39;&gt;愿你和{$_GET[&#39;message&#39;]}一样，永远年轻，永远热血沸腾！&lt;/p&gt;&lt;img src=&#39;{$PIKA_ROOT_DIR}assets/images/nbaplayer/kobe.png&#39; /&gt;&#34;;
+        }else{</pre><p class="meta">native-hunt / php-loose-comparison / vul/xss/xss_reflected_get.php:24</p>
+<pre>if($_GET[&#39;message&#39;]==&#39;kobe&#39;){
+            $html.=&#34;&lt;p class=&#39;notice&#39;&gt;愿你和{$_GET[&#39;message&#39;]}一样，永远年轻，永远热血沸腾！&lt;/p&gt;&lt;img src=&#39;{$PIKA_ROOT_DIR}assets/images/nbaplayer/kobe.png&#39; /&gt;&#34;;
+        }else{</pre>
+</section><section class="finding"><h3>CWE-79 at vul/xss/xss_reflected_get.php:63</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · c14026d4320f · CWE-79</span></p>
+<p>Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss / vul/xss/xss_reflected_get.php:63:23</p>
+<pre>&lt;?php echo $html;?&gt;
+            &lt;/div&gt;</pre>
+</section><section class="finding"><h3>CWE-697 at vul/xss/xssblind/admin.php:39</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 956281601305 · CWE-697</span></p>
+<p>Loose == comparison with user input allows type juggling; use === or hash_equals.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison / vul/xss/xssblind/admin.php:39:30</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == &#39;1&#39;){
+    setcookie(&#39;ant[uname]&#39;,&#39;&#39;);
+    setcookie(&#39;ant[pw]&#39;,&#39;&#39;);</pre><p class="meta">native-hunt / php-loose-comparison / vul/xss/xssblind/admin.php:39</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == &#39;1&#39;){
+    setcookie(&#39;ant[uname]&#39;,&#39;&#39;);
+    setcookie(&#39;ant[pw]&#39;,&#39;&#39;);</pre>
+</section><section class="finding"><h3>CWE-328 at vul/xss/xssblind/admin_login.php:43</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 2dd7efa35ad5 · CWE-328</span></p>
+<p>md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / vul/xss/xssblind/admin_login.php:43:33</p>
+<pre>setcookie(&#39;ant[pw]&#39;,sha1(md5($_POST[&#39;password&#39;])),time()+3600);</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / vul/xss/xssblind/admin_login.php:43:38</p>
+<pre>setcookie(&#39;ant[pw]&#39;,sha1(md5($_POST[&#39;password&#39;])),time()+3600);</pre><p class="meta">native-hunt / php-weak-password-hash / vul/xss/xssblind/admin_login.php:43</p>
+<pre>setcookie(&#39;ant[pw]&#39;,sha1(md5($_POST[&#39;password&#39;])),time()+3600);</pre>
+</section><section class="finding"><h3>CWE-328 at vul/xss/xsspost/post_login.php:43</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · d00f75f6fbbf · CWE-328</span></p>
+<p>md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / vul/xss/xsspost/post_login.php:43:33</p>
+<pre>setcookie(&#39;ant[pw]&#39;,sha1(md5($_POST[&#39;password&#39;])),time()+3600);</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash / vul/xss/xsspost/post_login.php:43:38</p>
+<pre>setcookie(&#39;ant[pw]&#39;,sha1(md5($_POST[&#39;password&#39;])),time()+3600);</pre><p class="meta">native-hunt / php-weak-password-hash / vul/xss/xsspost/post_login.php:43</p>
+<pre>setcookie(&#39;ant[pw]&#39;,sha1(md5($_POST[&#39;password&#39;])),time()+3600);</pre>
+</section><section class="finding"><h3>CWE-697 at vul/xss/xsspost/xss_reflected_post.php:44</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · da2e398535fc · CWE-697</span></p>
+<p>Loose == comparison with user input allows type juggling; use === or hash_equals.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison / vul/xss/xsspost/xss_reflected_post.php:44:12</p>
+<pre>if($_POST[&#39;message&#39;]==&#39;kobe&#39;){
+            $html.=&#34;&lt;p class=&#39;notice&#39;&gt;愿你和{$_POST[&#39;message&#39;]}一样，永远年轻，永远热血沸腾！&lt;/p&gt;&lt;img src=&#39;{$PIKA_ROOT_DIR}assets/images/nbaplayer/kobe.png&#39; /&gt;&#34;;
+        }else{</pre><p class="meta">native-hunt / php-loose-comparison / vul/xss/xsspost/xss_reflected_post.php:44</p>
+<pre>if($_POST[&#39;message&#39;]==&#39;kobe&#39;){
+            $html.=&#34;&lt;p class=&#39;notice&#39;&gt;愿你和{$_POST[&#39;message&#39;]}一样，永远年轻，永远热血沸腾！&lt;/p&gt;&lt;img src=&#39;{$PIKA_ROOT_DIR}assets/images/nbaplayer/kobe.png&#39; /&gt;&#34;;
+        }else{</pre>
+</section><section class="finding"><h3>CWE-697 at vul/xss/xsspost/xss_reflected_post.php:54</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · e629b1eced51 · CWE-697</span></p>
+<p>Loose == comparison with user input allows type juggling; use === or hash_equals.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison / vul/xss/xsspost/xss_reflected_post.php:54:30</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == &#39;1&#39;){
+    setcookie(&#39;ant[uname]&#39;,&#39;&#39;);
+    setcookie(&#39;ant[pw]&#39;,&#39;&#39;);</pre><p class="meta">native-hunt / php-loose-comparison / vul/xss/xsspost/xss_reflected_post.php:54</p>
+<pre>if(isset($_GET[&#39;logout&#39;]) &amp;&amp; $_GET[&#39;logout&#39;] == &#39;1&#39;){
+    setcookie(&#39;ant[uname]&#39;,&#39;&#39;);
+    setcookie(&#39;ant[pw]&#39;,&#39;&#39;);</pre>
+</section><section class="finding"><h3>CWE-79 at vul/xss/xsspost/xss_reflected_post.php:96</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 37bec72d0126 · CWE-79</span></p>
+<p>Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss / vul/xss/xsspost/xss_reflected_post.php:96:23</p>
+<pre>&lt;?php echo $html;?&gt;
+            &lt;/div&gt;</pre>
+</section><section class="finding"><h3>CWE-79 at vul/xxe/xxe_1.php:82</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 4ed32a9b1eb6 · CWE-79</span></p>
+<p>Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss / vul/xxe/xxe_1.php:82:19</p>
+<pre>&lt;?php echo $html;?&gt;</pre>
+</section><section class="finding"><h3>CWE-328 at inc/function.php:102</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 645f78d4a264 · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / inc/function.php:102</p>
+<pre>$query=&#34;select * from member where username=&#39;{$_SESSION[&#39;csrf&#39;][&#39;username&#39;]}&#39; and sha1(pw)=&#39;{$_SESSION[&#39;csrf&#39;][&#39;password&#39;]}&#39;&#34;;
+        $result=execute($link,$query);
+        if(mysqli_num_rows($result)==1){</pre>
+</section><section class="finding"><h3>CWE-328 at inc/function.php:118</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 75f957831bb3 · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / inc/function.php:118</p>
+<pre>$query=&#34;select * from member where username=&#39;{$_SESSION[&#39;sqli&#39;][&#39;username&#39;]}&#39; and sha1(pw)=&#39;{$_SESSION[&#39;sqli&#39;][&#39;password&#39;]}&#39;&#34;;
+        $result=execute($link,$query);
+        if(mysqli_num_rows($result)==1){</pre>
+</section><section class="finding"><h3>CWE-328 at inc/function.php:141</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 265cd5325924 · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / inc/function.php:141</p>
+<pre>$query=&#34;select * from users where username=&#39;$username&#39; and sha1(password)=&#39;$password&#39;&#34;;
+
+        $result=execute($link,$query);</pre>
+</section><section class="finding"><h3>CWE-328 at inc/function.php:163</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 7d17101a568e · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / inc/function.php:163</p>
+<pre>$query=&#34;select * from users where username=&#39;$username&#39; and sha1(password)=&#39;$password&#39;&#34;;
+        $result=execute($link,$query);
+        if(mysqli_num_rows($result)==1){</pre>
+</section><section class="finding"><h3>CWE-328 at inc/function.php:178</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 48b3f0b6e11d · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / inc/function.php:178</p>
+<pre>$query=&#34;select * from member where username=&#39;{$_SESSION[&#39;op&#39;][&#39;username&#39;]}&#39; and sha1(pw)=&#39;{$_SESSION[&#39;op&#39;][&#39;password&#39;]}&#39;&#34;;
+        $result=execute($link,$query);
+        if(mysqli_num_rows($result)==1){</pre>
+</section><section class="finding"><h3>CWE-328 at inc/function.php:193</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · ad1485112ea9 · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / inc/function.php:193</p>
+<pre>$query=&#34;select * from users where username=&#39;{$_SESSION[&#39;op2&#39;][&#39;username&#39;]}&#39; and sha1(password)=&#39;{$_SESSION[&#39;op2&#39;][&#39;password&#39;]}&#39;&#34;;
+        $result=execute($link,$query);
+        if(mysqli_num_rows($result)==1){</pre>
+</section><section class="finding"><h3>CWE-328 at install.php:54</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 56ff204d5954 · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / install.php:54</p>
+<pre>$insert_users = &#34;insert into `users` (`id`,`username`,`password`,`level`) values (1,&#39;admin&#39;,md5(&#39;123456&#39;),1),(2,&#39;pikachu&#39;,md5(&#39;000000&#39;),2),(3,&#39;test&#39;,md5(&#39;abc123&#39;),3)&#34;;
+
+    if(!@mysqli_query($link,$insert_users)){</pre>
+</section><section class="finding"><h3>CWE-328 at install.php:108</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · ee4888698027 · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / install.php:108</p>
+<pre>(1, &#39;vince&#39;, md5(&#39;123456&#39;), &#39;boy&#39;, &#39;18626545453&#39;, &#39;chain&#39;, &#39;vince@pikachu.com&#39;),
+    (2, &#39;allen&#39;, md5(&#39;123456&#39;), &#39;boy&#39;, &#39;13676767767&#39;, &#39;nba 76&#39;, &#39;allen@pikachu.com&#39;),
+    (3, &#39;kobe&#39;, md5(&#39;123456&#39;), &#39;boy&#39;, &#39;15988767673&#39;, &#39;nba lakes&#39;, &#39;kobe@pikachu.com&#39;),</pre>
+</section><section class="finding"><h3>CWE-328 at install.php:109</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 9d81f8a44a68 · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / install.php:109</p>
+<pre>(2, &#39;allen&#39;, md5(&#39;123456&#39;), &#39;boy&#39;, &#39;13676767767&#39;, &#39;nba 76&#39;, &#39;allen@pikachu.com&#39;),
+    (3, &#39;kobe&#39;, md5(&#39;123456&#39;), &#39;boy&#39;, &#39;15988767673&#39;, &#39;nba lakes&#39;, &#39;kobe@pikachu.com&#39;),
+    (4, &#39;grady&#39;, md5(&#39;123456&#39;), &#39;boy&#39;, &#39;13676765545&#39;, &#39;nba hs&#39;, &#39;grady@pikachu.com&#39;),</pre>
+</section><section class="finding"><h3>CWE-328 at install.php:110</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · ddcd9879c98e · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / install.php:110</p>
+<pre>(3, &#39;kobe&#39;, md5(&#39;123456&#39;), &#39;boy&#39;, &#39;15988767673&#39;, &#39;nba lakes&#39;, &#39;kobe@pikachu.com&#39;),
+    (4, &#39;grady&#39;, md5(&#39;123456&#39;), &#39;boy&#39;, &#39;13676765545&#39;, &#39;nba hs&#39;, &#39;grady@pikachu.com&#39;),
+    (5, &#39;kevin&#39;, md5(&#39;123456&#39;), &#39;boy&#39;, &#39;13677676754&#39;, &#39;Oklahoma City Thunder&#39;, &#39;kevin@pikachu.com&#39;),</pre>
+</section><section class="finding"><h3>CWE-328 at install.php:111</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 7de7fde23358 · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / install.php:111</p>
+<pre>(4, &#39;grady&#39;, md5(&#39;123456&#39;), &#39;boy&#39;, &#39;13676765545&#39;, &#39;nba hs&#39;, &#39;grady@pikachu.com&#39;),
+    (5, &#39;kevin&#39;, md5(&#39;123456&#39;), &#39;boy&#39;, &#39;13677676754&#39;, &#39;Oklahoma City Thunder&#39;, &#39;kevin@pikachu.com&#39;),
+    (6, &#39;lucy&#39;, md5(&#39;123456&#39;), &#39;girl&#39;, &#39;12345678922&#39;, &#39;usa&#39;, &#39;lucy@pikachu.com&#39;),</pre>
+</section><section class="finding"><h3>CWE-328 at install.php:112</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 6e469e628045 · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / install.php:112</p>
+<pre>(5, &#39;kevin&#39;, md5(&#39;123456&#39;), &#39;boy&#39;, &#39;13677676754&#39;, &#39;Oklahoma City Thunder&#39;, &#39;kevin@pikachu.com&#39;),
+    (6, &#39;lucy&#39;, md5(&#39;123456&#39;), &#39;girl&#39;, &#39;12345678922&#39;, &#39;usa&#39;, &#39;lucy@pikachu.com&#39;),
+    (7, &#39;lili&#39;, md5(&#39;123456&#39;), &#39;girl&#39;, &#39;18656565545&#39;, &#39;usa&#39;, &#39;lili@pikachu.com&#39;)&#34;;</pre>
+</section><section class="finding"><h3>CWE-328 at install.php:113</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · b120558dda9c · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / install.php:113</p>
+<pre>(6, &#39;lucy&#39;, md5(&#39;123456&#39;), &#39;girl&#39;, &#39;12345678922&#39;, &#39;usa&#39;, &#39;lucy@pikachu.com&#39;),
+    (7, &#39;lili&#39;, md5(&#39;123456&#39;), &#39;girl&#39;, &#39;18656565545&#39;, &#39;usa&#39;, &#39;lili@pikachu.com&#39;)&#34;;</pre>
+</section><section class="finding"><h3>CWE-328 at install.php:114</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 9e72300ea2a5 · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / install.php:114</p>
+<pre>(7, &#39;lili&#39;, md5(&#39;123456&#39;), &#39;girl&#39;, &#39;18656565545&#39;, &#39;usa&#39;, &#39;lili@pikachu.com&#39;)&#34;;
+
+    if(!@mysqli_query($link,$insert_member)){</pre>
+</section><section class="finding"><h3>CWE-328 at pkxss/inc/mysql.inc.php:36</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 445ffedc76f0 · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / pkxss/inc/mysql.inc.php:36</p>
+<pre>$query=&#34;select * from users where username=&#39;{$_SESSION[&#39;pkxss&#39;][&#39;username&#39;]}&#39; and sha1(password)=&#39;{$_SESSION[&#39;pkxss&#39;][&#39;password&#39;]}&#39;&#34;;
+        $result=execute($link,$query);
+        if(mysqli_num_rows($result)==1){</pre>
+</section><section class="finding"><h3>CWE-328 at pkxss/pkxss_install.php:54</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 4502ccbd69bd · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / pkxss/pkxss_install.php:54</p>
+<pre>$insert_users = &#34;insert into `users` (`id`,`username`,`password`,`level`) values (1,&#39;admin&#39;,md5(&#39;123456&#39;),1)&#34;;</pre>
+</section><section class="finding"><h3>CWE-328 at pkxss/pkxss_login.php:15</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 7842ba679b35 · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / pkxss/pkxss_login.php:15</p>
+<pre>$query=&#34;select * from users where username=&#39;$username&#39; and password=[REDACTED];
+        $result=execute($link, $query);
+        if(mysqli_num_rows($result)==1){</pre>
+</section><section class="finding"><h3>CWE-328 at vul/burteforce/bf_client.php:26</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 929dd8080817 · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / vul/burteforce/bf_client.php:26</p>
+<pre>$sql = &#34;select * from users where username=? and password=[REDACTED];
+        $line_pre = $link-&gt;prepare($sql);</pre>
+</section><section class="finding"><h3>CWE-79 at vul/burteforce/bf_client.php:117</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 629ff6903f2e · CWE-79</span></p>
+<p>php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">native-hunt / php-reflected-xss / vul/burteforce/bf_client.php:117</p>
+<pre>&lt;?php echo $html;?&gt;</pre>
+</section><section class="finding"><h3>CWE-328 at vul/burteforce/bf_form.php:29</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · f5c099059b0a · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / vul/burteforce/bf_form.php:29</p>
+<pre>$sql = &#34;select * from users where username=? and password=[REDACTED];
+    $line_pre = $link-&gt;prepare($sql);</pre>
+</section><section class="finding"><h3>CWE-79 at vul/burteforce/bf_form.php:114</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · c915dd0dfd4a · CWE-79</span></p>
+<p>php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">native-hunt / php-reflected-xss / vul/burteforce/bf_form.php:114</p>
+<pre>&lt;?php echo $html;?&gt;</pre>
+</section><section class="finding"><h3>CWE-328 at vul/burteforce/bf_server.php:45</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · e5406ad2b481 · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / vul/burteforce/bf_server.php:45</p>
+<pre>$sql = &#34;select * from users where username=? and password=[REDACTED];
+                    $line_pre = $link-&gt;prepare($sql);</pre>
+</section><section class="finding"><h3>CWE-79 at vul/burteforce/bf_server.php:135</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · e93047b3f49b · CWE-79</span></p>
+<p>php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">native-hunt / php-reflected-xss / vul/burteforce/bf_server.php:135</p>
+<pre>&lt;?php echo $html;?&gt;</pre>
+</section><section class="finding"><h3>CWE-328 at vul/burteforce/bf_token.php:30</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 95e8d35e25e1 · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / vul/burteforce/bf_token.php:30</p>
+<pre>$sql = &#34;select * from users where username=? and password=[REDACTED];
+    $line_pre = $link-&gt;prepare($sql);</pre>
+</section><section class="finding"><h3>CWE-79 at vul/burteforce/bf_token.php:115</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · dfc582275267 · CWE-79</span></p>
+<p>php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">native-hunt / php-reflected-xss / vul/burteforce/bf_token.php:115</p>
+<pre>&lt;input type=&#34;hidden&#34; name=&#34;token&#34; value=&#34;&lt;?php echo $_SESSION[&#39;token&#39;];?&gt;&#34; /&gt;
+
+                &lt;label&gt;&lt;input class=&#34;submit&#34;  name=&#34;submit&#34; type=&#34;submit&#34; value=&#34;Login&#34; /&gt;&lt;/label&gt;</pre>
+</section><section class="finding"><h3>CWE-79 at vul/burteforce/bf_token.php:120</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · ae51b7c8b30d · CWE-79</span></p>
+<p>php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">native-hunt / php-reflected-xss / vul/burteforce/bf_token.php:120</p>
+<pre>&lt;?php echo $html;?&gt;</pre>
+</section><section class="finding"><h3>CWE-328 at vul/csrf/csrfget/csrf_get_login.php:36</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · fbdbf5d0793d · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / vul/csrf/csrfget/csrf_get_login.php:36</p>
+<pre>$query=&#34;select * from member where username=&#39;$username&#39; and pw=md5(&#39;$password&#39;)&#34;;
+        $result=execute($link, $query);
+        if(mysqli_num_rows($result)==1){</pre>
+</section><section class="finding"><h3>CWE-328 at vul/csrf/csrfpost/csrf_post_login.php:36</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 760b50e66560 · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / vul/csrf/csrfpost/csrf_post_login.php:36</p>
+<pre>$query=&#34;select * from member where username=&#39;$username&#39; and pw=md5(&#39;$password&#39;)&#34;;
+        $result=execute($link, $query);
+        if(mysqli_num_rows($result)==1){</pre>
+</section><section class="finding"><h3>CWE-328 at vul/csrf/csrftoken/token_get_login.php:38</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · b3e1c52ec484 · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / vul/csrf/csrftoken/token_get_login.php:38</p>
+<pre>$query=&#34;select * from member where username=&#39;$username&#39; and pw=md5(&#39;$password&#39;)&#34;;
+        $result=execute($link, $query);
+        if(mysqli_num_rows($result)==1){</pre>
+</section><section class="finding"><h3>CWE-22 at vul/dir/dir_list.php:21</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 62750a203776 · CWE-22</span></p>
+<p>php-path-traversal: User input reaches a filesystem path; validate against an allowlist.</p>
+<p class="meta">native-hunt / php-path-traversal / vul/dir/dir_list.php:21</p>
+<pre>//这里直接把传进来的内容进行了require(),造成问题
+    require &#34;soup/$filename&#34;;
+//    echo $html;</pre>
+</section><section class="finding"><h3>CWE-22 at vul/fileinclude/fi_local.php:26</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 443bd57e5410 · CWE-22</span></p>
+<p>php-path-traversal: User input reaches a filesystem path; validate against an allowlist.</p>
+<p class="meta">native-hunt / php-path-traversal / vul/fileinclude/fi_local.php:26</p>
+<pre>//         include &#34;include/$filename&#34;;
+
+//     }</pre>
+</section><section class="finding"><h3>CWE-22 at vul/fileinclude/fi_local.php:41</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · f15838a4a50e · CWE-22</span></p>
+<p>php-path-traversal: User input reaches a filesystem path; validate against an allowlist.</p>
+<p class="meta">native-hunt / php-path-traversal / vul/fileinclude/fi_local.php:41</p>
+<pre>&lt;a href=&#34;fileinclude.php&#34;&gt;file include&lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li class=&#34;active&#34;&gt;本地文件包含&lt;/li&gt;</pre>
+</section><section class="finding"><h3>CWE-22 at vul/fileinclude/fi_remote.php:53</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · d50d95fcef02 · CWE-22</span></p>
+<p>php-path-traversal: User input reaches a filesystem path; validate against an allowlist.</p>
+<p class="meta">native-hunt / php-path-traversal / vul/fileinclude/fi_remote.php:53</p>
+<pre>&lt;a href=&#34;fileinclude.php&#34;&gt;file include&lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li class=&#34;active&#34;&gt;远程文件包含&lt;/li&gt;</pre>
+</section><section class="finding"><h3>CWE-22 at vul/fileinclude/fi_remote.php:74</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · b858f81f4a8d · CWE-22</span></p>
+<p>php-path-traversal: User input reaches a filesystem path; validate against an allowlist.</p>
+<p class="meta">native-hunt / php-path-traversal / vul/fileinclude/fi_remote.php:74</p>
+<pre>&lt;option value=&#34;include/file5.php&#34;&gt;Ray Allen&lt;/option&gt;
+                    &lt;/select&gt;
+                    &lt;input class=&#34;sub&#34; type=&#34;submit&#34; name=&#34;submit&#34; /&gt;</pre>
+</section><section class="finding"><h3>CWE-328 at vul/infoleak/findabc.php:30</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 25b2b6fbfd6e · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / vul/infoleak/findabc.php:30</p>
+<pre>$query=&#34;select * from member where username=&#39;$username&#39; and pw=md5(&#39;$password&#39;)&#34;;
+        $result=execute($link, $query);
+        if(mysqli_num_rows($result)==1){</pre>
+</section><section class="finding"><h3>CWE-328 at vul/overpermission/op1/op1_login.php:32</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 7311edce54da · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / vul/overpermission/op1/op1_login.php:32</p>
+<pre>$query=&#34;select * from member where username=&#39;$username&#39; and pw=md5(&#39;$password&#39;)&#34;;
+        $result=execute($link, $query);
+        if(mysqli_num_rows($result)==1){</pre>
+</section><section class="finding"><h3>CWE-79 at vul/overpermission/op1/op1_mem.php:88</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 3310c2194d57 · CWE-79</span></p>
+<p>php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">native-hunt / php-reflected-xss / vul/overpermission/op1/op1_mem.php:88</p>
+<pre>&lt;input type=&#34;hidden&#34; name=&#34;username&#34; value=&#34;&lt;?php echo $_SESSION[&#39;op&#39;][&#39;username&#39;]; ?&gt;&#34; /&gt;
+                    &lt;input type=&#34;submit&#34; name=&#34;submit&#34; value=&#34;点击查看个人信息&#34; /&gt;
+                &lt;/form&gt;</pre>
+</section><section class="finding"><h3>CWE-328 at vul/overpermission/op2/op2_admin_edit.php:29</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 30b611636720 · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / vul/overpermission/op2/op2_admin_edit.php:29</p>
+<pre>$query=&#34;insert into member(username,pw,sex,phonenum,email,address) values(&#39;{$getdata[&#39;username&#39;]}&#39;,md5(&#39;{$getdata[&#39;password&#39;]}&#39;),&#39;{$getdata[&#39;sex&#39;]}&#39;,&#39;{$getdata[&#39;phonenum&#39;]}&#39;,&#39;{$getdata[&#39;email&#39;]}&#39;,&#39;{$getdata[&#39;address&#39;]}&#39;)&#34;;
+        $result=execute($link, $query);
+        if(mysqli_affected_rows($link)==1){//判断是否插入</pre>
+</section><section class="finding"><h3>CWE-328 at vul/overpermission/op2/op2_login.php:28</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 82b435bed378 · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / vul/overpermission/op2/op2_login.php:28</p>
+<pre>$query=&#34;select * from users where username=&#39;$username&#39; and password=[REDACTED];
+        $result=execute($link, $query);
+        if(mysqli_num_rows($result)==1){</pre>
+</section><section class="finding"><h3>CWE-79 at vul/sqli/sqli_del.php:90</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · cabd3ed3186b · CWE-79</span></p>
+<p>php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">native-hunt / php-reflected-xss / vul/sqli/sqli_del.php:90</p>
+<pre>echo &#34;&lt;p class=&#39;con&#39;&gt;{$content}&lt;/p&gt;&lt;a href=&#39;sqli_del.php?id={$data[&#39;id&#39;]}&#39;&gt;删除&lt;/a&gt;&#34;;
+                    }
+                    ?&gt;</pre>
+</section><section class="finding"><h3>CWE-328 at vul/sqli/sqli_header/sqli_header_login.php:32</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 27579e5605da · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / vul/sqli/sqli_header/sqli_header_login.php:32</p>
+<pre>$query=&#34;select * from users where username=&#39;$username&#39; and password=[REDACTED];
+        $result=execute($link, $query);
+        if(mysqli_num_rows($result)==1){</pre>
+</section><section class="finding"><h3>CWE-328 at vul/sqli/sqli_iu/sqli_login.php:34</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 66ac3eacc9bf · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / vul/sqli/sqli_iu/sqli_login.php:34</p>
+<pre>$query=&#34;select * from member where username=&#39;$username&#39; and pw=md5(&#39;$password&#39;)&#34;;
+        $result=execute($link, $query);
+        if(mysqli_num_rows($result)==1){</pre>
+</section><section class="finding"><h3>CWE-328 at vul/sqli/sqli_iu/sqli_reg.php:31</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · bf0b60e69772 · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / vul/sqli/sqli_iu/sqli_reg.php:31</p>
+<pre>$query=&#34;insert into member(username,pw,sex,phonenum,email,address) values(&#39;{$getdata[&#39;username&#39;]}&#39;,md5(&#39;{$getdata[&#39;password&#39;]}&#39;),&#39;{$getdata[&#39;sex&#39;]}&#39;,&#39;{$getdata[&#39;phonenum&#39;]}&#39;,&#39;{$getdata[&#39;email&#39;]}&#39;,&#39;{$getdata[&#39;add&#39;]}&#39;)&#34;;
+        $result=execute($link, $query);
+        if(mysqli_affected_rows($link)==1){</pre>
+</section><section class="finding"><h3>CWE-918 at vul/ssrf/ssrf_curl.php:34</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · bd75828843a0 · CWE-918</span></p>
+<p>php-ssrf: User input controls an outbound request URL; restrict to an allowlist.</p>
+<p class="meta">native-hunt / php-ssrf / vul/ssrf/ssrf_curl.php:34</p>
+<pre>$RES = curl_exec($CH);
+    curl_close($CH) ;
+//ssrf的问是:前端传进来的url被后台使用curl_exec()进行了请求,然后将请求的结果又返回给了前端。</pre>
+</section><section class="finding"><h3>CWE-918 at vul/ssrf/ssrf_fgc.php:27</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 1f6b1ba15f0a · CWE-918</span></p>
+<p>php-ssrf: User input controls an outbound request URL; restrict to an allowlist.</p>
+<p class="meta">native-hunt / php-ssrf / vul/ssrf/ssrf_fgc.php:27</p>
+<pre>$str = file_get_contents($filename);
+    echo $str;
+}</pre>
+</section><section class="finding"><h3>CWE-502 at vul/unserilization/unserilization.php:61</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 690fc4b6cb01 · CWE-502</span></p>
+<p>php-unsafe-deserialization: unserialize on user input enables object injection; use json_decode.</p>
+<p class="meta">native-hunt / php-unsafe-deserialization / vul/unserilization/unserilization.php:61</p>
+<pre>$u=unserialize(&#34;O:1:&#34;S&#34;:1:{s:4:&#34;test&#34;;s:7:&#34;pikachu&#34;;}&#34;);
+    echo $u-&gt;test; //得到的结果为pikachu
+    &lt;/pre&gt;</pre>
+</section><section class="finding"><h3>CWE-502 at vul/unserilization/unserilization.php:87</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 304011387d5d · CWE-502</span></p>
+<p>php-unsafe-deserialization: unserialize on user input enables object injection; use json_decode.</p>
+<p class="meta">native-hunt / php-unsafe-deserialization / vul/unserilization/unserilization.php:87</p>
+<pre>@$unser = unserialize($a);
+
+        payload:O:1:&#34;S&#34;:1:{s:4:&#34;test&#34;;s:29:&#34;&lt;?php echo htmlspecialchars(&#34;&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt;&#34;);?&gt;&#34;;}</pre>
+</section><section class="finding"><h3>CWE-95 at vul/xss/fixxss.php:88</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · e3beaab47c3b · CWE-95</span></p>
+<p>php-preg-replace-eval: preg_replace with /e executes the replacement; use preg_replace_callback.</p>
+<p class="meta">native-hunt / php-preg-replace-eval / vul/xss/fixxss.php:88</p>
+<pre>return preg_replace(&#39;/[0-9a-f]{4}/&#39;,&#39;\u$0&#39;,bin2hex($u16));
+}
+//将字母和数字还有.-排除后的剩下的字符全部\uXXXX的unicode的形式进行转义</pre>
+</section><section class="finding"><h3>CWE-22 at vul/xss/xss_01.php:16</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · bfa8a733d1da · CWE-22</span></p>
+<p>php-path-traversal: User input reaches a filesystem path; validate against an allowlist.</p>
+<p class="meta">native-hunt / php-path-traversal / vul/xss/xss_01.php:16</p>
+<pre>include_once $PIKA_ROOT_DIR.&#39;header.php&#39;;
+
+$html = &#39;&#39;;</pre>
+</section><section class="finding"><h3>CWE-95 at vul/xss/xss_01.php:21</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · f07d90b69153 · CWE-95</span></p>
+<p>php-preg-replace-eval: preg_replace with /e executes the replacement; use preg_replace_callback.</p>
+<p class="meta">native-hunt / php-preg-replace-eval / vul/xss/xss_01.php:21</p>
+<pre>$message=preg_replace(&#39;/&lt;(.*)s(.*)c(.*)r(.*)i(.*)p(.*)t/&#39;, &#39;&#39;, $_GET[&#39;message&#39;]);
+//    $message=str_ireplace(&#39;&lt;script&gt;&#39;,$_GET[&#39;message&#39;]);</pre>
+</section><section class="finding"><h3>CWE-79 at vul/xss/xss_stored.php:39</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 3f4437f375a6 · CWE-79</span></p>
+<p>php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">native-hunt / php-reflected-xss / vul/xss/xss_stored.php:39</p>
+<pre>echo &#34;&lt;script type=&#39;text/javascript&#39;&gt;document.location.href=&#39;xss_stored.php&#39;&lt;/script&gt;&#34;;
+    }else{
+        $html.=&#34;&lt;p id=&#39;op_notice&#39;&gt;删除失败,请重试并检查数据库是否还好!&lt;/p&gt;&#34;;</pre>
+</section><section class="finding"><h3>CWE-79 at vul/xss/xss_stored.php:79</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · bf15ea068c40 · CWE-79</span></p>
+<p>php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">native-hunt / php-reflected-xss / vul/xss/xss_stored.php:79</p>
+<pre>&lt;?php echo $html;
+                    $query=&#34;select * from message&#34;;
+                    $result=execute($link, $query);</pre>
+</section><section class="finding"><h3>CWE-79 at vul/xss/xss_stored.php:83</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 37d534321644 · CWE-79</span></p>
+<p>php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">native-hunt / php-reflected-xss / vul/xss/xss_stored.php:83</p>
+<pre>echo &#34;&lt;p class=&#39;con&#39;&gt;{$data[&#39;content&#39;]}&lt;/p&gt;&lt;a href=&#39;xss_stored.php?id={$data[&#39;id&#39;]}&#39;&gt;删除&lt;/a&gt;&#34;;
+                    }</pre>
+</section><section class="finding"><h3>CWE-328 at vul/xss/xssblind/admin_login.php:35</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 237a29e42134 · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / vul/xss/xssblind/admin_login.php:35</p>
+<pre>$query=&#34;select * from users where username=&#39;$username&#39; and password=[REDACTED];
+
+        $result=execute($link, $query);</pre>
+</section><section class="finding"><h3>CWE-79 at vul/xss/xssblind/admin_login.php:47</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · cdbac4f5f02d · CWE-79</span></p>
+<p>php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">native-hunt / php-reflected-xss / vul/xss/xssblind/admin_login.php:47</p>
+<pre>//            echo &#39;&#34;&lt;script&gt;windows.location.href=&#34;xss_reflected_post.php&#34;&lt;/script&gt;&#39;;
+
+        }else{</pre>
+</section><section class="finding"><h3>CWE-79 at vul/xss/xssblind/admin_login.php:122</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 2aa44e0346a7 · CWE-79</span></p>
+<p>php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">native-hunt / php-reflected-xss / vul/xss/xssblind/admin_login.php:122</p>
+<pre>&lt;?php echo $html;?&gt;</pre>
+</section><section class="finding"><h3>CWE-328 at vul/xss/xsspost/post_login.php:35</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · e2ae9fc48df5 · CWE-328</span></p>
+<p>php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash.</p>
+<p class="meta">native-hunt / php-weak-password-hash / vul/xss/xsspost/post_login.php:35</p>
+<pre>$query=&#34;select * from users where username=&#39;$username&#39; and password=[REDACTED];
+
+        $result=execute($link, $query);</pre>
+</section><section class="finding"><h3>CWE-79 at vul/xss/xsspost/post_login.php:47</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 35944c255ee7 · CWE-79</span></p>
+<p>php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">native-hunt / php-reflected-xss / vul/xss/xsspost/post_login.php:47</p>
+<pre>//            echo &#39;&#34;&lt;script&gt;windows.location.href=&#34;xss_reflected_post.php&#34;&lt;/script&gt;&#39;;
+
+        }else{</pre>
+</section><section class="finding"><h3>CWE-79 at vul/xss/xsspost/post_login.php:122</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 97df8feec1ef · CWE-79</span></p>
+<p>php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars.</p>
+<p class="meta">native-hunt / php-reflected-xss / vul/xss/xsspost/post_login.php:122</p>
+<pre>&lt;?php echo $html;?&gt;</pre>
+</section>
+</body></html>

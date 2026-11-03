@@ -1,0 +1,698 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "automationDetails": {
+        "id": "run-ee22d39f109444aa9b32e36f325a787b"
+      },
+      "tool": {
+        "driver": {
+          "name": "devsecops-agent",
+          "version": "0.2.0"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-debug-mode-enabled",
+          "ruleName": "CWE-215 at falcon/bench/dj/dj/settings.py:27",
+          "level": "warning",
+          "message": {
+            "text": "Debug mode leaks tracebacks; never enable it in production."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "falcon/bench/dj/dj/settings.py"
+                },
+                "region": {
+                  "startLine": 27,
+                  "endLine": 27,
+                  "startColumn": 1,
+                  "endColumn": 13
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "falcon/bench/dj/dj/settings.py"
+                },
+                "region": {
+                  "startLine": 27,
+                  "endLine": 27
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "cb9ac53a46f9f33fdb38d6f1822f4b6b2514550e991e0799f1f16ba632310da7"
+          },
+          "properties": {
+            "findingId": "cb9ac53a46f9f33f",
+            "cwe": "CWE-215"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.py-weak-random-token",
+          "ruleName": "CWE-330 at falcon/testing/helpers.py:1098",
+          "level": "warning",
+          "message": {
+            "text": "random is predictable in security contexts; use the secrets module."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "falcon/testing/helpers.py"
+                },
+                "region": {
+                  "startLine": 1098,
+                  "endLine": 1098,
+                  "startColumn": 23,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "falcon/testing/helpers.py"
+                },
+                "region": {
+                  "startLine": 1098,
+                  "endLine": 1098
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "344e77edd54fec50501ef681f5709df93ede93492fc231572820bdb03031e950"
+          },
+          "properties": {
+            "findingId": "344e77edd54fec50",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "py-weak-random-token",
+          "ruleName": "CWE-330 at examples/asgilook/tests/conftest.py:65",
+          "level": "warning",
+          "message": {
+            "text": "py-weak-random-token: [REDACTED] is predictable in security contexts; use the secrets module."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/asgilook/tests/conftest.py"
+                },
+                "region": {
+                  "startLine": 65,
+                  "endLine": 65
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "0bd01d97cf5e679aa2aa69299c7bff86f49cfdfeb745f92debd4f5e9ee697abe"
+          },
+          "properties": {
+            "findingId": "0bd01d97cf5e679a",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "py-weak-random-token",
+          "ruleName": "CWE-330 at examples/asgilook/tests/conftest.py:66",
+          "level": "warning",
+          "message": {
+            "text": "py-weak-random-token: [REDACTED] is predictable in security contexts; use the secrets module."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/asgilook/tests/conftest.py"
+                },
+                "region": {
+                  "startLine": 66,
+                  "endLine": 66
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "d84f4ec40cfbeb6094c3e42be2b7e0c320b53c9c9de815567357a4d0dc7a86ff"
+          },
+          "properties": {
+            "findingId": "d84f4ec40cfbeb60",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "py-weak-random-token",
+          "ruleName": "CWE-330 at examples/asgilook/tests/conftest.py:67",
+          "level": "warning",
+          "message": {
+            "text": "py-weak-random-token: [REDACTED] is predictable in security contexts; use the secrets module."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/asgilook/tests/conftest.py"
+                },
+                "region": {
+                  "startLine": 67,
+                  "endLine": 67
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "d5b9cf6a10133f8138faaf4adca5a30d2f8aae893a2e0a53a68dedb2c7068502"
+          },
+          "properties": {
+            "findingId": "d5b9cf6a10133f81",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "py-weak-random-token",
+          "ruleName": "CWE-330 at examples/asgilook/tests/conftest.py:68",
+          "level": "warning",
+          "message": {
+            "text": "py-weak-random-token: [REDACTED] is predictable in security contexts; use the secrets module."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/asgilook/tests/conftest.py"
+                },
+                "region": {
+                  "startLine": 68,
+                  "endLine": 68
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "62b4e7cf64bf82dfbbbf60a7882eaaaed4ee35fdb47a9ce19ed894f1567109c7"
+          },
+          "properties": {
+            "findingId": "62b4e7cf64bf82df",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "py-header-injection",
+          "ruleName": "CWE-113 at falcon/bench/create.py:56",
+          "level": "error",
+          "message": {
+            "text": "py-header-injection: Request data reaches a response header; strip CR/LF or allowlist values."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "falcon/bench/create.py"
+                },
+                "region": {
+                  "startLine": 56,
+                  "endLine": 56
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "e9103f8524be5be15eacf6b0317d19b8cf5f0bc5757f10f1b2e36d5156f8fdf5"
+          },
+          "properties": {
+            "findingId": "e9103f8524be5be1",
+            "cwe": "CWE-113"
+          }
+        },
+        {
+          "ruleId": "py-header-injection",
+          "ruleName": "CWE-113 at falcon/bench/create.py:71",
+          "level": "error",
+          "message": {
+            "text": "py-header-injection: Request data reaches a response header; strip CR/LF or allowlist values."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "falcon/bench/create.py"
+                },
+                "region": {
+                  "startLine": 71,
+                  "endLine": 71
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "5a237ea1a9b082bc28833846939b92e59e032493cf63b81cf884d6119a3ba4c9"
+          },
+          "properties": {
+            "findingId": "5a237ea1a9b082bc",
+            "cwe": "CWE-113"
+          }
+        },
+        {
+          "ruleId": "py-header-injection",
+          "ruleName": "CWE-113 at falcon/bench/create.py:92",
+          "level": "error",
+          "message": {
+            "text": "py-header-injection: Request data reaches a response header; strip CR/LF or allowlist values."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "falcon/bench/create.py"
+                },
+                "region": {
+                  "startLine": 92,
+                  "endLine": 92
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "b04fdb8139ee665f85d55ba936686613060cae6281e09941b062a16219214624"
+          },
+          "properties": {
+            "findingId": "b04fdb8139ee665f",
+            "cwe": "CWE-113"
+          }
+        },
+        {
+          "ruleId": "py-weak-hash",
+          "ruleName": "CWE-328 at tests/_wsgi_test_app.py:17",
+          "level": "warning",
+          "message": {
+            "text": "py-weak-hash: md5/sha1 are broken for security use; prefer sha256 or bcrypt."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "tests/_wsgi_test_app.py"
+                },
+                "region": {
+                  "startLine": 17,
+                  "endLine": 17
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "eca2c0171a0a3e42cafde8b62aa48e1633d237d0176e3821d74356302ff114f3"
+          },
+          "properties": {
+            "findingId": "eca2c0171a0a3e42",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "py-weak-hash",
+          "ruleName": "CWE-328 at tests/asgi/_asgi_test_app.py:115",
+          "level": "warning",
+          "message": {
+            "text": "py-weak-hash: md5/sha1 are broken for security use; prefer sha256 or bcrypt."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "tests/asgi/_asgi_test_app.py"
+                },
+                "region": {
+                  "startLine": 115,
+                  "endLine": 115
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "c93b65bda61db494d4a89c677dd4218f677d976605c7c79751360a73edcc8de2"
+          },
+          "properties": {
+            "findingId": "c93b65bda61db494",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "py-weak-hash",
+          "ruleName": "CWE-328 at tests/asgi/_asgi_test_app.py:226",
+          "level": "warning",
+          "message": {
+            "text": "py-weak-hash: md5/sha1 are broken for security use; prefer sha256 or bcrypt."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "tests/asgi/_asgi_test_app.py"
+                },
+                "region": {
+                  "startLine": 226,
+                  "endLine": 226
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "168962ec24a07b5443ce246ffea77ee424834e9198bb539bec9f023d1e5cf7ad"
+          },
+          "properties": {
+            "findingId": "168962ec24a07b54",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "py-weak-random-token",
+          "ruleName": "CWE-330 at tests/asgi/test_asgi_servers.py:70",
+          "level": "warning",
+          "message": {
+            "text": "py-weak-random-token: [REDACTED] is predictable in security contexts; use the secrets module."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "tests/asgi/test_asgi_servers.py"
+                },
+                "region": {
+                  "startLine": 70,
+                  "endLine": 70
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "28ee42787f522274a118ecb4b9d5fb1609ec679b2d616b5a68ef74c43a0aeaa4"
+          },
+          "properties": {
+            "findingId": "28ee42787f522274",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "py-weak-hash",
+          "ruleName": "CWE-328 at tests/asgi/test_asgi_servers.py:72",
+          "level": "warning",
+          "message": {
+            "text": "py-weak-hash: md5/sha1 are broken for security use; prefer sha256 or bcrypt."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "tests/asgi/test_asgi_servers.py"
+                },
+                "region": {
+                  "startLine": 72,
+                  "endLine": 72
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "a2dfcba1f443a4f4b766c8497bae64477daa8b972e171fcaf5c540212ea5e7a0"
+          },
+          "properties": {
+            "findingId": "a2dfcba1f443a4f4",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "py-weak-hash",
+          "ruleName": "CWE-328 at tests/asgi/test_asgi_servers.py:150",
+          "level": "warning",
+          "message": {
+            "text": "py-weak-hash: md5/sha1 are broken for security use; prefer sha256 or bcrypt."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "tests/asgi/test_asgi_servers.py"
+                },
+                "region": {
+                  "startLine": 150,
+                  "endLine": 150
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "e98cf1e0b57a44f0a9fb063a8664b90e8df99dac8ce557d6eac04b7505d25ded"
+          },
+          "properties": {
+            "findingId": "e98cf1e0b57a44f0",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "py-debug-mode-enabled",
+          "ruleName": "CWE-215 at tests/asgi/test_asgi_servers.py:626",
+          "level": "warning",
+          "message": {
+            "text": "py-debug-mode-enabled: Debug mode leaks tracebacks; never enable it in production."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "tests/asgi/test_asgi_servers.py"
+                },
+                "region": {
+                  "startLine": 626,
+                  "endLine": 626
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "7c98e7f836090db6c445c572a7ae09cfc949dc306808d9e0f0ead0147d318142"
+          },
+          "properties": {
+            "findingId": "7c98e7f836090db6",
+            "cwe": "CWE-215"
+          }
+        },
+        {
+          "ruleId": "py-weak-random-token",
+          "ruleName": "CWE-330 at tests/test_media_multipart.py:601",
+          "level": "warning",
+          "message": {
+            "text": "py-weak-random-token: [REDACTED] is predictable in security contexts; use the secrets module."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "tests/test_media_multipart.py"
+                },
+                "region": {
+                  "startLine": 601,
+                  "endLine": 601
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "ce43df764eb15ff4d68a1b51dbf218ebe5646cd914bb1d0b2eeac37bc138a6bc"
+          },
+          "properties": {
+            "findingId": "ce43df764eb15ff4",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "py-weak-random-token",
+          "ruleName": "CWE-330 at tests/test_media_multipart.py:630",
+          "level": "warning",
+          "message": {
+            "text": "py-weak-random-token: [REDACTED] is predictable in security contexts; use the secrets module."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "tests/test_media_multipart.py"
+                },
+                "region": {
+                  "startLine": 630,
+                  "endLine": 630
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "2ff600dfa6b836dcc496b6d33005d6b97c3c96e3b0d9e8c2eae2a6967c60bc4c"
+          },
+          "properties": {
+            "findingId": "2ff600dfa6b836dc",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "py-weak-random-token",
+          "ruleName": "CWE-330 at tests/test_utils.py:43",
+          "level": "warning",
+          "message": {
+            "text": "py-weak-random-token: [REDACTED] is predictable in security contexts; use the secrets module."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "tests/test_utils.py"
+                },
+                "region": {
+                  "startLine": 43,
+                  "endLine": 43
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "44ac818cb2ae537ee33e78bd659a00d44f46fb370f9ce1cc7e534d6993a2adac"
+          },
+          "properties": {
+            "findingId": "44ac818cb2ae537e",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "py-weak-random-token",
+          "ruleName": "CWE-330 at tests/test_wsgi_servers.py:259",
+          "level": "warning",
+          "message": {
+            "text": "py-weak-random-token: [REDACTED] is predictable in security contexts; use the secrets module."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "tests/test_wsgi_servers.py"
+                },
+                "region": {
+                  "startLine": 259,
+                  "endLine": 259
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "c53389e16fc73c320f1a45a063f48acd2917a48b1061727338ba94871ecc0a70"
+          },
+          "properties": {
+            "findingId": "c53389e16fc73c32",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "py-weak-hash",
+          "ruleName": "CWE-328 at tests/test_wsgi_servers.py:261",
+          "level": "warning",
+          "message": {
+            "text": "py-weak-hash: md5/sha1 are broken for security use; prefer sha256 or bcrypt."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "tests/test_wsgi_servers.py"
+                },
+                "region": {
+                  "startLine": 261,
+                  "endLine": 261
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "c7914c908e3450e837f2d67671cb8f427f8e6df2a736fd6d222ac0a8aa074709"
+          },
+          "properties": {
+            "findingId": "c7914c908e3450e8",
+            "cwe": "CWE-328"
+          }
+        }
+      ],
+      "artifacts": [],
+      "properties": {
+        "counts": {
+          "version": "0.1.0",
+          "total": 21,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0,
+          "unprocessed": 21
+        },
+        "commit": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+        "target": "D:\\dev\\bench-repos\\falcon",
+        "status": "failed",
+        "gate": "failed",
+        "errors": [
+          "spotbugs: classes directory not found: C:\\Users\\MINH KHOI\\AppData\\Local\\Temp\\vulnscan-snapshot-bkqzmzam\\target\\classes (run 'mvn compile' first)",
+          "owasp-dependency-check: missing coverage for pom.xml",
+          "spotbugs: required scanner did not complete successfully"
+        ],
+        "configuration": {
+          "schema_version": 1,
+          "profile": "full",
+          "fail_on": "high",
+          "output_dir": "artifacts/deep-compare/falcon/mine",
+          "timezone": "Asia/Saigon",
+          "timeout": 3600,
+          "max_files": 100000,
+          "allow_dirty": true,
+          "ci": false,
+          "laya": true,
+          "laya_config_path": null,
+          "ai_review": false,
+          "provider_profile": null,
+          "provider_model": null,
+          "ai_report": false,
+          "max_ai_findings": 10,
+          "mode": "hunt",
+          "tools": null
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": false,
+          "toolExecutionNotifications": [
+            {
+              "level": "error",
+              "message": {
+                "text": "spotbugs: classes directory not found: C:\\Users\\MINH KHOI\\AppData\\Local\\Temp\\vulnscan-snapshot-bkqzmzam\\target\\classes (run 'mvn compile' first)"
+              }
+            },
+            {
+              "level": "error",
+              "message": {
+                "text": "owasp-dependency-check: missing coverage for pom.xml"
+              }
+            },
+            {
+              "level": "error",
+              "message": {
+                "text": "spotbugs: required scanner did not complete successfully"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

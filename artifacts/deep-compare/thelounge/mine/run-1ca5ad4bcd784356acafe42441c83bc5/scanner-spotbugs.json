@@ -1,0 +1,26 @@
+{
+  "version": "0.1.0",
+  "run_id": "run-1ca5ad4bcd784356acafe42441c83bc5",
+  "tool": "spotbugs",
+  "tool_version": "unknown",
+  "adapter_version": "0.2.0",
+  "status": "failed",
+  "started_at": "2026-11-03T13:36:15.600877Z",
+  "finished_at": "2026-11-03T13:36:18.107050Z",
+  "observations": [],
+  "coverage_records": [],
+  "raw_output_refs": [],
+  "coverage_percent": 0.0,
+  "eligible_units": 0,
+  "analyzed_units": 0,
+  "skipped_units": 0,
+  "failed_units": 0,
+  "errors": [
+    "classes directory not found: C:\\Users\\MINH KHOI\\AppData\\Local\\Temp\\vulnscan-snapshot-d1jwex_u\\target\\classes (run 'mvn compile' first)"
+  ],
+  "warnings": [
+    "classes directory not found: C:\\Users\\MINH KHOI\\AppData\\Local\\Temp\\vulnscan-snapshot-d1jwex_u\\target\\classes (run 'mvn compile' first)"
+  ],
+  "duration_ms": 0,
+  "metadata": {}
+}

@@ -1,0 +1,9 @@
+{
+  "repo": "vue-mdc",
+  "lang": "TypeScript",
+  "url": "https://github.com/posva/vue-mdc",
+  "commit": "bf4795cefe225780cd26f51e270e65780c5a9323",
+  "mine_exit": 2,
+  "mine_tail": "    \"final-report\": \"D:\\\\New folder\\\\DevSecOps-Agent\\\\artifacts\\\\deep-compare\\\\vue-mdc\\\\mine\\\\run-b441d7dc3f7f4d7cb1699c3b0add0473\\\\final-report.md\"\n  },\n  \"summary_path\": \"D:\\\\New folder\\\\DevSecOps-Agent\\\\artifacts\\\\deep-compare\\\\vue-mdc\\\\mine\\\\run-b441d7dc3f7f4d7cb1699c3b0add0473\\\\summary.json\"\n}\n",
+  "semgrep_auto_n": 0
+}

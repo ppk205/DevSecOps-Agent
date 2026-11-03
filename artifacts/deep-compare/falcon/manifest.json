@@ -1,0 +1,9 @@
+{
+  "repo": "falcon",
+  "lang": "Python",
+  "url": "https://github.com/falconry/falcon",
+  "commit": "8d3aa53a6ac69331060b945050ce0fad616fc553",
+  "mine_exit": 2,
+  "mine_tail": ",\n    \"final-report\": \"D:\\\\New folder\\\\DevSecOps-Agent\\\\artifacts\\\\deep-compare\\\\falcon\\\\mine\\\\run-ee22d39f109444aa9b32e36f325a787b\\\\final-report.md\"\n  },\n  \"summary_path\": \"D:\\\\New folder\\\\DevSecOps-Agent\\\\artifacts\\\\deep-compare\\\\falcon\\\\mine\\\\run-ee22d39f109444aa9b32e36f325a787b\\\\summary.json\"\n}\n",
+  "semgrep_auto_n": 12
+}

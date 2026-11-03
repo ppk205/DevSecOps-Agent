@@ -1,0 +1,5300 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "automationDetails": {
+        "id": "run-b5d303e3425d41cea00f9cedcca7680e"
+      },
+      "tool": {
+        "driver": {
+          "name": "devsecops-agent",
+          "version": "0.2.0"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+          "ruleName": "CWE-330 at inc/function.php:8",
+          "level": "warning",
+          "message": {
+            "text": "rand/mt_rand are predictable; use random_int or random_bytes."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 8,
+                  "endLine": 8,
+                  "startColumn": 21,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 8,
+                  "endLine": 8
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "0f887ee71198680447162fbb366324d7c307ef1b51ca42ddd08ca47d8b073837"
+          },
+          "properties": {
+            "findingId": "0f887ee711986804",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+          "ruleName": "CWE-330 at inc/function.php:11",
+          "level": "warning",
+          "message": {
+            "text": "rand/mt_rand are predictable; use random_int or random_bytes."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 11,
+                  "endLine": 11,
+                  "startColumn": 35,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 11,
+                  "endLine": 11,
+                  "startColumn": 49,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 11,
+                  "endLine": 11,
+                  "startColumn": 63,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 11,
+                  "endLine": 11
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "9461b55c9f3a323e9833ad0c02e101be579780695c36cd6c03e38c79bd1cc2ac"
+          },
+          "properties": {
+            "findingId": "9461b55c9f3a323e",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+          "ruleName": "CWE-330 at inc/function.php:12",
+          "level": "warning",
+          "message": {
+            "text": "rand/mt_rand are predictable; use random_int or random_bytes."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 12,
+                  "endLine": 12,
+                  "startColumn": 39,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 12,
+                  "endLine": 12,
+                  "startColumn": 53,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 12,
+                  "endLine": 12,
+                  "startColumn": 67,
+                  "endColumn": 80
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 12,
+                  "endLine": 12
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "6deea2bfb7d2cb939bb34995164509080ca0e3a0c04fee8d869148bc039cbdce"
+          },
+          "properties": {
+            "findingId": "6deea2bfb7d2cb93",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+          "ruleName": "CWE-330 at inc/function.php:13",
+          "level": "warning",
+          "message": {
+            "text": "rand/mt_rand are predictable; use random_int or random_bytes."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 13,
+                  "endLine": 13,
+                  "startColumn": 39,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 13,
+                  "endLine": 13,
+                  "startColumn": 52,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 13,
+                  "endLine": 13,
+                  "startColumn": 65,
+                  "endColumn": 77
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 13,
+                  "endLine": 13
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "c4ceb257dd9a1cd9c7ee3ecb42524524453e6d9e513ec51d36c27ff0146e68b4"
+          },
+          "properties": {
+            "findingId": "c4ceb257dd9a1cd9",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+          "ruleName": "CWE-330 at inc/function.php:16",
+          "level": "warning",
+          "message": {
+            "text": "rand/mt_rand are predictable; use random_int or random_bytes."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 16,
+                  "endLine": 16,
+                  "startColumn": 22,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 16,
+                  "endLine": 16,
+                  "startColumn": 39,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 16,
+                  "endLine": 16,
+                  "startColumn": 81,
+                  "endColumn": 94
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 16,
+                  "endLine": 16,
+                  "startColumn": 95,
+                  "endColumn": 108
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 16,
+                  "endLine": 16,
+                  "startColumn": 109,
+                  "endColumn": 122
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 16,
+                  "endLine": 16
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "7ac7b5caf0f3e69b1e101a7e7c79a96dff35608a520ba987f19aa711dde17fe8"
+          },
+          "properties": {
+            "findingId": "7ac7b5caf0f3e69b",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+          "ruleName": "CWE-330 at inc/function.php:19",
+          "level": "warning",
+          "message": {
+            "text": "rand/mt_rand are predictable; use random_int or random_bytes."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 19,
+                  "endLine": 19,
+                  "startColumn": 18,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 19,
+                  "endLine": 19,
+                  "startColumn": 35,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 19,
+                  "endLine": 19,
+                  "startColumn": 51,
+                  "endColumn": 72
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 19,
+                  "endLine": 19,
+                  "startColumn": 73,
+                  "endColumn": 88
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 19,
+                  "endLine": 19,
+                  "startColumn": 113,
+                  "endColumn": 126
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 19,
+                  "endLine": 19,
+                  "startColumn": 127,
+                  "endColumn": 140
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 19,
+                  "endLine": 19,
+                  "startColumn": 141,
+                  "endColumn": 154
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 19,
+                  "endLine": 19
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "52c9a9df40106cadea00ff3ecf7da5bbf9d06db6eaf3f192b37250cabf21a8a9"
+          },
+          "properties": {
+            "findingId": "52c9a9df40106cad",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+          "ruleName": "CWE-330 at inc/function.php:22",
+          "level": "warning",
+          "message": {
+            "text": "rand/mt_rand are predictable; use random_int or random_bytes."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 22,
+                  "endLine": 22,
+                  "startColumn": 30,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 22,
+                  "endLine": 22,
+                  "startColumn": 41,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 22,
+                  "endLine": 22,
+                  "startColumn": 52,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 22,
+                  "endLine": 22
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "8b72ff4e87b03232ac171ded3b9dab4b8722d34ded04f7685aa1b1d5eed51ce1"
+          },
+          "properties": {
+            "findingId": "8b72ff4e87b03232",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+          "ruleName": "CWE-330 at inc/function.php:34",
+          "level": "warning",
+          "message": {
+            "text": "rand/mt_rand are predictable; use random_int or random_bytes."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 34,
+                  "endLine": 34,
+                  "startColumn": 17,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 34,
+                  "endLine": 34
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "3432a2033fa42e2335fc17638c73e2524025e158b9a606555fc8053571c76047"
+          },
+          "properties": {
+            "findingId": "3432a2033fa42e23",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+          "ruleName": "CWE-330 at inc/function.php:47",
+          "level": "warning",
+          "message": {
+            "text": "rand/mt_rand are predictable; use random_int or random_bytes."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 47,
+                  "endLine": 47,
+                  "startColumn": 49,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 47,
+                  "endLine": 47,
+                  "startColumn": 61,
+                  "endColumn": 72
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 47,
+                  "endLine": 47,
+                  "startColumn": 73,
+                  "endColumn": 84
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 47,
+                  "endLine": 47
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "e1957692bae05b88d8f45e6d4bcd50234f90bf5ff8a87ac54c1e4739dd4d91e7"
+          },
+          "properties": {
+            "findingId": "e1957692bae05b88",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+          "ruleName": "CWE-330 at inc/function.php:48",
+          "level": "warning",
+          "message": {
+            "text": "rand/mt_rand are predictable; use random_int or random_bytes."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 48,
+                  "endLine": 48,
+                  "startColumn": 33,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 48,
+                  "endLine": 48,
+                  "startColumn": 45,
+                  "endColumn": 55
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 48,
+                  "endLine": 48,
+                  "startColumn": 57,
+                  "endColumn": 70
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 48,
+                  "endLine": 48,
+                  "startColumn": 71,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 48,
+                  "endLine": 48
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "f5df9a53f08d8939686065c9234a3ff64109ab3ca2faa26e366fd456785977ae"
+          },
+          "properties": {
+            "findingId": "f5df9a53f08d8939",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+          "ruleName": "CWE-330 at inc/function.php:53",
+          "level": "warning",
+          "message": {
+            "text": "rand/mt_rand are predictable; use random_int or random_bytes."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 53,
+                  "endLine": 53,
+                  "startColumn": 54,
+                  "endColumn": 65
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 53,
+                  "endLine": 53,
+                  "startColumn": 66,
+                  "endColumn": 77
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 53,
+                  "endLine": 53,
+                  "startColumn": 78,
+                  "endColumn": 89
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 53,
+                  "endLine": 53
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "59e8ca9a5961e648ab95209b7ccb896fef4e3e579f9a8715fd3a1975a4f04522"
+          },
+          "properties": {
+            "findingId": "59e8ca9a5961e648",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+          "ruleName": "CWE-330 at inc/function.php:54",
+          "level": "warning",
+          "message": {
+            "text": "rand/mt_rand are predictable; use random_int or random_bytes."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 54,
+                  "endLine": 54,
+                  "startColumn": 37,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 54,
+                  "endLine": 54,
+                  "startColumn": 50,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 54,
+                  "endLine": 54
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "0fda6fe3e7122f3334ea8036ab8ad0d00db7bbd4edc6a4b6e93b9ecb9cba146e"
+          },
+          "properties": {
+            "findingId": "0fda6fe3e7122f33",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+          "ruleName": "CWE-330 at inc/function.php:73",
+          "level": "warning",
+          "message": {
+            "text": "rand/mt_rand are predictable; use random_int or random_bytes."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 73,
+                  "endLine": 73,
+                  "startColumn": 43,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 73,
+                  "endLine": 73,
+                  "startColumn": 50,
+                  "endColumn": 70
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 73,
+                  "endLine": 73
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "54b548245efd6e5d669d45bee2a55531761ed2153872e5b2422e86a3da71daa3"
+          },
+          "properties": {
+            "findingId": "54b548245efd6e5d",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-insecure-random",
+          "ruleName": "CWE-330 at inc/uploadfunction.php:157",
+          "level": "warning",
+          "message": {
+            "text": "rand/mt_rand are predictable; use random_int or random_bytes."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/uploadfunction.php"
+                },
+                "region": {
+                  "startLine": 157,
+                  "endLine": 157,
+                  "startColumn": 38,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/uploadfunction.php"
+                },
+                "region": {
+                  "startLine": 157,
+                  "endLine": 157,
+                  "startColumn": 45,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/uploadfunction.php"
+                },
+                "region": {
+                  "startLine": 157,
+                  "endLine": 157
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "305e793ee8df135a23509ad55b00ae1e29d525e09a2263d0c8ba90574c9a59a2"
+          },
+          "properties": {
+            "findingId": "305e793ee8df135a",
+            "cwe": "CWE-330"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+          "ruleName": "CWE-328 at pkxss/pkxss_login.php:20",
+          "level": "warning",
+          "message": {
+            "text": "md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "pkxss/pkxss_login.php"
+                },
+                "region": {
+                  "startLine": 20,
+                  "endLine": 20,
+                  "startColumn": 44,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "pkxss/pkxss_login.php"
+                },
+                "region": {
+                  "startLine": 20,
+                  "endLine": 20,
+                  "startColumn": 49,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "pkxss/pkxss_login.php"
+                },
+                "region": {
+                  "startLine": 20,
+                  "endLine": 20
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "e52c10051d45d713171733781d0ca4e55f0fb2b79b474e19bdfeefad7cfd1fa8"
+          },
+          "properties": {
+            "findingId": "e52c10051d45d713",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-sql-concatenation",
+          "ruleName": "CWE-89 at pkxss/rkeypress/rkserver.php:16",
+          "level": "error",
+          "message": {
+            "text": "User input reaches a SQL query; use prepared statements with bound parameters."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "pkxss/rkeypress/rkserver.php"
+                },
+                "region": {
+                  "startLine": 16,
+                  "endLine": 16,
+                  "startColumn": 9,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "pkxss/rkeypress/rkserver.php"
+                },
+                "region": {
+                  "startLine": 16,
+                  "endLine": 16
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "ab8e97ee8b8f176c4d69c96a1c8fcfc3f8defc58e2d07a0786534b94bf9aec32"
+          },
+          "properties": {
+            "findingId": "ab8e97ee8b8f176c",
+            "cwe": "CWE-89"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-sql-concatenation",
+          "ruleName": "CWE-89 at pkxss/xcookie/cookie.php:16",
+          "level": "error",
+          "message": {
+            "text": "User input reaches a SQL query; use prepared statements with bound parameters."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "pkxss/xcookie/cookie.php"
+                },
+                "region": {
+                  "startLine": 16,
+                  "endLine": 16,
+                  "startColumn": 13,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "pkxss/xcookie/cookie.php"
+                },
+                "region": {
+                  "startLine": 16,
+                  "endLine": 16
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "a2adf422777c6bbe62fd1716b5598a529888e9080ce9384220236175d48f180b"
+          },
+          "properties": {
+            "findingId": "a2adf422777c6bbe",
+            "cwe": "CWE-89"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-sql-concatenation",
+          "ruleName": "CWE-89 at pkxss/xfish/xfish.php:18",
+          "level": "error",
+          "message": {
+            "text": "User input reaches a SQL query; use prepared statements with bound parameters."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "pkxss/xfish/xfish.php"
+                },
+                "region": {
+                  "startLine": 18,
+                  "endLine": 18,
+                  "startColumn": 13,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "pkxss/xfish/xfish.php"
+                },
+                "region": {
+                  "startLine": 18,
+                  "endLine": 18
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "0016650bd1ada36956b1415d7e41250500a1b7b9535172396b84bebbce2c72d6"
+          },
+          "properties": {
+            "findingId": "0016650bd1ada369",
+            "cwe": "CWE-89"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison",
+          "ruleName": "CWE-697 at pkxss/xssmanager.php:12",
+          "level": "warning",
+          "message": {
+            "text": "Loose == comparison with user input allows type juggling; use === or hash_equals."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "pkxss/xssmanager.php"
+                },
+                "region": {
+                  "startLine": 12,
+                  "endLine": 12,
+                  "startColumn": 30,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "pkxss/xssmanager.php"
+                },
+                "region": {
+                  "startLine": 12,
+                  "endLine": 12
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "ae71ed794ddae0bbbfda300144886df64295ce9a62eb949d86c34fca318767b0"
+          },
+          "properties": {
+            "findingId": "ae71ed794ddae0bb",
+            "cwe": "CWE-697"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison",
+          "ruleName": "CWE-697 at vul/csrf/csrfget/csrf_get.php:29",
+          "level": "warning",
+          "message": {
+            "text": "Loose == comparison with user input allows type juggling; use === or hash_equals."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/csrf/csrfget/csrf_get.php"
+                },
+                "region": {
+                  "startLine": 29,
+                  "endLine": 29,
+                  "startColumn": 30,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/csrf/csrfget/csrf_get.php"
+                },
+                "region": {
+                  "startLine": 29,
+                  "endLine": 29
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "cb7322d6d31c6c333908bb9c924fc895f8f614122bb2df95cfb1f8fc51d3c572"
+          },
+          "properties": {
+            "findingId": "cb7322d6d31c6c33",
+            "cwe": "CWE-697"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/csrf/csrfget/csrf_get_login.php:41",
+          "level": "warning",
+          "message": {
+            "text": "md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/csrf/csrfget/csrf_get_login.php"
+                },
+                "region": {
+                  "startLine": 41,
+                  "endLine": 41,
+                  "startColumn": 43,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/csrf/csrfget/csrf_get_login.php"
+                },
+                "region": {
+                  "startLine": 41,
+                  "endLine": 41,
+                  "startColumn": 48,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/csrf/csrfget/csrf_get_login.php"
+                },
+                "region": {
+                  "startLine": 41,
+                  "endLine": 41
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "085d817a903cd88a2a3ee65a064f19c139da7281dd82fbdde7bb4bb469c5c35c"
+          },
+          "properties": {
+            "findingId": "085d817a903cd88a",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison",
+          "ruleName": "CWE-697 at vul/csrf/csrfpost/csrf_post.php:29",
+          "level": "warning",
+          "message": {
+            "text": "Loose == comparison with user input allows type juggling; use === or hash_equals."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/csrf/csrfpost/csrf_post.php"
+                },
+                "region": {
+                  "startLine": 29,
+                  "endLine": 29,
+                  "startColumn": 30,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/csrf/csrfpost/csrf_post.php"
+                },
+                "region": {
+                  "startLine": 29,
+                  "endLine": 29
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "c48a008d1e6e3a653dbe0dd6c8e69dcda2cabbae0f3d32ddd16667e4f7480abe"
+          },
+          "properties": {
+            "findingId": "c48a008d1e6e3a65",
+            "cwe": "CWE-697"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/csrf/csrfpost/csrf_post_login.php:41",
+          "level": "warning",
+          "message": {
+            "text": "md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/csrf/csrfpost/csrf_post_login.php"
+                },
+                "region": {
+                  "startLine": 41,
+                  "endLine": 41,
+                  "startColumn": 43,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/csrf/csrfpost/csrf_post_login.php"
+                },
+                "region": {
+                  "startLine": 41,
+                  "endLine": 41,
+                  "startColumn": 48,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/csrf/csrfpost/csrf_post_login.php"
+                },
+                "region": {
+                  "startLine": 41,
+                  "endLine": 41
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "fa49d3f0d5d76c2ae2418956b1598542c8eb46d3ec7381d892efbd15c6e0cf9a"
+          },
+          "properties": {
+            "findingId": "fa49d3f0d5d76c2a",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison",
+          "ruleName": "CWE-697 at vul/csrf/csrftoken/token_get.php:29",
+          "level": "warning",
+          "message": {
+            "text": "Loose == comparison with user input allows type juggling; use === or hash_equals."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/csrf/csrftoken/token_get.php"
+                },
+                "region": {
+                  "startLine": 29,
+                  "endLine": 29,
+                  "startColumn": 30,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/csrf/csrftoken/token_get.php"
+                },
+                "region": {
+                  "startLine": 29,
+                  "endLine": 29
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "492a376768fe857ef0bf587af50f7459a83edb01d56784c133741e4282dcbd03"
+          },
+          "properties": {
+            "findingId": "492a376768fe857e",
+            "cwe": "CWE-697"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison",
+          "ruleName": "CWE-697 at vul/csrf/csrftoken/token_get_edit.php:33",
+          "level": "warning",
+          "message": {
+            "text": "Loose == comparison with user input allows type juggling; use === or hash_equals."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/csrf/csrftoken/token_get_edit.php"
+                },
+                "region": {
+                  "startLine": 33,
+                  "endLine": 33,
+                  "startColumn": 103,
+                  "endColumn": 137
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/csrf/csrftoken/token_get_edit.php"
+                },
+                "region": {
+                  "startLine": 33,
+                  "endLine": 33
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "35e6e80ea278157f86decbad82f676c32329a6149f918427c44bccf27c29781b"
+          },
+          "properties": {
+            "findingId": "35e6e80ea278157f",
+            "cwe": "CWE-697"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/csrf/csrftoken/token_get_login.php:43",
+          "level": "warning",
+          "message": {
+            "text": "md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/csrf/csrftoken/token_get_login.php"
+                },
+                "region": {
+                  "startLine": 43,
+                  "endLine": 43,
+                  "startColumn": 43,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/csrf/csrftoken/token_get_login.php"
+                },
+                "region": {
+                  "startLine": 43,
+                  "endLine": 43,
+                  "startColumn": 48,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/csrf/csrftoken/token_get_login.php"
+                },
+                "region": {
+                  "startLine": 43,
+                  "endLine": 43
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "f37523709648c63718c63e33a72974e374ab217f6e590b60dbde0f678e5f67c3"
+          },
+          "properties": {
+            "findingId": "f37523709648c637",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-path-traversal",
+          "ruleName": "CWE-22 at vul/dir/dir_list.php:22",
+          "level": "error",
+          "message": {
+            "text": "User input reaches a filesystem path; validate against an allowlist."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/dir/dir_list.php"
+                },
+                "region": {
+                  "startLine": 22,
+                  "endLine": 22,
+                  "startColumn": 5,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/dir/dir_list.php"
+                },
+                "region": {
+                  "startLine": 22,
+                  "endLine": 22
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "1f09fdeeafe8c9b4e58f4b549a9b207b93cc105705fc206677f4b0015a187c51"
+          },
+          "properties": {
+            "findingId": "1f09fdeeafe8c9b4",
+            "cwe": "CWE-22"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-path-traversal",
+          "ruleName": "CWE-22 at vul/fileinclude/fi_local.php:23",
+          "level": "error",
+          "message": {
+            "text": "User input reaches a filesystem path; validate against an allowlist."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/fileinclude/fi_local.php"
+                },
+                "region": {
+                  "startLine": 23,
+                  "endLine": 23,
+                  "startColumn": 5,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/fileinclude/fi_local.php"
+                },
+                "region": {
+                  "startLine": 23,
+                  "endLine": 23
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "0107ebd377e96ddf4bfc482e73115385b0b831e9aa1cfdb9d23d495a6ff9cadf"
+          },
+          "properties": {
+            "findingId": "0107ebd377e96ddf",
+            "cwe": "CWE-22"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-path-traversal",
+          "ruleName": "CWE-22 at vul/fileinclude/fi_remote.php:37",
+          "level": "error",
+          "message": {
+            "text": "User input reaches a filesystem path; validate against an allowlist."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/fileinclude/fi_remote.php"
+                },
+                "region": {
+                  "startLine": 37,
+                  "endLine": 37,
+                  "startColumn": 5,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/fileinclude/fi_remote.php"
+                },
+                "region": {
+                  "startLine": 37,
+                  "endLine": 37
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "956ba77059f0e63175b0b0df463380689c43ac2aee5b9086be0e8994b7941214"
+          },
+          "properties": {
+            "findingId": "956ba77059f0e631",
+            "cwe": "CWE-22"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison",
+          "ruleName": "CWE-697 at vul/infoleak/abc.php:18",
+          "level": "warning",
+          "message": {
+            "text": "Loose == comparison with user input allows type juggling; use === or hash_equals."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/infoleak/abc.php"
+                },
+                "region": {
+                  "startLine": 18,
+                  "endLine": 18,
+                  "startColumn": 30,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/infoleak/abc.php"
+                },
+                "region": {
+                  "startLine": 18,
+                  "endLine": 18
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "aac529c0958cdbb1bc21a7fb7acc21850b7439efc53b062bfaa80be8e470153f"
+          },
+          "properties": {
+            "findingId": "aac529c0958cdbb1",
+            "cwe": "CWE-697"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/infoleak/findabc.php:35",
+          "level": "warning",
+          "message": {
+            "text": "md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/infoleak/findabc.php"
+                },
+                "region": {
+                  "startLine": 35,
+                  "endLine": 35,
+                  "startColumn": 33,
+                  "endColumn": 55
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/infoleak/findabc.php"
+                },
+                "region": {
+                  "startLine": 35,
+                  "endLine": 35
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "114580e3a710c601db6fd2cd41eaa61d8e264a0d5aadcc884b6ad0b9295aaaa5"
+          },
+          "properties": {
+            "findingId": "114580e3a710c601",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/overpermission/op1/op1_login.php:37",
+          "level": "warning",
+          "message": {
+            "text": "md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op1/op1_login.php"
+                },
+                "region": {
+                  "startLine": 37,
+                  "endLine": 37,
+                  "startColumn": 41,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op1/op1_login.php"
+                },
+                "region": {
+                  "startLine": 37,
+                  "endLine": 37,
+                  "startColumn": 46,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op1/op1_login.php"
+                },
+                "region": {
+                  "startLine": 37,
+                  "endLine": 37
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "db6d3ab3bd63468fd0a873b55e9b607d447ae4abdf2e408e3ea7ee6959f94477"
+          },
+          "properties": {
+            "findingId": "db6d3ab3bd63468f",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison",
+          "ruleName": "CWE-697 at vul/overpermission/op1/op1_mem.php:52",
+          "level": "warning",
+          "message": {
+            "text": "Loose == comparison with user input allows type juggling; use === or hash_equals."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op1/op1_mem.php"
+                },
+                "region": {
+                  "startLine": 52,
+                  "endLine": 52,
+                  "startColumn": 30,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op1/op1_mem.php"
+                },
+                "region": {
+                  "startLine": 52,
+                  "endLine": 52
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "1368057cf6de2916b357ed56cf9b5744b73d0dc29c5d25740b0ade6f9781583b"
+          },
+          "properties": {
+            "findingId": "1368057cf6de2916",
+            "cwe": "CWE-697"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss",
+          "ruleName": "CWE-79 at vul/overpermission/op1/op1_mem.php:91",
+          "level": "error",
+          "message": {
+            "text": "Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op1/op1_mem.php"
+                },
+                "region": {
+                  "startLine": 91,
+                  "endLine": 91,
+                  "startColumn": 23,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op1/op1_mem.php"
+                },
+                "region": {
+                  "startLine": 91,
+                  "endLine": 91
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "05291fca2d54461d3bae9b306cca1d07f8b9c48c7ee979f622384e5f7333f553"
+          },
+          "properties": {
+            "findingId": "05291fca2d54461d",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison",
+          "ruleName": "CWE-697 at vul/overpermission/op2/op2_admin.php:36",
+          "level": "warning",
+          "message": {
+            "text": "Loose == comparison with user input allows type juggling; use === or hash_equals."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op2/op2_admin.php"
+                },
+                "region": {
+                  "startLine": 36,
+                  "endLine": 36,
+                  "startColumn": 30,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op2/op2_admin.php"
+                },
+                "region": {
+                  "startLine": 36,
+                  "endLine": 36
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "2002ff9e31ce76471cc3e8baf8d9c65f0b65b1b16317a6fed184d06766b67cb6"
+          },
+          "properties": {
+            "findingId": "2002ff9e31ce7647",
+            "cwe": "CWE-697"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison",
+          "ruleName": "CWE-697 at vul/overpermission/op2/op2_admin_edit.php:41",
+          "level": "warning",
+          "message": {
+            "text": "Loose == comparison with user input allows type juggling; use === or hash_equals."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op2/op2_admin_edit.php"
+                },
+                "region": {
+                  "startLine": 41,
+                  "endLine": 41,
+                  "startColumn": 30,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op2/op2_admin_edit.php"
+                },
+                "region": {
+                  "startLine": 41,
+                  "endLine": 41
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "64cfb6c726c8c46c31ec568f8edf64074a699cb93c464a5c6f10e5f98a5be777"
+          },
+          "properties": {
+            "findingId": "64cfb6c726c8c46c",
+            "cwe": "CWE-697"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/overpermission/op2/op2_login.php:34",
+          "level": "warning",
+          "message": {
+            "text": "md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op2/op2_login.php"
+                },
+                "region": {
+                  "startLine": 34,
+                  "endLine": 34,
+                  "startColumn": 46,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op2/op2_login.php"
+                },
+                "region": {
+                  "startLine": 34,
+                  "endLine": 34,
+                  "startColumn": 51,
+                  "endColumn": 65
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op2/op2_login.php"
+                },
+                "region": {
+                  "startLine": 34,
+                  "endLine": 34
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "bbfd79606c7c836b658efb26170673a36ffdaaed076f6b89227bc71095f10625"
+          },
+          "properties": {
+            "findingId": "bbfd79606c7c836b",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/overpermission/op2/op2_login.php:40",
+          "level": "warning",
+          "message": {
+            "text": "md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op2/op2_login.php"
+                },
+                "region": {
+                  "startLine": 40,
+                  "endLine": 40,
+                  "startColumn": 46,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op2/op2_login.php"
+                },
+                "region": {
+                  "startLine": 40,
+                  "endLine": 40,
+                  "startColumn": 51,
+                  "endColumn": 65
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op2/op2_login.php"
+                },
+                "region": {
+                  "startLine": 40,
+                  "endLine": 40
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "4aa4773a267b0b313a1104848bdf4ae17b43d53aac691d7c7ee67073d0347576"
+          },
+          "properties": {
+            "findingId": "4aa4773a267b0b31",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison",
+          "ruleName": "CWE-697 at vul/overpermission/op2/op2_user.php:25",
+          "level": "warning",
+          "message": {
+            "text": "Loose == comparison with user input allows type juggling; use === or hash_equals."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op2/op2_user.php"
+                },
+                "region": {
+                  "startLine": 25,
+                  "endLine": 25,
+                  "startColumn": 30,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op2/op2_user.php"
+                },
+                "region": {
+                  "startLine": 25,
+                  "endLine": 25
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "f9ce87e7e50b282a4b73e3d6e70b10d0133232dcf899839b15deacb1bdce0e55"
+          },
+          "properties": {
+            "findingId": "f9ce87e7e50b282a",
+            "cwe": "CWE-697"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-dynamic-eval",
+          "ruleName": "CWE-95 at vul/rce/rce_eval.php:19",
+          "level": "error",
+          "message": {
+            "text": "User input reaches eval; never execute dynamically built code."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/rce/rce_eval.php"
+                },
+                "region": {
+                  "startLine": 19,
+                  "endLine": 19,
+                  "startColumn": 10,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/rce/rce_eval.php"
+                },
+                "region": {
+                  "startLine": 19,
+                  "endLine": 19
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "6095a0c2af62ffa96a76c9ffc9af717c716b420e4856ff04de38db0429155343"
+          },
+          "properties": {
+            "findingId": "6095a0c2af62ffa9",
+            "cwe": "CWE-95"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-command-injection",
+          "ruleName": "CWE-78 at vul/rce/rce_ping.php:26",
+          "level": "error",
+          "message": {
+            "text": "User input reaches a shell command; use escapeshellarg or avoid the shell."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/rce/rce_ping.php"
+                },
+                "region": {
+                  "startLine": 26,
+                  "endLine": 26,
+                  "startColumn": 18,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/rce/rce_ping.php"
+                },
+                "region": {
+                  "startLine": 26,
+                  "endLine": 26
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "7b674837c9dd94f1a63ba8cad0a8194cbddbd6855a386ea00bf282acda049b69"
+          },
+          "properties": {
+            "findingId": "7b674837c9dd94f1",
+            "cwe": "CWE-78"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-command-injection",
+          "ruleName": "CWE-78 at vul/rce/rce_ping.php:28",
+          "level": "error",
+          "message": {
+            "text": "User input reaches a shell command; use escapeshellarg or avoid the shell."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/rce/rce_ping.php"
+                },
+                "region": {
+                  "startLine": 28,
+                  "endLine": 28,
+                  "startColumn": 18,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/rce/rce_ping.php"
+                },
+                "region": {
+                  "startLine": 28,
+                  "endLine": 28
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "6ee6eea46d4da5ec3a630ca99529dd18190f09a01faf9e40b678bbd3b9448e1c"
+          },
+          "properties": {
+            "findingId": "6ee6eea46d4da5ec",
+            "cwe": "CWE-78"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss",
+          "ruleName": "CWE-79 at vul/rce/rce_ping.php:66",
+          "level": "error",
+          "message": {
+            "text": "Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/rce/rce_ping.php"
+                },
+                "region": {
+                  "startLine": 66,
+                  "endLine": 66,
+                  "startColumn": 25,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/rce/rce_ping.php"
+                },
+                "region": {
+                  "startLine": 66,
+                  "endLine": 66
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "064034230a881b72ecff9ddc545c1e44e351062a870dc310d828a130400efc06"
+          },
+          "properties": {
+            "findingId": "064034230a881b72",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-sql-concatenation",
+          "ruleName": "CWE-89 at vul/sqli/sqli_blind_b.php:29",
+          "level": "error",
+          "message": {
+            "text": "User input reaches a SQL query; use prepared statements with bound parameters."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_blind_b.php"
+                },
+                "region": {
+                  "startLine": 29,
+                  "endLine": 29,
+                  "startColumn": 13,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_blind_b.php"
+                },
+                "region": {
+                  "startLine": 29,
+                  "endLine": 29
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "1cd0d4a7fb5901490657a256d1e05395f1ac21bdb4fc18976365e8e9a05d88cf"
+          },
+          "properties": {
+            "findingId": "1cd0d4a7fb590149",
+            "cwe": "CWE-89"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss",
+          "ruleName": "CWE-79 at vul/sqli/sqli_blind_b.php:72",
+          "level": "error",
+          "message": {
+            "text": "Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_blind_b.php"
+                },
+                "region": {
+                  "startLine": 72,
+                  "endLine": 72,
+                  "startColumn": 23,
+                  "endColumn": 34
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "a7cfa34cc7e0d3dd8d13bb90433eb663c2f2a90ec8cda960cea8e9d3581f1bc4"
+          },
+          "properties": {
+            "findingId": "a7cfa34cc7e0d3dd",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-sql-concatenation",
+          "ruleName": "CWE-89 at vul/sqli/sqli_blind_t.php:29",
+          "level": "error",
+          "message": {
+            "text": "User input reaches a SQL query; use prepared statements with bound parameters."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_blind_t.php"
+                },
+                "region": {
+                  "startLine": 29,
+                  "endLine": 29,
+                  "startColumn": 13,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_blind_t.php"
+                },
+                "region": {
+                  "startLine": 29,
+                  "endLine": 29
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "89917cb5d15b27ee88fb20d44b14ffabbe1d44a9dc62b19fb97479f124ed7a9c"
+          },
+          "properties": {
+            "findingId": "89917cb5d15b27ee",
+            "cwe": "CWE-89"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison",
+          "ruleName": "CWE-697 at vul/sqli/sqli_header/sqli_header.php:45",
+          "level": "warning",
+          "message": {
+            "text": "Loose == comparison with user input allows type juggling; use === or hash_equals."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_header/sqli_header.php"
+                },
+                "region": {
+                  "startLine": 45,
+                  "endLine": 45,
+                  "startColumn": 30,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_header/sqli_header.php"
+                },
+                "region": {
+                  "startLine": 45,
+                  "endLine": 45
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "69bc3e6e9a5642137723e8f363de76559b2d85a2c735a22bcd8570fadda56de5"
+          },
+          "properties": {
+            "findingId": "69bc3e6e9a564213",
+            "cwe": "CWE-697"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/sqli/sqli_header/sqli_header_login.php:37",
+          "level": "warning",
+          "message": {
+            "text": "md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_header/sqli_header_login.php"
+                },
+                "region": {
+                  "startLine": 37,
+                  "endLine": 37,
+                  "startColumn": 33,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_header/sqli_header_login.php"
+                },
+                "region": {
+                  "startLine": 37,
+                  "endLine": 37,
+                  "startColumn": 38,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_header/sqli_header_login.php"
+                },
+                "region": {
+                  "startLine": 37,
+                  "endLine": 37
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "e9588f88e311cc04244777b3066250f2e015d32df470b83c8f5b64ea146f14e9"
+          },
+          "properties": {
+            "findingId": "e9588f88e311cc04",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss",
+          "ruleName": "CWE-79 at vul/sqli/sqli_id.php:80",
+          "level": "error",
+          "message": {
+            "text": "Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_id.php"
+                },
+                "region": {
+                  "startLine": 80,
+                  "endLine": 80,
+                  "startColumn": 23,
+                  "endColumn": 34
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "1c54480e213a8a7a6c18facc19cc5d3e1999d3f7964972df35b63c6946f4a8d1"
+          },
+          "properties": {
+            "findingId": "1c54480e213a8a7a",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/sqli/sqli_iu/sqli_login.php:39",
+          "level": "warning",
+          "message": {
+            "text": "md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_iu/sqli_login.php"
+                },
+                "region": {
+                  "startLine": 39,
+                  "endLine": 39,
+                  "startColumn": 43,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_iu/sqli_login.php"
+                },
+                "region": {
+                  "startLine": 39,
+                  "endLine": 39,
+                  "startColumn": 48,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_iu/sqli_login.php"
+                },
+                "region": {
+                  "startLine": 39,
+                  "endLine": 39
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "45793a84c1d719a7738246e7de57edc8488c71b37927dee16b99aad7702170b7"
+          },
+          "properties": {
+            "findingId": "45793a84c1d719a7",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison",
+          "ruleName": "CWE-697 at vul/sqli/sqli_iu/sqli_mem.php:29",
+          "level": "warning",
+          "message": {
+            "text": "Loose == comparison with user input allows type juggling; use === or hash_equals."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_iu/sqli_mem.php"
+                },
+                "region": {
+                  "startLine": 29,
+                  "endLine": 29,
+                  "startColumn": 30,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_iu/sqli_mem.php"
+                },
+                "region": {
+                  "startLine": 29,
+                  "endLine": 29
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "3a20571846a1acbcc1435916b9b1af0a46393f7958a16988a89b2d0ecefce7cc"
+          },
+          "properties": {
+            "findingId": "3a20571846a1acbc",
+            "cwe": "CWE-697"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss",
+          "ruleName": "CWE-79 at vul/sqli/sqli_search.php:78",
+          "level": "error",
+          "message": {
+            "text": "Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_search.php"
+                },
+                "region": {
+                  "startLine": 78,
+                  "endLine": 78,
+                  "startColumn": 23,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_search.php"
+                },
+                "region": {
+                  "startLine": 78,
+                  "endLine": 78,
+                  "startColumn": 35,
+                  "endColumn": 47
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "8afa43dc5f8fa8ffce9bbe81a20391767508cf1c52b082082e6102fb13b006dd"
+          },
+          "properties": {
+            "findingId": "8afa43dc5f8fa8ff",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss",
+          "ruleName": "CWE-79 at vul/sqli/sqli_str.php:73",
+          "level": "error",
+          "message": {
+            "text": "Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_str.php"
+                },
+                "region": {
+                  "startLine": 73,
+                  "endLine": 73,
+                  "startColumn": 23,
+                  "endColumn": 34
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "20bb3e81bdd9e24dd1565f04a224c4959a2c580bffb988b4f8fffbc8afcb5718"
+          },
+          "properties": {
+            "findingId": "20bb3e81bdd9e24d",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-sql-concatenation",
+          "ruleName": "CWE-89 at vul/sqli/sqli_widebyte.php:35",
+          "level": "error",
+          "message": {
+            "text": "User input reaches a SQL query; use prepared statements with bound parameters."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_widebyte.php"
+                },
+                "region": {
+                  "startLine": 35,
+                  "endLine": 35,
+                  "startColumn": 13,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_widebyte.php"
+                },
+                "region": {
+                  "startLine": 35,
+                  "endLine": 35
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "581819fa82a72a628c96cb90ed1ba26c569941293fa1ecfe532b96437911162c"
+          },
+          "properties": {
+            "findingId": "581819fa82a72a62",
+            "cwe": "CWE-89"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss",
+          "ruleName": "CWE-79 at vul/sqli/sqli_widebyte.php:78",
+          "level": "error",
+          "message": {
+            "text": "Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_widebyte.php"
+                },
+                "region": {
+                  "startLine": 78,
+                  "endLine": 78,
+                  "startColumn": 23,
+                  "endColumn": 34
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "3875d74116f6937d607aeffbac63e90acb1400c7b67bd55b8f521dab406659a1"
+          },
+          "properties": {
+            "findingId": "3875d74116f6937d",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss",
+          "ruleName": "CWE-79 at vul/sqli/sqli_x.php:72",
+          "level": "error",
+          "message": {
+            "text": "Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_x.php"
+                },
+                "region": {
+                  "startLine": 72,
+                  "endLine": 72,
+                  "startColumn": 23,
+                  "endColumn": 34
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "aa2e04869dc6feb929c96e4fc06eea2701f3537fed6fdfdadc9c63cdeec43c82"
+          },
+          "properties": {
+            "findingId": "aa2e04869dc6feb9",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-ssrf",
+          "ruleName": "CWE-918 at vul/ssrf/ssrf_curl.php:31",
+          "level": "error",
+          "message": {
+            "text": "User input controls an outbound request URL; restrict to an allowlist."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/ssrf/ssrf_curl.php"
+                },
+                "region": {
+                  "startLine": 31,
+                  "endLine": 31,
+                  "startColumn": 11,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/ssrf/ssrf_curl.php"
+                },
+                "region": {
+                  "startLine": 31,
+                  "endLine": 31
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "9f1f380fcae6eb6d87f66b254df77c5010f403f37ba6d638d9ca810d79ea6d84"
+          },
+          "properties": {
+            "findingId": "9f1f380fcae6eb6d",
+            "cwe": "CWE-918"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss",
+          "ruleName": "CWE-79 at vul/ssrf/ssrf_curl.php:39",
+          "level": "error",
+          "message": {
+            "text": "Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/ssrf/ssrf_curl.php"
+                },
+                "region": {
+                  "startLine": 39,
+                  "endLine": 39,
+                  "startColumn": 5,
+                  "endColumn": 15
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/ssrf/ssrf_curl.php"
+                },
+                "region": {
+                  "startLine": 39,
+                  "endLine": 39
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "dbbc92d7c0cda34bb56424517d294a1a3ac6db77221b18b4dfac1c9837721b19"
+          },
+          "properties": {
+            "findingId": "dbbc92d7c0cda34b",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-path-traversal",
+          "ruleName": "CWE-22 at vul/ssrf/ssrf_fgc.php:27",
+          "level": "error",
+          "message": {
+            "text": "User input reaches a filesystem path; validate against an allowlist."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/ssrf/ssrf_fgc.php"
+                },
+                "region": {
+                  "startLine": 27,
+                  "endLine": 27,
+                  "startColumn": 12,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/ssrf/ssrf_fgc.php"
+                },
+                "region": {
+                  "startLine": 27,
+                  "endLine": 27
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "0d0c5d472d56b5ddf02fdce47400acf129fbcbaba6fd650039268e323d15514b"
+          },
+          "properties": {
+            "findingId": "0d0c5d472d56b5dd",
+            "cwe": "CWE-22"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss",
+          "ruleName": "CWE-79 at vul/ssrf/ssrf_fgc.php:28",
+          "level": "error",
+          "message": {
+            "text": "Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/ssrf/ssrf_fgc.php"
+                },
+                "region": {
+                  "startLine": 28,
+                  "endLine": 28,
+                  "startColumn": 5,
+                  "endColumn": 15
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/ssrf/ssrf_fgc.php"
+                },
+                "region": {
+                  "startLine": 28,
+                  "endLine": 28
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "36f6a3c86032ce2953c049f5b4a4d416851c7341c4986b44f887703fb613849a"
+          },
+          "properties": {
+            "findingId": "36f6a3c86032ce29",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-path-traversal",
+          "ruleName": "CWE-22 at vul/unsafedownload/execdownload.php:19",
+          "level": "error",
+          "message": {
+            "text": "User input reaches a filesystem path; validate against an allowlist."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/unsafedownload/execdownload.php"
+                },
+                "region": {
+                  "startLine": 19,
+                  "endLine": 19,
+                  "startColumn": 5,
+                  "endColumn": 27
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "63d9577445049def790e7bf61be00a3ea5ac6ea2a948054c15889e2528d9119a"
+          },
+          "properties": {
+            "findingId": "63d9577445049def",
+            "cwe": "CWE-22"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss",
+          "ruleName": "CWE-79 at vul/unsafedownload/execdownload.php:37",
+          "level": "error",
+          "message": {
+            "text": "Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/unsafedownload/execdownload.php"
+                },
+                "region": {
+                  "startLine": 37,
+                  "endLine": 37,
+                  "startColumn": 5,
+                  "endColumn": 20
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "e03398ba248acf70f8a9b6eba97a4f146b0e061c84266d09e50e24347809bc22"
+          },
+          "properties": {
+            "findingId": "e03398ba248acf70",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-unsafe-deserialization",
+          "ruleName": "CWE-502 at vul/unserilization/unser.php:30",
+          "level": "error",
+          "message": {
+            "text": "unserialize on user input enables object injection; use json_decode."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/unserilization/unser.php"
+                },
+                "region": {
+                  "startLine": 30,
+                  "endLine": 30,
+                  "startColumn": 19,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/unserilization/unser.php"
+                },
+                "region": {
+                  "startLine": 30,
+                  "endLine": 30
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "2093c6d2dd33eeb3cd886e627d4aab31921c279a3de4ee2fc47302558f247b4e"
+          },
+          "properties": {
+            "findingId": "2093c6d2dd33eeb3",
+            "cwe": "CWE-502"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss",
+          "ruleName": "CWE-79 at vul/unserilization/unser.php:64",
+          "level": "error",
+          "message": {
+            "text": "Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/unserilization/unser.php"
+                },
+                "region": {
+                  "startLine": 64,
+                  "endLine": 64,
+                  "startColumn": 19,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/unserilization/unser.php"
+                },
+                "region": {
+                  "startLine": 64,
+                  "endLine": 64
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "8f9e29f3933fcd1fda13b948a804dfb512f7d32ffca6e2fe6380e96276d59e0f"
+          },
+          "properties": {
+            "findingId": "8f9e29f3933fcd1f",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss",
+          "ruleName": "CWE-79 at vul/xss/fixxss.php:126",
+          "level": "error",
+          "message": {
+            "text": "Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/fixxss.php"
+                },
+                "region": {
+                  "startLine": 126,
+                  "endLine": 126,
+                  "startColumn": 36,
+                  "endColumn": 46
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "7e834ff344fbb3e4d6dc70781730bdefc4ae2a7337277c4683f25bba0a9eb4f8"
+          },
+          "properties": {
+            "findingId": "7e834ff344fbb3e4",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss",
+          "ruleName": "CWE-79 at vul/xss/fixxss.php:146",
+          "level": "error",
+          "message": {
+            "text": "Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/fixxss.php"
+                },
+                "region": {
+                  "startLine": 146,
+                  "endLine": 146,
+                  "startColumn": 25,
+                  "endColumn": 36
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "f466a3f015c3f8d473a18b8bab249204941a1f3504170ec7566709afecf6e2d7"
+          },
+          "properties": {
+            "findingId": "f466a3f015c3f8d4",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss",
+          "ruleName": "CWE-79 at vul/xss/xss_01.php:60",
+          "level": "error",
+          "message": {
+            "text": "Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xss_01.php"
+                },
+                "region": {
+                  "startLine": 60,
+                  "endLine": 60,
+                  "startColumn": 23,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xss_01.php"
+                },
+                "region": {
+                  "startLine": 60,
+                  "endLine": 60
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "3a880140c8f60bd1e1df044773988ba5f37e99f4344d6308a2fb423b5d6e1fc1"
+          },
+          "properties": {
+            "findingId": "3a880140c8f60bd1",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison",
+          "ruleName": "CWE-697 at vul/xss/xss_03.php:24",
+          "level": "warning",
+          "message": {
+            "text": "Loose == comparison with user input allows type juggling; use === or hash_equals."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xss_03.php"
+                },
+                "region": {
+                  "startLine": 24,
+                  "endLine": 24,
+                  "startColumn": 8,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xss_03.php"
+                },
+                "region": {
+                  "startLine": 24,
+                  "endLine": 24
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "6942068dabd22bf9527da7b9fe050cea606ea1b068826a95aa128ab5cfb8f11a"
+          },
+          "properties": {
+            "findingId": "6942068dabd22bf9",
+            "cwe": "CWE-697"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss",
+          "ruleName": "CWE-79 at vul/xss/xss_04.php:81",
+          "level": "error",
+          "message": {
+            "text": "Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xss_04.php"
+                },
+                "region": {
+                  "startLine": 81,
+                  "endLine": 81,
+                  "startColumn": 16,
+                  "endColumn": 28
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "ec18641bd3fad28c7443cca1f49d86a8083ddd1e34cd8afbc4bc9b33569b26c4"
+          },
+          "properties": {
+            "findingId": "ec18641bd3fad28c",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison",
+          "ruleName": "CWE-697 at vul/xss/xss_reflected_get.php:24",
+          "level": "warning",
+          "message": {
+            "text": "Loose == comparison with user input allows type juggling; use === or hash_equals."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xss_reflected_get.php"
+                },
+                "region": {
+                  "startLine": 24,
+                  "endLine": 24,
+                  "startColumn": 12,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xss_reflected_get.php"
+                },
+                "region": {
+                  "startLine": 24,
+                  "endLine": 24
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "ea8515969488e45c838d7bf01b17241f7c93e326f66095f7f89d38e582e50439"
+          },
+          "properties": {
+            "findingId": "ea8515969488e45c",
+            "cwe": "CWE-697"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss",
+          "ruleName": "CWE-79 at vul/xss/xss_reflected_get.php:63",
+          "level": "error",
+          "message": {
+            "text": "Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xss_reflected_get.php"
+                },
+                "region": {
+                  "startLine": 63,
+                  "endLine": 63,
+                  "startColumn": 23,
+                  "endColumn": 34
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "c14026d4320f0976201c3907ec2f05a0776ac286a455fdbe94c7d32c78563a44"
+          },
+          "properties": {
+            "findingId": "c14026d4320f0976",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison",
+          "ruleName": "CWE-697 at vul/xss/xssblind/admin.php:39",
+          "level": "warning",
+          "message": {
+            "text": "Loose == comparison with user input allows type juggling; use === or hash_equals."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xssblind/admin.php"
+                },
+                "region": {
+                  "startLine": 39,
+                  "endLine": 39,
+                  "startColumn": 30,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xssblind/admin.php"
+                },
+                "region": {
+                  "startLine": 39,
+                  "endLine": 39
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "9562816013056bdd9e3551712be1ab22e2f0c82c237d965dfbc57b15699552c7"
+          },
+          "properties": {
+            "findingId": "9562816013056bdd",
+            "cwe": "CWE-697"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/xss/xssblind/admin_login.php:43",
+          "level": "warning",
+          "message": {
+            "text": "md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xssblind/admin_login.php"
+                },
+                "region": {
+                  "startLine": 43,
+                  "endLine": 43,
+                  "startColumn": 33,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xssblind/admin_login.php"
+                },
+                "region": {
+                  "startLine": 43,
+                  "endLine": 43,
+                  "startColumn": 38,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xssblind/admin_login.php"
+                },
+                "region": {
+                  "startLine": 43,
+                  "endLine": 43
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "2dd7efa35ad5173f45af0449e3960777a4d424ea409e113a0d73dc85df61d92c"
+          },
+          "properties": {
+            "findingId": "2dd7efa35ad5173f",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/xss/xsspost/post_login.php:43",
+          "level": "warning",
+          "message": {
+            "text": "md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xsspost/post_login.php"
+                },
+                "region": {
+                  "startLine": 43,
+                  "endLine": 43,
+                  "startColumn": 33,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xsspost/post_login.php"
+                },
+                "region": {
+                  "startLine": 43,
+                  "endLine": 43,
+                  "startColumn": 38,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xsspost/post_login.php"
+                },
+                "region": {
+                  "startLine": 43,
+                  "endLine": 43
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "d00f75f6fbbf0c5fa2abe63b8bc8639cdcc115addf8d2d36571ebdc63c440c9f"
+          },
+          "properties": {
+            "findingId": "d00f75f6fbbf0c5f",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison",
+          "ruleName": "CWE-697 at vul/xss/xsspost/xss_reflected_post.php:44",
+          "level": "warning",
+          "message": {
+            "text": "Loose == comparison with user input allows type juggling; use === or hash_equals."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xsspost/xss_reflected_post.php"
+                },
+                "region": {
+                  "startLine": 44,
+                  "endLine": 44,
+                  "startColumn": 12,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xsspost/xss_reflected_post.php"
+                },
+                "region": {
+                  "startLine": 44,
+                  "endLine": 44
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "da2e398535fc8fb2d1e357ac8eb1a69b99050c1d490d70dd0c62f8aaf1e0bb9b"
+          },
+          "properties": {
+            "findingId": "da2e398535fc8fb2",
+            "cwe": "CWE-697"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-loose-comparison",
+          "ruleName": "CWE-697 at vul/xss/xsspost/xss_reflected_post.php:54",
+          "level": "warning",
+          "message": {
+            "text": "Loose == comparison with user input allows type juggling; use === or hash_equals."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xsspost/xss_reflected_post.php"
+                },
+                "region": {
+                  "startLine": 54,
+                  "endLine": 54,
+                  "startColumn": 30,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xsspost/xss_reflected_post.php"
+                },
+                "region": {
+                  "startLine": 54,
+                  "endLine": 54
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "e629b1eced51eaa3f24b054bf704e8a7f24ae831d4df55eaa5aa57e570b563db"
+          },
+          "properties": {
+            "findingId": "e629b1eced51eaa3",
+            "cwe": "CWE-697"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss",
+          "ruleName": "CWE-79 at vul/xss/xsspost/xss_reflected_post.php:96",
+          "level": "error",
+          "message": {
+            "text": "Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xsspost/xss_reflected_post.php"
+                },
+                "region": {
+                  "startLine": 96,
+                  "endLine": 96,
+                  "startColumn": 23,
+                  "endColumn": 34
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "37bec72d012607d42349497b73d1c189cb12e67b8379f0f3dc1fe206dba245fe"
+          },
+          "properties": {
+            "findingId": "37bec72d012607d4",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.php-reflected-xss",
+          "ruleName": "CWE-79 at vul/xxe/xxe_1.php:82",
+          "level": "error",
+          "message": {
+            "text": "Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xxe/xxe_1.php"
+                },
+                "region": {
+                  "startLine": 82,
+                  "endLine": 82,
+                  "startColumn": 19,
+                  "endColumn": 30
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "4ed32a9b1eb65d6bc9e164607008fea13de12b9adf1bbe3722100d4a8031d954"
+          },
+          "properties": {
+            "findingId": "4ed32a9b1eb65d6b",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at inc/function.php:102",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 102,
+                  "endLine": 102
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "645f78d4a2640a76b574659849d2eb949f3a04bd2815efe0eefa6f556b4ab2ae"
+          },
+          "properties": {
+            "findingId": "645f78d4a2640a76",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at inc/function.php:118",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 118,
+                  "endLine": 118
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "75f957831bb3aca9e8d245deda2c6fb8650f6465baa73b514301b5c357de023d"
+          },
+          "properties": {
+            "findingId": "75f957831bb3aca9",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at inc/function.php:141",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 141,
+                  "endLine": 141
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "265cd532592487b055e52300c40d647d5d69d23397a633d1dd723a3b91cbf34a"
+          },
+          "properties": {
+            "findingId": "265cd532592487b0",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at inc/function.php:163",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 163,
+                  "endLine": 163
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "7d17101a568eac74c9b10734f6003330c24e427a04ceefb09958be99c5daaa58"
+          },
+          "properties": {
+            "findingId": "7d17101a568eac74",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at inc/function.php:178",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 178,
+                  "endLine": 178
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "48b3f0b6e11da8f701d1ca8d48f84d9a057c54e2b23ee41d181dd22e6a4b0b38"
+          },
+          "properties": {
+            "findingId": "48b3f0b6e11da8f7",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at inc/function.php:193",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "inc/function.php"
+                },
+                "region": {
+                  "startLine": 193,
+                  "endLine": 193
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "ad1485112ea9e7671fc9d85d40e9e8b86a9a7bae0d057ecb7d1f7ee322f89d81"
+          },
+          "properties": {
+            "findingId": "ad1485112ea9e767",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at install.php:54",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "install.php"
+                },
+                "region": {
+                  "startLine": 54,
+                  "endLine": 54
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "56ff204d59541ddf6b3584fbbb82f0f8a37712c40748e08a6cb50a4522b69753"
+          },
+          "properties": {
+            "findingId": "56ff204d59541ddf",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at install.php:108",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "install.php"
+                },
+                "region": {
+                  "startLine": 108,
+                  "endLine": 108
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "ee4888698027e1bdc572ca68253156aa7776256b536a1726ec90e385537abc86"
+          },
+          "properties": {
+            "findingId": "ee4888698027e1bd",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at install.php:109",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "install.php"
+                },
+                "region": {
+                  "startLine": 109,
+                  "endLine": 109
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "9d81f8a44a6854fb5116e5cdc908cc0dcc97273b85cf1ea6ae2e259b3b09c793"
+          },
+          "properties": {
+            "findingId": "9d81f8a44a6854fb",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at install.php:110",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "install.php"
+                },
+                "region": {
+                  "startLine": 110,
+                  "endLine": 110
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "ddcd9879c98e8515d44f7a97dacb7d01bfa028d142c3c52bcd088475bc467a4c"
+          },
+          "properties": {
+            "findingId": "ddcd9879c98e8515",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at install.php:111",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "install.php"
+                },
+                "region": {
+                  "startLine": 111,
+                  "endLine": 111
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "7de7fde233584925b593115d215ca556591c783b86c0f873794574463d6ea8bb"
+          },
+          "properties": {
+            "findingId": "7de7fde233584925",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at install.php:112",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "install.php"
+                },
+                "region": {
+                  "startLine": 112,
+                  "endLine": 112
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "6e469e62804508db9509d7eeaed6e6b70a43afd2f593982bff6330676e1a8c21"
+          },
+          "properties": {
+            "findingId": "6e469e62804508db",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at install.php:113",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "install.php"
+                },
+                "region": {
+                  "startLine": 113,
+                  "endLine": 113
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "b120558dda9ce8e40bc6317c3f549a8e4ae3799d68a76627c968c54c8c45550d"
+          },
+          "properties": {
+            "findingId": "b120558dda9ce8e4",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at install.php:114",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "install.php"
+                },
+                "region": {
+                  "startLine": 114,
+                  "endLine": 114
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "9e72300ea2a5ce41dbc93685ae7f6135701a9944cfb56753677c155a4f00b3a6"
+          },
+          "properties": {
+            "findingId": "9e72300ea2a5ce41",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at pkxss/inc/mysql.inc.php:36",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "pkxss/inc/mysql.inc.php"
+                },
+                "region": {
+                  "startLine": 36,
+                  "endLine": 36
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "445ffedc76f0610864e1cbd475270e263bf39aa30a8982edfebe071f71921c67"
+          },
+          "properties": {
+            "findingId": "445ffedc76f06108",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at pkxss/pkxss_install.php:54",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "pkxss/pkxss_install.php"
+                },
+                "region": {
+                  "startLine": 54,
+                  "endLine": 54
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "4502ccbd69bdaf25d6c37c4927ea9b1b29f0ec8b03386273c7b4450dde0b2037"
+          },
+          "properties": {
+            "findingId": "4502ccbd69bdaf25",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at pkxss/pkxss_login.php:15",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "pkxss/pkxss_login.php"
+                },
+                "region": {
+                  "startLine": 15,
+                  "endLine": 15
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "7842ba679b3542219daa1bdc44c263df5b11bab932ca3ac1cbb97a040b9f2540"
+          },
+          "properties": {
+            "findingId": "7842ba679b354221",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/burteforce/bf_client.php:26",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/burteforce/bf_client.php"
+                },
+                "region": {
+                  "startLine": 26,
+                  "endLine": 26
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "929dd8080817bc4bd1fce35370aea62c8c3feebe16515a2cd0ea9766673ec25a"
+          },
+          "properties": {
+            "findingId": "929dd8080817bc4b",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-reflected-xss",
+          "ruleName": "CWE-79 at vul/burteforce/bf_client.php:117",
+          "level": "error",
+          "message": {
+            "text": "php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/burteforce/bf_client.php"
+                },
+                "region": {
+                  "startLine": 117,
+                  "endLine": 117
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "629ff6903f2e0379abc21fbf9fb48fef065c9013ce93129592be16e2c8e444d8"
+          },
+          "properties": {
+            "findingId": "629ff6903f2e0379",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/burteforce/bf_form.php:29",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/burteforce/bf_form.php"
+                },
+                "region": {
+                  "startLine": 29,
+                  "endLine": 29
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "f5c099059b0a89253b784d571659dc31b69808f97989920d5cf2bf25b514f36a"
+          },
+          "properties": {
+            "findingId": "f5c099059b0a8925",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-reflected-xss",
+          "ruleName": "CWE-79 at vul/burteforce/bf_form.php:114",
+          "level": "error",
+          "message": {
+            "text": "php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/burteforce/bf_form.php"
+                },
+                "region": {
+                  "startLine": 114,
+                  "endLine": 114
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "c915dd0dfd4a21ccb8ef0143ce7ac20be2e622a4cdd2c7b87df67adcc5908435"
+          },
+          "properties": {
+            "findingId": "c915dd0dfd4a21cc",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/burteforce/bf_server.php:45",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/burteforce/bf_server.php"
+                },
+                "region": {
+                  "startLine": 45,
+                  "endLine": 45
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "e5406ad2b481933636a6a7641b028371e0ac9f00ccf8e49df6391699badfa43b"
+          },
+          "properties": {
+            "findingId": "e5406ad2b4819336",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-reflected-xss",
+          "ruleName": "CWE-79 at vul/burteforce/bf_server.php:135",
+          "level": "error",
+          "message": {
+            "text": "php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/burteforce/bf_server.php"
+                },
+                "region": {
+                  "startLine": 135,
+                  "endLine": 135
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "e93047b3f49b172d4f7428024e4da1eedacd675e933b33d4a766c4ea67dbf987"
+          },
+          "properties": {
+            "findingId": "e93047b3f49b172d",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/burteforce/bf_token.php:30",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/burteforce/bf_token.php"
+                },
+                "region": {
+                  "startLine": 30,
+                  "endLine": 30
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "95e8d35e25e111a29d65f8cf4662f830230e404c488a1cf3a0df6f08c90f48f6"
+          },
+          "properties": {
+            "findingId": "95e8d35e25e111a2",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-reflected-xss",
+          "ruleName": "CWE-79 at vul/burteforce/bf_token.php:115",
+          "level": "error",
+          "message": {
+            "text": "php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/burteforce/bf_token.php"
+                },
+                "region": {
+                  "startLine": 115,
+                  "endLine": 115
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "dfc582275267154e16cfce8baf1dca6801e15740810a87481c4b5b814ab79a81"
+          },
+          "properties": {
+            "findingId": "dfc582275267154e",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "php-reflected-xss",
+          "ruleName": "CWE-79 at vul/burteforce/bf_token.php:120",
+          "level": "error",
+          "message": {
+            "text": "php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/burteforce/bf_token.php"
+                },
+                "region": {
+                  "startLine": 120,
+                  "endLine": 120
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "ae51b7c8b30dac6fbaac1859fb2543ebb0d6c8bebe72346f4b126e71856bed5f"
+          },
+          "properties": {
+            "findingId": "ae51b7c8b30dac6f",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/csrf/csrfget/csrf_get_login.php:36",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/csrf/csrfget/csrf_get_login.php"
+                },
+                "region": {
+                  "startLine": 36,
+                  "endLine": 36
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "fbdbf5d0793d71e68ff91f7503f3b4c7becf94e396213b94995b0df8941e2cd8"
+          },
+          "properties": {
+            "findingId": "fbdbf5d0793d71e6",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/csrf/csrfpost/csrf_post_login.php:36",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/csrf/csrfpost/csrf_post_login.php"
+                },
+                "region": {
+                  "startLine": 36,
+                  "endLine": 36
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "760b50e665607f9c907691dc2c11028458d5d74c70f6801aa07df76687f572e3"
+          },
+          "properties": {
+            "findingId": "760b50e665607f9c",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/csrf/csrftoken/token_get_login.php:38",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/csrf/csrftoken/token_get_login.php"
+                },
+                "region": {
+                  "startLine": 38,
+                  "endLine": 38
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "b3e1c52ec484956370da7a11865563eb50eae4bd89d1b81b22cd693af0eb6773"
+          },
+          "properties": {
+            "findingId": "b3e1c52ec4849563",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-path-traversal",
+          "ruleName": "CWE-22 at vul/dir/dir_list.php:21",
+          "level": "error",
+          "message": {
+            "text": "php-path-traversal: User input reaches a filesystem path; validate against an allowlist."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/dir/dir_list.php"
+                },
+                "region": {
+                  "startLine": 21,
+                  "endLine": 21
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "62750a2037763002b9148dff6091cfcab0e6442ce044bf82eae1d692c72a7c7b"
+          },
+          "properties": {
+            "findingId": "62750a2037763002",
+            "cwe": "CWE-22"
+          }
+        },
+        {
+          "ruleId": "php-path-traversal",
+          "ruleName": "CWE-22 at vul/fileinclude/fi_local.php:26",
+          "level": "error",
+          "message": {
+            "text": "php-path-traversal: User input reaches a filesystem path; validate against an allowlist."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/fileinclude/fi_local.php"
+                },
+                "region": {
+                  "startLine": 26,
+                  "endLine": 26
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "443bd57e5410bf770817315ccf2cc7e90b7c37c78795407678d71b46bb7e93f4"
+          },
+          "properties": {
+            "findingId": "443bd57e5410bf77",
+            "cwe": "CWE-22"
+          }
+        },
+        {
+          "ruleId": "php-path-traversal",
+          "ruleName": "CWE-22 at vul/fileinclude/fi_local.php:41",
+          "level": "error",
+          "message": {
+            "text": "php-path-traversal: User input reaches a filesystem path; validate against an allowlist."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/fileinclude/fi_local.php"
+                },
+                "region": {
+                  "startLine": 41,
+                  "endLine": 41
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "f15838a4a50e89677425527ea98b9b209e9bd42c1920cda71a7382bbbc8d2030"
+          },
+          "properties": {
+            "findingId": "f15838a4a50e8967",
+            "cwe": "CWE-22"
+          }
+        },
+        {
+          "ruleId": "php-path-traversal",
+          "ruleName": "CWE-22 at vul/fileinclude/fi_remote.php:53",
+          "level": "error",
+          "message": {
+            "text": "php-path-traversal: User input reaches a filesystem path; validate against an allowlist."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/fileinclude/fi_remote.php"
+                },
+                "region": {
+                  "startLine": 53,
+                  "endLine": 53
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "d50d95fcef026d91e338b700d07a18f45c1f84a3f2035f914b783401c1386b27"
+          },
+          "properties": {
+            "findingId": "d50d95fcef026d91",
+            "cwe": "CWE-22"
+          }
+        },
+        {
+          "ruleId": "php-path-traversal",
+          "ruleName": "CWE-22 at vul/fileinclude/fi_remote.php:74",
+          "level": "error",
+          "message": {
+            "text": "php-path-traversal: User input reaches a filesystem path; validate against an allowlist."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/fileinclude/fi_remote.php"
+                },
+                "region": {
+                  "startLine": 74,
+                  "endLine": 74
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "b858f81f4a8d159aef9e194e91193e3ad635cc18d9c5ac8054f8e38384c15580"
+          },
+          "properties": {
+            "findingId": "b858f81f4a8d159a",
+            "cwe": "CWE-22"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/infoleak/findabc.php:30",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/infoleak/findabc.php"
+                },
+                "region": {
+                  "startLine": 30,
+                  "endLine": 30
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "25b2b6fbfd6ec0b7325346ffc457df6ec5873c570414f682e1eb3445e2159062"
+          },
+          "properties": {
+            "findingId": "25b2b6fbfd6ec0b7",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/overpermission/op1/op1_login.php:32",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op1/op1_login.php"
+                },
+                "region": {
+                  "startLine": 32,
+                  "endLine": 32
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "7311edce54dac2d5fc7094fc9156c2cd058e3b6918631dca507c5d95e2484e71"
+          },
+          "properties": {
+            "findingId": "7311edce54dac2d5",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-reflected-xss",
+          "ruleName": "CWE-79 at vul/overpermission/op1/op1_mem.php:88",
+          "level": "error",
+          "message": {
+            "text": "php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op1/op1_mem.php"
+                },
+                "region": {
+                  "startLine": 88,
+                  "endLine": 88
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "3310c2194d577533189365d5fcb841838f01fe62f1a072f09751d2cab902e7d8"
+          },
+          "properties": {
+            "findingId": "3310c2194d577533",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/overpermission/op2/op2_admin_edit.php:29",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op2/op2_admin_edit.php"
+                },
+                "region": {
+                  "startLine": 29,
+                  "endLine": 29
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "30b6116367206007ddb49d871dcfc0bff95016098c500179e3b5954d50f328b3"
+          },
+          "properties": {
+            "findingId": "30b6116367206007",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/overpermission/op2/op2_login.php:28",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/overpermission/op2/op2_login.php"
+                },
+                "region": {
+                  "startLine": 28,
+                  "endLine": 28
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "82b435bed378d903e06d106d7ee9a781069cfee5c068df1379caf805cc58fa84"
+          },
+          "properties": {
+            "findingId": "82b435bed378d903",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-reflected-xss",
+          "ruleName": "CWE-79 at vul/sqli/sqli_del.php:90",
+          "level": "error",
+          "message": {
+            "text": "php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_del.php"
+                },
+                "region": {
+                  "startLine": 90,
+                  "endLine": 90
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "cabd3ed3186b296c5e8cda5fd3b42a4718c68246ae7698a5d796215640073862"
+          },
+          "properties": {
+            "findingId": "cabd3ed3186b296c",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/sqli/sqli_header/sqli_header_login.php:32",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_header/sqli_header_login.php"
+                },
+                "region": {
+                  "startLine": 32,
+                  "endLine": 32
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "27579e5605da3095cbfae820d90332695daab2ed81f611468f286d310fcb1356"
+          },
+          "properties": {
+            "findingId": "27579e5605da3095",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/sqli/sqli_iu/sqli_login.php:34",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_iu/sqli_login.php"
+                },
+                "region": {
+                  "startLine": 34,
+                  "endLine": 34
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "66ac3eacc9bfc27a47ff7eb510a8bdbd9181201e0e1aebb08eaa02ac97855917"
+          },
+          "properties": {
+            "findingId": "66ac3eacc9bfc27a",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/sqli/sqli_iu/sqli_reg.php:31",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/sqli/sqli_iu/sqli_reg.php"
+                },
+                "region": {
+                  "startLine": 31,
+                  "endLine": 31
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "bf0b60e69772afbbb9f5def78ac96fc55618ff611d0c78cef997868f2ae36aec"
+          },
+          "properties": {
+            "findingId": "bf0b60e69772afbb",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-ssrf",
+          "ruleName": "CWE-918 at vul/ssrf/ssrf_curl.php:34",
+          "level": "error",
+          "message": {
+            "text": "php-ssrf: User input controls an outbound request URL; restrict to an allowlist."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/ssrf/ssrf_curl.php"
+                },
+                "region": {
+                  "startLine": 34,
+                  "endLine": 34
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "bd75828843a0d4ac4c7fae2a883257dffe3f7b44f53c79863aa15472f62bd62f"
+          },
+          "properties": {
+            "findingId": "bd75828843a0d4ac",
+            "cwe": "CWE-918"
+          }
+        },
+        {
+          "ruleId": "php-ssrf",
+          "ruleName": "CWE-918 at vul/ssrf/ssrf_fgc.php:27",
+          "level": "error",
+          "message": {
+            "text": "php-ssrf: User input controls an outbound request URL; restrict to an allowlist."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/ssrf/ssrf_fgc.php"
+                },
+                "region": {
+                  "startLine": 27,
+                  "endLine": 27
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "1f6b1ba15f0adab7d8cf1bf56f6b69ff4fd8f428533a292f602dccd1715f08ed"
+          },
+          "properties": {
+            "findingId": "1f6b1ba15f0adab7",
+            "cwe": "CWE-918"
+          }
+        },
+        {
+          "ruleId": "php-unsafe-deserialization",
+          "ruleName": "CWE-502 at vul/unserilization/unserilization.php:61",
+          "level": "error",
+          "message": {
+            "text": "php-unsafe-deserialization: unserialize on user input enables object injection; use json_decode."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/unserilization/unserilization.php"
+                },
+                "region": {
+                  "startLine": 61,
+                  "endLine": 61
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "690fc4b6cb014392028f75b3b924a3a52059f86676145ef1dd764306a5451e12"
+          },
+          "properties": {
+            "findingId": "690fc4b6cb014392",
+            "cwe": "CWE-502"
+          }
+        },
+        {
+          "ruleId": "php-unsafe-deserialization",
+          "ruleName": "CWE-502 at vul/unserilization/unserilization.php:87",
+          "level": "error",
+          "message": {
+            "text": "php-unsafe-deserialization: unserialize on user input enables object injection; use json_decode."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/unserilization/unserilization.php"
+                },
+                "region": {
+                  "startLine": 87,
+                  "endLine": 87
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "304011387d5dc7e22d90d31944e89f251fe5b1ec7e3df7a1470f29251107a3a4"
+          },
+          "properties": {
+            "findingId": "304011387d5dc7e2",
+            "cwe": "CWE-502"
+          }
+        },
+        {
+          "ruleId": "php-preg-replace-eval",
+          "ruleName": "CWE-95 at vul/xss/fixxss.php:88",
+          "level": "error",
+          "message": {
+            "text": "php-preg-replace-eval: preg_replace with /e executes the replacement; use preg_replace_callback."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/fixxss.php"
+                },
+                "region": {
+                  "startLine": 88,
+                  "endLine": 88
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "e3beaab47c3b0b3042b98b461bbcca1891097f86d9aafc9994a68a77a3d4768b"
+          },
+          "properties": {
+            "findingId": "e3beaab47c3b0b30",
+            "cwe": "CWE-95"
+          }
+        },
+        {
+          "ruleId": "php-path-traversal",
+          "ruleName": "CWE-22 at vul/xss/xss_01.php:16",
+          "level": "error",
+          "message": {
+            "text": "php-path-traversal: User input reaches a filesystem path; validate against an allowlist."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xss_01.php"
+                },
+                "region": {
+                  "startLine": 16,
+                  "endLine": 16
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "bfa8a733d1da854520044c24a59c2782b0fa7f495331076c6065b3561493cf0d"
+          },
+          "properties": {
+            "findingId": "bfa8a733d1da8545",
+            "cwe": "CWE-22"
+          }
+        },
+        {
+          "ruleId": "php-preg-replace-eval",
+          "ruleName": "CWE-95 at vul/xss/xss_01.php:21",
+          "level": "error",
+          "message": {
+            "text": "php-preg-replace-eval: preg_replace with /e executes the replacement; use preg_replace_callback."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xss_01.php"
+                },
+                "region": {
+                  "startLine": 21,
+                  "endLine": 21
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "f07d90b69153d5f1a93befb7f8a4719f3ed8a6a90cedc39bf81273c552627853"
+          },
+          "properties": {
+            "findingId": "f07d90b69153d5f1",
+            "cwe": "CWE-95"
+          }
+        },
+        {
+          "ruleId": "php-reflected-xss",
+          "ruleName": "CWE-79 at vul/xss/xss_stored.php:39",
+          "level": "error",
+          "message": {
+            "text": "php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xss_stored.php"
+                },
+                "region": {
+                  "startLine": 39,
+                  "endLine": 39
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "3f4437f375a6f26517ee1706b55d20bf9e76ccd0c651fc7694709cea504b0780"
+          },
+          "properties": {
+            "findingId": "3f4437f375a6f265",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "php-reflected-xss",
+          "ruleName": "CWE-79 at vul/xss/xss_stored.php:79",
+          "level": "error",
+          "message": {
+            "text": "php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xss_stored.php"
+                },
+                "region": {
+                  "startLine": 79,
+                  "endLine": 79
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "bf15ea068c40bc1c1bc2d15a598d235268f539fde00ce2f4fc5c3dd0a7ebaf3b"
+          },
+          "properties": {
+            "findingId": "bf15ea068c40bc1c",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "php-reflected-xss",
+          "ruleName": "CWE-79 at vul/xss/xss_stored.php:83",
+          "level": "error",
+          "message": {
+            "text": "php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xss_stored.php"
+                },
+                "region": {
+                  "startLine": 83,
+                  "endLine": 83
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "37d53432164479525dfad13dcce5df23d21ad57006dadfc7615cbb00fe78a968"
+          },
+          "properties": {
+            "findingId": "37d5343216447952",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/xss/xssblind/admin_login.php:35",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xssblind/admin_login.php"
+                },
+                "region": {
+                  "startLine": 35,
+                  "endLine": 35
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "237a29e421344ba2754311cee495ec65fc40936530345ee3fe850cb20f7a8356"
+          },
+          "properties": {
+            "findingId": "237a29e421344ba2",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-reflected-xss",
+          "ruleName": "CWE-79 at vul/xss/xssblind/admin_login.php:47",
+          "level": "error",
+          "message": {
+            "text": "php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xssblind/admin_login.php"
+                },
+                "region": {
+                  "startLine": 47,
+                  "endLine": 47
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "cdbac4f5f02d968f948682a26dd89cfcfdfe443035e36e03988f12799edb6223"
+          },
+          "properties": {
+            "findingId": "cdbac4f5f02d968f",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "php-reflected-xss",
+          "ruleName": "CWE-79 at vul/xss/xssblind/admin_login.php:122",
+          "level": "error",
+          "message": {
+            "text": "php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xssblind/admin_login.php"
+                },
+                "region": {
+                  "startLine": 122,
+                  "endLine": 122
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "2aa44e0346a7fc04632c8479df3562939416f060893c75a98e4c00160de0e8db"
+          },
+          "properties": {
+            "findingId": "2aa44e0346a7fc04",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "php-weak-password-hash",
+          "ruleName": "CWE-328 at vul/xss/xsspost/post_login.php:35",
+          "level": "warning",
+          "message": {
+            "text": "php-weak-password-hash: md5/sha1 are unsuitable for passwords; use password_hash."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xsspost/post_login.php"
+                },
+                "region": {
+                  "startLine": 35,
+                  "endLine": 35
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "e2ae9fc48df5d7c58c328bfcdf20fda030c7f3b3875e584a1f19af4b439d9450"
+          },
+          "properties": {
+            "findingId": "e2ae9fc48df5d7c5",
+            "cwe": "CWE-328"
+          }
+        },
+        {
+          "ruleId": "php-reflected-xss",
+          "ruleName": "CWE-79 at vul/xss/xsspost/post_login.php:47",
+          "level": "error",
+          "message": {
+            "text": "php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xsspost/post_login.php"
+                },
+                "region": {
+                  "startLine": 47,
+                  "endLine": 47
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "35944c255ee76656aeaaa2135be1a60d299104a121578fa48f32ce193daf5465"
+          },
+          "properties": {
+            "findingId": "35944c255ee76656",
+            "cwe": "CWE-79"
+          }
+        },
+        {
+          "ruleId": "php-reflected-xss",
+          "ruleName": "CWE-79 at vul/xss/xsspost/post_login.php:122",
+          "level": "error",
+          "message": {
+            "text": "php-reflected-xss: Request data reaches page output without escaping; use htmlspecialchars."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "vul/xss/xsspost/post_login.php"
+                },
+                "region": {
+                  "startLine": 122,
+                  "endLine": 122
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "97df8feec1efcd9817fa4db2bc17c2efcbfb586fd0fd758d8c603bf58914d4c0"
+          },
+          "properties": {
+            "findingId": "97df8feec1efcd98",
+            "cwe": "CWE-79"
+          }
+        }
+      ],
+      "artifacts": [],
+      "properties": {
+        "counts": {
+          "version": "0.1.0",
+          "total": 137,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0,
+          "unprocessed": 137
+        },
+        "commit": "5e1e8d9d14a3ba61d62f28cf35531c4df4dd24fc",
+        "target": "D:\\dev\\bench-repos\\pikachu",
+        "status": "failed",
+        "gate": "failed",
+        "errors": [
+          "spotbugs: classes directory not found: C:\\Users\\MINH KHOI\\AppData\\Local\\Temp\\vulnscan-snapshot-ohb2ar2r\\target\\classes (run 'mvn compile' first)",
+          "owasp-dependency-check: missing coverage for pom.xml",
+          "spotbugs: required scanner did not complete successfully"
+        ],
+        "configuration": {
+          "schema_version": 1,
+          "profile": "full",
+          "fail_on": "high",
+          "output_dir": "artifacts/deep-compare/pikachu/mine",
+          "timezone": "Asia/Saigon",
+          "timeout": 3600,
+          "max_files": 100000,
+          "allow_dirty": true,
+          "ci": false,
+          "laya": true,
+          "laya_config_path": null,
+          "ai_review": false,
+          "provider_profile": null,
+          "provider_model": null,
+          "ai_report": false,
+          "max_ai_findings": 10,
+          "mode": "hunt",
+          "tools": null
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": false,
+          "toolExecutionNotifications": [
+            {
+              "level": "error",
+              "message": {
+                "text": "spotbugs: classes directory not found: C:\\Users\\MINH KHOI\\AppData\\Local\\Temp\\vulnscan-snapshot-ohb2ar2r\\target\\classes (run 'mvn compile' first)"
+              }
+            },
+            {
+              "level": "error",
+              "message": {
+                "text": "owasp-dependency-check: missing coverage for pom.xml"
+              }
+            },
+            {
+              "level": "error",
+              "message": {
+                "text": "spotbugs: required scanner did not complete successfully"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

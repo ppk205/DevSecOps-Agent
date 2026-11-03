@@ -1,0 +1,140 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "automationDetails": {
+        "id": "run-b441d7dc3f7f4d7cb1699c3b0add0473"
+      },
+      "tool": {
+        "driver": {
+          "name": "devsecops-agent",
+          "version": "0.2.0"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "js-debug-leftover",
+          "ruleName": "CWE-489 at build/utils/log.js:2",
+          "level": "warning",
+          "message": {
+            "text": "js-debug-leftover: Leftover debugger or console call ships debug output; remove it before release."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "build/utils/log.js"
+                },
+                "region": {
+                  "startLine": 2,
+                  "endLine": 2
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "b7ce082f6401dce58aa74c510dcb640b90169b46d3d43d4a110f65b6d9c4bc7d"
+          },
+          "properties": {
+            "findingId": "b7ce082f6401dce5",
+            "cwe": "CWE-489"
+          }
+        },
+        {
+          "ruleId": "js-debug-leftover",
+          "ruleName": "CWE-489 at build/utils/write.js:9",
+          "level": "warning",
+          "message": {
+            "text": "js-debug-leftover: Leftover debugger or console call ships debug output; remove it before release."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "build/utils/write.js"
+                },
+                "region": {
+                  "startLine": 9,
+                  "endLine": 9
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primary": "8235e0bedfd34dd2d9f21eaba06be1cc33efbdc7865c5237731bd38de4bf1166"
+          },
+          "properties": {
+            "findingId": "8235e0bedfd34dd2",
+            "cwe": "CWE-489"
+          }
+        }
+      ],
+      "artifacts": [],
+      "properties": {
+        "counts": {
+          "version": "0.1.0",
+          "total": 2,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0,
+          "unprocessed": 2
+        },
+        "commit": "bf4795cefe225780cd26f51e270e65780c5a9323",
+        "target": "D:\\dev\\bench-repos\\vue-mdc",
+        "status": "failed",
+        "gate": "failed",
+        "errors": [
+          "spotbugs: classes directory not found: C:\\Users\\MINH KHOI\\AppData\\Local\\Temp\\vulnscan-snapshot-sfoikmtr\\target\\classes (run 'mvn compile' first)",
+          "owasp-dependency-check: missing coverage for pom.xml",
+          "spotbugs: required scanner did not complete successfully"
+        ],
+        "configuration": {
+          "schema_version": 1,
+          "profile": "full",
+          "fail_on": "high",
+          "output_dir": "artifacts/deep-compare/vue-mdc/mine",
+          "timezone": "Asia/Saigon",
+          "timeout": 3600,
+          "max_files": 100000,
+          "allow_dirty": true,
+          "ci": false,
+          "laya": true,
+          "laya_config_path": null,
+          "ai_review": false,
+          "provider_profile": null,
+          "provider_model": null,
+          "ai_report": false,
+          "max_ai_findings": 10,
+          "mode": "hunt",
+          "tools": null
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": false,
+          "toolExecutionNotifications": [
+            {
+              "level": "error",
+              "message": {
+                "text": "spotbugs: classes directory not found: C:\\Users\\MINH KHOI\\AppData\\Local\\Temp\\vulnscan-snapshot-sfoikmtr\\target\\classes (run 'mvn compile' first)"
+              }
+            },
+            {
+              "level": "error",
+              "message": {
+                "text": "owasp-dependency-check: missing coverage for pom.xml"
+              }
+            },
+            {
+              "level": "error",
+              "message": {
+                "text": "spotbugs: required scanner did not complete successfully"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

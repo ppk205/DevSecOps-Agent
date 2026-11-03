@@ -1,0 +1,28 @@
+{
+  "version": "0.1.0",
+  "run_id": "run-b441d7dc3f7f4d7cb1699c3b0add0473",
+  "tool": "owasp-dependency-check",
+  "tool_version": "osv.dev",
+  "adapter_version": "0.2.0",
+  "status": "completed",
+  "started_at": "2026-11-03T13:39:04.108658Z",
+  "finished_at": "2026-11-03T13:39:04.112197Z",
+  "observations": [],
+  "coverage_records": [],
+  "raw_output_refs": [],
+  "coverage_percent": 0.0,
+  "eligible_units": 0,
+  "analyzed_units": 0,
+  "skipped_units": 0,
+  "failed_units": 0,
+  "errors": [],
+  "warnings": [
+    "no pinned dependency manifests found"
+  ],
+  "duration_ms": 3,
+  "metadata": {
+    "advisory_data_source": "osv.dev",
+    "packages_queried": 0,
+    "manifests": []
+  }
+}

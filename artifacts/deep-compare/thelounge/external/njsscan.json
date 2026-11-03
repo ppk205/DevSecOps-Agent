@@ -1,0 +1,41 @@
+{
+  "errors": [],
+  "njsscan_version": "1.0.2",
+  "nodejs": {},
+  "templates": {
+    "vue_template": {
+      "files": [
+        {
+          "file_path": "D:/dev/bench-repos/thelounge/client/components/Username.vue",
+          "match_lines": [
+            9,
+            9
+          ],
+          "match_position": [
+            311,
+            324
+          ],
+          "match_string": "v-html=\"html\""
+        },
+        {
+          "file_path": "D:/dev/bench-repos/thelounge/client/components/Windows/Changelog.vue",
+          "match_lines": [
+            21,
+            21
+          ],
+          "match_position": [
+            584,
+            634
+          ],
+          "match_string": "v-html=\"store.state.versionData.current.changelog\""
+        }
+      ],
+      "metadata": {
+        "cwe": "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')",
+        "description": "The Vue.js template has an unescaped variable. Untrusted user input passed to this variable results in Cross Site Scripting (XSS).",
+        "owasp-web": "A1: Injection",
+        "severity": "ERROR"
+      }
+    }
+  }
+}

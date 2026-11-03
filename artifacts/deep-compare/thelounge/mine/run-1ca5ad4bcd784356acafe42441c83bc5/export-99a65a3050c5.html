@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Security assessment run-1ca5ad4bcd784356acafe42441c83bc5</title>
+<style>
+:root{--bg:#0e1319;--card:#161d24;--ink:#e8edf2;--muted:#9aa7b4;--hairline:#2a3440;
+--accent:#1c69d4;--green:#22c55e;--yellow:#f59e0b;--red:#e22718;--code:#0b0f14}
+*{box-sizing:border-box}html{scrollbar-color:#3a4654 var(--bg)}
+body{font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:1100px;
+margin:40px auto;padding:0 20px;background:var(--bg);color:var(--ink)}
+h1{font-size:28px;margin:0 0 4px}h2{font-size:19px;margin:36px 0 12px;
+padding-bottom:8px;border-bottom:1px solid var(--hairline)}
+a{color:#6ea8fe}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+font-size:.86em;background:var(--code);border:1px solid var(--hairline);
+border-radius:4px;padding:2px 6px}
+.meta{color:var(--muted);font-size:13px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.chip{font-size:12px;border:1px solid var(--hairline);border-radius:999px;padding:3px 12px;color:var(--muted)}
+.counts{display:flex;flex-wrap:wrap;gap:12px;padding:0;list-style:none;margin:20px 0}
+.counts li{flex:1 1 140px;background:var(--card);border:1px solid var(--hairline);
+border-left:4px solid var(--muted);border-radius:6px;padding:10px 14px}
+.counts li.ok{border-left-color:var(--green)}.counts li.warn{border-left-color:var(--yellow)}
+.counts li.bad{border-left-color:var(--red)}
+.count{font-size:28px;font-weight:700;line-height:1.1}.counts small{color:var(--muted)}
+.finding{background:var(--card);border:1px solid var(--hairline);border-radius:8px;
+padding:18px 20px;margin:14px 0}
+.finding h3{margin:0 0 6px;font-size:16px}
+.st{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
+border-radius:4px;padding:2px 8px;margin-right:6px}
+.st-confirmed{background:rgba(34,197,94,.15);color:var(--green);border:1px solid var(--green)}
+.st-unresolved,.st-unprocessed{background:rgba(245,158,11,.13);color:var(--yellow);border:1px solid var(--yellow)}
+.st-rejected{background:rgba(154,167,180,.13);color:var(--muted);border:1px solid var(--muted)}
+.sev-high{color:var(--red)}.sev-medium{color:var(--yellow)}.sev-low{color:#6ea8fe}
+pre{background:var(--code);border:1px solid var(--hairline);border-radius:6px;
+padding:12px 14px;overflow-x:auto;font-size:13px;line-height:1.5;scrollbar-color:#3a4654 var(--code)}
+pre::-webkit-scrollbar{height:10px}pre::-webkit-scrollbar-track{background:var(--code)}
+pre::-webkit-scrollbar-thumb{background:#3a4654;border-radius:5px}
+pre::-webkit-scrollbar-thumb:hover{background:#4d5c6e}
+::-webkit-scrollbar{width:12px;height:12px}::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#3a4654;border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:#4d5c6e}
+.cover{background:var(--card);border:1px solid var(--hairline);border-radius:8px;
+padding:12px 16px;margin:10px 0}
+.cover b{color:var(--ink)}.cover ul{margin:6px 0 0;padding-left:20px;color:var(--muted)}
+@media print{body{margin:20px;background:#fff;color:#000}.finding,.counts li,.cover{break-inside:avoid}}
+</style></head><body>
+<h1>Security assessment <code>run-1ca5ad4bcd784356acafe42441c83bc5</code></h1>
+<p class="meta">devsecops-agent 0.2.0</p>
+<div class="chips"><span class="chip">commit: 70db8bcb6faf98e9c2a09018e26c28ae3eaa0b09</span><span class="chip">target: D:\dev\bench-repos\thelounge</span><span class="chip">status: failed</span><span class="chip">gate: failed</span><span class="chip">errors: [&#34;spotbugs: classes directory not found: C:\\Users\\MINH KHOI\\AppData\\Local\\Temp\\vulnscan-snapshot-d1jwex_u\\target\\classes (run &#39;mvn compile&#39; first)&#34;, &#39;owasp-dependency-check: missing coverage for pom.xml&#39;, &#39;spotbugs: required scanner did not complete successfully&#39;]</span><span class="chip">configuration: {&#39;schema_version&#39;: 1, &#39;profile&#39;: &#39;full&#39;, &#39;fail_on&#39;: &#39;high&#39;, &#39;output_dir&#39;: &#39;artifacts/deep-compare/thelounge/mine&#39;, &#39;timezone&#39;: &#39;Asia/Saigon&#39;, &#39;timeout&#39;: 3600, &#39;max_files&#39;: 100000, &#39;allow_dirty&#39;: True, &#39;ci&#39;: False, &#39;laya&#39;: True, &#39;laya_config_path&#39;: None, &#39;ai_review&#39;: False, &#39;provider_profile&#39;: None, &#39;provider_model&#39;: None, &#39;ai_report&#39;: False, &#39;max_ai_findings&#39;: 10, &#39;mode&#39;: &#39;hunt&#39;, &#39;tools&#39;: None}</span></div>
+<ul class="counts">
+<li class="ok"><span class="count">42</span><br><small>Total</small></li>
+<li class="ok"><span class="count">0</span><br><small>Confirmed</small></li>
+<li><span class="count">0</span><br><small>Rejected</small></li>
+<li class="warn"><span class="count">0</span><br><small>Unresolved</small></li>
+<li class="warn"><span class="count">42</span><br><small>Unprocessed</small></li>
+</ul>
+<h2>Coverage</h2>
+<div class="cover"><b>semgrep</b>
+<span class="meta"> — 281/281 units analyzed</span>
+</div><div class="cover"><b>native-hunt</b>
+<span class="meta"> — 333/333 units analyzed</span>
+</div><div class="cover"><b>gitleaks</b>
+<span class="meta"> — 281/281 units analyzed</span>
+</div><div class="cover"><b>spotbugs</b>
+<span class="meta"> — 0/0 units analyzed</span>
+</div><div class="cover"><b>owasp-dependency-check</b>
+<span class="meta"> — 0/0 units analyzed</span>
+</div>
+
+<h2>Findings</h2>
+<section class="finding"><h3>CWE-489 at client/js/keybinds.ts:152</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 2f58264d8af6 · CWE-489</span></p>
+<p>Leftover debugger or console call ships debug output; remove it before release.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover / client/js/keybinds.ts:152:34</p>
+<pre>navigate(&#34;Help&#34;).catch((err) =&gt; console.log(err));
+	return false;
+});</pre><p class="meta">native-hunt / js-debug-leftover / client/js/keybinds.ts:152</p>
+<pre>navigate(&#34;Help&#34;).catch((err) =&gt; console.log(err));
+	return false;
+});</pre>
+</section><section class="finding"><h3>CWE-798 at defaults/config.js:365</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 78dd4b943317 · CWE-798</span></p>
+<p>Hardcoded credential in source; load secrets from the environment or a vault.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-hardcoded-secret / defaults/config.js:365:21</p>
+<pre>//       webircObj.password = [REDACTED];
+	//       webircObj.hostname = `webirc/${webircObj.hostname}`;
+	//       return webircObj;</pre><p class="meta">native-hunt / js-hardcoded-secret / defaults/config.js:365</p>
+<pre>//       webircObj.password = [REDACTED];
+	//       webircObj.hostname = `webirc/${webircObj.hostname}`;
+	//       return webircObj;</pre>
+</section><section class="finding"><h3>CWE-489 at scripts/changelog.js:84</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 0df911fa7c2f · CWE-489</span></p>
+<p>Leftover debugger or console call ships debug output; remove it before release.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover / scripts/changelog.js:84:3</p>
+<pre>console.log(timestamp(), colors.blue(&#34;[INFO]&#34;), ...args);
+	},
+	debug(...args) {</pre><p class="meta">native-hunt / js-debug-leftover / scripts/changelog.js:84</p>
+<pre>console.log(timestamp(), colors.blue(&#34;[INFO]&#34;), ...args);
+	},
+	debug(...args) {</pre>
+</section><section class="finding"><h3>CWE-489 at scripts/changelog.js:87</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 5d69c5519a97 · CWE-489</span></p>
+<p>Leftover debugger or console call ships debug output; remove it before release.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover / scripts/changelog.js:87:3</p>
+<pre>console.log(timestamp(), colors.green(&#34;[DEBUG]&#34;), ...args);
+	},
+	raw(...args) {</pre><p class="meta">native-hunt / js-debug-leftover / scripts/changelog.js:87</p>
+<pre>console.log(timestamp(), colors.green(&#34;[DEBUG]&#34;), ...args);
+	},
+	raw(...args) {</pre>
+</section><section class="finding"><h3>CWE-489 at scripts/changelog.js:90</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · c40fef0fe792 · CWE-489</span></p>
+<p>Leftover debugger or console call ships debug output; remove it before release.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover / scripts/changelog.js:90:3</p>
+<pre>console.log(...args);
+	},
+	/* eslint-enable no-console */</pre><p class="meta">native-hunt / js-debug-leftover / scripts/changelog.js:90</p>
+<pre>console.log(...args);
+	},
+	/* eslint-enable no-console */</pre>
+</section><section class="finding"><h3>CWE-489 at scripts/generate-config-doc.js:38</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 90ae2c9e5843 · CWE-489</span></p>
+<p>Leftover debugger or console call ships debug output; remove it before release.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover / scripts/generate-config-doc.js:38:3</p>
+<pre>console.log(timestamp(), colors.blue(&#34;[INFO]&#34;), ...args);
+	},
+	debug(...args) {</pre><p class="meta">native-hunt / js-debug-leftover / scripts/generate-config-doc.js:38</p>
+<pre>console.log(timestamp(), colors.blue(&#34;[INFO]&#34;), ...args);
+	},
+	debug(...args) {</pre>
+</section><section class="finding"><h3>CWE-489 at scripts/generate-config-doc.js:41</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 8781c2fa3428 · CWE-489</span></p>
+<p>Leftover debugger or console call ships debug output; remove it before release.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover / scripts/generate-config-doc.js:41:3</p>
+<pre>console.log(timestamp(), colors.green(&#34;[DEBUG]&#34;), ...args);
+	},
+	raw(...args) {</pre><p class="meta">native-hunt / js-debug-leftover / scripts/generate-config-doc.js:41</p>
+<pre>console.log(timestamp(), colors.green(&#34;[DEBUG]&#34;), ...args);
+	},
+	raw(...args) {</pre>
+</section><section class="finding"><h3>CWE-489 at scripts/generate-config-doc.js:44</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 1d69851e544c · CWE-489</span></p>
+<p>Leftover debugger or console call ships debug output; remove it before release.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover / scripts/generate-config-doc.js:44:3</p>
+<pre>console.log(...args);
+	},
+	/* eslint-enable no-console */</pre><p class="meta">native-hunt / js-debug-leftover / scripts/generate-config-doc.js:44</p>
+<pre>console.log(...args);
+	},
+	/* eslint-enable no-console */</pre>
+</section><section class="finding"><h3>CWE-330 at server/client.ts:218</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 31b991336781 · CWE-330</span></p>
+<p>Math.random is predictable in security contexts; use crypto.randomBytes/getRandomValues.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random / server/client.ts:218:32</p>
+<pre>delay += 1000 + Math.floor(Math.random() * 1000);
+			});</pre><p class="meta">native-hunt / js-insecure-random / server/client.ts:218</p>
+<pre>delay += 1000 + Math.floor(Math.random() * 1000);
+			});</pre>
+</section><section class="finding"><h3>CWE-330 at server/config.ts:169</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 96ea10f456f8 · CWE-330</span></p>
+<p>Math.random is predictable in security contexts; use crypto.randomBytes/getRandomValues.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random / server/config.ts:169:15</p>
+<pre>Math.floor(Math.random() * 10).toString()
+		);
+	}</pre><p class="meta">native-hunt / js-insecure-random / server/config.ts:169</p>
+<pre>Math.floor(Math.random() * 10).toString()
+		);
+	}</pre>
+</section><section class="finding"><h3>CWE-489 at server/log.ts:19</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · e68147367476 · CWE-489</span></p>
+<p>Leftover debugger or console call ships debug output; remove it before release.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover / server/log.ts:19:3</p>
+<pre>console.log(timestamp(), colors.blue(&#34;[INFO]&#34;), ...args);
+	},
+	debug(...args: string[]) {</pre><p class="meta">native-hunt / js-debug-leftover / server/log.ts:19</p>
+<pre>console.log(timestamp(), colors.blue(&#34;[INFO]&#34;), ...args);
+	},
+	debug(...args: string[]) {</pre>
+</section><section class="finding"><h3>CWE-489 at server/log.ts:22</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 29bf24046694 · CWE-489</span></p>
+<p>Leftover debugger or console call ships debug output; remove it before release.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover / server/log.ts:22:3</p>
+<pre>console.log(timestamp(), colors.green(&#34;[DEBUG]&#34;), ...args);
+	},
+	raw(...args: string[]) {</pre><p class="meta">native-hunt / js-debug-leftover / server/log.ts:22</p>
+<pre>console.log(timestamp(), colors.green(&#34;[DEBUG]&#34;), ...args);
+	},
+	raw(...args: string[]) {</pre>
+</section><section class="finding"><h3>CWE-489 at server/log.ts:25</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 838f6ae035ee · CWE-489</span></p>
+<p>Leftover debugger or console call ships debug output; remove it before release.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-debug-leftover / server/log.ts:25:3</p>
+<pre>console.log(...args);
+	},
+	/* eslint-enable no-console */</pre><p class="meta">native-hunt / js-debug-leftover / server/log.ts:25</p>
+<pre>console.log(...args);
+	},
+	/* eslint-enable no-console */</pre>
+</section><section class="finding"><h3>CWE-330 at server/plugins/changelog.ts:108</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 37c277ac00b6 · CWE-330</span></p>
+<p>Math.random is predictable in security contexts; use crypto.randomBytes/getRandomValues.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random / server/plugins/changelog.ts:108:36</p>
+<pre>24 * 3600 * 1000 + Math.floor(Math.random() * 10000000)
+				);
+			}</pre><p class="meta">native-hunt / js-insecure-random / server/plugins/changelog.ts:108</p>
+<pre>24 * 3600 * 1000 + Math.floor(Math.random() * 10000000)
+				);
+			}</pre>
+</section><section class="finding"><h3>CWE-330 at server/plugins/irc-events/error.ts:65</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 1f5643647a3c · CWE-330</span></p>
+<p>Math.random is predictable in security contexts; use crypto.randomBytes/getRandomValues.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random / server/plugins/irc-events/error.ts:65:61</p>
+<pre>const random = (data.nick || irc.user.nick) + Math.floor(Math.random() * 10);
+
+			// Safeguard nick changes up to allowed length</pre><p class="meta">native-hunt / js-insecure-random / server/plugins/irc-events/error.ts:65</p>
+<pre>const random = (data.nick || irc.user.nick) + Math.floor(Math.random() * 10);
+
+			// Safeguard nick changes up to allowed length</pre>
+</section><section class="finding"><h3>CWE-208 at server/plugins/uploader.ts:93</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 2d2e4602050c · CWE-208</span></p>
+<p>Secret compared with equality leaks timing information; use crypto.timingSafeEqual.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-timing-unsafe-compare / server/plugins/uploader.ts:93:7</p>
+<pre>if (detectedMimeType === null) {
+			return res.status(404).send(&#34;Not found&#34;);
+		}</pre>
+</section><section class="finding"><h3>CWE-208 at server/plugins/uploader.ts:115</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · a45cd6f217e0 · CWE-208</span></p>
+<p>Secret compared with equality leaks timing information; use crypto.timingSafeEqual.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-timing-unsafe-compare / server/plugins/uploader.ts:115:7</p>
+<pre>if (detectedMimeType === &#34;audio/vnd.wave&#34;) {
+			detectedMimeType = &#34;audio/wav&#34;;
+		} else if (detectedMimeType === &#34;audio/x-flac&#34;) {</pre>
+</section><section class="finding"><h3>CWE-208 at server/plugins/uploader.ts:117</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 84ab6632cb3b · CWE-208</span></p>
+<p>Secret compared with equality leaks timing information; use crypto.timingSafeEqual.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-timing-unsafe-compare / server/plugins/uploader.ts:117:14</p>
+<pre>} else if (detectedMimeType === &#34;audio/x-flac&#34;) {
+			detectedMimeType = &#34;audio/flac&#34;;
+		} else if (detectedMimeType === &#34;audio/x-m4a&#34;) {</pre>
+</section><section class="finding"><h3>CWE-208 at server/plugins/uploader.ts:119</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · e9c8120f3481 · CWE-208</span></p>
+<p>Secret compared with equality leaks timing information; use crypto.timingSafeEqual.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-timing-unsafe-compare / server/plugins/uploader.ts:119:14</p>
+<pre>} else if (detectedMimeType === &#34;audio/x-m4a&#34;) {
+			detectedMimeType = &#34;audio/mp4&#34;;
+		} else if (detectedMimeType === &#34;video/quicktime&#34;) {</pre>
+</section><section class="finding"><h3>CWE-208 at server/plugins/uploader.ts:121</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 8c7427a0e5e6 · CWE-208</span></p>
+<p>Secret compared with equality leaks timing information; use crypto.timingSafeEqual.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-timing-unsafe-compare / server/plugins/uploader.ts:121:14</p>
+<pre>} else if (detectedMimeType === &#34;video/quicktime&#34;) {
+			detectedMimeType = &#34;video/mp4&#34;;
+		}</pre>
+</section><section class="finding"><h3>CWE-330 at server/server.ts:61</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 42e1a4131fa7 · CWE-330</span></p>
+<p>Math.random is predictable in security contexts; use crypto.randomBytes/getRandomValues.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-insecure-random / server/server.ts:61:44</p>
+<pre>const serverHash = Math.floor(Date.now() * Math.random());
+
+let manager: ClientManager | null = null;</pre><p class="meta">native-hunt / js-insecure-random / server/server.ts:61</p>
+<pre>const serverHash = Math.floor(Date.now() * Math.random());
+
+let manager: ClientManager | null = null;</pre>
+</section><section class="finding"><h3>CWE-208 at server/server.ts:111</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · cb726c568714 · CWE-208</span></p>
+<p>Secret compared with equality leaks timing information; use crypto.timingSafeEqual.</p>
+<p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-timing-unsafe-compare / server/server.ts:111:7</p>
+<pre>if (theme === undefined || theme.filename === undefined) {
+			return res.status(404).send(&#34;Not found&#34;);
+		}</pre><p class="meta">semgrep / D.Newfolder.DevSecOps-Agent.src.vulnscan.scanners.rules.js-timing-unsafe-compare / server/server.ts:111:30</p>
+<pre>if (theme === undefined || theme.filename === undefined) {
+			return res.status(404).send(&#34;Not found&#34;);
+		}</pre>
+</section><section class="finding"><h3>CWE-489 at client/components/MessageCondensed.vue:74</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 251627c6d83c · CWE-489</span></p>
+<p>js-debug-leftover: Leftover debugger or console call ships debug output; remove it before release.</p>
+<p class="meta">native-hunt / js-debug-leftover / client/components/MessageCondensed.vue:74</p>
+<pre>console.log(`empty message type, this should not happen: ${message.id}`);
+						continue;
+					}</pre>
+</section><section class="finding"><h3>CWE-208 at client/js/router.ts:134</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · f16b856b8089 · CWE-208</span></p>
+<p>js-timing-unsafe-compare: Secret compared with equality leaks timing information; use crypto.timingSafeEqual.</p>
+<p class="meta">native-hunt / js-timing-unsafe-compare / client/js/router.ts:134</p>
+<pre>if (to.name === &#34;RoutedChat&#34; &amp;&amp; !store.getters.findChannel(Number(to.params.id))) {
+		return false;
+	}</pre>
+</section><section class="finding"><h3>CWE-208 at client/js/router.ts:139</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 7610762d471c · CWE-208</span></p>
+<p>js-timing-unsafe-compare: Secret compared with equality leaks timing information; use crypto.timingSafeEqual.</p>
+<p class="meta">native-hunt / js-timing-unsafe-compare / client/js/router.ts:139</p>
+<pre>if (to.name === &#34;NetworkEdit&#34; &amp;&amp; !store.getters.findNetwork(String(to.params.uuid))) {
+		return false;
+	}</pre>
+</section><section class="finding"><h3>CWE-208 at client/js/router.ts:189</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · ecd5a9cbacb5 · CWE-208</span></p>
+<p>js-timing-unsafe-compare: Secret compared with equality leaks timing information; use crypto.timingSafeEqual.</p>
+<p class="meta">native-hunt / js-timing-unsafe-compare / client/js/router.ts:189</p>
+<pre>if (event.data &amp;&amp; event.data.type === &#34;open&#34;) {
+			const id = parseInt(event.data.channel.substring(5), 10); // remove &#34;chan-&#34; prefix</pre>
+</section><section class="finding"><h3>CWE-208 at client/js/upload.ts:99</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 2ce4e5ed6e32 · CWE-208</span></p>
+<p>js-timing-unsafe-compare: Secret compared with equality leaks timing information; use crypto.timingSafeEqual.</p>
+<p class="meta">native-hunt / js-timing-unsafe-compare / client/js/upload.ts:99</p>
+<pre>if (items[i].kind === &#34;file&#34;) {
+				files.push(items[i].getAsFile());
+			}</pre>
+</section><section class="finding"><h3>CWE-208 at client/js/upload.ts:104</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 21c25843c89d · CWE-208</span></p>
+<p>js-timing-unsafe-compare: Secret compared with equality leaks timing information; use crypto.timingSafeEqual.</p>
+<p class="meta">native-hunt / js-timing-unsafe-compare / client/js/upload.ts:104</p>
+<pre>if (files.length === 0) {
+			return;
+		}</pre>
+</section><section class="finding"><h3>CWE-208 at client/js/upload.ts:146</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 8a4a76f0ccf5 · CWE-208</span></p>
+<p>js-timing-unsafe-compare: Secret compared with equality leaks timing information; use crypto.timingSafeEqual.</p>
+<p class="meta">native-hunt / js-timing-unsafe-compare / client/js/upload.ts:146</p>
+<pre>if (wasQueueEmpty &amp;&amp; this.xhr === null &amp;&amp; this.fileQueue.length &gt; 0) {
+			this.requestToken();
+		}</pre>
+</section><section class="finding"><h3>CWE-95 at client/js/upload.ts:175</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · e6ce86cc5436 · CWE-95</span></p>
+<p>js-implied-eval: Request data reaches a string-evaluated callback or vm API; pass a function reference instead.</p>
+<p class="meta">native-hunt / js-implied-eval / client/js/upload.ts:175</p>
+<pre>this.tokenKeepAlive = setInterval(() =&gt; socket.emit(&#34;upload:ping&#34;, token), 40 * 1000);
+
+		if (</pre>
+</section><section class="finding"><h3>CWE-208 at client/js/upload.ts:236</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 36098c9db1b1 · CWE-208</span></p>
+<p>js-timing-unsafe-compare: Secret compared with equality leaks timing information; use crypto.timingSafeEqual.</p>
+<p class="meta">native-hunt / js-timing-unsafe-compare / client/js/upload.ts:236</p>
+<pre>if (this.xhr?.readyState === XMLHttpRequest.DONE) {
+				let response;</pre>
+</section><section class="finding"><h3>CWE-502 at client/js/upload.ts:240</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · c4f87575219d · CWE-502</span></p>
+<p>js-unsafe-deserialization: Unsafe deserialization of untrusted data; validate input before reviving objects.</p>
+<p class="meta">native-hunt / js-unsafe-deserialization / client/js/upload.ts:240</p>
+<pre>response = JSON.parse(this.xhr.responseText);
+				} catch (err) {
+					// This is just a safe guard and should not happen if server doesn&#39;t throw any errors.</pre>
+</section><section class="finding"><h3>CWE-208 at client/public/js/loading-error-handlers.js:115</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 9c7b6b9e3770 · CWE-208</span></p>
+<p>js-timing-unsafe-compare: Secret compared with equality leaks timing information; use crypto.timingSafeEqual.</p>
+<p class="meta">native-hunt / js-timing-unsafe-compare / client/public/js/loading-error-handlers.js:115</p>
+<pre>if (event.data.type === &#34;fetch-error&#34;) {
+				// @ts-expect-error Argument of type &#39;{ message: string; }&#39; is not assignable to parameter of type &#39;ErrorEvent&#39;.
+				errorHandler({</pre>
+</section><section class="finding"><h3>CWE-327 at server/plugins/clientCertificate.ts:127</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · b77fc69ae9a2 · CWE-327</span></p>
+<p>js-jwt-weak-secret: [REDACTED] signed with an empty or weak literal secret or none algorithm; use a strong env secret.</p>
+<p class="meta">native-hunt / js-jwt-weak-secret / server/plugins/clientCertificate.ts:127</p>
+<pre>cert.sign(keys.privateKey, md.sha256.create());
+
+	const pem: ClientCertificateType = {</pre>
+</section><section class="finding"><h3>CWE-22 at server/plugins/uploader.ts:129</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 1a5497a86007 · CWE-22</span></p>
+<p>js-path-traversal: File path includes externally controlled input; validate or canonicalize.</p>
+<p class="meta">native-hunt / js-path-traversal / server/plugins/uploader.ts:129</p>
+<pre>return res.sendFile(filePath);
+	}</pre>
+</section><section class="finding"><h3>CWE-22 at server/server.ts:128</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · a995bfbfd175 · CWE-22</span></p>
+<p>js-path-traversal: File path includes externally controlled input; validate or canonicalize.</p>
+<p class="meta">native-hunt / js-path-traversal / server/server.ts:128</p>
+<pre>return res.sendFile(path.join(packagePath, fileName));
+	});</pre>
+</section><section class="finding"><h3>CWE-208 at server/server.ts:246</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 728d112662df · CWE-208</span></p>
+<p>js-timing-unsafe-compare: Secret compared with equality leaks timing information; use crypto.timingSafeEqual.</p>
+<p class="meta">native-hunt / js-timing-unsafe-compare / server/server.ts:246</p>
+<pre>if (defaultTheme === undefined) {
+			log.warn(
+				`The specified default theme &#34;${colors.red(</pre>
+</section><section class="finding"><h3>CWE-798 at test/plugins/auth/ldap.ts:12</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · c767bae05e6e · CWE-798</span></p>
+<p>js-hardcoded-secret: [REDACTED] credential in source; load secrets from the environment or a vault.</p>
+<p class="meta">native-hunt / js-hardcoded-secret / test/plugins/auth/ldap.ts:12</p>
+<pre>const correctPassword = [REDACTED];
+const wrongPassword = [REDACTED];
+const baseDN = &#34;ou=accounts,dc=example,dc=com&#34;;</pre>
+</section><section class="finding"><h3>CWE-798 at test/plugins/auth/ldap.ts:13</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · a7cb249b5fcf · CWE-798</span></p>
+<p>js-hardcoded-secret: [REDACTED] credential in source; load secrets from the environment or a vault.</p>
+<p class="meta">native-hunt / js-hardcoded-secret / test/plugins/auth/ldap.ts:13</p>
+<pre>const wrongPassword = [REDACTED];
+const baseDN = &#34;ou=accounts,dc=example,dc=com&#34;;
+const primaryKey = &#34;uid&#34;;</pre>
+</section><section class="finding"><h3>CWE-798 at test/plugins/clientCertificate.ts:20</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · a7c6d923e18d · CWE-798</span></p>
+<p>js-private-key: Embedded private key material.</p>
+<p class="meta">native-hunt / js-private-key / test/plugins/clientCertificate.ts:20</p>
+<pre>expect(certificate.private_key).to.match(/^-----BEGIN RSA PRIVATE KEY-----/);
+
+		const certificate2 = ClientCertificate.get(&#34;this-is-test-uuid&#34;) as ClientCertificateType;</pre>
+</section><section class="finding"><h3>CWE-798 at test/tests/passwords.ts:5</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-medium">medium</span>
+<span class="meta"> · 7791203d8681 · CWE-798</span></p>
+<p>js-hardcoded-secret: [REDACTED] credential in source; load secrets from the environment or a vault.</p>
+<p class="meta">native-hunt / js-hardcoded-secret / test/tests/passwords.ts:5</p>
+<pre>const inputPassword = [REDACTED] Password&#34;;
+
+	it(&#34;hashed password should match&#34;, function () {</pre>
+</section><section class="finding"><h3>CWE-798 at test/fixtures/.thelounge/vapid.json:3</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · 56ca3a899d67 · CWE-798</span></p>
+<p>Secret found: Detected a Generic API Key, potentially exposing access to various services and sensitive operations.</p>
+<p class="meta">gitleaks / generic-api-key / test/fixtures/.thelounge/vapid.json:3</p>
+<pre>[REDACTED: secret evidence]</pre>
+</section>
+</body></html>
