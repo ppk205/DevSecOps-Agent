@@ -49,7 +49,10 @@ FAMILY_EXTENSIONS: dict[str, frozenset[str]] = {
 
 Confidence = Literal["High", "Medium", "Weak"]
 
-_ASSIGN_RE = re.compile(r"^\s*(?P<var>[A-Za-z_]\w*)\s*(?<![=!<>])=\s*(?![=>])(?P<rhs>.+)$")
+_ASSIGN_RE = re.compile(
+    r"^\s*(?:(?:final\s+)?[A-Za-z_][\w<>\[\].,\s]*?\s+)?"
+    r"(?P<var>[A-Za-z_]\w*)\s*(?<![=!<>])=\s*(?![=>])(?P<rhs>.+)$"
+)
 
 
 @dataclass
@@ -84,7 +87,9 @@ def _word_rx(name: str) -> re.Pattern[str]:
 
 
 def _line_sanitized(line: str, rule: Rule) -> bool:
-    return any(rx.search(line) is not None for rx, prevent in rule.sanitizer_res if rule.attack in prevent)
+    return any(
+        rx.search(line) is not None for rx, prevent in rule.sanitizer_res if rule.attack in prevent
+    )
 
 
 def _scan_rule(name: str, lines: list[str], rule: Rule) -> list[Finding]:
@@ -108,9 +113,10 @@ def _scan_rule(name: str, lines: list[str], rule: Rule) -> list[Finding]:
                 continue
             best: tuple[int, int] | None = None
             for tvar, (origin, hops) in tainted.items():
-                if tvar != var and _word_rx(tvar).search(rhs) is not None:
-                    if best is None or hops < best[1]:
-                        best = (origin, hops)
+                if tvar == var or _word_rx(tvar).search(rhs) is None:
+                    continue
+                if best is None or hops < best[1]:
+                    best = (origin, hops)
             if best is not None:
                 if var not in tainted or best[1] + 1 < tainted[var][1]:
                     tainted[var] = (best[0], best[1] + 1)
@@ -130,12 +136,16 @@ def _scan_rule(name: str, lines: list[str], rule: Rule) -> list[Finding]:
         if any(rx.search(raw) is not None for rx in rule.source_res):
             confidence: Confidence = "High"
             source_line: int | None = lineno
+        elif not rule.source_res:
+            confidence = "Weak"
+            source_line = None
         else:
             best_ref: tuple[int, int] | None = None
             for tvar, (origin, hops) in tainted.items():
-                if _word_rx(tvar).search(raw) is not None:
-                    if best_ref is None or hops < best_ref[1]:
-                        best_ref = (origin, hops)
+                if _word_rx(tvar).search(raw) is None:
+                    continue
+                if best_ref is None or hops < best_ref[1]:
+                    best_ref = (origin, hops)
             if best_ref is None:
                 continue
             source_line = best_ref[0]
@@ -151,6 +161,8 @@ def _scan_rule(name: str, lines: list[str], rule: Rule) -> list[Finding]:
                 snippet=raw.strip()[:200],
                 confidence=confidence,
                 source_line=source_line,
+                message=rule.message,
+                source_ref=rule.source_ref,
             )
         )
     return findings

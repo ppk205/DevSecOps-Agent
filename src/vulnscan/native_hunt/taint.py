@@ -12,12 +12,6 @@ Two pack shapes are accepted (both live in ``rules/<family>.json``):
   the family's default source/sanitizer sets below, so they participate
   in taint flow; a rule with no source model still reports sink matches
   as ``Weak`` findings.
-"""
-
-    {"id": "py-sqli", "cwe": "CWE-89", "attack": "sqli",
-     "severity": "high",
-     "sources": ["request\\\\.(args|form)"], "sinks": ["\\\\.execute\\\\s*\\\\("],
-     "sanitizers": [{"pattern": "escape\\\\s*\\\\(", "prevent": ["xss"]}]}
 
 ``attack`` names the capability a finding reports; a sanitizer only
 cleanses lines for the attacks listed in its ``prevent`` set, so an XSS
@@ -33,6 +27,25 @@ from pathlib import Path
 from typing import Any
 
 RULES_DIR = Path(__file__).resolve().parent / "rules"
+
+#: Default source regexes applied to ported (sink-only) rules per family.
+_FAMILY_SOURCES: dict[str, list[str]] = {
+    "python": [r"request\.(args|form|values|json|data|GET|POST)", r"\binput\s*\("],
+    "javascript": [r"req\.(query|body|params)", r"location\.(search|hash)", r"document\.URL"],
+    "java": [r"request\.getParameter", r"getParameter\s*\("],
+    "php": [r"\$_(GET|POST|REQUEST|COOKIE)"],
+    "generic": [r"\brequest\b", r"\binput\s*\(", r"\bargv\b"],
+}
+
+#: Default sanitizers (pattern, prevented attacks) for ported rules.
+_FAMILY_SANITIZERS: dict[tuple[str, str], list[tuple[str, list[str]]]] = {
+    ("python", "xss"): [(r"escape\s*\(", ["xss"])],
+    ("python", "command_injection"): [(r"shlex\.quote\s*\(", ["command_injection"])],
+    ("javascript", "xss"): [(r"encodeURIComponent\s*\(|DOMPurify\.sanitize\s*\(", ["xss"])],
+    ("java", "xss"): [(r"escapeHtml|StringEscapeUtils", ["xss"])],
+    ("php", "xss"): [(r"htmlspecialchars\s*\(", ["xss"])],
+    ("php", "command_injection"): [(r"escapeshellarg\s*\(", ["command_injection"])],
+}
 
 
 @dataclass
@@ -54,6 +67,8 @@ class Rule:
     sources: list[str] = field(default_factory=list)
     sinks: list[str] = field(default_factory=list)
     sanitizers: list[Sanitizer] = field(default_factory=list)
+    message: str = ""
+    source_ref: str = ""
     source_res: list[re.Pattern[str]] = field(init=False, repr=False, compare=False)
     sink_res: list[re.Pattern[str]] = field(init=False, repr=False, compare=False)
     sanitizer_res: list[tuple[re.Pattern[str], list[str]]] = field(
@@ -63,7 +78,9 @@ class Rule:
     def __post_init__(self) -> None:
         self.source_res = [_compile(p, self.id) for p in self.sources]
         self.sink_res = [_compile(p, self.id) for p in self.sinks]
-        self.sanitizer_res = [(_compile(s.pattern, self.id), list(s.prevent)) for s in self.sanitizers]
+        self.sanitizer_res = [
+            (_compile(s.pattern, self.id), list(s.prevent)) for s in self.sanitizers
+        ]
 
 
 def _compile(pattern: str, rule_id: str) -> re.Pattern[str]:
@@ -81,56 +98,88 @@ def _str_list(value: Any, what: str, path: Path) -> list[str]:
     return list(value)
 
 
-def _parse_rule(item: Any, path: Path) -> Rule:
+def _opt_str(value: Any, what: str, path: Path) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, str):
+        return value
+    if isinstance(value, int):
+        return str(value)
+    raise ValueError(
+        f"native_hunt: {path} rule field {what} must be a string, got {type(value).__name__}"
+    )
+
+
+def _parse_rule(item: Any, path: Path, family: str, ported: bool) -> Rule:
     if not isinstance(item, dict):
-        raise ValueError(
+        raise TypeError(
             f"native_hunt: rule entry in {path} must be an object, got {type(item).__name__}"
         )
     rule_id = item.get("id")
     if not isinstance(rule_id, str) or not rule_id:
         raise ValueError(f"native_hunt: rule entry in {path} is missing a string 'id'")
-    cwe = item.get("cwe", "")
-    attack = item.get("attack", "")
-    severity = item.get("severity", "medium")
-    for key, val in (("cwe", cwe), ("attack", attack), ("severity", severity)):
-        if not isinstance(val, str):
-            raise ValueError(f"native_hunt: {path} rule {rule_id!r} has non-string {key!r}")
-    raw_sans = item.get("sanitizers", [])
-    if not isinstance(raw_sans, list):
-        raise ValueError(f"native_hunt: {path} rule {rule_id!r} 'sanitizers' must be a list")
-    sanitizers = []
-    for entry in raw_sans:
-        if not isinstance(entry, dict) or not isinstance(entry.get("pattern"), str):
-            raise ValueError(
-                f"native_hunt: {path} rule {rule_id!r} sanitizer needs a string 'pattern'"
-            )
-        prevent = _str_list(entry.get("prevent", []), f"{rule_id!r} sanitizer 'prevent'", path)
-        sanitizers.append(Sanitizer(pattern=entry["pattern"], prevent=prevent))
+    sinks = _str_list(item.get("sinks"), f"{rule_id!r} 'sinks'", path)
+    if not sinks:
+        sinks = _str_list(item.get("patterns"), f"{rule_id!r} 'patterns'", path)
+    if not sinks:
+        raise ValueError(f"native_hunt: {path} rule {rule_id!r} has no 'sinks' (or 'patterns')")
+    if "sources" in item:
+        sources = _str_list(item.get("sources"), f"{rule_id!r} 'sources'", path)
+    elif ported:
+        sources = list(_FAMILY_SOURCES.get(family, _FAMILY_SOURCES["generic"]))
+    else:
+        sources = []
+    attack = _opt_str(item.get("attack", ""), f"{rule_id!r} 'attack'", path)
+    if "sanitizers" in item:
+        raw_sans = item.get("sanitizers")
+        if not isinstance(raw_sans, list):
+            raise ValueError(f"native_hunt: {path} rule {rule_id!r} 'sanitizers' must be a list")
+        sanitizers = []
+        for entry in raw_sans:
+            if not isinstance(entry, dict) or not isinstance(entry.get("pattern"), str):
+                raise TypeError(
+                    f"native_hunt: {path} rule {rule_id!r} sanitizer needs a string 'pattern'"
+                )
+            prevent = _str_list(entry.get("prevent", []), f"{rule_id!r} sanitizer 'prevent'", path)
+            sanitizers.append(Sanitizer(pattern=entry["pattern"], prevent=prevent))
+    elif ported:
+        sanitizers = [
+            Sanitizer(pattern=pat, prevent=list(prev))
+            for pat, prev in _FAMILY_SANITIZERS.get((family, attack), [])
+        ]
+    else:
+        sanitizers = []
     return Rule(
         id=rule_id,
-        cwe=cwe,
+        cwe=_opt_str(item.get("cwe", ""), f"{rule_id!r} 'cwe'", path),
         attack=attack,
-        severity=severity,
-        sources=_str_list(item.get("sources"), f"{rule_id!r} 'sources'", path),
-        sinks=_str_list(item.get("sinks"), f"{rule_id!r} 'sinks'", path),
+        severity=_opt_str(item.get("severity", "medium"), f"{rule_id!r} 'severity'", path),
+        sources=sources,
+        sinks=sinks,
         sanitizers=sanitizers,
+        message=_opt_str(item.get("message", ""), f"{rule_id!r} 'message'", path),
+        source_ref=_opt_str(item.get("source", ""), f"{rule_id!r} 'source'", path),
     )
 
 
 def load_rules(family: str) -> list[Rule]:
     """Load the rule pack for *family* (e.g. ``"python"``).
 
-    Returns an empty list when no pack exists for the family; raises
-    :class:`ValueError` when the pack file is present but malformed.
-    Matching is case-insensitive.
+    Accepts the taint shape (JSON list) and the ported shape
+    (``{"language": ..., "rules": [...]}`` with sink ``patterns``).
+    Returns an empty list when no pack exists; raises :class:`ValueError`
+    when the pack file is present but malformed. Case-insensitive.
     """
-    path = RULES_DIR / f"{family.strip().lower()}.json"
+    name = family.strip().lower()
+    path = RULES_DIR / f"{name}.json"
     if not path.is_file():
         return []
     try:
         raw = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
         raise ValueError(f"native_hunt: invalid rule JSON in {path}: {exc}") from exc
-    if not isinstance(raw, list):
-        raise ValueError(f"native_hunt: rule pack {path} must hold a JSON list of rules")
-    return [_parse_rule(item, path) for item in raw]
+    if isinstance(raw, list):
+        return [_parse_rule(item, path, name, ported=False) for item in raw]
+    if isinstance(raw, dict) and isinstance(raw.get("rules"), list):
+        return [_parse_rule(item, path, name, ported=True) for item in raw["rules"]]
+    raise ValueError(f"native_hunt: rule pack {path} must hold a JSON list or a 'rules' object")
