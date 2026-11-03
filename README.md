@@ -13,7 +13,8 @@ CLI (Typer) ─┬─ deterministic lane ─────────────
              │   static scanners ─► normalize/dedup ─► Laya routing ─► AI review ─► validator ─► report
              │                                                    ▲                      │
              └─ hunt lane ───────────────────────────────────────┘                      ▼
-                model hunts (read-only tools) ─► scanners verify ─► compare      fix proposals
+                model multi-pass hunt (per language family + generic + logic)
+                  ─► scanners verify ─► compare ─► model-only promotion      fix proposals
                                                                                  (diff → overlay → rescan)
 ```
 
@@ -337,9 +338,14 @@ Two lanes, one gate:
 
 - **Deterministic lane** (`--profile fast|full`): intake → static scanners
   (Semgrep, Gitleaks, + SpotBugs/ODC on full) → normalization & dedup.
-- **Model-first lane** (`--mode hunt`): the model hunts the snapshot with
-  read-only tools (`list_files`, `grep_code`) → scanners verify each
-  candidate → model/scanner comparison → Laya advisory routing.
+- **Model-first lane** (`--mode hunt`, default): the model hunts the snapshot
+  in sequential passes — one per extension family present (java/js-ts/py/php,
+  plus a generic pass for any other web-hostable text) + a logic pass
+  (authZ/IDOR/session/crypto, ON by default) — with read-only tools
+  (`list_files`, `grep_code`, `inspect_code`). Scanners verify each candidate
+  → model/scanner comparison → model-only candidates are promoted to findings
+  with a `provenance` chip (`model`/`scanner`/`both`) and get full AI review +
+  validator verdicts. Hunt detail (per-pass counts, trace) lands in `hunt.json`.
 
 Then, for both lanes: Laya routing → targeted AI review with CVSS v4.0 →
 independent validation (conservative: only decisive evidence flips a status)
@@ -453,6 +459,13 @@ PYTHONPATH=src python -m vulnscan.training.evaluate \
 # 7) Wire-in: point the backend at the trained dir (falls back to hub if unset)
 export LAYA_MODEL_DIR='D:/dev/laya-train/out'
 # Proven live: routing records model_id D:/dev/laya-train/out + sha256 identity.
+
+# 8) GPU (optional, same host): the trained 842MB checkpoint fits a 4GB laptop
+# GPU (0.9s/predict proven live; the 3.7GB base did not). Main venv is
+# CPU torch, so point the worker at the CUDA venv + request cuda; any
+# failure (OOM included) falls back to CPU and never kills a scan.
+export LAYA_WORKER_PYTHON='D:/dev/laya-train/.venv/Scripts/python.exe'
+export LAYA_DEVICE='cuda'
 ```
 
 Notes: training data, datasets, and weights live **outside the repo**
@@ -467,7 +480,7 @@ score as encouraging rather than final — add hard labels
 
 ```bash
 PYTHONPATH=src .venv/Scripts/python.exe -m pytest -q -p no:randomly \
-  --ignore=tests/e2e --timeout=90 --timeout-method=thread   # full suite (~6 min, 580 passed)
+  --ignore=tests/e2e --timeout=90 --timeout-method=thread   # full suite (~6 min, 790 passed)
 .venv/Scripts/python.exe -m ruff check src tests
 .venv/Scripts/python.exe -m ruff format --check src tests
 .venv/Scripts/python.exe -m mypy --platform win32 src/vulnscan
