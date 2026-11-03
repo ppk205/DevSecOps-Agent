@@ -16,6 +16,7 @@ from ._base import VersionedModel
 from .enums import (
     CWECategory,
     EvidenceStrength,
+    FindingProvenance,
     FindingStatus,
     LanguageKind,
     Severity,
@@ -240,6 +241,10 @@ class Finding(VersionedModel):
     status: FindingStatus = Field(
         default=FindingStatus.UNPROCESSED,
         description="Workflow status; CONFIRMED/REJECTED only via validation decisions.",
+    )
+    provenance: FindingProvenance | None = Field(
+        default=None,
+        description="Which lane produced this finding; absent (None) means scanner.",
     )
     observations: list[Observation] = Field(
         default_factory=list,

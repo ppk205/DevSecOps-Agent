@@ -177,9 +177,10 @@ DevSecOps-Agent/
 | Java dependencies | OWASP Dependency-Check (DEEP profile), with **OSV.dev fallback** when the binary/NVD is unavailable |
 | Notifications | In-app bell + read/unread feed, optional gate-fail webhook |
 | Targeted verification probes | Opt-in HTTP probes (reflected-XSS canary, SQL-error signatures) as extra evidence — never auto-findings |
+| Model-first hunt (`--mode hunt`) | Multi-pass, one per extension family present (java/js-ts/py/php) + generic fallback for other text + logic pass ON (authZ/session/crypto); findings carry an origin chip (model/scanner/both), model-only candidates land in hunt.json + final report for human review |
 | DAST / runtime attacks | **Not supported** — static analysis only |
 | Auto-remediation | **Not supported** — proposals only, you apply |
-| Other languages (Go, Ruby, C#…) | Hunt mode reads any text, but no dedicated rules yet |
+| Other languages (Go, Ruby, C#…) | Generic hunt fallback pass covers any text, but no dedicated rules yet |
 
 Every rule is tested both directions: it must fire on its `Vuln*` fixture
 and stay silent on its `Safe*` fixture (`tests/scanners/test_*_rules.py`,

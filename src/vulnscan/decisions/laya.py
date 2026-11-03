@@ -33,7 +33,9 @@ from .state import build_evidence_state, model_state
 _LOADER_TYPE = Callable[[], Any]
 
 
-_process_worker = JSONWorker([sys.executable, "-m", "vulnscan.decisions.model_worker"])
+_WORKER_PYTHON = os.environ.get("LAYA_WORKER_PYTHON", "").strip() or sys.executable
+_WORKER_DEVICE = os.environ.get("LAYA_DEVICE", "cpu").strip().lower() or "cpu"
+_process_worker = JSONWorker([_WORKER_PYTHON, "-m", "vulnscan.decisions.model_worker"])
 atexit.register(_process_worker.close)
 
 
@@ -141,7 +143,7 @@ class LayaDecisionBackend:
         self._agent: Any | None = None
         self.model_id = model_id
         self.model_revision = model_revision
-        self.device = device
+        self.device = device if device != "unknown" else _WORKER_DEVICE
         self.max_input_chars = max_input_chars
         self.max_input_tokens = max_input_tokens
         self.timeout_seconds = timeout_seconds

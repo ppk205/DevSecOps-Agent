@@ -173,7 +173,8 @@ def test_router_falls_back_on_unavailable() -> None:
 
 
 def test_laya_backend_env_dir_overrides_default_checkpoint(
-    tmp_path, monkeypatch  # type: ignore[no-untyped-def]
+    tmp_path,
+    monkeypatch,  # type: ignore[no-untyped-def]
 ) -> None:
     """LAYA_MODEL_DIR points the backend at a trained local checkpoint."""
     from vulnscan.decisions.protocol import MODEL_ID, MODEL_REVISION
@@ -195,3 +196,24 @@ def test_laya_backend_ignores_missing_env_dir(monkeypatch) -> None:  # type: ign
     monkeypatch.setenv("LAYA_MODEL_DIR", "/definitely/not/here")
     backend = LayaDecisionBackend()
     assert backend.model_id == MODEL_ID
+
+
+class TestResolveDevice:
+    def test_unknown_and_empty_fall_back_to_cpu(self):
+        from vulnscan.decisions.model_worker import _resolve_device
+
+        assert _resolve_device("") == "cpu"
+        assert _resolve_device("unknown") == "cpu"
+        assert _resolve_device("cpu") == "cpu"
+
+    def test_cuda_honored_only_with_cuda_torch(self):
+        from vulnscan.decisions.model_worker import _resolve_device
+
+        try:
+            import torch
+        except ImportError:
+            assert _resolve_device("cuda") == "cpu"
+        else:
+            expected = "cuda" if torch.cuda.is_available() else "cpu"
+            assert _resolve_device("cuda") == expected
+            assert _resolve_device("CUDA") == expected

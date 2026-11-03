@@ -63,6 +63,67 @@ def _finding_title(item: Any) -> str:
     return str(getattr(item, "title", getattr(item, "finding_id", "?")))
 
 
+def model_only_track_paragraph(
+    comparison: dict[str, Any] | None,
+    run_metadata: dict[str, Any] | None = None,
+) -> str:
+    """One-paragraph model-only track summary; ``""`` when nothing to say.
+
+    Counts agreed / model-only / scanner-only (from ``counts``, falling back
+    to bucket lengths) plus per-pass candidate counts when the hunt summary
+    carries them. Tolerant of missing keys everywhere — never raises.
+    """
+    comp = comparison if isinstance(comparison, dict) else {}
+    meta = run_metadata if isinstance(run_metadata, dict) else {}
+    counts = comp.get("counts") if isinstance(comp.get("counts"), dict) else {}
+
+    def _num(key: str, bucket: Any) -> int:
+        try:
+            n = int(counts.get(key, 0) or 0)
+        except (TypeError, ValueError):
+            n = 0
+        if n:
+            return n
+        return len(bucket) if isinstance(bucket, list) else 0
+
+    agreed = _num("agreed", comp.get("agreed"))
+    model_only = _num("model_only", comp.get("model_only"))
+    scanner_only = _num("scanner_only", comp.get("scanner_only"))
+    if not (agreed or model_only or scanner_only):
+        return ""
+
+    passes: Any = comp.get("passes")
+    if not isinstance(passes, list):
+        passes = None
+        for key in ("passes", "hunt_passes", "hunt_summary", "hunt"):
+            value = meta.get(key)
+            if isinstance(value, list):
+                passes = value
+                break
+            if isinstance(value, dict) and isinstance(value.get("passes"), list):
+                passes = value["passes"]
+                break
+    bits: list[str] = []
+    if isinstance(passes, list):
+        for entry in passes:
+            if not isinstance(entry, dict):
+                continue
+            family = str(entry.get("family", "?"))
+            try:
+                n = int(entry.get("candidates", entry.get("count", 0)) or 0)
+            except (TypeError, ValueError):
+                n = 0
+            bits.append(f"{family}:{n}")
+    text = (
+        f"Luồng model-only: nhất trí {agreed}, chỉ model thấy {model_only} "
+        f"(chờ người xem lại trong hunt.json, chưa thành finding chính thức "
+        f"khi thiếu evidence), chỉ scanner thấy {scanner_only}."
+    )
+    if bits:
+        text += " Theo pass: " + ", ".join(bits) + "."
+    return text
+
+
 def comparison_section(comparison: dict[str, Any] | None) -> str:
     """Vietnamese model-vs-scanner compare block; empty when no comparison."""
     if not comparison:
@@ -131,6 +192,9 @@ def build_report_prompt(
                 "Add a '## Đối chiếu model vs scanner' section to the report "
                 "covering agreed / model-only / scanner-only items.\n"
             )
+        track = model_only_track_paragraph(comparison, run_metadata)
+        if track:
+            prompt = prompt + f"\nModel-only track summary (one short paragraph):\n{track}\n"
     return prompt
 
 
@@ -156,6 +220,9 @@ def deterministic_narrative(
     section = comparison_section(comparison)
     if section:
         lines.extend([section, ""])
+    track = model_only_track_paragraph(comparison, run_metadata)
+    if track:
+        lines.extend([track, ""])
     for f in findings:
         dec = by_id.get(f.finding_id, {})
         lines.append(f"## {f.title} [{f.status.value}]")

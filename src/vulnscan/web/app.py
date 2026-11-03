@@ -453,7 +453,7 @@ def create_app(
         proposed = str(assessment.get("proposed_severity", "")) if assessment else ""
         ai_severity = proposed or None
         file_path, line = _primary_location(item)
-        return {
+        entry: dict[str, Any] = {
             "id": str(item.get("finding_id", "")),
             "title": str(item.get("title", "")),
             "severity": severity,
@@ -467,6 +467,11 @@ def create_app(
             "line": line,
             "origin": _origin_of(item),
         }
+        # Hunt provenance rides top-level; absent (None) means scanner.
+        provenance = item.get("provenance")
+        if provenance in ("model", "scanner", "both"):
+            entry["provenance"] = provenance
+        return entry
 
     def _csv_param(value: str | None) -> list[str]:
         if not value:

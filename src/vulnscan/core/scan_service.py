@@ -18,7 +18,13 @@ from typing import Any
 from filelock import FileLock, Timeout
 from sqlalchemy import func, select, update
 
-from vulnscan.contracts import ExportFormat, Finding, ScannerResult, ScanSpecification
+from vulnscan.contracts import (
+    ExportFormat,
+    Finding,
+    FindingProvenance,
+    ScannerResult,
+    ScanSpecification,
+)
 from vulnscan.contracts.enums import WEB_SOURCE_EXTENSIONS
 from vulnscan.decisions.config import LayaConfig
 from vulnscan.pipeline.runner import ScanPipeline
@@ -727,17 +733,23 @@ class ScanService:
                         persist("model_hunt", "skipped", hunt_detail)
                 if config.provider_profile:
                     try:
-                        from vulnscan.ai.hunt import hunt_vulns
+                        from vulnscan.ai.hunt import detect_families, hunt_all
                         from vulnscan.providers.budget import BudgetManager
                         from vulnscan.providers.client import ProviderClient
                         from vulnscan.providers.profile_store import load_profile
 
                         hunt_profile = load_profile(config.provider_profile)
                         hunt_client = ProviderClient(hunt_profile, BudgetManager())
-                        hunt_out = hunt_vulns(
+                        hunt_families = detect_families(
+                            list(manifest.get("inventory") or [])
+                            or list((manifest.get("files") or {}).keys())
+                        )
+                        hunt_out = hunt_all(
                             snapshot_root=str(snapshot_root),
                             client=hunt_client,
                             model=config.provider_model,
+                            families=hunt_families,
+                            logic_pass=True,
                         )
                         hunt_candidates = [dict(c) for c in hunt_out.get("candidates", [])]
                         hunt_status = str(hunt_out.get("status", "partial"))
@@ -959,16 +971,38 @@ class ScanService:
                     f"model-only={counts.get('model_only', 0)} "
                     f"scanner-only={counts.get('scanner_only', 0)}",
                 )
-            # Hunt mode focuses the bounded AI lane on scanner findings the
-            # model independently corroborated. Model-only candidates have no
-            # scanner Finding to validate (synthesizing one would fabricate
-            # evidence), so they flow to human review via hunt.json + report.
-            agreed_findings = (
-                [pair["finding"] for pair in comparison.get("agreed", [])]
-                if hunt_active and comparison.get("counts", {}).get("agreed")
-                else []
+            # Hunt mode: agreed scanner findings carry provenance BOTH, the
+            # rest of the scanner findings carry SCANNER, and verified
+            # model-only candidates with readable source evidence are
+            # promoted to model-provenance findings so the gate, the AI lane,
+            # and the reports see them. Non-hunt mode stamps every scanner
+            # finding SCANNER.
+            from vulnscan.ai.promote import promote_model_only
+
+            compared: dict[str, Any] = comparison
+            promoted: list[Finding] = []
+            if hunt_active:
+                agreed_findings = [pair["finding"] for pair in compared.get("agreed", [])]
+                agreed_ids = {id(finding) for finding in agreed_findings}
+                for scanner_finding in findings:
+                    scanner_finding.provenance = (
+                        FindingProvenance.BOTH
+                        if id(scanner_finding) in agreed_ids
+                        else FindingProvenance.SCANNER
+                    )
+                promoted = promote_model_only(
+                    compared.get("model_only", []),
+                    snapshot_root=str(snapshot_root),
+                    run_id=run_id,
+                )
+                findings = [*findings, *promoted]
+            else:
+                agreed_findings = []
+                for scanner_finding in findings:
+                    scanner_finding.provenance = FindingProvenance.SCANNER
+            review_findings: list[Finding] = (
+                [*agreed_findings, *promoted] if hunt_active else findings
             )
-            review_findings = agreed_findings or findings
             from vulnscan.ai.review import run_ai_review
             from vulnscan.reporting.final_report import run_final_report
 
@@ -1132,6 +1166,7 @@ class ScanService:
                     json.dumps(
                         {
                             "candidates": summary.get("model_candidates", []),
+                            "passes": sanitize(hunt_out.get("passes", [])),
                             "verification": summary.get("laya_verification", []),
                             "comparison": summary.get("comparison", {}),
                             "trace": sanitize(hunt_out.get("trace", [])),

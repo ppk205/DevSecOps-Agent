@@ -144,6 +144,17 @@ class FindingStatus(str, Enum):
     UNRESOLVED = "unresolved"
 
 
+class FindingProvenance(str, Enum):
+    """Which lane produced a finding: model hunt, scanners, or both.
+
+    Optional on the Finding contract; absent (None) means scanner.
+    """
+
+    MODEL = "model"
+    SCANNER = "scanner"
+    BOTH = "both"
+
+
 class VerificationOutcome(str, Enum):
     """Outcome of independent verification. Kept distinct from evidence strength."""
 
@@ -379,6 +390,7 @@ __all__ = [
     "EvidenceStrength",
     "ExportFormat",
     "ExtractionMode",
+    "FindingProvenance",
     "FindingStatus",
     "LanguageKind",
     "MissReason",

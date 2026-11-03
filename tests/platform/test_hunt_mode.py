@@ -122,9 +122,7 @@ def _profile():
     )
 
 
-def test_default_mode_runs_hunt_path_skipped_without_key(
-    service, checkout, tmp_path, monkeypatch
-):
+def test_default_mode_runs_hunt_path_skipped_without_key(service, checkout, tmp_path, monkeypatch):
     import vulnscan.providers.profile_store as store_mod
 
     monkeypatch.setattr(store_mod, "default_profile", lambda base=None: None)
@@ -160,6 +158,30 @@ def test_hunt_mode_persists_three_stages_and_artifact(service, checkout, tmp_pat
         assert Path(snapshot_root, "Example.java").is_file()
         return {"candidates": [dict(candidate)], "rounds": 2, "usage": {}, "status": "completed"}
 
+    def _fake_hunt_all(
+        *,
+        snapshot_root,
+        client,
+        model,
+        families=None,
+        logic_pass=True,
+        max_rounds=12,
+        max_findings=20,
+    ):
+        assert Path(snapshot_root, "Example.java").is_file()
+        return {
+            "candidates": [dict(candidate)],
+            "passes": [
+                {"family": f, "status": "completed", "candidates": 1}
+                for f in (families or ["java"])
+            ],
+            "rounds": 2,
+            "usage": {},
+            "status": "completed",
+            "detail": "fake multi-pass hunt",
+            "trace": [],
+        }
+
     def _fake_verify(candidates, *, snapshot_root, laya_config=None):
         return [
             {**c, "laya_route": "deep", "laya_confidence": 0.9, "laya_status": "completed"}
@@ -167,6 +189,7 @@ def test_hunt_mode_persists_three_stages_and_artifact(service, checkout, tmp_pat
         ]
 
     monkeypatch.setattr(hunt_mod, "hunt_vulns", _fake_hunt)
+    monkeypatch.setattr(hunt_mod, "hunt_all", _fake_hunt_all)
     monkeypatch.setattr(verify_mod, "laya_verify_candidates", _fake_verify)
     monkeypatch.setattr(store_mod, "load_profile", lambda _pid: _profile())
 

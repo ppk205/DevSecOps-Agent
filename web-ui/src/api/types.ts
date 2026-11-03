@@ -282,7 +282,11 @@ export interface FixRequestBody {
   provider_model?: string | null;
 }
 
+/** Model-first hunt provenance (finding metadata.origin). Missing means scanner. */
+export type FindingProvenance = "model" | "scanner" | "both";
+
 /** Phase 4: one row of the findings table (scanner vs AI severities). */
+
 export interface FindingListItem {
   id: string;
   title: string;
@@ -297,6 +301,8 @@ export interface FindingListItem {
   file: string;
   line: number;
   origin: "source" | "dependency";
+  /** Hunt provenance (metadata.origin). Optional: absent means scanner. */
+  provenance?: FindingProvenance;
 }
 
 export interface FindingsQuery {
@@ -306,6 +312,8 @@ export interface FindingsQuery {
   verifications?: string[];
   aiChanged?: boolean | null;
   origin?: "source" | "dependency" | null;
+  /** Client-side hunt-provenance filter (all when null). Never sent to the API. */
+  provenance?: FindingProvenance | null;
   q?: string;
   sort?: "severity" | "title" | "file" | "status";
   order?: "asc" | "desc";

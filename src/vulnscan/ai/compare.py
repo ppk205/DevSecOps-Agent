@@ -1,8 +1,8 @@
 """Compare model-hunted vulns against deterministic scanner findings.
 
 Pure function, no I/O. Match key: (normalized posix path, line ±3 lines
-tolerance, CWE digits with a rule->CWE fallback map sourced from
-``src/vulnscan/scanners/rules/java.yml`` ``metadata.cwe``).
+tolerance, CWE digits with a rule->CWE fallback map built at runtime from
+``src/vulnscan/scanners/rules/*.yml`` ``metadata.cwe``).
 
 Returns ``{"agreed": [...], "model_only": [...], "scanner_only": [...],
 "counts": {...}}``. Report-only: matched items are cross-referenced, stored
@@ -12,29 +12,70 @@ findings are never merged or mutated.
 from __future__ import annotations
 
 import re
+from pathlib import Path
 from typing import Any
 
 _LINE_TOLERANCE = 3
 
-# Rule id -> CWE digits, sourced from src/vulnscan/scanners/rules/java.yml
-# metadata.cwe. Used when a scanner finding carries no CWE category.
-_RULE_CWE: dict[str, str] = {
-    "java-sql-concatenation": "89",
-    "java-xss-response-writer": "79",
-    "java-path-traversal-file": "22",
-    "java-command-execution": "78",
-    "java-xxe-document-builder": "611",
-    "java-weak-digest": "327",
-    "java-weak-cipher": "327",
-    "java-weak-cipher-secret-key": "327",
-    "java-unsafe-deserialization": "502",
-    "java-unsafe-deserialization-objectmapper": "502",
-    "java-insecure-random": "330",
-    "java-trust-all-certificates": "295",
-    "java-permissive-cors": "942",
-}
+# Directory holding the semgrep rule packs (java/javascript/python/php yml).
+_RULES_DIR = Path(__file__).resolve().parent.parent / "scanners" / "rules"
+
+# Parsed once on first use, then cached in module state.
+_rule_cwe_cache: dict[str, str] | None = None
 
 _CWE_DIGITS = re.compile(r"(\d+)")
+_RULE_ID_LINE = re.compile(r"^\s*-\s*id\s*:\s*(\S+)\s*$")
+
+
+def _scan_rules_text(text: str) -> dict[str, str]:
+    """Extract ``{rule id: CWE digits}`` from one rules file's text.
+
+    Each rule block declares ``- id: <rule-id>`` followed by a ``metadata:``
+    section with a single-line ``cwe: ['CWE-NNN: ...']`` entry. The scan
+    tracks the most recent rule id and records the first CWE entry seen
+    under it — no YAML dependency required.
+    """
+    mapping: dict[str, str] = {}
+    current_id = ""
+    for line in text.splitlines():
+        id_match = _RULE_ID_LINE.match(line)
+        if id_match:
+            current_id = id_match.group(1)
+            continue
+        if current_id and current_id not in mapping and "cwe" in line and "CWE" in line.upper():
+            cwe_match = _CWE_DIGITS.search(line)
+            if cwe_match:
+                mapping[current_id] = cwe_match.group(1)
+    return mapping
+
+
+def _load_rule_cwe_map() -> dict[str, str]:
+    """Build rule id -> CWE digits from every ``rules/*.yml`` file."""
+    mapping: dict[str, str] = {}
+    try:
+        files = sorted(_RULES_DIR.glob("*.yml"))
+    except OSError:
+        return mapping
+    for rules_file in files:
+        try:
+            text = rules_file.read_text(encoding="utf-8")
+        except OSError:
+            continue
+        mapping.update(_scan_rules_text(text))
+    return mapping
+
+
+def rule_cwe_map() -> dict[str, str]:
+    """Runtime rule->CWE map (parsed once, cached); ``{}`` when unavailable."""
+    global _rule_cwe_cache
+    if _rule_cwe_cache is None:
+        _rule_cwe_cache = _load_rule_cwe_map()
+    return _rule_cwe_cache
+
+
+def _rule_cwe(rule_id: str) -> str:
+    """CWE digits for a rule id of any language prefix; ``""`` when unknown."""
+    return rule_cwe_map().get(rule_id, "")
 
 
 def norm_path(path: str) -> str:
@@ -79,7 +120,7 @@ def _finding_cwe(finding: Any) -> str:
         direct = cwe_digits(finding.get("cwe") or finding.get("cwe_category"))
         if direct:
             return direct
-        return _RULE_CWE.get(str(finding.get("rule_id", "")), "")
+        return _rule_cwe(str(finding.get("rule_id", "")))
     cwe = cwe_digits(getattr(finding, "cwe_category", None))
     if cwe:
         return cwe
@@ -87,7 +128,7 @@ def _finding_cwe(finding: Any) -> str:
         cwe = cwe_digits(getattr(obs, "cwe_category", None))
         if cwe:
             return cwe
-        rule_cwe = _RULE_CWE.get(str(getattr(obs, "rule_id", "")), "")
+        rule_cwe = _rule_cwe(str(getattr(obs, "rule_id", "")))
         if rule_cwe:
             return rule_cwe
     return ""

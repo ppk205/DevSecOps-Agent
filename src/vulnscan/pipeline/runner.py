@@ -25,6 +25,7 @@ Guarantees enforced here:
 from __future__ import annotations
 
 import logging
+import os
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
@@ -230,7 +231,7 @@ class ScanPipeline:
         backend = LayaDecisionBackend(
             model_id=self.laya_config.model_id,
             model_revision=self.laya_config.revision,
-            device="cpu",
+            device=os.environ.get("LAYA_DEVICE", "cpu").strip().lower() or "cpu",
             max_input_tokens=self.laya_config.max_input_tokens,
             timeout_seconds=self.laya_config.timeout_seconds,
         )

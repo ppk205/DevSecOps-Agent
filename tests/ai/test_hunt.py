@@ -267,3 +267,118 @@ class TestHunt:
         result = hunt_vulns(snapshot_root=str(tmp_path), client=_BoomClient(), model="m")
         assert result["status"] == "failed"
         assert result["candidates"] == []
+
+
+class TestDetectFamilies:
+    def test_known_families_in_stable_order(self):
+        from vulnscan.ai.hunt import detect_families
+
+        assert detect_families(["a.php", "b.java", "c.py", "d.ts"]) == [
+            "java",
+            "javascript",
+            "python",
+            "php",
+        ]
+
+    def test_unknown_extension_falls_back_to_generic(self):
+        from vulnscan.ai.hunt import detect_families
+
+        assert detect_families(["main.go", "README.md"]) == ["generic"]
+        assert detect_families(["a.java", "main.go"]) == ["java", "generic"]
+
+    def test_empty_inventory_still_hunts_generic(self):
+        from vulnscan.ai.hunt import detect_families
+
+        assert detect_families([]) == ["generic"]
+
+    def test_cap_respected(self):
+        from vulnscan.ai.hunt import detect_families
+
+        assert detect_families(["a.java", "b.py", "c.php", "d.js"], cap=2) == [
+            "java",
+            "javascript",
+        ]
+
+
+class TestDedupeCandidates:
+    def test_exact_duplicates_collapse(self):
+        from vulnscan.ai.hunt import dedupe_candidates
+
+        items = [
+            {"file": "a.java", "line": 5, "cwe": "CWE-89"},
+            {"file": "a.java", "line": 5, "cwe": "CWE-89"},
+            {"file": "a.java", "line": 6, "cwe": "CWE-89"},
+            {"file": "a.java", "line": 5, "cwe": "CWE-79"},
+        ]
+        out = dedupe_candidates(items)
+        assert len(out) == 3
+
+    def test_empty_safe(self):
+        from vulnscan.ai.hunt import dedupe_candidates
+
+        assert dedupe_candidates([]) == []
+
+
+class TestHuntAll:
+    def test_multi_pass_merges_and_dedupes(self, tmp_path):
+        import json as _json
+
+        from vulnscan.ai.hunt import hunt_all
+        from vulnscan.providers.client import ChatResponse
+
+        _snapshot(tmp_path)
+        (tmp_path / "src" / "app.py").write_text("import os\nos.system(cmd)\n")
+        vuln_java = {
+            "title": "SQLi",
+            "file": "src/LoginServlet.java",
+            "line": 5,
+            "cwe": "CWE-89",
+            "severity": "high",
+            "rationale": "r",
+            "evidence": "stmt.executeQuery(q);",
+        }
+        vuln_py = {
+            "title": "CMDi",
+            "file": "src/app.py",
+            "line": 2,
+            "cwe": "CWE-78",
+            "severity": "high",
+            "rationale": "r",
+            "evidence": "os.system(cmd)",
+        }
+
+        class _FamilyClient:
+            def chat(self, messages, **kwargs):
+                first = messages[0].content if hasattr(messages[0], "content") else ""
+                if "Python" in first:
+                    return ChatResponse(content=_json.dumps([vuln_py]), tool_calls=[], usage={})
+                return ChatResponse(content=_json.dumps([vuln_java]), tool_calls=[], usage={})
+
+        result = hunt_all(
+            snapshot_root=str(tmp_path),
+            client=_FamilyClient(),
+            model="m",
+            families=["java", "python"],
+            logic_pass=False,
+        )
+        assert result["status"] == "completed"
+        assert [p["family"] for p in result["passes"]] == ["java", "python"]
+        assert len(result["candidates"]) == 2
+
+    def test_logic_pass_default_on(self, tmp_path):
+        from vulnscan.ai.hunt import hunt_all
+        from vulnscan.providers.client import ChatResponse
+
+        _snapshot(tmp_path)
+
+        class _EmptyClient:
+            def chat(self, messages, **kwargs):
+                return ChatResponse(content="[]", tool_calls=[], usage={})
+
+        result = hunt_all(
+            snapshot_root=str(tmp_path),
+            client=_EmptyClient(),
+            model="m",
+            families=["java"],
+        )
+        assert [p["family"] for p in result["passes"]] == ["java", "logic"]

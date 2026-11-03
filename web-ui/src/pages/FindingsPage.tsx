@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchFindings, fetchKeys, fetchScans, requestFix } from "../api/client";
-import type { FindingListItem, FindingsQuery } from "../api/types";
+import type { FindingListItem, FindingProvenance, FindingsQuery } from "../api/types";
 import { downloadCsv, findingsToCsv } from "../api/findingsQuery";
 import { DataTable } from "../components/DataTable";
 import { EmptyState } from "../components/EmptyState";
@@ -43,6 +43,59 @@ function AiDelta({ item }: { item: FindingListItem }) {
   );
 }
 
+function ProvenanceChip({ value }: { value: FindingProvenance }) {
+  if (value === "model") {
+    return (
+      <span
+        title="Found by the model hunt (scanner did not corroborate)"
+        className="label-m inline-block border border-success px-1.5 py-0.5 text-[10px] text-success"
+      >
+        AI
+      </span>
+    );
+  }
+  if (value === "both") {
+    return (
+      <span
+        title="Model hunt and scanner agree on this finding"
+        className="label-m inline-block border border-[#8b5cf6] px-1.5 py-0.5 text-[10px] text-[#a78bfa]"
+      >
+        Both
+      </span>
+    );
+  }
+  return (
+    <span
+      title="Scanner finding (no model provenance recorded)"
+      className="label-m inline-block border border-hairline px-1.5 py-0.5 text-[10px] text-muted"
+    >
+      Scanner
+    </span>
+  );
+}
+
+/**
+ * Hunt provenance for one row. Reads the backend's provenance field plus
+ * likely metadata.origin aliases; tolerant of everything missing (scanner).
+ */
+function provenanceOf(item: FindingListItem): FindingProvenance {
+  const raw = item as unknown as Record<string, unknown>;
+  const meta = raw.metadata as Record<string, unknown> | null | undefined;
+  const candidates: unknown[] = [
+    raw.provenance,
+    raw.detection_origin,
+    raw.hunt_origin,
+    meta?.origin,
+  ];
+  for (const candidate of candidates) {
+    const v = String(candidate ?? "").toLowerCase();
+    if (v === "model" || v === "scanner" || v === "both") return v;
+    if (v === "model_only" || v === "ai") return "model";
+    if (v === "scanner_only") return "scanner";
+  }
+  return item.model_corroborated ? "both" : "scanner";
+}
+
 const DEFAULT_QUERY: FindingsQuery = { sort: "severity", order: "asc", page: 1, pageSize: 20 };
 
 export function FindingsPage() {
@@ -74,9 +127,18 @@ export function FindingsPage() {
     },
   });
 
+  // Provenance (model/scanner/both) is client-side only: the findings API
+  // has no such param yet, so strip it before fetching. When the filter is
+  // active, pull up to 1000 rows and paginate locally so counts stay exact.
+  const provenanceFilter = query.provenance ?? null;
+  const { provenance: _provenanceDrop, ...serverFilters } = query;
+  const serverQuery: FindingsQuery = provenanceFilter
+    ? { ...serverFilters, page: 1, pageSize: 1000 }
+    : serverFilters;
+
   const findingsQuery = useQuery({
     queryKey: ["findings", scanId, query],
-    queryFn: () => fetchFindings(scanId, query),
+    queryFn: () => fetchFindings(scanId, serverQuery),
   });
   const optionsQuery = useQuery({
     queryKey: ["findings-options", scanId],
@@ -96,8 +158,16 @@ export function FindingsPage() {
     return { cwes: uniq((i) => i.cwe), scanners: uniq((i) => i.scanners), statuses: uniq((i) => i.status) };
   }, [optionsQuery.data]);
 
-  const items = findingsQuery.data?.items ?? [];
-  const total = findingsQuery.data?.total ?? 0;
+  const baseItems = findingsQuery.data?.items ?? [];
+  const baseTotal = findingsQuery.data?.total ?? 0;
+
+  const { items, total } = useMemo(() => {
+    if (!provenanceFilter) return { items: baseItems, total: baseTotal };
+    const kept = baseItems.filter((item) => provenanceOf(item) === provenanceFilter);
+    const pageSize = query.pageSize ?? 20;
+    const page = Math.max(1, query.page ?? 1);
+    return { items: kept.slice((page - 1) * pageSize, page * pageSize), total: kept.length };
+  }, [baseItems, baseTotal, provenanceFilter, query.page, query.pageSize]);
 
   useEffect(() => {
     setSelected(0);
@@ -154,9 +224,12 @@ export function FindingsPage() {
   };
 
   const exportFiltered = async () => {
-    const { page: _drop, ...filters } = query;
+    const { page: _drop, provenance: _provDrop, ...filters } = query;
     const full = await fetchFindings(scanId, { ...filters, page: 1, pageSize: 10000 });
-    downloadCsv(`findings-run-${scanId}.csv`, findingsToCsv(full.items));
+    const kept = provenanceFilter
+      ? full.items.filter((item) => provenanceOf(item) === provenanceFilter)
+      : full.items;
+    downloadCsv(`findings-run-${scanId}.csv`, findingsToCsv(kept));
   };
 
   const sortMark = (key: string) =>
@@ -287,6 +360,25 @@ export function FindingsPage() {
             <option value="">{en.findings.filters.aiChangedOptions.all}</option>
             <option value="changed">{en.findings.filters.aiChangedOptions.changed}</option>
             <option value="unchanged">{en.findings.filters.aiChangedOptions.unchanged}</option>
+          </select>
+        </label>
+        <label className="flex flex-col gap-1">
+          <span className="label-m text-[11px] text-muted">Origin</span>
+          <select
+            value={query.provenance ?? ""}
+            onChange={(e) =>
+              patch({
+                provenance: e.target.value
+                  ? (e.target.value as FindingProvenance)
+                  : null,
+              })
+            }
+            className="border border-hairline bg-canvas px-2 py-1.5 text-sm text-ink outline-none focus:border-ink"
+          >
+            <option value="">{en.findings.allOption}</option>
+            <option value="model">Model</option>
+            <option value="scanner">Scanner</option>
+            <option value="both">Both</option>
           </select>
         </label>
         <button
@@ -434,6 +526,11 @@ export function FindingsPage() {
                     )}
                   </span>
                 ),
+              },
+              {
+                key: "origin",
+                header: "Origin",
+                render: (f: FindingListItem) => <ProvenanceChip value={provenanceOf(f)} />,
               },
               {
                 key: "ai",

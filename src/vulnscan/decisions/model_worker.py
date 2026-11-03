@@ -13,6 +13,20 @@ from typing import Any
 from vulnscan.core.stdio_worker import MAX_MESSAGE_BYTES, PROTOCOL_VERSION
 
 
+def _resolve_device(requested: str) -> str:
+    """Pick a torch device, degrading gracefully to CPU.
+
+    Pure helper so tests can pin the matrix without loading a model.
+    """
+    try:
+        import torch
+    except ImportError:
+        return "cpu"
+    if str(requested or "").lower() == "cuda" and torch.cuda.is_available():
+        return "cuda"
+    return "cpu"
+
+
 def load_checkpoint(model_id: str, revision: str | None, device: str) -> tuple[Any, str]:
     laya = importlib.import_module("laya")
     root = Path(model_id)
@@ -29,10 +43,15 @@ def load_checkpoint(model_id: str, revision: str | None, device: str) -> tuple[A
         hub = importlib.import_module("huggingface_hub")
         root = Path(hub.snapshot_download(repo_id=model_id, revision=revision))
         identity = root.name
-    # Laya ~0.4B (ModernBERT-large + heads) fits any modern CPU; a 4GB laptop
-    # GPU OOMs on the forward pass and silently falls back to CPU anyway, so
-    # pin CPU and spend the budget on a warm worker instead of VRAM roulette.
-    agent = laya.load(str(root), device="cpu")
+    # Laya ~0.4B (ModernBERT-large + heads). Honor a CUDA request when the
+    # worker venv actually has CUDA; the trained 842MB checkpoint fits a
+    # 4GB laptop GPU (0.9s/predict proven live), the 3.7GB base did not.
+    # Any load failure (OOM included) degrades to CPU, never kills a scan.
+    want = _resolve_device(device)
+    try:
+        agent = laya.load(str(root), device=want)
+    except Exception:  # noqa: BLE001 - OOM/load failure degrades to CPU
+        agent = laya.load(str(root), device="cpu")
     return agent, identity
 
 
