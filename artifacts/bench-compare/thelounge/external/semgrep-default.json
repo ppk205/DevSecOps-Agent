@@ -1,0 +1,257 @@
+[
+  {
+    "check_id": "problem-based-packs.insecure-transport.js-node.bypass-tls-verification.bypass-tls-verification",
+    "path": "D:\\dev\\bench-repos\\thelounge\\server\\models\\network.ts",
+    "start": {
+      "line": 142,
+      "col": 26,
+      "offset": 3127
+    },
+    "end": {
+      "line": 185,
+      "col": 4,
+      "offset": 3931
+    },
+    "extra": {
+      "message": "Checks for setting the environment variable NODE_TLS_REJECT_UNAUTHORIZED to 0, which disables TLS verification. This should only be used for debugging purposes. Setting the option rejectUnauthorized to false bypasses verification against the list of trusted CAs, which also leads to insecure transport. These options lead to vulnerability to MTM attacks, and should not be used.",
+      "metadata": {
+        "likelihood": "MEDIUM",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "category": "security",
+        "cwe": "CWE-319: Cleartext Transmission of Sensitive Information",
+        "owasp": "A03:2017 - Sensitive Data Exposure",
+        "references": [
+          "https://nodejs.org/api/https.html#https_https_request_options_callback",
+          "https://stackoverflow.com/questions/20433287/node-js-request-cert-has-expired#answer-29397100"
+        ],
+        "subcategory": [
+          "vuln"
+        ],
+        "technology": [
+          "node.js"
+        ],
+        "vulnerability": "Insecure Transport",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Mishandled Sensitive Information"
+        ],
+        "source": "https://semgrep.dev/r/problem-based-packs.insecure-transport.js-node.bypass-tls-verification.bypass-tls-verification",
+        "shortlink": "https://sg.run/9oxr"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "javascript.express.security.audit.express-res-sendfile.express-res-sendfile",
+    "path": "D:\\dev\\bench-repos\\thelounge\\server\\server.ts",
+    "start": {
+      "line": 115,
+      "col": 23,
+      "offset": 3412
+    },
+    "end": {
+      "line": 115,
+      "col": 37,
+      "offset": 3426
+    },
+    "extra": {
+      "message": "The application processes user-input, this is passed to res.sendFile which can allow an attacker to arbitrarily read files on the system through path traversal. It is recommended to perform input validation in addition to canonicalizing the path. This allows you to validate the path against the intended directory it should be accessing.",
+      "metadata": {
+        "references": [
+          "https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html"
+        ],
+        "technology": [
+          "express"
+        ],
+        "category": "security",
+        "cwe": [
+          "CWE-73: External Control of File Name or Path"
+        ],
+        "owasp": [
+          "A04:2021 - Insecure Design",
+          "A06:2025 - Insecure Design"
+        ],
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Path Traversal"
+        ],
+        "source": "https://semgrep.dev/r/javascript.express.security.audit.express-res-sendfile.express-res-sendfile",
+        "shortlink": "https://sg.run/7DJk"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "javascript.express.security.audit.express-res-sendfile.express-res-sendfile",
+    "path": "D:\\dev\\bench-repos\\thelounge\\server\\server.ts",
+    "start": {
+      "line": 128,
+      "col": 23,
+      "offset": 3852
+    },
+    "end": {
+      "line": 128,
+      "col": 55,
+      "offset": 3884
+    },
+    "extra": {
+      "message": "The application processes user-input, this is passed to res.sendFile which can allow an attacker to arbitrarily read files on the system through path traversal. It is recommended to perform input validation in addition to canonicalizing the path. This allows you to validate the path against the intended directory it should be accessing.",
+      "metadata": {
+        "references": [
+          "https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html"
+        ],
+        "technology": [
+          "express"
+        ],
+        "category": "security",
+        "cwe": [
+          "CWE-73: External Control of File Name or Path"
+        ],
+        "owasp": [
+          "A04:2021 - Insecure Design",
+          "A06:2025 - Insecure Design"
+        ],
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Path Traversal"
+        ],
+        "source": "https://semgrep.dev/r/javascript.express.security.audit.express-res-sendfile.express-res-sendfile",
+        "shortlink": "https://sg.run/7DJk"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "javascript.express.security.audit.express-path-join-resolve-traversal.express-path-join-resolve-traversal",
+    "path": "D:\\dev\\bench-repos\\thelounge\\server\\server.ts",
+    "start": {
+      "line": 128,
+      "col": 33,
+      "offset": 3862
+    },
+    "end": {
+      "line": 128,
+      "col": 44,
+      "offset": 3873
+    },
+    "extra": {
+      "message": "Possible writing outside of the destination, make sure that the target path is nested in the intended destination",
+      "metadata": {
+        "owasp": [
+          "A05:2017 - Broken Access Control",
+          "A01:2021 - Broken Access Control",
+          "A01:2025 - Broken Access Control"
+        ],
+        "cwe": [
+          "CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')"
+        ],
+        "category": "security",
+        "references": [
+          "https://owasp.org/www-community/attacks/Path_Traversal"
+        ],
+        "technology": [
+          "express",
+          "node.js"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Path Traversal"
+        ],
+        "source": "https://semgrep.dev/r/javascript.express.security.audit.express-path-join-resolve-traversal.express-path-join-resolve-traversal",
+        "shortlink": "https://sg.run/weRn"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "javascript.express.security.audit.express-path-join-resolve-traversal.express-path-join-resolve-traversal",
+    "path": "D:\\dev\\bench-repos\\thelounge\\server\\server.ts",
+    "start": {
+      "line": 128,
+      "col": 46,
+      "offset": 3875
+    },
+    "end": {
+      "line": 128,
+      "col": 54,
+      "offset": 3883
+    },
+    "extra": {
+      "message": "Possible writing outside of the destination, make sure that the target path is nested in the intended destination",
+      "metadata": {
+        "owasp": [
+          "A05:2017 - Broken Access Control",
+          "A01:2021 - Broken Access Control",
+          "A01:2025 - Broken Access Control"
+        ],
+        "cwe": [
+          "CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')"
+        ],
+        "category": "security",
+        "references": [
+          "https://owasp.org/www-community/attacks/Path_Traversal"
+        ],
+        "technology": [
+          "express",
+          "node.js"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Path Traversal"
+        ],
+        "source": "https://semgrep.dev/r/javascript.express.security.audit.express-path-join-resolve-traversal.express-path-join-resolve-traversal",
+        "shortlink": "https://sg.run/weRn"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  }
+]

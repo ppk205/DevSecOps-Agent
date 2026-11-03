@@ -1,0 +1,3749 @@
+[
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\inc\\function.php",
+    "start": {
+      "line": 141,
+      "col": 16,
+      "offset": 5346
+    },
+    "end": {
+      "line": 141,
+      "col": 95,
+      "offset": 5425
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\inc\\function.php",
+    "start": {
+      "line": 163,
+      "col": 16,
+      "offset": 6172
+    },
+    "end": {
+      "line": 163,
+      "col": 95,
+      "offset": 6251
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\pkxss\\pkxss_login.php",
+    "start": {
+      "line": 15,
+      "col": 16,
+      "offset": 361
+    },
+    "end": {
+      "line": 15,
+      "col": 94,
+      "offset": 439
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\pkxss\\rkeypress\\pkxss_keypress_result.php",
+    "start": {
+      "line": 15,
+      "col": 12,
+      "offset": 355
+    },
+    "end": {
+      "line": 15,
+      "col": 47,
+      "offset": 390
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\pkxss\\rkeypress\\rkserver.php",
+    "start": {
+      "line": 15,
+      "col": 10,
+      "offset": 291
+    },
+    "end": {
+      "line": 15,
+      "col": 49,
+      "offset": 330
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\pkxss\\xcookie\\cookie.php",
+    "start": {
+      "line": 14,
+      "col": 12,
+      "offset": 370
+    },
+    "end": {
+      "line": 15,
+      "col": 68,
+      "offset": 496
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\pkxss\\xcookie\\pkxss_cookie_result.php",
+    "start": {
+      "line": 15,
+      "col": 12,
+      "offset": 355
+    },
+    "end": {
+      "line": 15,
+      "col": 46,
+      "offset": 389
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\pkxss\\xfish\\pkxss_fish_result.php",
+    "start": {
+      "line": 16,
+      "col": 12,
+      "offset": 354
+    },
+    "end": {
+      "line": 16,
+      "col": 43,
+      "offset": 385
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\pkxss\\xfish\\xfish.php",
+    "start": {
+      "line": 16,
+      "col": 12,
+      "offset": 362
+    },
+    "end": {
+      "line": 17,
+      "col": 56,
+      "offset": 464
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\csrf\\csrfget\\csrf_get_edit.php",
+    "start": {
+      "line": 33,
+      "col": 16,
+      "offset": 1420
+    },
+    "end": {
+      "line": 33,
+      "col": 198,
+      "offset": 1602
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\csrf\\csrfget\\csrf_get_login.php",
+    "start": {
+      "line": 36,
+      "col": 16,
+      "offset": 1429
+    },
+    "end": {
+      "line": 36,
+      "col": 89,
+      "offset": 1502
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\csrf\\csrfpost\\csrf_post_edit.php",
+    "start": {
+      "line": 33,
+      "col": 16,
+      "offset": 1356
+    },
+    "end": {
+      "line": 33,
+      "col": 198,
+      "offset": 1538
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\csrf\\csrfpost\\csrf_post_login.php",
+    "start": {
+      "line": 36,
+      "col": 16,
+      "offset": 1764
+    },
+    "end": {
+      "line": 36,
+      "col": 89,
+      "offset": 1837
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\csrf\\csrftoken\\token_get_edit.php",
+    "start": {
+      "line": 36,
+      "col": 16,
+      "offset": 1409
+    },
+    "end": {
+      "line": 36,
+      "col": 198,
+      "offset": 1591
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\csrf\\csrftoken\\token_get_login.php",
+    "start": {
+      "line": 38,
+      "col": 16,
+      "offset": 1447
+    },
+    "end": {
+      "line": 38,
+      "col": 89,
+      "offset": 1520
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\infoleak\\findabc.php",
+    "start": {
+      "line": 30,
+      "col": 16,
+      "offset": 1223
+    },
+    "end": {
+      "line": 30,
+      "col": 89,
+      "offset": 1296
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\infoleak\\findabc.php",
+    "start": {
+      "line": 39,
+      "col": 31,
+      "offset": 1742
+    },
+    "end": {
+      "line": 39,
+      "col": 80,
+      "offset": 1791
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\overpermission\\op1\\op1_login.php",
+    "start": {
+      "line": 32,
+      "col": 16,
+      "offset": 1404
+    },
+    "end": {
+      "line": 32,
+      "col": 89,
+      "offset": 1477
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\overpermission\\op1\\op1_mem.php",
+    "start": {
+      "line": 28,
+      "col": 12,
+      "offset": 1383
+    },
+    "end": {
+      "line": 28,
+      "col": 61,
+      "offset": 1432
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.echoed-request.echoed-request",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\overpermission\\op1\\op1_mem.php",
+    "start": {
+      "line": 91,
+      "col": 23,
+      "offset": 3534
+    },
+    "end": {
+      "line": 91,
+      "col": 34,
+      "offset": 3545
+    },
+    "extra": {
+      "message": "`Echo`ing user input risks cross-site scripting vulnerability. You should use `htmlentities()` when showing data to users.",
+      "fix": "echo htmlentities($html);",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "cwe": [
+          "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+        ],
+        "owasp": [
+          "A07:2017 - Cross-Site Scripting (XSS)",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "category": "security",
+        "references": [
+          "https://www.php.net/manual/en/function.htmlentities.php",
+          "https://www.php.net/manual/en/reserved.variables.request.php",
+          "https://www.php.net/manual/en/reserved.variables.post.php",
+          "https://www.php.net/manual/en/reserved.variables.get.php",
+          "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "MEDIUM",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Cross-Site-Scripting (XSS)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.echoed-request.echoed-request",
+        "shortlink": "https://sg.run/Bqqb"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\overpermission\\op2\\op2_admin.php",
+    "start": {
+      "line": 31,
+      "col": 12,
+      "offset": 1321
+    },
+    "end": {
+      "line": 31,
+      "col": 47,
+      "offset": 1356
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\overpermission\\op2\\op2_admin_edit.php",
+    "start": {
+      "line": 29,
+      "col": 16,
+      "offset": 1412
+    },
+    "end": {
+      "line": 29,
+      "col": 230,
+      "offset": 1626
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\overpermission\\op2\\op2_login.php",
+    "start": {
+      "line": 28,
+      "col": 16,
+      "offset": 1254
+    },
+    "end": {
+      "line": 28,
+      "col": 94,
+      "offset": 1332
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-exec.tainted-exec",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\rce\\rce_ping.php",
+    "start": {
+      "line": 26,
+      "col": 18,
+      "offset": 1203
+    },
+    "end": {
+      "line": 26,
+      "col": 41,
+      "offset": 1226
+    },
+    "extra": {
+      "message": "User input is passed to a function that executes a shell command. This can lead to remote code execution.",
+      "metadata": {
+        "cwe": [
+          "CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "owasp": [
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/Top10/A03_2021-Injection"
+        ],
+        "subcategory": [
+          "vuln"
+        ],
+        "impact": "HIGH",
+        "likelihood": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Command Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-exec.tainted-exec",
+        "shortlink": "https://sg.run/kxEEz"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.tainted-exec.tainted-exec",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\rce\\rce_ping.php",
+    "start": {
+      "line": 26,
+      "col": 18,
+      "offset": 1203
+    },
+    "end": {
+      "line": 26,
+      "col": 41,
+      "offset": 1226
+    },
+    "extra": {
+      "message": "Executing non-constant commands. This can lead to command injection. You should use `escapeshellarg()` when using command.",
+      "metadata": {
+        "cwe": [
+          "CWE-94: Improper Control of Generation of Code ('Code Injection')"
+        ],
+        "references": [
+          "https://www.stackhawk.com/blog/php-command-injection/",
+          "https://brightsec.com/blog/code-injection-php/",
+          "https://www.acunetix.com/websitesecurity/php-security-2/"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "owasp": [
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "cwe2022-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "HIGH",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Code Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.tainted-exec.tainted-exec",
+        "shortlink": "https://sg.run/JAkP"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-exec.tainted-exec",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\rce\\rce_ping.php",
+    "start": {
+      "line": 28,
+      "col": 18,
+      "offset": 1303
+    },
+    "end": {
+      "line": 28,
+      "col": 46,
+      "offset": 1331
+    },
+    "extra": {
+      "message": "User input is passed to a function that executes a shell command. This can lead to remote code execution.",
+      "metadata": {
+        "cwe": [
+          "CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "owasp": [
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/Top10/A03_2021-Injection"
+        ],
+        "subcategory": [
+          "vuln"
+        ],
+        "impact": "HIGH",
+        "likelihood": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Command Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-exec.tainted-exec",
+        "shortlink": "https://sg.run/kxEEz"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.tainted-exec.tainted-exec",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\rce\\rce_ping.php",
+    "start": {
+      "line": 28,
+      "col": 18,
+      "offset": 1303
+    },
+    "end": {
+      "line": 28,
+      "col": 46,
+      "offset": 1331
+    },
+    "extra": {
+      "message": "Executing non-constant commands. This can lead to command injection. You should use `escapeshellarg()` when using command.",
+      "metadata": {
+        "cwe": [
+          "CWE-94: Improper Control of Generation of Code ('Code Injection')"
+        ],
+        "references": [
+          "https://www.stackhawk.com/blog/php-command-injection/",
+          "https://brightsec.com/blog/code-injection-php/",
+          "https://www.acunetix.com/websitesecurity/php-security-2/"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "owasp": [
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "cwe2022-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "HIGH",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Code Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.tainted-exec.tainted-exec",
+        "shortlink": "https://sg.run/JAkP"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.echoed-request.echoed-request",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\rce\\rce_ping.php",
+    "start": {
+      "line": 66,
+      "col": 25,
+      "offset": 2544
+    },
+    "end": {
+      "line": 66,
+      "col": 53,
+      "offset": 2572
+    },
+    "extra": {
+      "message": "`Echo`ing user input risks cross-site scripting vulnerability. You should use `htmlentities()` when showing data to users.",
+      "fix": "echo htmlentities(\"<pre>{$result}</pre>\");",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "cwe": [
+          "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+        ],
+        "owasp": [
+          "A07:2017 - Cross-Site Scripting (XSS)",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "category": "security",
+        "references": [
+          "https://www.php.net/manual/en/function.htmlentities.php",
+          "https://www.php.net/manual/en/reserved.variables.request.php",
+          "https://www.php.net/manual/en/reserved.variables.post.php",
+          "https://www.php.net/manual/en/reserved.variables.get.php",
+          "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "MEDIUM",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Cross-Site-Scripting (XSS)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.echoed-request.echoed-request",
+        "shortlink": "https://sg.run/Bqqb"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\sqli\\sqli_blind_b.php",
+    "start": {
+      "line": 27,
+      "col": 12,
+      "offset": 1147
+    },
+    "end": {
+      "line": 27,
+      "col": 64,
+      "offset": 1199
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.echoed-request.echoed-request",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\sqli\\sqli_blind_b.php",
+    "start": {
+      "line": 72,
+      "col": 23,
+      "offset": 2893
+    },
+    "end": {
+      "line": 72,
+      "col": 34,
+      "offset": 2904
+    },
+    "extra": {
+      "message": "`Echo`ing user input risks cross-site scripting vulnerability. You should use `htmlentities()` when showing data to users.",
+      "fix": "echo htmlentities($html);",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "cwe": [
+          "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+        ],
+        "owasp": [
+          "A07:2017 - Cross-Site Scripting (XSS)",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "category": "security",
+        "references": [
+          "https://www.php.net/manual/en/function.htmlentities.php",
+          "https://www.php.net/manual/en/reserved.variables.request.php",
+          "https://www.php.net/manual/en/reserved.variables.post.php",
+          "https://www.php.net/manual/en/reserved.variables.get.php",
+          "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "MEDIUM",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Cross-Site-Scripting (XSS)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.echoed-request.echoed-request",
+        "shortlink": "https://sg.run/Bqqb"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\sqli\\sqli_blind_t.php",
+    "start": {
+      "line": 28,
+      "col": 12,
+      "offset": 1152
+    },
+    "end": {
+      "line": 28,
+      "col": 64,
+      "offset": 1204
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\sqli\\sqli_del.php",
+    "start": {
+      "line": 27,
+      "col": 12,
+      "offset": 1131
+    },
+    "end": {
+      "line": 27,
+      "col": 72,
+      "offset": 1191
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\sqli\\sqli_del.php",
+    "start": {
+      "line": 38,
+      "col": 12,
+      "offset": 1510
+    },
+    "end": {
+      "line": 38,
+      "col": 56,
+      "offset": 1554
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\sqli\\sqli_header\\sqli_header_login.php",
+    "start": {
+      "line": 32,
+      "col": 16,
+      "offset": 1272
+    },
+    "end": {
+      "line": 32,
+      "col": 94,
+      "offset": 1350
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\sqli\\sqli_id.php",
+    "start": {
+      "line": 27,
+      "col": 12,
+      "offset": 1055
+    },
+    "end": {
+      "line": 27,
+      "col": 60,
+      "offset": 1103
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.echoed-request.echoed-request",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\sqli\\sqli_id.php",
+    "start": {
+      "line": 80,
+      "col": 23,
+      "offset": 3070
+    },
+    "end": {
+      "line": 80,
+      "col": 34,
+      "offset": 3081
+    },
+    "extra": {
+      "message": "`Echo`ing user input risks cross-site scripting vulnerability. You should use `htmlentities()` when showing data to users.",
+      "fix": "echo htmlentities($html);",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "cwe": [
+          "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+        ],
+        "owasp": [
+          "A07:2017 - Cross-Site Scripting (XSS)",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "category": "security",
+        "references": [
+          "https://www.php.net/manual/en/function.htmlentities.php",
+          "https://www.php.net/manual/en/reserved.variables.request.php",
+          "https://www.php.net/manual/en/reserved.variables.post.php",
+          "https://www.php.net/manual/en/reserved.variables.get.php",
+          "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "MEDIUM",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Cross-Site-Scripting (XSS)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.echoed-request.echoed-request",
+        "shortlink": "https://sg.run/Bqqb"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\sqli\\sqli_iu\\sqli_edit.php",
+    "start": {
+      "line": 37,
+      "col": 16,
+      "offset": 1475
+    },
+    "end": {
+      "line": 37,
+      "col": 198,
+      "offset": 1657
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\sqli\\sqli_iu\\sqli_login.php",
+    "start": {
+      "line": 34,
+      "col": 16,
+      "offset": 1388
+    },
+    "end": {
+      "line": 34,
+      "col": 89,
+      "offset": 1461
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\sqli\\sqli_iu\\sqli_reg.php",
+    "start": {
+      "line": 31,
+      "col": 16,
+      "offset": 1235
+    },
+    "end": {
+      "line": 31,
+      "col": 226,
+      "offset": 1445
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\sqli\\sqli_search.php",
+    "start": {
+      "line": 30,
+      "col": 12,
+      "offset": 1203
+    },
+    "end": {
+      "line": 30,
+      "col": 80,
+      "offset": 1271
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.echoed-request.echoed-request",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\sqli\\sqli_search.php",
+    "start": {
+      "line": 78,
+      "col": 23,
+      "offset": 3038
+    },
+    "end": {
+      "line": 78,
+      "col": 35,
+      "offset": 3050
+    },
+    "extra": {
+      "message": "`Echo`ing user input risks cross-site scripting vulnerability. You should use `htmlentities()` when showing data to users.",
+      "fix": "echo htmlentities($html2);",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "cwe": [
+          "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+        ],
+        "owasp": [
+          "A07:2017 - Cross-Site Scripting (XSS)",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "category": "security",
+        "references": [
+          "https://www.php.net/manual/en/function.htmlentities.php",
+          "https://www.php.net/manual/en/reserved.variables.request.php",
+          "https://www.php.net/manual/en/reserved.variables.post.php",
+          "https://www.php.net/manual/en/reserved.variables.get.php",
+          "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "MEDIUM",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Cross-Site-Scripting (XSS)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.echoed-request.echoed-request",
+        "shortlink": "https://sg.run/Bqqb"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.echoed-request.echoed-request",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\sqli\\sqli_search.php",
+    "start": {
+      "line": 78,
+      "col": 35,
+      "offset": 3050
+    },
+    "end": {
+      "line": 78,
+      "col": 47,
+      "offset": 3062
+    },
+    "extra": {
+      "message": "`Echo`ing user input risks cross-site scripting vulnerability. You should use `htmlentities()` when showing data to users.",
+      "fix": "echo htmlentities($html1);",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "cwe": [
+          "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+        ],
+        "owasp": [
+          "A07:2017 - Cross-Site Scripting (XSS)",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "category": "security",
+        "references": [
+          "https://www.php.net/manual/en/function.htmlentities.php",
+          "https://www.php.net/manual/en/reserved.variables.request.php",
+          "https://www.php.net/manual/en/reserved.variables.post.php",
+          "https://www.php.net/manual/en/reserved.variables.get.php",
+          "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "MEDIUM",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Cross-Site-Scripting (XSS)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.echoed-request.echoed-request",
+        "shortlink": "https://sg.run/Bqqb"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\sqli\\sqli_str.php",
+    "start": {
+      "line": 28,
+      "col": 12,
+      "offset": 1179
+    },
+    "end": {
+      "line": 28,
+      "col": 64,
+      "offset": 1231
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.echoed-request.echoed-request",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\sqli\\sqli_str.php",
+    "start": {
+      "line": 73,
+      "col": 23,
+      "offset": 2748
+    },
+    "end": {
+      "line": 73,
+      "col": 34,
+      "offset": 2759
+    },
+    "extra": {
+      "message": "`Echo`ing user input risks cross-site scripting vulnerability. You should use `htmlentities()` when showing data to users.",
+      "fix": "echo htmlentities($html);",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "cwe": [
+          "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+        ],
+        "owasp": [
+          "A07:2017 - Cross-Site Scripting (XSS)",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "category": "security",
+        "references": [
+          "https://www.php.net/manual/en/function.htmlentities.php",
+          "https://www.php.net/manual/en/reserved.variables.request.php",
+          "https://www.php.net/manual/en/reserved.variables.post.php",
+          "https://www.php.net/manual/en/reserved.variables.get.php",
+          "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "MEDIUM",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Cross-Site-Scripting (XSS)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.echoed-request.echoed-request",
+        "shortlink": "https://sg.run/Bqqb"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\sqli\\sqli_widebyte.php",
+    "start": {
+      "line": 29,
+      "col": 12,
+      "offset": 1115
+    },
+    "end": {
+      "line": 29,
+      "col": 64,
+      "offset": 1167
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.echoed-request.echoed-request",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\sqli\\sqli_widebyte.php",
+    "start": {
+      "line": 78,
+      "col": 23,
+      "offset": 2996
+    },
+    "end": {
+      "line": 78,
+      "col": 34,
+      "offset": 3007
+    },
+    "extra": {
+      "message": "`Echo`ing user input risks cross-site scripting vulnerability. You should use `htmlentities()` when showing data to users.",
+      "fix": "echo htmlentities($html);",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "cwe": [
+          "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+        ],
+        "owasp": [
+          "A07:2017 - Cross-Site Scripting (XSS)",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "category": "security",
+        "references": [
+          "https://www.php.net/manual/en/function.htmlentities.php",
+          "https://www.php.net/manual/en/reserved.variables.request.php",
+          "https://www.php.net/manual/en/reserved.variables.post.php",
+          "https://www.php.net/manual/en/reserved.variables.get.php",
+          "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "MEDIUM",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Cross-Site-Scripting (XSS)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.echoed-request.echoed-request",
+        "shortlink": "https://sg.run/Bqqb"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\sqli\\sqli_x.php",
+    "start": {
+      "line": 28,
+      "col": 12,
+      "offset": 1188
+    },
+    "end": {
+      "line": 28,
+      "col": 66,
+      "offset": 1242
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.echoed-request.echoed-request",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\sqli\\sqli_x.php",
+    "start": {
+      "line": 72,
+      "col": 23,
+      "offset": 2772
+    },
+    "end": {
+      "line": 72,
+      "col": 34,
+      "offset": 2783
+    },
+    "extra": {
+      "message": "`Echo`ing user input risks cross-site scripting vulnerability. You should use `htmlentities()` when showing data to users.",
+      "fix": "echo htmlentities($html);",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "cwe": [
+          "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+        ],
+        "owasp": [
+          "A07:2017 - Cross-Site Scripting (XSS)",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "category": "security",
+        "references": [
+          "https://www.php.net/manual/en/function.htmlentities.php",
+          "https://www.php.net/manual/en/reserved.variables.request.php",
+          "https://www.php.net/manual/en/reserved.variables.post.php",
+          "https://www.php.net/manual/en/reserved.variables.get.php",
+          "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "MEDIUM",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Cross-Site-Scripting (XSS)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.echoed-request.echoed-request",
+        "shortlink": "https://sg.run/Bqqb"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.echoed-request.echoed-request",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\ssrf\\ssrf_curl.php",
+    "start": {
+      "line": 39,
+      "col": 5,
+      "offset": 1751
+    },
+    "end": {
+      "line": 39,
+      "col": 15,
+      "offset": 1761
+    },
+    "extra": {
+      "message": "`Echo`ing user input risks cross-site scripting vulnerability. You should use `htmlentities()` when showing data to users.",
+      "fix": "echo htmlentities($RES);",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "cwe": [
+          "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+        ],
+        "owasp": [
+          "A07:2017 - Cross-Site Scripting (XSS)",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "category": "security",
+        "references": [
+          "https://www.php.net/manual/en/function.htmlentities.php",
+          "https://www.php.net/manual/en/reserved.variables.request.php",
+          "https://www.php.net/manual/en/reserved.variables.post.php",
+          "https://www.php.net/manual/en/reserved.variables.get.php",
+          "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "MEDIUM",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Cross-Site-Scripting (XSS)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.echoed-request.echoed-request",
+        "shortlink": "https://sg.run/Bqqb"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-filename.tainted-filename",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\ssrf\\ssrf_fgc.php",
+    "start": {
+      "line": 27,
+      "col": 30,
+      "offset": 1176
+    },
+    "end": {
+      "line": 27,
+      "col": 39,
+      "offset": 1185
+    },
+    "extra": {
+      "message": "File name based on user input risks server-side request forgery.",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "category": "security",
+        "cwe": [
+          "CWE-918: Server-Side Request Forgery (SSRF)"
+        ],
+        "owasp": [
+          "A10:2021 - Server-Side Request Forgery (SSRF)",
+          "A01:2025 - Broken Access Control"
+        ],
+        "references": [
+          "https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_%28SSRF%29"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "impact": "MEDIUM",
+        "likelihood": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Server-Side Request Forgery (SSRF)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-filename.tainted-filename",
+        "shortlink": "https://sg.run/Ayqp"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.echoed-request.echoed-request",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\ssrf\\ssrf_fgc.php",
+    "start": {
+      "line": 28,
+      "col": 5,
+      "offset": 1193
+    },
+    "end": {
+      "line": 28,
+      "col": 15,
+      "offset": 1203
+    },
+    "extra": {
+      "message": "`Echo`ing user input risks cross-site scripting vulnerability. You should use `htmlentities()` when showing data to users.",
+      "fix": "echo htmlentities($str);",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "cwe": [
+          "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+        ],
+        "owasp": [
+          "A07:2017 - Cross-Site Scripting (XSS)",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "category": "security",
+        "references": [
+          "https://www.php.net/manual/en/function.htmlentities.php",
+          "https://www.php.net/manual/en/reserved.variables.request.php",
+          "https://www.php.net/manual/en/reserved.variables.post.php",
+          "https://www.php.net/manual/en/reserved.variables.get.php",
+          "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "MEDIUM",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Cross-Site-Scripting (XSS)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.echoed-request.echoed-request",
+        "shortlink": "https://sg.run/Bqqb"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-filename.tainted-filename",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\unsafedownload\\execdownload.php",
+    "start": {
+      "line": 15,
+      "col": 17,
+      "offset": 376
+    },
+    "end": {
+      "line": 15,
+      "col": 27,
+      "offset": 386
+    },
+    "extra": {
+      "message": "File name based on user input risks server-side request forgery.",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "category": "security",
+        "cwe": [
+          "CWE-918: Server-Side Request Forgery (SSRF)"
+        ],
+        "owasp": [
+          "A10:2021 - Server-Side Request Forgery (SSRF)",
+          "A01:2025 - Broken Access Control"
+        ],
+        "references": [
+          "https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_%28SSRF%29"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "impact": "MEDIUM",
+        "likelihood": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Server-Side Request Forgery (SSRF)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-filename.tainted-filename",
+        "shortlink": "https://sg.run/Ayqp"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-filename.tainted-filename",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\unsafedownload\\execdownload.php",
+    "start": {
+      "line": 19,
+      "col": 11,
+      "offset": 500
+    },
+    "end": {
+      "line": 19,
+      "col": 21,
+      "offset": 510
+    },
+    "extra": {
+      "message": "File name based on user input risks server-side request forgery.",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "category": "security",
+        "cwe": [
+          "CWE-918: Server-Side Request Forgery (SSRF)"
+        ],
+        "owasp": [
+          "A10:2021 - Server-Side Request Forgery (SSRF)",
+          "A01:2025 - Broken Access Control"
+        ],
+        "references": [
+          "https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_%28SSRF%29"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "impact": "MEDIUM",
+        "likelihood": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Server-Side Request Forgery (SSRF)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-filename.tainted-filename",
+        "shortlink": "https://sg.run/Ayqp"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-filename.tainted-filename",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\unsafedownload\\execdownload.php",
+    "start": {
+      "line": 20,
+      "col": 21,
+      "offset": 539
+    },
+    "end": {
+      "line": 20,
+      "col": 31,
+      "offset": 549
+    },
+    "extra": {
+      "message": "File name based on user input risks server-side request forgery.",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "category": "security",
+        "cwe": [
+          "CWE-918: Server-Side Request Forgery (SSRF)"
+        ],
+        "owasp": [
+          "A10:2021 - Server-Side Request Forgery (SSRF)",
+          "A01:2025 - Broken Access Control"
+        ],
+        "references": [
+          "https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_%28SSRF%29"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "impact": "MEDIUM",
+        "likelihood": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Server-Side Request Forgery (SSRF)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-filename.tainted-filename",
+        "shortlink": "https://sg.run/Ayqp"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.echoed-request.echoed-request",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\unsafedownload\\execdownload.php",
+    "start": {
+      "line": 37,
+      "col": 5,
+      "offset": 1102
+    },
+    "end": {
+      "line": 37,
+      "col": 20,
+      "offset": 1117
+    },
+    "extra": {
+      "message": "`Echo`ing user input risks cross-site scripting vulnerability. You should use `htmlentities()` when showing data to users.",
+      "fix": "echo htmlentities($file_con);",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "cwe": [
+          "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+        ],
+        "owasp": [
+          "A07:2017 - Cross-Site Scripting (XSS)",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "category": "security",
+        "references": [
+          "https://www.php.net/manual/en/function.htmlentities.php",
+          "https://www.php.net/manual/en/reserved.variables.request.php",
+          "https://www.php.net/manual/en/reserved.variables.post.php",
+          "https://www.php.net/manual/en/reserved.variables.get.php",
+          "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "MEDIUM",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Cross-Site-Scripting (XSS)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.echoed-request.echoed-request",
+        "shortlink": "https://sg.run/Bqqb"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.echoed-request.echoed-request",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\unserilization\\unser.php",
+    "start": {
+      "line": 64,
+      "col": 19,
+      "offset": 2228
+    },
+    "end": {
+      "line": 64,
+      "col": 30,
+      "offset": 2239
+    },
+    "extra": {
+      "message": "`Echo`ing user input risks cross-site scripting vulnerability. You should use `htmlentities()` when showing data to users.",
+      "fix": "echo htmlentities($html);",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "cwe": [
+          "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+        ],
+        "owasp": [
+          "A07:2017 - Cross-Site Scripting (XSS)",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "category": "security",
+        "references": [
+          "https://www.php.net/manual/en/function.htmlentities.php",
+          "https://www.php.net/manual/en/reserved.variables.request.php",
+          "https://www.php.net/manual/en/reserved.variables.post.php",
+          "https://www.php.net/manual/en/reserved.variables.get.php",
+          "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "MEDIUM",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Cross-Site-Scripting (XSS)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.echoed-request.echoed-request",
+        "shortlink": "https://sg.run/Bqqb"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.echoed-request.echoed-request",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\xss\\fixxss.php",
+    "start": {
+      "line": 126,
+      "col": 36,
+      "offset": 4584
+    },
+    "end": {
+      "line": 126,
+      "col": 46,
+      "offset": 4594
+    },
+    "extra": {
+      "message": "`Echo`ing user input risks cross-site scripting vulnerability. You should use `htmlentities()` when showing data to users.",
+      "fix": "echo htmlentities($msg);",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "cwe": [
+          "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+        ],
+        "owasp": [
+          "A07:2017 - Cross-Site Scripting (XSS)",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "category": "security",
+        "references": [
+          "https://www.php.net/manual/en/function.htmlentities.php",
+          "https://www.php.net/manual/en/reserved.variables.request.php",
+          "https://www.php.net/manual/en/reserved.variables.post.php",
+          "https://www.php.net/manual/en/reserved.variables.get.php",
+          "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "MEDIUM",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Cross-Site-Scripting (XSS)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.echoed-request.echoed-request",
+        "shortlink": "https://sg.run/Bqqb"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.echoed-request.echoed-request",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\xss\\fixxss.php",
+    "start": {
+      "line": 146,
+      "col": 25,
+      "offset": 5225
+    },
+    "end": {
+      "line": 146,
+      "col": 36,
+      "offset": 5236
+    },
+    "extra": {
+      "message": "`Echo`ing user input risks cross-site scripting vulnerability. You should use `htmlentities()` when showing data to users.",
+      "fix": "echo htmlentities($name);",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "cwe": [
+          "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+        ],
+        "owasp": [
+          "A07:2017 - Cross-Site Scripting (XSS)",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "category": "security",
+        "references": [
+          "https://www.php.net/manual/en/function.htmlentities.php",
+          "https://www.php.net/manual/en/reserved.variables.request.php",
+          "https://www.php.net/manual/en/reserved.variables.post.php",
+          "https://www.php.net/manual/en/reserved.variables.get.php",
+          "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "MEDIUM",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Cross-Site-Scripting (XSS)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.echoed-request.echoed-request",
+        "shortlink": "https://sg.run/Bqqb"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.echoed-request.echoed-request",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\xss\\xss_01.php",
+    "start": {
+      "line": 60,
+      "col": 23,
+      "offset": 2505
+    },
+    "end": {
+      "line": 60,
+      "col": 34,
+      "offset": 2516
+    },
+    "extra": {
+      "message": "`Echo`ing user input risks cross-site scripting vulnerability. You should use `htmlentities()` when showing data to users.",
+      "fix": "echo htmlentities($html);",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "cwe": [
+          "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+        ],
+        "owasp": [
+          "A07:2017 - Cross-Site Scripting (XSS)",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "category": "security",
+        "references": [
+          "https://www.php.net/manual/en/function.htmlentities.php",
+          "https://www.php.net/manual/en/reserved.variables.request.php",
+          "https://www.php.net/manual/en/reserved.variables.post.php",
+          "https://www.php.net/manual/en/reserved.variables.get.php",
+          "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "MEDIUM",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Cross-Site-Scripting (XSS)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.echoed-request.echoed-request",
+        "shortlink": "https://sg.run/Bqqb"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.echoed-request.echoed-request",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\xss\\xss_04.php",
+    "start": {
+      "line": 81,
+      "col": 16,
+      "offset": 2823
+    },
+    "end": {
+      "line": 81,
+      "col": 28,
+      "offset": 2835
+    },
+    "extra": {
+      "message": "`Echo`ing user input risks cross-site scripting vulnerability. You should use `htmlentities()` when showing data to users.",
+      "fix": "echo htmlentities($jsvar);",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "cwe": [
+          "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+        ],
+        "owasp": [
+          "A07:2017 - Cross-Site Scripting (XSS)",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "category": "security",
+        "references": [
+          "https://www.php.net/manual/en/function.htmlentities.php",
+          "https://www.php.net/manual/en/reserved.variables.request.php",
+          "https://www.php.net/manual/en/reserved.variables.post.php",
+          "https://www.php.net/manual/en/reserved.variables.get.php",
+          "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "MEDIUM",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Cross-Site-Scripting (XSS)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.echoed-request.echoed-request",
+        "shortlink": "https://sg.run/Bqqb"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.echoed-request.echoed-request",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\xss\\xss_reflected_get.php",
+    "start": {
+      "line": 63,
+      "col": 23,
+      "offset": 2420
+    },
+    "end": {
+      "line": 63,
+      "col": 34,
+      "offset": 2431
+    },
+    "extra": {
+      "message": "`Echo`ing user input risks cross-site scripting vulnerability. You should use `htmlentities()` when showing data to users.",
+      "fix": "echo htmlentities($html);",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "cwe": [
+          "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+        ],
+        "owasp": [
+          "A07:2017 - Cross-Site Scripting (XSS)",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "category": "security",
+        "references": [
+          "https://www.php.net/manual/en/function.htmlentities.php",
+          "https://www.php.net/manual/en/reserved.variables.request.php",
+          "https://www.php.net/manual/en/reserved.variables.post.php",
+          "https://www.php.net/manual/en/reserved.variables.get.php",
+          "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "MEDIUM",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Cross-Site-Scripting (XSS)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.echoed-request.echoed-request",
+        "shortlink": "https://sg.run/Bqqb"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\xss\\xss_stored.php",
+    "start": {
+      "line": 25,
+      "col": 12,
+      "offset": 1011
+    },
+    "end": {
+      "line": 25,
+      "col": 72,
+      "offset": 1071
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\xss\\xss_stored.php",
+    "start": {
+      "line": 36,
+      "col": 12,
+      "offset": 1393
+    },
+    "end": {
+      "line": 36,
+      "col": 56,
+      "offset": 1437
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\xss\\xssblind\\admin.php",
+    "start": {
+      "line": 34,
+      "col": 12,
+      "offset": 1274
+    },
+    "end": {
+      "line": 34,
+      "col": 47,
+      "offset": 1309
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\xss\\xssblind\\admin_login.php",
+    "start": {
+      "line": 35,
+      "col": 16,
+      "offset": 1443
+    },
+    "end": {
+      "line": 35,
+      "col": 94,
+      "offset": 1521
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\xss\\xssblind\\xss_blind.php",
+    "start": {
+      "line": 29,
+      "col": 12,
+      "offset": 1145
+    },
+    "end": {
+      "line": 29,
+      "col": 88,
+      "offset": 1221
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\xss\\xsspost\\post_login.php",
+    "start": {
+      "line": 35,
+      "col": 16,
+      "offset": 1571
+    },
+    "end": {
+      "line": 35,
+      "col": 94,
+      "offset": 1649
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.echoed-request.echoed-request",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\xss\\xsspost\\xss_reflected_post.php",
+    "start": {
+      "line": 96,
+      "col": 23,
+      "offset": 3262
+    },
+    "end": {
+      "line": 96,
+      "col": 34,
+      "offset": 3273
+    },
+    "extra": {
+      "message": "`Echo`ing user input risks cross-site scripting vulnerability. You should use `htmlentities()` when showing data to users.",
+      "fix": "echo htmlentities($html);",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "cwe": [
+          "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+        ],
+        "owasp": [
+          "A07:2017 - Cross-Site Scripting (XSS)",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "category": "security",
+        "references": [
+          "https://www.php.net/manual/en/function.htmlentities.php",
+          "https://www.php.net/manual/en/reserved.variables.request.php",
+          "https://www.php.net/manual/en/reserved.variables.post.php",
+          "https://www.php.net/manual/en/reserved.variables.get.php",
+          "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "MEDIUM",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Cross-Site-Scripting (XSS)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.echoed-request.echoed-request",
+        "shortlink": "https://sg.run/Bqqb"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.echoed-request.echoed-request",
+    "path": "D:\\dev\\bench-repos\\pikachu\\vul\\xxe\\xxe_1.php",
+    "start": {
+      "line": 82,
+      "col": 19,
+      "offset": 2805
+    },
+    "end": {
+      "line": 82,
+      "col": 30,
+      "offset": 2816
+    },
+    "extra": {
+      "message": "`Echo`ing user input risks cross-site scripting vulnerability. You should use `htmlentities()` when showing data to users.",
+      "fix": "echo htmlentities($html);",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "cwe": [
+          "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+        ],
+        "owasp": [
+          "A07:2017 - Cross-Site Scripting (XSS)",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "category": "security",
+        "references": [
+          "https://www.php.net/manual/en/function.htmlentities.php",
+          "https://www.php.net/manual/en/reserved.variables.request.php",
+          "https://www.php.net/manual/en/reserved.variables.post.php",
+          "https://www.php.net/manual/en/reserved.variables.get.php",
+          "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "MEDIUM",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Cross-Site-Scripting (XSS)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.echoed-request.echoed-request",
+        "shortlink": "https://sg.run/Bqqb"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  }
+]

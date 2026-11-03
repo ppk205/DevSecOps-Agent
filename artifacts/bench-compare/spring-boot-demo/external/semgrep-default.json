@@ -1,0 +1,380 @@
+[
+  {
+    "check_id": "java.lang.security.audit.crypto.use-of-sha1.use-of-sha1",
+    "path": "D:\\dev\\bench-repos\\spring-boot-demo\\demo-ldap\\src\\main\\java\\com\\xkcoding\\ldap\\util\\LdapUtils.java",
+    "start": {
+      "line": 28,
+      "col": 9,
+      "offset": 759
+    },
+    "end": {
+      "line": 28,
+      "col": 63,
+      "offset": 813
+    },
+    "extra": {
+      "message": "Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is therefore not suitable as a cryptographic signature. Instead, use PBKDF2 for password hashing or SHA256 or SHA512 for other hash function applications.",
+      "metadata": {
+        "functional-categories": [
+          "crypto::search::hash-algorithm::javax.crypto"
+        ],
+        "owasp": [
+          "A03:2017 - Sensitive Data Exposure",
+          "A02:2021 - Cryptographic Failures",
+          "A04:2025 - Cryptographic Failures"
+        ],
+        "cwe": [
+          "CWE-328: Use of Weak Hash"
+        ],
+        "source-rule-url": "https://find-sec-bugs.github.io/bugs.htm#WEAK_MESSAGE_DIGEST_SHA1",
+        "asvs": {
+          "control_id": "6.2.5 Insecure Algorithm",
+          "control_url": "https://github.com/OWASP/ASVS/blob/master/4.0/en/0x14-V6-Cryptography.md#v62-algorithms",
+          "section": "V6 Stored Cryptography Verification Requirements",
+          "version": "4"
+        },
+        "category": "security",
+        "technology": [
+          "java"
+        ],
+        "references": [
+          "https://owasp.org/Top10/A02_2021-Cryptographic_Failures"
+        ],
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "MEDIUM",
+        "impact": "MEDIUM",
+        "confidence": "HIGH",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Insecure Hashing Algorithm"
+        ],
+        "source": "https://semgrep.dev/r/java.lang.security.audit.crypto.use-of-sha1.use-of-sha1",
+        "shortlink": "https://sg.run/bXNp"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "java.lang.security.audit.unvalidated-redirect.unvalidated-redirect",
+    "path": "D:\\dev\\bench-repos\\spring-boot-demo\\demo-oauth\\oauth-authorization-server\\src\\main\\java\\com\\xkcoding\\oauth\\config\\ClientLogoutSuccessHandler.java",
+    "start": {
+      "line": 23,
+      "col": 5,
+      "offset": 676
+    },
+    "end": {
+      "line": 28,
+      "col": 6,
+      "offset": 1005
+    },
+    "extra": {
+      "message": "Application redirects to a destination URL specified by a user-supplied parameter that is not validated. This could direct users to malicious locations. Consider using an allowlist to validate URLs.",
+      "metadata": {
+        "cwe": [
+          "CWE-601: URL Redirection to Untrusted Site ('Open Redirect')"
+        ],
+        "owasp": [
+          "A01:2021 - Broken Access Control",
+          "A01:2025 - Broken Access Control"
+        ],
+        "source-rule-url": "https://find-sec-bugs.github.io/bugs.htm#UNVALIDATED_REDIRECT",
+        "asvs": {
+          "control_id": "5.1.5 Open Redirect",
+          "control_url": "https://github.com/OWASP/ASVS/blob/master/4.0/en/0x13-V5-Validation-Sanitization-Encoding.md#v51-input-validation-requirements",
+          "section": "V5: Validation, Sanitization and Encoding Verification Requirements",
+          "version": "4"
+        },
+        "category": "security",
+        "technology": [
+          "java"
+        ],
+        "references": [
+          "https://owasp.org/Top10/A01_2021-Broken_Access_Control"
+        ],
+        "subcategory": [
+          "vuln"
+        ],
+        "impact": "LOW",
+        "likelihood": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Open Redirect"
+        ],
+        "source": "https://semgrep.dev/r/java.lang.security.audit.unvalidated-redirect.unvalidated-redirect",
+        "shortlink": "https://sg.run/Q51P"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "java.spring.security.injection.tainted-file-path.tainted-file-path",
+    "path": "D:\\dev\\bench-repos\\spring-boot-demo\\demo-upload\\src\\main\\java\\com\\xkcoding\\upload\\controller\\UploadController.java",
+    "start": {
+      "line": 59,
+      "col": 29,
+      "offset": 2094
+    },
+    "end": {
+      "line": 59,
+      "col": 52,
+      "offset": 2117
+    },
+    "extra": {
+      "message": "Detected user input controlling a file path. An attacker could control the location of this file, to include going backwards in the directory with '../'. To address this, ensure that user-controlled variables in file paths are sanitized. You may also consider using a utility method such as org.apache.commons.io.FilenameUtils.getName(...) to only retrieve the file name from the path.",
+      "metadata": {
+        "cwe": [
+          "CWE-23: Relative Path Traversal"
+        ],
+        "owasp": [
+          "A01:2021 - Broken Access Control",
+          "A01:2025 - Broken Access Control"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/Path_Traversal"
+        ],
+        "category": "security",
+        "technology": [
+          "java",
+          "spring"
+        ],
+        "subcategory": [
+          "vuln"
+        ],
+        "impact": "HIGH",
+        "likelihood": "MEDIUM",
+        "confidence": "HIGH",
+        "interfile": true,
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Path Traversal"
+        ],
+        "source": "https://semgrep.dev/r/java.spring.security.injection.tainted-file-path.tainted-file-path",
+        "shortlink": "https://sg.run/x9o0"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "java.spring.security.injection.tainted-file-path.tainted-file-path",
+    "path": "D:\\dev\\bench-repos\\spring-boot-demo\\demo-upload\\src\\main\\java\\com\\xkcoding\\upload\\controller\\UploadController.java",
+    "start": {
+      "line": 79,
+      "col": 29,
+      "offset": 3259
+    },
+    "end": {
+      "line": 79,
+      "col": 52,
+      "offset": 3282
+    },
+    "extra": {
+      "message": "Detected user input controlling a file path. An attacker could control the location of this file, to include going backwards in the directory with '../'. To address this, ensure that user-controlled variables in file paths are sanitized. You may also consider using a utility method such as org.apache.commons.io.FilenameUtils.getName(...) to only retrieve the file name from the path.",
+      "metadata": {
+        "cwe": [
+          "CWE-23: Relative Path Traversal"
+        ],
+        "owasp": [
+          "A01:2021 - Broken Access Control",
+          "A01:2025 - Broken Access Control"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/Path_Traversal"
+        ],
+        "category": "security",
+        "technology": [
+          "java",
+          "spring"
+        ],
+        "subcategory": [
+          "vuln"
+        ],
+        "impact": "HIGH",
+        "likelihood": "MEDIUM",
+        "confidence": "HIGH",
+        "interfile": true,
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Path Traversal"
+        ],
+        "source": "https://semgrep.dev/r/java.spring.security.injection.tainted-file-path.tainted-file-path",
+        "shortlink": "https://sg.run/x9o0"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "java.spring.security.injection.tainted-file-path.tainted-file-path",
+    "path": "D:\\dev\\bench-repos\\spring-boot-demo\\demo-upload\\src\\main\\java\\com\\xkcoding\\upload\\controller\\UploadController.java",
+    "start": {
+      "line": 80,
+      "col": 57,
+      "offset": 3342
+    },
+    "end": {
+      "line": 80,
+      "col": 80,
+      "offset": 3365
+    },
+    "extra": {
+      "message": "Detected user input controlling a file path. An attacker could control the location of this file, to include going backwards in the directory with '../'. To address this, ensure that user-controlled variables in file paths are sanitized. You may also consider using a utility method such as org.apache.commons.io.FilenameUtils.getName(...) to only retrieve the file name from the path.",
+      "metadata": {
+        "cwe": [
+          "CWE-23: Relative Path Traversal"
+        ],
+        "owasp": [
+          "A01:2021 - Broken Access Control",
+          "A01:2025 - Broken Access Control"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/Path_Traversal"
+        ],
+        "category": "security",
+        "technology": [
+          "java",
+          "spring"
+        ],
+        "subcategory": [
+          "vuln"
+        ],
+        "impact": "HIGH",
+        "likelihood": "MEDIUM",
+        "confidence": "HIGH",
+        "interfile": true,
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Path Traversal"
+        ],
+        "source": "https://semgrep.dev/r/java.spring.security.injection.tainted-file-path.tainted-file-path",
+        "shortlink": "https://sg.run/x9o0"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "java.spring.security.injection.tainted-file-path.tainted-file-path",
+    "path": "D:\\dev\\bench-repos\\spring-boot-demo\\demo-upload\\src\\main\\java\\com\\xkcoding\\upload\\controller\\UploadController.java",
+    "start": {
+      "line": 87,
+      "col": 30,
+      "offset": 3675
+    },
+    "end": {
+      "line": 87,
+      "col": 53,
+      "offset": 3698
+    },
+    "extra": {
+      "message": "Detected user input controlling a file path. An attacker could control the location of this file, to include going backwards in the directory with '../'. To address this, ensure that user-controlled variables in file paths are sanitized. You may also consider using a utility method such as org.apache.commons.io.FilenameUtils.getName(...) to only retrieve the file name from the path.",
+      "metadata": {
+        "cwe": [
+          "CWE-23: Relative Path Traversal"
+        ],
+        "owasp": [
+          "A01:2021 - Broken Access Control",
+          "A01:2025 - Broken Access Control"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/Path_Traversal"
+        ],
+        "category": "security",
+        "technology": [
+          "java",
+          "spring"
+        ],
+        "subcategory": [
+          "vuln"
+        ],
+        "impact": "HIGH",
+        "likelihood": "MEDIUM",
+        "confidence": "HIGH",
+        "interfile": true,
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Path Traversal"
+        ],
+        "source": "https://semgrep.dev/r/java.spring.security.injection.tainted-file-path.tainted-file-path",
+        "shortlink": "https://sg.run/x9o0"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "java.spring.security.injection.tainted-file-path.tainted-file-path",
+    "path": "D:\\dev\\bench-repos\\spring-boot-demo\\demo-upload\\src\\main\\java\\com\\xkcoding\\upload\\controller\\UploadController.java",
+    "start": {
+      "line": 93,
+      "col": 30,
+      "offset": 4121
+    },
+    "end": {
+      "line": 93,
+      "col": 53,
+      "offset": 4144
+    },
+    "extra": {
+      "message": "Detected user input controlling a file path. An attacker could control the location of this file, to include going backwards in the directory with '../'. To address this, ensure that user-controlled variables in file paths are sanitized. You may also consider using a utility method such as org.apache.commons.io.FilenameUtils.getName(...) to only retrieve the file name from the path.",
+      "metadata": {
+        "cwe": [
+          "CWE-23: Relative Path Traversal"
+        ],
+        "owasp": [
+          "A01:2021 - Broken Access Control",
+          "A01:2025 - Broken Access Control"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/Path_Traversal"
+        ],
+        "category": "security",
+        "technology": [
+          "java",
+          "spring"
+        ],
+        "subcategory": [
+          "vuln"
+        ],
+        "impact": "HIGH",
+        "likelihood": "MEDIUM",
+        "confidence": "HIGH",
+        "interfile": true,
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Path Traversal"
+        ],
+        "source": "https://semgrep.dev/r/java.spring.security.injection.tainted-file-path.tainted-file-path",
+        "shortlink": "https://sg.run/x9o0"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  }
+]

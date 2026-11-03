@@ -1,0 +1,28 @@
+{
+  "repo": "spring-boot-demo",
+  "mine": 84,
+  "semgrep_default": 7,
+  "semgrep_default_err": "",
+  "semgrep_default_overlap": 1,
+  "semgrep_default_rules": [
+    [
+      "tainted-file-path",
+      5
+    ],
+    [
+      "use-of-sha1",
+      1
+    ],
+    [
+      "unvalidated-redirect",
+      1
+    ]
+  ],
+  "bandit_all": 0,
+  "bandit_medplus": 0,
+  "bandit_medplus_overlap": 0,
+  "bandit_top": [],
+  "njsscan": 0,
+  "njsscan_overlap": 0,
+  "njsscan_rules": {}
+}

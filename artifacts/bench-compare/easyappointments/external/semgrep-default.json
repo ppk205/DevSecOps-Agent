@@ -1,0 +1,575 @@
+[
+  {
+    "check_id": "php.lang.security.injection.tainted-filename.tainted-filename",
+    "path": "D:\\dev\\bench-repos\\easyappointments\\system\\core\\Output.php",
+    "start": {
+      "line": 583,
+      "col": 23,
+      "offset": 15368
+    },
+    "end": {
+      "line": 583,
+      "col": 34,
+      "offset": 15379
+    },
+    "extra": {
+      "message": "File name based on user input risks server-side request forgery.",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "category": "security",
+        "cwe": [
+          "CWE-918: Server-Side Request Forgery (SSRF)"
+        ],
+        "owasp": [
+          "A10:2021 - Server-Side Request Forgery (SSRF)",
+          "A01:2025 - Broken Access Control"
+        ],
+        "references": [
+          "https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_%28SSRF%29"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "impact": "MEDIUM",
+        "likelihood": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Server-Side Request Forgery (SSRF)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-filename.tainted-filename",
+        "shortlink": "https://sg.run/Ayqp"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-filename.tainted-filename",
+    "path": "D:\\dev\\bench-repos\\easyappointments\\system\\core\\Output.php",
+    "start": {
+      "line": 632,
+      "col": 12,
+      "offset": 16516
+    },
+    "end": {
+      "line": 632,
+      "col": 23,
+      "offset": 16527
+    },
+    "extra": {
+      "message": "File name based on user input risks server-side request forgery.",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "category": "security",
+        "cwe": [
+          "CWE-918: Server-Side Request Forgery (SSRF)"
+        ],
+        "owasp": [
+          "A10:2021 - Server-Side Request Forgery (SSRF)",
+          "A01:2025 - Broken Access Control"
+        ],
+        "references": [
+          "https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_%28SSRF%29"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "impact": "MEDIUM",
+        "likelihood": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Server-Side Request Forgery (SSRF)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-filename.tainted-filename",
+        "shortlink": "https://sg.run/Ayqp"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-filename.tainted-filename",
+    "path": "D:\\dev\\bench-repos\\easyappointments\\system\\core\\Output.php",
+    "start": {
+      "line": 637,
+      "col": 9,
+      "offset": 16647
+    },
+    "end": {
+      "line": 637,
+      "col": 20,
+      "offset": 16658
+    },
+    "extra": {
+      "message": "File name based on user input risks server-side request forgery.",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "category": "security",
+        "cwe": [
+          "CWE-918: Server-Side Request Forgery (SSRF)"
+        ],
+        "owasp": [
+          "A10:2021 - Server-Side Request Forgery (SSRF)",
+          "A01:2025 - Broken Access Control"
+        ],
+        "references": [
+          "https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_%28SSRF%29"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "impact": "MEDIUM",
+        "likelihood": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Server-Side Request Forgery (SSRF)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-filename.tainted-filename",
+        "shortlink": "https://sg.run/Ayqp"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-filename.tainted-filename",
+    "path": "D:\\dev\\bench-repos\\easyappointments\\system\\core\\Output.php",
+    "start": {
+      "line": 677,
+      "col": 22,
+      "offset": 17892
+    },
+    "end": {
+      "line": 677,
+      "col": 31,
+      "offset": 17901
+    },
+    "extra": {
+      "message": "File name based on user input risks server-side request forgery.",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "category": "security",
+        "cwe": [
+          "CWE-918: Server-Side Request Forgery (SSRF)"
+        ],
+        "owasp": [
+          "A10:2021 - Server-Side Request Forgery (SSRF)",
+          "A01:2025 - Broken Access Control"
+        ],
+        "references": [
+          "https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_%28SSRF%29"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "impact": "MEDIUM",
+        "likelihood": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Server-Side Request Forgery (SSRF)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-filename.tainted-filename",
+        "shortlink": "https://sg.run/Ayqp"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-filename.tainted-filename",
+    "path": "D:\\dev\\bench-repos\\easyappointments\\system\\core\\Output.php",
+    "start": {
+      "line": 677,
+      "col": 51,
+      "offset": 17921
+    },
+    "end": {
+      "line": 677,
+      "col": 60,
+      "offset": 17930
+    },
+    "extra": {
+      "message": "File name based on user input risks server-side request forgery.",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "category": "security",
+        "cwe": [
+          "CWE-918: Server-Side Request Forgery (SSRF)"
+        ],
+        "owasp": [
+          "A10:2021 - Server-Side Request Forgery (SSRF)",
+          "A01:2025 - Broken Access Control"
+        ],
+        "references": [
+          "https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_%28SSRF%29"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "impact": "MEDIUM",
+        "likelihood": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Server-Side Request Forgery (SSRF)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-filename.tainted-filename",
+        "shortlink": "https://sg.run/Ayqp"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-filename.tainted-filename",
+    "path": "D:\\dev\\bench-repos\\easyappointments\\system\\core\\Output.php",
+    "start": {
+      "line": 684,
+      "col": 22,
+      "offset": 18017
+    },
+    "end": {
+      "line": 684,
+      "col": 31,
+      "offset": 18026
+    },
+    "extra": {
+      "message": "File name based on user input risks server-side request forgery.",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "category": "security",
+        "cwe": [
+          "CWE-918: Server-Side Request Forgery (SSRF)"
+        ],
+        "owasp": [
+          "A10:2021 - Server-Side Request Forgery (SSRF)",
+          "A01:2025 - Broken Access Control"
+        ],
+        "references": [
+          "https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_%28SSRF%29"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "impact": "MEDIUM",
+        "likelihood": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Server-Side Request Forgery (SSRF)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-filename.tainted-filename",
+        "shortlink": "https://sg.run/Ayqp"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-filename.tainted-filename",
+    "path": "D:\\dev\\bench-repos\\easyappointments\\system\\core\\Output.php",
+    "start": {
+      "line": 684,
+      "col": 60,
+      "offset": 18055
+    },
+    "end": {
+      "line": 684,
+      "col": 69,
+      "offset": 18064
+    },
+    "extra": {
+      "message": "File name based on user input risks server-side request forgery.",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "category": "security",
+        "cwe": [
+          "CWE-918: Server-Side Request Forgery (SSRF)"
+        ],
+        "owasp": [
+          "A10:2021 - Server-Side Request Forgery (SSRF)",
+          "A01:2025 - Broken Access Control"
+        ],
+        "references": [
+          "https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_%28SSRF%29"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "impact": "MEDIUM",
+        "likelihood": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Server-Side Request Forgery (SSRF)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-filename.tainted-filename",
+        "shortlink": "https://sg.run/Ayqp"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-filename.tainted-filename",
+    "path": "D:\\dev\\bench-repos\\easyappointments\\system\\core\\Output.php",
+    "start": {
+      "line": 698,
+      "col": 30,
+      "offset": 18360
+    },
+    "end": {
+      "line": 698,
+      "col": 39,
+      "offset": 18369
+    },
+    "extra": {
+      "message": "File name based on user input risks server-side request forgery.",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "category": "security",
+        "cwe": [
+          "CWE-918: Server-Side Request Forgery (SSRF)"
+        ],
+        "owasp": [
+          "A10:2021 - Server-Side Request Forgery (SSRF)",
+          "A01:2025 - Broken Access Control"
+        ],
+        "references": [
+          "https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_%28SSRF%29"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "impact": "MEDIUM",
+        "likelihood": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Server-Side Request Forgery (SSRF)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-filename.tainted-filename",
+        "shortlink": "https://sg.run/Ayqp"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-filename.tainted-filename",
+    "path": "D:\\dev\\bench-repos\\easyappointments\\system\\core\\Output.php",
+    "start": {
+      "line": 704,
+      "col": 12,
+      "offset": 18528
+    },
+    "end": {
+      "line": 704,
+      "col": 21,
+      "offset": 18537
+    },
+    "extra": {
+      "message": "File name based on user input risks server-side request forgery.",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "category": "security",
+        "cwe": [
+          "CWE-918: Server-Side Request Forgery (SSRF)"
+        ],
+        "owasp": [
+          "A10:2021 - Server-Side Request Forgery (SSRF)",
+          "A01:2025 - Broken Access Control"
+        ],
+        "references": [
+          "https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_%28SSRF%29"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "impact": "MEDIUM",
+        "likelihood": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Server-Side Request Forgery (SSRF)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-filename.tainted-filename",
+        "shortlink": "https://sg.run/Ayqp"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-filename.tainted-filename",
+    "path": "D:\\dev\\bench-repos\\easyappointments\\system\\core\\Output.php",
+    "start": {
+      "line": 766,
+      "col": 18,
+      "offset": 20087
+    },
+    "end": {
+      "line": 766,
+      "col": 29,
+      "offset": 20098
+    },
+    "extra": {
+      "message": "File name based on user input risks server-side request forgery.",
+      "metadata": {
+        "technology": [
+          "php"
+        ],
+        "category": "security",
+        "cwe": [
+          "CWE-918: Server-Side Request Forgery (SSRF)"
+        ],
+        "owasp": [
+          "A10:2021 - Server-Side Request Forgery (SSRF)",
+          "A01:2025 - Broken Access Control"
+        ],
+        "references": [
+          "https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_%28SSRF%29"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "impact": "MEDIUM",
+        "likelihood": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "Server-Side Request Forgery (SSRF)"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-filename.tainted-filename",
+        "shortlink": "https://sg.run/Ayqp"
+      },
+      "severity": "WARNING",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  },
+  {
+    "check_id": "php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+    "path": "D:\\dev\\bench-repos\\easyappointments\\system\\core\\Output.php",
+    "start": {
+      "line": 768,
+      "col": 25,
+      "offset": 20131
+    },
+    "end": {
+      "line": 768,
+      "col": 64,
+      "offset": 20170
+    },
+    "extra": {
+      "message": "User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate data from the database. Instead, use prepared statements (`$mysqli->prepare(\"INSERT INTO test(id, label) VALUES (?, ?)\");`) or a safe library.",
+      "metadata": {
+        "cwe": [
+          "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+        ],
+        "owasp": [
+          "A01:2017 - Injection",
+          "A03:2021 - Injection",
+          "A05:2025 - Injection"
+        ],
+        "references": [
+          "https://owasp.org/www-community/attacks/SQL_Injection"
+        ],
+        "category": "security",
+        "technology": [
+          "php"
+        ],
+        "cwe2022-top25": true,
+        "cwe2021-top25": true,
+        "subcategory": [
+          "vuln"
+        ],
+        "likelihood": "HIGH",
+        "impact": "MEDIUM",
+        "confidence": "MEDIUM",
+        "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+        "vulnerability_class": [
+          "SQL Injection"
+        ],
+        "source": "https://semgrep.dev/r/php.lang.security.injection.tainted-sql-string.tainted-sql-string",
+        "shortlink": "https://sg.run/lZYG"
+      },
+      "severity": "ERROR",
+      "fingerprint": "requires login",
+      "lines": "requires login",
+      "validation_state": "NO_VALIDATOR",
+      "engine_kind": "OSS"
+    }
+  }
+]

@@ -1,0 +1,31 @@
+{
+  "repo": "thelounge",
+  "mine": 58,
+  "semgrep_default": 3,
+  "semgrep_default_err": "",
+  "semgrep_default_overlap": 1,
+  "semgrep_default_rules": [
+    [
+      "express-res-sendfile",
+      2
+    ],
+    [
+      "express-path-join-resolve-traversal",
+      2
+    ],
+    [
+      "bypass-tls-verification",
+      1
+    ]
+  ],
+  "njsscan": 2,
+  "njsscan_overlap": 0,
+  "njsscan_err": "",
+  "bandit_all": 0,
+  "bandit_medplus": 0,
+  "bandit_medplus_overlap": 0,
+  "bandit_top": [],
+  "njsscan_rules": {
+    "vue_template": 2
+  }
+}

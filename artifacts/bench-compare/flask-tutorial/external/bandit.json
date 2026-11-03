@@ -1,0 +1,231 @@
+{
+  "errors": [],
+  "generated_at": "2026-11-03T13:26:04Z",
+  "metrics": {
+    "D:\\dev\\bench-repos\\flask-tutorial\\scripts\\build_docs.py": {
+      "CONFIDENCE.HIGH": 2,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 2,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 45,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "D:\\dev\\bench-repos\\flask-tutorial\\scripts\\check_docs.py": {
+      "CONFIDENCE.HIGH": 7,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 7,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 46,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "_totals": {
+      "CONFIDENCE.HIGH": 9,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 9,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 91,
+      "nosec": 0,
+      "skipped_tests": 0
+    }
+  },
+  "results": [
+    {
+      "code": "3 import shutil\n4 import subprocess\n5 import sys\n",
+      "col_offset": 0,
+      "end_col_offset": 17,
+      "filename": "D:\\dev\\bench-repos\\flask-tutorial\\scripts\\build_docs.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Consider possible security implications associated with the subprocess module.",
+      "line_number": 4,
+      "line_range": [
+        4
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/blacklists/blacklist_imports.html#b404-import-subprocess",
+      "test_id": "B404",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "34             config_path.write_text(yaml.safe_dump(config, allow_unicode=True), encoding=\"utf-8\")\n35             subprocess.run(\n36                 [sys.executable, \"-m\", \"mkdocs\", \"build\", \"--strict\", \"--config-file\", str(config_path)],\n37                 check=True,\n38                 cwd=ROOT,\n39             )\n40             outputs[language] = output\n",
+      "col_offset": 12,
+      "end_col_offset": 13,
+      "filename": "D:\\dev\\bench-repos\\flask-tutorial\\scripts\\build_docs.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 35,
+      "line_range": [
+        35,
+        36,
+        37,
+        38,
+        39
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "24 def main():\n25     assert (SITE / \"index.html\").is_file(), \"Build the site first\"\n26     checked = 0\n",
+      "col_offset": 4,
+      "end_col_offset": 66,
+      "filename": "D:\\dev\\bench-repos\\flask-tutorial\\scripts\\check_docs.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+      "line_number": 25,
+      "line_range": [
+        25
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html",
+      "test_id": "B101",
+      "test_name": "assert_used"
+    },
+    {
+      "code": "30         expected_language = \"en\" if path.relative_to(SITE).parts[0] == \"en\" else \"zh\"\n31         assert page.language == expected_language, (path, page.language)\n32         assert \"/en/\" in page.links and \"/\" in page.links, f\"Missing language selector: {path}\"\n",
+      "col_offset": 8,
+      "end_col_offset": 72,
+      "filename": "D:\\dev\\bench-repos\\flask-tutorial\\scripts\\check_docs.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+      "line_number": 31,
+      "line_range": [
+        31
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html",
+      "test_id": "B101",
+      "test_name": "assert_used"
+    },
+    {
+      "code": "31         assert page.language == expected_language, (path, page.language)\n32         assert \"/en/\" in page.links and \"/\" in page.links, f\"Missing language selector: {path}\"\n33         for link in page.links:\n",
+      "col_offset": 8,
+      "end_col_offset": 95,
+      "filename": "D:\\dev\\bench-repos\\flask-tutorial\\scripts\\check_docs.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+      "line_number": 32,
+      "line_range": [
+        32
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html",
+      "test_id": "B101",
+      "test_name": "assert_used"
+    },
+    {
+      "code": "39                 target /= \"index.html\"\n40             assert target.exists(), f\"Missing local target: {path}: {link}\"\n41             checked += 1\n",
+      "col_offset": 12,
+      "end_col_offset": 75,
+      "filename": "D:\\dev\\bench-repos\\flask-tutorial\\scripts\\check_docs.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+      "line_number": 40,
+      "line_range": [
+        40
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html",
+      "test_id": "B101",
+      "test_name": "assert_used"
+    },
+    {
+      "code": "45             target = prefix / \"index.html\" if source.name == \"README.md\" else prefix / source.stem / \"index.html\"\n46             assert target.is_file(), f\"Missing chapter URL: {target}\"\n47         index = json.loads((prefix / \"search/search_index.json\").read_text(encoding=\"utf-8\"))\n",
+      "col_offset": 12,
+      "end_col_offset": 69,
+      "filename": "D:\\dev\\bench-repos\\flask-tutorial\\scripts\\check_docs.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+      "line_number": 46,
+      "line_range": [
+        46
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html",
+      "test_id": "B101",
+      "test_name": "assert_used"
+    },
+    {
+      "code": "47         index = json.loads((prefix / \"search/search_index.json\").read_text(encoding=\"utf-8\"))\n48         assert index[\"docs\"], f\"Empty search index: {language}\"\n49 \n",
+      "col_offset": 8,
+      "end_col_offset": 63,
+      "filename": "D:\\dev\\bench-repos\\flask-tutorial\\scripts\\check_docs.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+      "line_number": 48,
+      "line_range": [
+        48
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html",
+      "test_id": "B101",
+      "test_name": "assert_used"
+    },
+    {
+      "code": "50     for name in (\"pay\", \"alipay\", \"wechat_pay\"):\n51         assert not (SITE / name).exists(), f\"Payment page returned: {name}\"\n52     print(f\"Verified language navigation, chapter URLs, search indexes and {checked} local targets.\")\n",
+      "col_offset": 8,
+      "end_col_offset": 75,
+      "filename": "D:\\dev\\bench-repos\\flask-tutorial\\scripts\\check_docs.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+      "line_number": 51,
+      "line_range": [
+        51
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b101_assert_used.html",
+      "test_id": "B101",
+      "test_name": "assert_used"
+    }
+  ]
+}

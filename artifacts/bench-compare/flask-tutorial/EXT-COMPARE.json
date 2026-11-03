@@ -1,0 +1,34 @@
+{
+  "repo": "flask-tutorial",
+  "mine": 2,
+  "semgrep_default": 0,
+  "semgrep_default_err": "",
+  "semgrep_default_overlap": 0,
+  "semgrep_default_rules": [],
+  "bandit": 9,
+  "bandit_overlap": 0,
+  "bandit_err": "[main]\tINFO\tprofile include tests: None\n[main]\tINFO\tprofile exclude tests: None\n[main]\tINFO\tcli include tests: None\n[main]\tINFO\tcli exclude tests: Non",
+  "bandit_all": 9,
+  "bandit_medplus": 0,
+  "bandit_medplus_overlap": 0,
+  "bandit_top": [
+    [
+      "LOW",
+      "B101",
+      7
+    ],
+    [
+      "LOW",
+      "B404",
+      1
+    ],
+    [
+      "LOW",
+      "B603",
+      1
+    ]
+  ],
+  "njsscan": 0,
+  "njsscan_overlap": 0,
+  "njsscan_rules": {}
+}

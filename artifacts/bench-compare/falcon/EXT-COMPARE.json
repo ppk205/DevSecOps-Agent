@@ -1,0 +1,44 @@
+{
+  "repo": "falcon",
+  "mine": 23,
+  "semgrep_default": 0,
+  "semgrep_default_err": "",
+  "semgrep_default_overlap": 0,
+  "semgrep_default_rules": [],
+  "bandit": 3164,
+  "bandit_overlap": 16,
+  "bandit_err": "[main]\tINFO\tprofile include tests: None\n[main]\tINFO\tprofile exclude tests: None\n[main]\tINFO\tcli include tests: None\n[main]\tINFO\tcli exclude tests: Non",
+  "bandit_all": 3164,
+  "bandit_medplus": 29,
+  "bandit_medplus_overlap": 6,
+  "bandit_top": [
+    [
+      "LOW",
+      "B101",
+      3094
+    ],
+    [
+      "LOW",
+      "B603",
+      20
+    ],
+    [
+      "LOW",
+      "B311",
+      10
+    ],
+    [
+      "MEDIUM",
+      "B113",
+      8
+    ],
+    [
+      "LOW",
+      "B404",
+      8
+    ]
+  ],
+  "njsscan": 0,
+  "njsscan_overlap": 0,
+  "njsscan_rules": {}
+}

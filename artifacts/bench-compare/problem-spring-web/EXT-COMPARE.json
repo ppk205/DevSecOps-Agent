@@ -1,0 +1,15 @@
+{
+  "repo": "problem-spring-web",
+  "mine": 2,
+  "semgrep_default": 0,
+  "semgrep_default_err": "",
+  "semgrep_default_overlap": 0,
+  "semgrep_default_rules": [],
+  "bandit_all": 0,
+  "bandit_medplus": 0,
+  "bandit_medplus_overlap": 0,
+  "bandit_top": [],
+  "njsscan": 0,
+  "njsscan_overlap": 0,
+  "njsscan_rules": {}
+}

@@ -1,0 +1,32 @@
+{
+  "repo": "pikachu",
+  "mine": 200,
+  "semgrep_default": 66,
+  "semgrep_default_err": "",
+  "semgrep_default_overlap": 24,
+  "semgrep_default_rules": [
+    [
+      "tainted-sql-string",
+      41
+    ],
+    [
+      "echoed-request",
+      20
+    ],
+    [
+      "tainted-exec",
+      4
+    ],
+    [
+      "tainted-filename",
+      4
+    ]
+  ],
+  "bandit_all": 0,
+  "bandit_medplus": 0,
+  "bandit_medplus_overlap": 0,
+  "bandit_top": [],
+  "njsscan": 0,
+  "njsscan_overlap": 0,
+  "njsscan_rules": {}
+}

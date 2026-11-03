@@ -1,0 +1,65 @@
+{
+  "repo": "sanic",
+  "mine": 105,
+  "semgrep_default": 29,
+  "semgrep_default_err": "",
+  "semgrep_default_overlap": 10,
+  "semgrep_default_rules": [
+    [
+      "avoid_app_run_with_bad_host",
+      25
+    ],
+    [
+      "request-with-http",
+      1
+    ],
+    [
+      "nan-injection",
+      1
+    ],
+    [
+      "missing-autoescape-disabled",
+      1
+    ],
+    [
+      "subprocess-shell-true",
+      1
+    ]
+  ],
+  "bandit": 2856,
+  "bandit_overlap": 27,
+  "bandit_err": "countered (B105), but no failed test on file D:\\dev\\bench-repos\\sanic\\sanic\\config.py:63\n[tester]\tWARNING\tnosec encountered (B105), but no failed test",
+  "bandit_all": 2856,
+  "bandit_medplus": 41,
+  "bandit_medplus_overlap": 13,
+  "bandit_top": [
+    [
+      "LOW",
+      "B101",
+      2780
+    ],
+    [
+      "MEDIUM",
+      "B104",
+      29
+    ],
+    [
+      "LOW",
+      "B105",
+      22
+    ],
+    [
+      "LOW",
+      "B311",
+      14
+    ],
+    [
+      "LOW",
+      "B404",
+      4
+    ]
+  ],
+  "njsscan": 0,
+  "njsscan_overlap": 0,
+  "njsscan_rules": {}
+}
