@@ -80,6 +80,17 @@ _ENTRY_MARK_RE = re.compile(
 
 _CALL_RE = re.compile(r"(?P<name>[A-Za-z_]\w*)\s*\((?P<args>[^();]*)\)")
 
+#: Append-assignment (``.=``/``+=``): keeps existing taint, adds RHS taint.
+_APPEND_ASSIGN_RE = re.compile(
+    r"(?<![\w=!<>])(?P<var>[A-Za-z_]\w*|\$\w+)\s*(?P<op>[+.]?=)\s*(?P<rhs>.+)$"
+)
+
+#: Heredoc start: ``$var .= <<<TAG`` or ``$var = <<<TAG``. Body lines up to
+#: the lone ``TAG;`` terminator interpolate ``{$var}``/``$var``.
+_HEREDOC_RE = re.compile(
+    r"(?P<var>\$\w+)\s*(?P<op>\.?=)\s*<<<\s*(?P<tag>[A-Za-z_]\w*)"
+)
+
 #: Fallback for assignments buried in conditions/calls
 #: (``while ((line = in.readLine()) != null)``). Used only when the
 #: line-start assignment misses; same guards against ==/!=/=>.
@@ -147,6 +158,10 @@ class SnapshotResult:
 
 @lru_cache(maxsize=4096)
 def _word_rx(name: str) -> re.Pattern[str]:
+    # PHP-style ``$vars`` have no leading word boundary (``{`` → ``$`` are
+    # both non-word chars), so anchor on "not preceded by a word char".
+    if name.startswith("$"):
+        return re.compile(r"(?<!\w)" + re.escape(name) + r"\b")
     return re.compile(r"\b" + re.escape(name) + r"\b")
 
 
@@ -172,9 +187,35 @@ def _scan_rule(
         for param in _split_params(match.group("params")):
             if tainted.get(param) != (lineno, 0):
                 tainted[param] = (lineno, 0)
+    heredoc: tuple[str, str, bool] | None = None  # (var, tag, is_append), per pass
     for _ in range(MAX_ITERATIONS):
         changed = False
+        heredoc = None
         for lineno, raw in enumerate(lines, start=1):
+            # Heredoc bodies interpolate tainted vars into the heredoc var.
+            if heredoc is not None:
+                hvar, htag, _ = heredoc
+                if raw.strip().rstrip(";") == htag:
+                    heredoc = None
+                    continue
+                for tvar, (origin, hops) in list(tainted.items()):
+                    if _word_rx(tvar).search(raw) is None:
+                        continue
+                    if hvar not in tainted or hops + 1 < tainted[hvar][1]:
+                        tainted[hvar] = (origin, hops + 1)
+                        changed = True
+                    break
+                continue
+            hstart = _HEREDOC_RE.search(raw)
+            if hstart is not None:
+                hvar = hstart.group("var")
+                if hstart.group("op") == "=" and hvar in tainted:
+                    # Fresh heredoc assignment resets previous taint; the
+                    # body lines below re-taint it if they interpolate
+                    # tainted data. ``.=`` keeps accumulating instead.
+                    del tainted[hvar]
+                    changed = True
+                heredoc = (hvar, hstart.group("tag"), hstart.group("op") == ".=")
             # Same-file call→param propagation runs on every line (calls
             # rarely look like assignments): foo(taintedArg) taints foo's
             # parameter at that position; the fixpoint loop carries it on.
@@ -196,6 +237,24 @@ def _scan_rule(
             if match is None:
                 match = _COND_ASSIGN_RE.search(raw)
             if match is None:
+                # Append-assignment (``.=``/``+=``) never kills: it keeps
+                # existing taint and adds RHS taint.
+                appended = _APPEND_ASSIGN_RE.search(raw)
+                if appended is not None:
+                    var = appended.group("var")
+                    rhs = appended.group("rhs")
+                    if _line_sanitized(raw, rule):
+                        if var in tainted:
+                            del tainted[var]
+                            changed = True
+                        continue
+                    for tvar, (origin, hops) in list(tainted.items()):
+                        if _word_rx(tvar).search(rhs) is None:
+                            continue
+                        if var not in tainted or hops + 1 < tainted[var][1]:
+                            tainted[var] = (origin, hops + 1)
+                            changed = True
+                        break
                 continue
             var, rhs = match.group("var"), match.group("rhs")
             if _line_sanitized(raw, rule):

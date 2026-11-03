@@ -224,3 +224,23 @@ def test_resource_check_flags_unclosed(tmp_path) -> None:
     assert 4 in lines
     assert 8 not in lines
     assert 13 not in lines
+
+
+def test_heredoc_and_append_propagate_taint(tmp_path) -> None:
+    from vulnscan.native_hunt import load_rules, scan_file
+
+    target = tmp_path / "v.php"
+    target.write_text(
+        "<?php\n"
+        "$name = $_GET['n'];\n"
+        "$html = '';\n"
+        "$html .= <<<A\n"
+        "<p>hello {$name}</p>\n"
+        "A;\n"
+        "echo $html;\n",
+        encoding="utf-8",
+    )
+    findings = scan_file(target, load_rules("php"))
+    assert any(
+        f.rule_id == "php-reflected-xss" and f.line == 7 for f in findings
+    )
