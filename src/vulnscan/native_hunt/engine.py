@@ -36,6 +36,14 @@ from .taint import RULES_DIR, Rule, load_rules
 #: Files larger than this are skipped (bounded runtime on generated bundles).
 MAX_FILE_BYTES = 256 * 1024
 
+#: Files whose average line length exceeds this are minified/vendored
+#: bundles where every pattern co-occurs on one giant line (all FP).
+#: Skipped with a recorded reason, same as oversized files.
+MAX_AVG_LINE_LEN = 2000
+
+#: Suffixes never meaningfully scanned (vendored minified bundles).
+MINIFIED_SUFFIXES = (".min.js",)
+
 #: Fixpoint passes for taint propagation.
 MAX_ITERATIONS = 3
 
@@ -53,6 +61,57 @@ _ASSIGN_RE = re.compile(
     r"^\s*(?:(?:final\s+)?[A-Za-z_][\w<>\[\].,\s]*?\s+)?"
     r"(?P<var>[A-Za-z_]\w*)\s*(?<![=!<>])=\s*(?![=>])(?P<rhs>.+)$"
 )
+
+#: Method/function definitions captured for same-file call→param taint:
+#: ``name`` + raw parameter list. Covers Java methods, Python defs,
+#: JS functions/methods (best-effort, single-line signatures only).
+_DEF_RE = re.compile(
+    r"(?:def\s+|function\s+)?(?P<name>[A-Za-z_]\w*)\s*\((?P<params>.*)\)\s*(?:\{|:|throws\b)?\s*$"
+)
+
+#: A definition line carrying one of these marks user-controlled entry
+#: data (Spring annotations, servlet/request objects); all its parameters
+#: start tainted. Framework-aware, engine-level, rule-independent.
+_ENTRY_MARK_RE = re.compile(
+    r"@RequestParam|@RequestBody|@PathVariable|@RequestHeader|@CookieValue|"
+    r"HttpServletRequest|HttpServletResponse|MultipartFile|"
+    r"\breq\s*[:=]|\brequest\b"
+)
+
+_CALL_RE = re.compile(r"(?P<name>[A-Za-z_]\w*)\s*\((?P<args>[^();]*)\)")
+
+
+def _split_params(raw: str) -> list[str]:
+    """Last token of each comma part, annotations stripped."""
+    out: list[str] = []
+    for part in raw.split(","):
+        part = re.sub(r"@\w+(?:\([^()]*\))?\s*", "", part).strip()
+        tokens = re.findall(r"[A-Za-z_]\w*", part)
+        if tokens:
+            out.append(tokens[-1])
+    return out
+
+
+def _collect_defs(lines: list[str]) -> dict[str, list[str]]:
+    """Method name -> parameter names, first definition wins."""
+    defs: dict[str, list[str]] = {}
+    for raw in lines:
+        stripped = raw.strip()
+        # Calls, control flow, and returns are not definitions.
+        if stripped.startswith(("return", "if", "for", "while", "switch", "catch")):
+            continue
+        if not re.search(r"[{:]\s*$|throws\b", stripped):
+            continue
+        match = _DEF_RE.search(stripped)
+        if match is None:
+            continue
+        name = match.group("name")
+        if name in defs or name in {"if", "for", "while", "switch", "catch", "return"}:
+            continue
+        params = _split_params(match.group("params"))
+        if params:
+            defs[name] = params
+    return defs
 
 
 @dataclass
@@ -92,11 +151,42 @@ def _line_sanitized(line: str, rule: Rule) -> bool:
     )
 
 
-def _scan_rule(name: str, lines: list[str], rule: Rule) -> list[Finding]:
+def _scan_rule(
+    name: str, lines: list[str], rule: Rule, defs: dict[str, list[str]] | None = None
+) -> list[Finding]:
     tainted: dict[str, tuple[int, int]] = {}  # var -> (origin_line, hops)
+    method_defs = defs if defs is not None else {}
+    # Entry points: method parameters on definition lines carrying source
+    # markers (Spring annotations, servlet request objects) start tainted.
+    for lineno, raw in enumerate(lines, start=1):
+        if _ENTRY_MARK_RE.search(raw) is None:
+            continue
+        match = _DEF_RE.search(raw.strip())
+        if match is None:
+            continue
+        for param in _split_params(match.group("params")):
+            if tainted.get(param) != (lineno, 0):
+                tainted[param] = (lineno, 0)
     for _ in range(MAX_ITERATIONS):
         changed = False
         for lineno, raw in enumerate(lines, start=1):
+            # Same-file call→param propagation runs on every line (calls
+            # rarely look like assignments): foo(taintedArg) taints foo's
+            # parameter at that position; the fixpoint loop carries it on.
+            for call in _CALL_RE.finditer(raw):
+                callee = call.group("name")
+                if callee not in method_defs:
+                    continue
+                for arg, param in zip(
+                    call.group("args").split(","), method_defs[callee]
+                ):
+                    for tvar, (origin, hops) in list(tainted.items()):
+                        if _word_rx(tvar).search(arg) is None:
+                            continue
+                        if param not in tainted or hops + 1 < tainted[param][1]:
+                            tainted[param] = (origin, hops + 1)
+                            changed = True
+                        break
             match = _ASSIGN_RE.match(raw)
             if match is None:
                 continue
@@ -129,16 +219,15 @@ def _scan_rule(name: str, lines: list[str], rule: Rule) -> list[Finding]:
 
     findings: list[Finding] = []
     for lineno, raw in enumerate(lines, start=1):
-        if not any(rx.search(raw) is not None for rx in rule.sink_res):
+        sink_hit = any(rx.search(raw) is not None for rx in rule.sink_res)
+        taint_hit = any(rx.search(raw) is not None for rx in rule.taint_sink_res)
+        if not sink_hit and not taint_hit:
             continue
         if _line_sanitized(raw, rule):
             continue
-        if any(rx.search(raw) is not None for rx in rule.source_res):
+        if sink_hit and any(rx.search(raw) is not None for rx in rule.source_res):
             confidence: Confidence = "High"
             source_line: int | None = lineno
-        elif not rule.source_res:
-            confidence = "Weak"
-            source_line = None
         else:
             best_ref: tuple[int, int] | None = None
             for tvar, (origin, hops) in tainted.items():
@@ -147,9 +236,15 @@ def _scan_rule(name: str, lines: list[str], rule: Rule) -> list[Finding]:
                 if best_ref is None or hops < best_ref[1]:
                     best_ref = (origin, hops)
             if best_ref is None:
-                continue
-            source_line = best_ref[0]
-            confidence = "High" if best_ref[1] == 0 else "Medium" if best_ref[1] == 1 else "Weak"
+                # Sink-only rules (no source model) fire Weak on pattern;
+                # taint_sinks never fire without tainted data on the line.
+                if not sink_hit or rule.source_res:
+                    continue
+                confidence = "Weak"
+                source_line = None
+            else:
+                source_line = best_ref[0]
+                confidence = "High" if best_ref[1] == 0 else "Medium" if best_ref[1] == 1 else "Weak"
         findings.append(
             Finding(
                 rule_id=rule.id,
@@ -171,10 +266,22 @@ def _scan_rule(name: str, lines: list[str], rule: Rule) -> list[Finding]:
 def _scan_text(name: str, text: str, rules: Sequence[Rule]) -> list[Finding]:
     lines = text.splitlines()
     out: list[Finding] = []
+    defs = _collect_defs(lines)
     for rule in rules:
-        out.extend(_scan_rule(name, lines, rule))
+        out.extend(_scan_rule(name, lines, rule, defs))
     out.sort(key=lambda f: (f.file, f.line, f.rule_id))
     return out
+
+
+def _skip_reason(path: Path, text: str | None) -> str | None:
+    """Why a file must not be pattern-scanned, or None to scan it."""
+    if path.name.lower().endswith(MINIFIED_SUFFIXES):
+        return "minified bundle: pattern scan skipped"
+    if text is not None:
+        lines = text.splitlines() or [""]
+        if sum(len(line) for line in lines) / len(lines) > MAX_AVG_LINE_LEN:
+            return "oversized lines (minified/vendored): pattern scan skipped"
+    return None
 
 
 def scan_file(path: str | Path, rules: Sequence[Rule]) -> list[Finding]:
@@ -185,6 +292,8 @@ def scan_file(path: str | Path, rules: Sequence[Rule]) -> list[Finding]:
             return []
         text = target.read_text(encoding="utf-8", errors="replace")
     except OSError:
+        return []
+    if _skip_reason(target, text) is not None:
         return []
     return _scan_text(str(target), text, rules)
 
@@ -239,6 +348,10 @@ def scan_snapshot(root: str | Path, families: Sequence[str] | None = None) -> Sn
             text = child.read_text(encoding="utf-8", errors="replace")
         except OSError:
             result.skipped.append(rel)
+            continue
+        reason = _skip_reason(child, text)
+        if reason is not None:
+            result.skipped.append(f"{rel} ({reason})")
             continue
         result.scanned.append(rel)
         result.findings.extend(_scan_text(rel, text, applicable))

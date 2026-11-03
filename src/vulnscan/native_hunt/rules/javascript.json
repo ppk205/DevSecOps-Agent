@@ -16,7 +16,11 @@
         "\\.execute\\s*\\([^)]*\\+",
         "\\.query\\s*\\(\\s*`[^`]*\\$\\{"
       ],
-      "source": "src/vulnscan/scanners/rules/javascript.yml#js-sql-concatenation"
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-sql-concatenation",
+      "taint_sinks": [
+        "\\.query\\s*\\(",
+        "\\.execute\\s*\\("
+      ]
     },
     {
       "id": "js-xss-innerhtml",
@@ -49,7 +53,12 @@
       "patterns": [
         "\\.exec(Sync)?\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/javascript.yml#js-command-injection"
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-command-injection",
+      "taint_sinks": [
+        "exec\\s*\\(",
+        "execFile\\s*\\(",
+        "spawn\\s*\\("
+      ]
     },
     {
       "id": "js-path-traversal",
@@ -118,7 +127,10 @@
         "\\beval\\s*\\(",
         "new\\s+Function\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/javascript.yml#js-eval-injection"
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-eval-injection",
+      "taint_sinks": [
+        "(?<![\\w.])eval\\s*\\("
+      ]
     },
     {
       "id": "js-insecure-random",
@@ -229,7 +241,11 @@
       "patterns": [
         "\\.(find|findOne|findOneAndUpdate|updateOne|updateMany|deleteOne|deleteMany)\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/javascript.yml#js-nosql-injection"
+      "source": "src/vulnscan/scanners/rules/javascript.yml#js-nosql-injection",
+      "taint_sinks": [
+        "findOne\\s*\\(",
+        "find\\s*\\("
+      ]
     },
     {
       "id": "js-jwt-weak-secret",
@@ -356,7 +372,11 @@
         "\\.unserialize\\s*\\(",
         "eval\\s*\\(\\s*.*serial"
       ],
-      "source": "native-addition (no javascript.yml deserialization rule to port)"
+      "source": "native-addition (no javascript.yml deserialization rule to port)",
+      "taint_sinks": [
+        "unserialize\\s*\\(",
+        "JSON\\.parse\\s*\\("
+      ]
     }
   ]
 }

@@ -66,11 +66,13 @@ class Rule:
     severity: str = "medium"
     sources: list[str] = field(default_factory=list)
     sinks: list[str] = field(default_factory=list)
+    taint_sinks: list[str] = field(default_factory=list)
     sanitizers: list[Sanitizer] = field(default_factory=list)
     message: str = ""
     source_ref: str = ""
     source_res: list[re.Pattern[str]] = field(init=False, repr=False, compare=False)
     sink_res: list[re.Pattern[str]] = field(init=False, repr=False, compare=False)
+    taint_sink_res: list[re.Pattern[str]] = field(init=False, repr=False, compare=False)
     sanitizer_res: list[tuple[re.Pattern[str], list[str]]] = field(
         init=False, repr=False, compare=False
     )
@@ -78,6 +80,7 @@ class Rule:
     def __post_init__(self) -> None:
         self.source_res = [_compile(p, self.id) for p in self.sources]
         self.sink_res = [_compile(p, self.id) for p in self.sinks]
+        self.taint_sink_res = [_compile(p, self.id) for p in self.taint_sinks]
         self.sanitizer_res = [
             (_compile(s.pattern, self.id), list(s.prevent)) for s in self.sanitizers
         ]
@@ -156,6 +159,7 @@ def _parse_rule(item: Any, path: Path, family: str, ported: bool) -> Rule:
         severity=_opt_str(item.get("severity", "medium"), f"{rule_id!r} 'severity'", path),
         sources=sources,
         sinks=sinks,
+        taint_sinks=_str_list(item.get("taint_sinks"), f"{rule_id!r} 'taint_sinks'", path),
         sanitizers=sanitizers,
         message=_opt_str(item.get("message", ""), f"{rule_id!r} 'message'", path),
         source_ref=_opt_str(item.get("source", ""), f"{rule_id!r} 'source'", path),

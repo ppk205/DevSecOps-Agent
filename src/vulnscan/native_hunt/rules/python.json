@@ -15,7 +15,11 @@
         "\\.execute\\s*\\([^)]*\\+[^)]*\\)",
         "\\.execute\\s*\\(\\s*f[\\\"']"
       ],
-      "source": "src/vulnscan/scanners/rules/python.yml#py-sql-injection"
+      "source": "src/vulnscan/scanners/rules/python.yml#py-sql-injection",
+      "taint_sinks": [
+        "\\.execute\\s*\\(",
+        "\\.executemany\\s*\\("
+      ]
     },
     {
       "id": "py-xss-markup-bypass",
@@ -45,7 +49,11 @@
         "os\\.popen\\s*\\(",
         "subprocess\\.(call|run|Popen|check_output|check_call)\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/python.yml#py-command-injection"
+      "source": "src/vulnscan/scanners/rules/python.yml#py-command-injection",
+      "taint_sinks": [
+        "os\\.system\\s*\\(",
+        "subprocess\\.(?:call|run|Popen)\\s*\\("
+      ]
     },
     {
       "id": "py-code-injection-eval",
@@ -60,7 +68,11 @@
         "\\beval\\s*\\(",
         "\\bexec\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/python.yml#py-code-injection-eval"
+      "source": "src/vulnscan/scanners/rules/python.yml#py-code-injection-eval",
+      "taint_sinks": [
+        "(?<![\\w.])eval\\s*\\(",
+        "(?<![\\w.])exec\\s*\\("
+      ]
     },
     {
       "id": "py-path-traversal-open",
@@ -121,7 +133,11 @@
         "yaml\\.load\\s*\\(",
         "shelve\\.open\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/python.yml#py-unsafe-deserialization"
+      "source": "src/vulnscan/scanners/rules/python.yml#py-unsafe-deserialization",
+      "taint_sinks": [
+        "pickle\\.loads\\s*\\(",
+        "yaml\\.load\\s*\\("
+      ]
     },
     {
       "id": "py-hardcoded-secret",

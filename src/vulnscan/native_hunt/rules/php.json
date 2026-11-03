@@ -15,7 +15,12 @@
         "\\$DB->query\\s*\\(",
         "\\$DB->exec\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/php.yml#php-sql-concatenation"
+      "source": "src/vulnscan/scanners/rules/php.yml#php-sql-concatenation",
+      "taint_sinks": [
+        "mysqli?_query\\s*\\(",
+        "->query\\s*\\(",
+        "->exec\\s*\\("
+      ]
     },
     {
       "id": "php-reflected-xss",
@@ -31,7 +36,11 @@
         "\\bprint\\b",
         "printf\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/php.yml#php-reflected-xss"
+      "source": "src/vulnscan/scanners/rules/php.yml#php-reflected-xss",
+      "taint_sinks": [
+        "echo\\s",
+        "print\\s"
+      ]
     },
     {
       "id": "php-command-injection",
@@ -50,7 +59,10 @@
         "\\bpopen\\s*\\(",
         "proc_open\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/php.yml#php-command-injection"
+      "source": "src/vulnscan/scanners/rules/php.yml#php-command-injection",
+      "taint_sinks": [
+        "(?<![\\w:>])(?:system|exec|shell_exec|passthru|popen|proc_open)\\s*\\("
+      ]
     },
     {
       "id": "php-path-traversal",
@@ -97,7 +109,10 @@
       "patterns": [
         "\\bunserialize\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/php.yml#php-unsafe-deserialization"
+      "source": "src/vulnscan/scanners/rules/php.yml#php-unsafe-deserialization",
+      "taint_sinks": [
+        "unserialize\\s*\\("
+      ]
     },
     {
       "id": "php-dynamic-eval",
@@ -112,7 +127,10 @@
         "\\beval\\s*\\(",
         "\\bassert\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/php.yml#php-dynamic-eval"
+      "source": "src/vulnscan/scanners/rules/php.yml#php-dynamic-eval",
+      "taint_sinks": [
+        "(?<![\\w:>])(?:eval|assert|create_function)\\s*\\("
+      ]
     },
     {
       "id": "php-weak-password-hash",

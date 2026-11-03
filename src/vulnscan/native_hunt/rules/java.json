@@ -15,7 +15,12 @@
         "\\.executeUpdate\\s*\\([^)]*\\+",
         "\\.execute\\s*\\([^)]*\\+"
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-sql-concatenation"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-sql-concatenation",
+      "taint_sinks": [
+        "\\.executeQuery\\s*\\(",
+        "\\.executeUpdate\\s*\\(",
+        "\\.execute\\s*\\("
+      ]
     },
     {
       "id": "java-xss-response-writer",
@@ -30,7 +35,11 @@
         "getWriter\\s*\\(\\s*\\)\\s*\\.\\s*(write|print|println)\\s*\\(",
         "getOutputStream\\s*\\(\\s*\\)\\s*\\.\\s*(write|print)\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-xss-response-writer"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-xss-response-writer",
+      "taint_sinks": [
+        "\\.getWriter\\s*\\(\\s*\\)\\s*\\.print",
+        "\\.println\\s*\\("
+      ]
     },
     {
       "id": "java-path-traversal-file",
@@ -59,7 +68,11 @@
       "patterns": [
         "Runtime\\.getRuntime\\s*\\(\\s*\\)\\s*\\.\\s*exec\\s*\\("
       ],
-      "source": "src/vulnscan/scanners/rules/java.yml#java-command-execution"
+      "source": "src/vulnscan/scanners/rules/java.yml#java-command-execution",
+      "taint_sinks": [
+        "Runtime\\.getRuntime\\s*\\(\\s*\\)\\s*\\.exec\\s*\\(",
+        "new\\s+ProcessBuilder\\s*\\("
+      ]
     },
     {
       "id": "java-xxe-document-builder",

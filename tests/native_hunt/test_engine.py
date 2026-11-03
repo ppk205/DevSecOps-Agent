@@ -141,3 +141,39 @@ def test_typed_declaration_taints_var_not_type(tmp_path) -> None:
     assert any(
         f.rule_id == "java-sql-concatenation" and f.line == 2 for f in findings
     )
+
+
+def test_minified_and_longline_files_skipped(tmp_path) -> None:
+    from vulnscan.native_hunt import load_rules, scan_file, scan_snapshot
+
+    rules = load_rules("javascript")
+    mini = tmp_path / "a.min.js"
+    mini.write_text("eval(x);\n", encoding="utf-8")
+    big = tmp_path / "b.js"
+    big.write_text("var s = '" + "x" * 5000 + "';\neval(s);\n", encoding="utf-8")
+    assert scan_file(mini, rules) == []
+    assert scan_file(big, rules) == []
+    res = scan_snapshot(tmp_path, ["javascript"])
+    assert res.findings == []
+    assert len(res.skipped) == 2
+
+
+def test_entry_param_and_call_propagation(tmp_path) -> None:
+    from vulnscan.native_hunt import load_rules, scan_file
+
+    target = tmp_path / "C.java"
+    target.write_text(
+        "public AttackResult completed(@RequestParam(value = \"u\") String userId) {\n"
+        "    return injectableQuery(userId);\n"
+        "}\n"
+        "public AttackResult injectableQuery(String accountName) {\n"
+        "    String query = \"SELECT * WHERE name = '\" + accountName + \"'\";\n"
+        "    ResultSet r = st.executeQuery(query);\n"
+        "    return null;\n"
+        "}\n",
+        encoding="utf-8",
+    )
+    findings = scan_file(target, load_rules("java"))
+    assert any(
+        f.rule_id == "java-sql-concatenation" and f.line == 6 for f in findings
+    )
