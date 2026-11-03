@@ -328,9 +328,10 @@ def scan_snapshot(root: str | Path, families: Sequence[str] | None = None) -> Sn
     """Scan every file under *root* matching *families* (defaults to all packs).
 
     Files whose suffix matches no requested known family are ignored;
-    oversized or unreadable files are recorded in ``skipped``. Hidden
-    paths (any part starting with ``.``) and symlinks are skipped. A
-    missing *root* yields an empty result.
+    oversized or unreadable files are recorded in ``skipped``. Only
+    ``.git`` metadata and symlinks are skipped; other dot-directories
+    (e.g. ``.mvn`` wrappers) are legitimate sources. A missing *root*
+    yields an empty result.
     """
     result = SnapshotResult()
     root_path = Path(root)
@@ -350,7 +351,7 @@ def scan_snapshot(root: str | Path, families: Sequence[str] | None = None) -> Sn
             rel = child.relative_to(root_path).as_posix()
         except ValueError:
             continue
-        if any(part.startswith(".") for part in Path(rel).parts):
+        if any(part == ".git" for part in Path(rel).parts):
             continue
         suffix_family = _family_for_suffix(child.suffix.lower())
         applicable: list[Rule] = []
