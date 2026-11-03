@@ -337,7 +337,10 @@ Notes and decisions:
 Two lanes, one gate:
 
 - **Deterministic lane** (`--profile fast|full`): intake → static scanners
-  (Semgrep, Gitleaks, + SpotBugs/ODC on full) → normalization & dedup.
+  (native-hunt, Semgrep, Gitleaks, + SpotBugs/ODC on full) → normalization
+  & dedup. `native-hunt` is the in-house engine (regex + intra-file taint,
+  90 rules across java/js-ts/py/php, no external binary); Semgrep/SpotBugs
+  stay as baseline oracles for evaluation, not the primary evidence.
 - **Model-first lane** (`--mode hunt`, default): the model hunts the snapshot
   in sequential passes — one per extension family present (java/js-ts/py/php,
   plus a generic pass for any other web-hostable text) + a logic pass
