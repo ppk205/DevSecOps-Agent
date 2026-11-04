@@ -1,0 +1,10 @@
+{
+  "reference_commit": "c5b0d409ae9f57c44264c6ce5f27d89298e1d32a",
+  "base_combinations": 104976,
+  "extended_samples": 5000,
+  "checked": 109976,
+  "seed": 20261104,
+  "mismatches": [],
+  "reference_results_sha256": "44bf4bbfac0ef73554b81274925c7f8ec7f6846bdac4e0b3063562f39c720595",
+  "elapsed_seconds": 96.16
+}

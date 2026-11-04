@@ -15,6 +15,7 @@ import logging
 import re
 from collections.abc import Callable
 from datetime import UTC, datetime
+from itertools import islice
 from typing import Any
 
 from vulnscan.contracts.assessment import Assessment, CVSSAssessment
@@ -30,6 +31,19 @@ logger = logging.getLogger(__name__)
 ToolHandler = Callable[[dict[str, Any]], dict[str, Any]]
 
 
+def _json_assessment(text: str) -> dict[str, Any] | None:
+    decoder = json.JSONDecoder()
+    # ponytail: inspect at most 64 JSON starts to bound malformed model-output parsing.
+    for start in islice(re.finditer(r"\{", text), 64):
+        try:
+            payload, _ = decoder.raw_decode(text, start.start())
+        except (ValueError, RecursionError):
+            continue
+        if isinstance(payload, dict) and "proposed_status" in payload:
+            return payload
+    return None
+
+
 def parse_verdict_text(text: str) -> tuple[str, float, str, bool]:
     """Extract (status, confidence, rationale, explicit) from free text.
 
@@ -42,10 +56,9 @@ def parse_verdict_text(text: str) -> tuple[str, float, str, bool]:
     rationale = text
     explicit = False
 
-    json_match = re.search(r"\{[^{}]*\"proposed_status\"[^{}]*\}", text, re.DOTALL)
-    if json_match:
+    parsed = _json_assessment(text)
+    if parsed is not None:
         try:
-            parsed = json.loads(json_match.group())
             status = str(parsed.get("proposed_status", "unresolved")).lower()
             confidence = float(parsed.get("confidence", 0.5))
             rationale = str(parsed.get("rationale", text))
@@ -81,6 +94,30 @@ def parse_verdict_text(text: str) -> tuple[str, float, str, bool]:
     except (TypeError, ValueError):
         confidence = 0.5
     return status, confidence, (rationale or text)[:2000], explicit
+
+
+def parse_cvss_and_assumptions(text: str) -> tuple[CVSSAssessment | None, list[str], list[str]]:
+    """Compute a supplied vector; retain assumptions as unverified model data."""
+    payload = _json_assessment(text)
+    if payload is None:
+        return None, [], []
+    raw_assumptions = payload.get("assumptions", [])
+    assumptions = (
+        [value for value in raw_assumptions if isinstance(value, str)]
+        if isinstance(raw_assumptions, list)
+        else []
+    )
+    vector = payload.get("cvss_vector")
+    if vector is None or vector == "":
+        return None, assumptions, []
+    if not isinstance(vector, str):
+        return None, assumptions, ["CVSS proposal must be a complete v4.0 vector string"]
+    from vulnscan.assessment.cvss import validate
+
+    errors = validate(vector)
+    if errors:
+        return None, assumptions, errors
+    return CVSSAssessment(vector=vector, source="ai-proposal"), assumptions, []
 
 
 class AgentLoop:
@@ -258,7 +295,10 @@ class AgentLoop:
             "Use the available tools to inspect source code, look up routes, "
             "retrieve evidence, and check coverage before making your assessment. "
             "End with a JSON assessment block containing: proposed_status, "
-            "confidence, rationale, cvss_vector (if evidence supports it)."
+            "confidence, rationale, assumptions, cvss_vector (if evidence supports it). "
+            "A CVSS v4.0 vector requires AV, AC, AT, PR, UI, VC, VI, VA, SC, SI, SA in that order; "
+            "use UI:N/P/A and AT:N/P. Do not invent unknown metric values or numeric scores; "
+            "omit the vector when the evidence does not support a complete assessment."
         )
 
     def _parse_assessment(
@@ -270,22 +310,7 @@ class AgentLoop:
     ) -> Assessment:
         """Parse the final LLM response into an Assessment proposal."""
         proposed_status, confidence, rationale, explicit = parse_verdict_text(resp.content)
-        _ = explicit
-
-        cvss_vector = None
-        json_match = re.search(r"\{[^{}]*\"proposed_status\"[^{}]*\}", resp.content, re.DOTALL)
-        if json_match:
-            try:
-                cvss_vector = json.loads(json_match.group()).get("cvss_vector")
-            except (json.JSONDecodeError, ValueError, TypeError, AttributeError):
-                cvss_vector = None
-
-        cvss = None
-        if cvss_vector:
-            try:
-                cvss = CVSSAssessment(vector=str(cvss_vector), source="ai-proposal")
-            except (TypeError, ValueError) as exc:
-                logger.debug("Ignoring invalid AI CVSS proposal %r: %s", cvss_vector, exc)
+        cvss, assumptions, cvss_errors = parse_cvss_and_assumptions(resp.content)
 
         now = datetime.now(UTC)
         return Assessment(
@@ -295,11 +320,22 @@ class AgentLoop:
             proposed_status=proposed_status,
             rationale=rationale[:2000],
             cvss=cvss,
+            assumptions=assumptions,
             evidence_refs=[o.observation_id for o in finding.observations],
             confidence=confidence,
             provider_id=self.provider_id,
             model_id=self.model_id,
             model_version=self.model_version,
             created_at=now,
-            metadata={"tool_calls_made": tool_calls, "total_tokens": total_tokens},
+            metadata={
+                "tool_calls_made": tool_calls,
+                "total_tokens": total_tokens,
+                "verdict_explicit": explicit,
+                "cvss_validation_errors": cvss_errors,
+                "cvss_score_status": "computed"
+                if cvss is not None
+                else "invalid"
+                if cvss_errors
+                else "not_provided",
+            },
         )

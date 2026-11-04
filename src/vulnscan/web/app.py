@@ -713,12 +713,28 @@ def create_app(
                     "base_score": cvss_raw.get("base_score"),
                     "qualitative": cvss_raw.get("qualitative"),
                     "notes": str(cvss_raw.get("notes", "")),
+                    "overall_score": cvss_raw.get("overall_score"),
+                    "base_rating": cvss_raw.get("base_rating"),
+                    "overall_rating": cvss_raw.get("overall_rating"),
+                    "nomenclature": cvss_raw.get("nomenclature"),
+                    "calculation_source": cvss_raw.get("calculation_source"),
+                    "metric_assumptions_verified": cvss_raw.get("metric_assumptions_verified")
+                    is True,
                 }
             assumptions = assessment.get("assumptions", [])
+            assessment_metadata = assessment.get("metadata")
+            if not isinstance(assessment_metadata, dict):
+                assessment_metadata = {}
             ai = {
                 "proposed_severity": str(assessment.get("proposed_severity", "")) or None,
                 "proposed_status": str(assessment.get("proposed_status", "")) or None,
                 "cvss": cvss,
+                "cvss_score_status": assessment_metadata.get("cvss_score_status", "unavailable"),
+                "cvss_validation_errors": [
+                    str(error) for error in assessment_metadata.get("cvss_validation_errors", [])
+                ]
+                if isinstance(assessment_metadata.get("cvss_validation_errors"), list)
+                else [],
                 "confidence": assessment.get("confidence"),
                 "assumptions": [str(a) for a in assumptions]
                 if isinstance(assumptions, list)

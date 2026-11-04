@@ -3,7 +3,7 @@
 **Project**: DevSecOps-Agent — Automated Vulnerability Scanning and Assessment for Java Servlet/JSP Applications
 
 **Document ID**: SRS-001  
-**Version**: 1.5 (selectable outbound notifications)
+**Version**: 1.7 (independent evidence decisions and CVSS v4.0 correction)
 **Status**: Approved implementation baseline
 **Authors**: Tran Doan Hoa (23162026), Nguyen Minh Khoi (23162046)  
 **Supervisor**: Nguyen Thi Thanh Van
@@ -11,6 +11,16 @@
 ---
 
 ## 1. Introduction
+
+**Revision 1.7 — 2026-11-04:** FR-50/53 distinguish model proposals and raw
+scanner observations from scoped independent evidence, and require conformant
+CVSS v4.0 parsing/scoring. Conflicting or incomplete verification stays
+unresolved. Correct arithmetic does not verify a vector's source assumptions.
+
+**Revision 1.6 — 2026-11-04:** FR-61 adds an offline, deterministic OWASP Top
+10:2025 section derived from normalized finding CWEs. Reports retain status
+partitions, finding references and explicit unmapped cases. Classification does
+not establish a confirmed vulnerability, category coverage or a passed check.
 
 **Revision 1.5 — 2026-11-04:** Owner-requested Telegram and Discord alerts extend
 the notification scope. FR-75 specifies opt-in destinations, selected events,
@@ -351,6 +361,19 @@ not fully implemented or validated by the offline execution checks.
 
 **FR-50 — Mandatory verification.** No AI-generated assessment shall be accepted without passing mechanical verification. The verification engine is independent of the assessment agent and checks claims against source evidence.
 
+Model confidence, free-text verdicts and scanner detections alone shall not
+confirm or reject a finding. Terminal decisions require same-finding/run
+independent evidence with explicit supporting/contradicting polarity and source
+provenance. Duplicate IDs shall not inflate support; contradictory independent
+evidence, foreign records, blocked checks, harness failures and fixed-variant
+results shall not be treated as demonstrations of the original vulnerability.
+Trusted verification metadata records `independently_verified`, `polarity`,
+`run_id` and `verifier` (VerificationObservation has its own run ID field).
+Model records never acquire decision authority through
+these fields. Missing metadata is unknown. Only trusted verification producers
+may assert independent checks; the current scanner/model evidence adapter does
+not perform them. Existing human review remains available.
+
 *Evidence*: acceptance flags on every finding showing verification status; test `T-VERIF-01`.
 
 **FR-51 — Sanitization verification.** The engine shall verify AI claims that a sanitizer is present, effective, and applicable by re-deriving the sanitizer's effect on the data path independently of the LLM.
@@ -362,6 +385,16 @@ not fully implemented or validated by the offline execution checks.
 *Evidence*: context re-derivation records; test `T-VERIF-03`.
 
 **FR-53 — CVSS vector validation.** The engine shall validate each proposed CVSS v4.0 vector: well-formedness, consistency between vector components and the evidence excerpt, and plausibility of scope/impact claims against the finding context.
+
+Vector syntax and numerical scoring shall follow FIRST CVSS v4.0 metric order,
+values, all eleven mandatory Base metrics, MacroVector tables and interpolation.
+Threat, Environmental and Supplemental metrics shall be validated; Supplemental
+metrics do not change scores. Base and contextual B/BT/BE/BTE scores shall be
+distinguished. Incomplete vectors shall remain unscored rather than appearing
+as zero severity. Recorded assessment scores shall be computed from the vector,
+not copied from model-supplied numbers. Arithmetic validity alone shall not
+approve finding status, change scanner severity or claim that metric choices
+and assumptions have been independently verified.
 
 *Evidence*: validation records with per-component verdicts; test `T-VERIF-04`.
 
@@ -384,6 +417,20 @@ not fully implemented or validated by the offline execution checks.
 *Evidence*: report files with matching content across formats; test `T-REP-01`.
 
 **FR-61 — Report content.** Each report shall include: scan metadata and tool versions, coverage tables (Java and JSP separately), findings with source evidence excerpts, CVSS v4.0 vectors and assumptions, verification results and rejections, dependency findings separately, and limitations.
+
+Human-readable reports shall add an OWASP Top 10:2025 to CWE cross-reference.
+It shall use a bundled snapshot of OWASP's category-specific mapped-CWE lists,
+show all ten categories, and link each normalized primary or secondary CWE to its finding
+IDs and actual status counts. Missing, unclassified or unlisted CWEs shall stay
+unmapped; no parent-CWE or semantic mapping is inferred. Empty categories mean
+no mapped findings reported, not tested, safe or passed. JSON and SARIF shall
+include the same structured cross-reference as additive metadata. The final
+AI narrative and its deterministic fallback shall include the application-built
+section; the model does not supply its mappings or counts. CSV remains a flat
+finding export. Existing finding, score and review contracts remain authoritative.
+Category totals count each finding once; per-CWE rows and categories may overlap
+when a finding has multiple labels. Missing scanner labels retain the existing
+`CWE-UNCLASSIFIED` normalization; the Finding contract still requires a primary CWE.
 
 *Evidence*: report section checklist verified by test; test `T-REP-02`.
 

@@ -2,6 +2,7 @@ import type { FindingDetail } from "../api/types";
 import { useStrings } from "../i18n/lang";
 import type { VerificationState } from "../tokens";
 import { CodeViewer } from "./CodeViewer";
+import { CvssSummary } from "./CvssSummary";
 import { SeverityBadge } from "./SeverityBadge";
 import { VerificationBadge } from "./VerificationBadge";
 
@@ -60,14 +61,11 @@ export function FindingDetailView({ detail, showRaw, onToggleRaw }: FindingDetai
                 {detail.ai_changed && <span className="ml-2 text-warning">(changed)</span>}
               </dd>
             </div>
-            {detail.ai.cvss && (
+            {(detail.ai.cvss || detail.ai.cvss_score_status === "invalid") && (
               <div className="flex gap-2">
                 <dt className="label-m w-28 shrink-0 text-[11px] text-muted">{en.findingDetail.cvss}</dt>
                 <dd className="font-mono text-xs text-body">
-                  {detail.ai.cvss.vector}
-                  {detail.ai.cvss.base_score !== null && (
-                    <span className="ml-2 text-muted">score {detail.ai.cvss.base_score}</span>
-                  )}
+                  {detail.ai.cvss ? <CvssSummary cvss={detail.ai.cvss} /> : <span>Unscored: {detail.ai.cvss_validation_errors?.join("; ") || "Invalid CVSS v4.0 vector"}</span>}
                 </dd>
               </div>
             )}

@@ -15,7 +15,11 @@ from vulnscan.contracts.verification import VerificationObservation
 
 
 def _evidence(
-    eid: str, fid: str, strength: EvidenceStrength, desc: str = "scanner detection"
+    eid: str,
+    fid: str,
+    strength: EvidenceStrength,
+    desc: str = "independent fixture check",
+    polarity: str = "supporting",
 ) -> EvidenceRecord:
     return EvidenceRecord(
         evidence_id=eid,
@@ -24,6 +28,13 @@ def _evidence(
         strength=strength,
         source_description=desc,
         created_at=datetime.now(UTC),
+        source_location="Example.java:42",
+        metadata={
+            "run_id": "r1",
+            "independently_verified": True,
+            "polarity": polarity,
+            "verifier": "fixture-independent-check",
+        },
     )
 
 
@@ -50,12 +61,18 @@ def _verification(vid: str, fid: str, outcome: VerificationOutcome) -> Verificat
         run_id="r1",
         procedure_version="v1",
         verification_level="static",
-        security_property="prepared statement used",
-        observed_behavior="demonstrated: prepared statement in place",
-        execution_status="demonstrated",
+        security_property="untrusted input reaches SQL execution without parameterization",
+        observed_behavior="synthetic independent procedure demonstrates the unsafe flow",
+        execution_status=outcome,
         is_vulnerable_variant=True,
         evidence_kind=EvidenceKind.STATIC,
         observed_at=datetime.now(UTC),
+        legitimate_functionality_ok=True,
+        metadata={
+            "independently_verified": True,
+            "polarity": "supporting",
+            "verifier": "fixture-independent-check",
+        },
     )
 
 
@@ -80,7 +97,11 @@ class TestIndependentValidator:
     def test_reject_with_counterevidence(self):
         v = IndependentValidator(min_evidence_for_confirm=5)
         ev1 = _evidence(
-            "e1", "f1", EvidenceStrength.STRONG, "contradicts: prepared statement in place"
+            "e1",
+            "f1",
+            EvidenceStrength.STRONG,
+            "independently verified prepared statement",
+            polarity="contradicting",
         )
         decision = v.validate("f1", FindingStatus.UNPROCESSED, _assessment("f1"), [ev1])
         assert decision.new_status == FindingStatus.REJECTED

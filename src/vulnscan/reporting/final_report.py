@@ -18,9 +18,11 @@ from collections.abc import Sequence
 from typing import Any
 
 from vulnscan.contracts.finding import Finding
+from vulnscan.core.security import sanitize
 from vulnscan.providers.budget import BudgetManager
 from vulnscan.providers.client import ChatMessage, ProviderClient
 from vulnscan.providers.profile_store import load_profile
+from vulnscan.reporting.owasp import append_to_narrative, markdown_section
 
 logger = logging.getLogger(__name__)
 
@@ -182,6 +184,8 @@ def build_report_prompt(
         "## Kết luận & bước tiếp theo\n"
         "Keep it factual and bounded: only confirmed/rejected/unresolved "
         "findings listed above."
+        " Do not write an OWASP Top 10 section or invent category mappings or counts; "
+        "the application appends that section deterministically from normalized CWEs."
     )
     if comparison:
         section = comparison_section(comparison)
@@ -228,7 +232,7 @@ def deterministic_narrative(
         dec = by_id.get(f.finding_id, {})
         lines.append(f"## {f.title} [{f.status.value}]")
         lines.append(
-            f"CWE-{f.cwe_category.value if f.cwe_category else 'n/a'} | severity={f.severity.value}"
+            f"{f.cwe_category.value if f.cwe_category else 'Unclassified'} | severity={f.severity.value}"
         )
         for o in f.observations[:5]:
             if o.location:
@@ -236,7 +240,7 @@ def deterministic_narrative(
         if dec.get("rationale"):
             lines.append(f"Validator: {dec['rationale']}")
         lines.append("")
-    return "\n".join(lines)
+    return str(sanitize("\n".join(lines))).rstrip() + "\n\n" + markdown_section(findings) + "\n"
 
 
 def run_final_report(
@@ -279,6 +283,7 @@ def run_final_report(
         report["provider"] = profile.id
         report["ai_written"] = True
         if resp.content.strip():
+            report["markdown"] = append_to_narrative(resp.content, findings)
             report["status"] = "completed"
             reported_tokens = resp.usage.get("total_tokens")
             report["detail"] = (

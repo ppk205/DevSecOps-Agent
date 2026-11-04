@@ -133,6 +133,9 @@ bin/
 # Logs and temporary Office documents
 *.log
 !evidence/notifications-2026-11-04/*.log
+!evidence/owasp-report-2026-11-04/*.log
+!evidence/owasp-report-2026-11-04/synthetic-preview/report-preview.sarif
+!evidence/validator-cvss-2026-11-04/*.log
 ~$*
 
 # Local thesis working documents

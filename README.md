@@ -79,8 +79,9 @@ DevSecOps-Agent is a local application that detects and reports vulnerabilities
 in web projects. Its own analyzer is native-hunt. Semgrep, SpotBugs/FindSecBugs,
 OWASP Dependency-Check, Gitleaks and CodeQL are integrated adapters and comparison
 baselines. A model can hunt for candidates and propose assessments; those proposals
-go through `IndependentValidator` and human review. The validator has a known defect
-and the CVSS scorer is not called by the pipeline; see [Limitations](#limitations).
+go through `IndependentValidator` and human review. The validator requires scoped
+independent evidence for terminal decisions. CVSS proposals use the corrected
+deterministic v4.0 scorer; metric assumptions still require independent checks.
 
 The experimental target is [JVA-bookstore](https://github.com/Moseyuh333/JVA-bookstore) (commit `dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5`): 101 Java files, 38 JSP files, Java 11, Maven WAR packaging, PostgreSQL, `javax.servlet`.
 
@@ -223,6 +224,7 @@ DevSecOps-Agent/
 | Secrets/credentials | Native-hunt CWE-798 rules; Gitleaks when selected. |
 | Java dependencies | OWASP Dependency-Check on `full`, with OSV.dev fallback when the binary or NVD is unavailable. |
 | Notifications | In-app bell plus selectable Telegram/Discord digests. Tested with synthetic HTTP responses, not delivered to the real services. |
+| OWASP/CWE report cross-reference | OWASP Top 10:2025 section from primary and secondary CWE labels, with finding references, status counts and explicit unmapped cases; [report guide](docs/OWASP-REPORTING.md) |
 | Targeted verification probes | Opt-in HTTP probes (reflected-XSS canary, SQL-error signatures) as extra evidence, never findings by themselves. |
 | Model-first hunt (`--mode hunt`) | One pass per extension family present (java/js-ts/py/php), a generic pass for other text, and a logic pass (authZ/session/crypto). Findings carry a `provenance` of `model`, `scanner` or `both`. |
 | DAST / runtime attacks | **Not supported.** |
@@ -455,17 +457,27 @@ anywhere, e.g. targets without git).
 
 ### Validation
 
-The model only proposes; `IndependentValidator` sets the finding status and a person can
-review it. The validator counts evidence records and verification outcomes. It does not
-check sanitizer claims, authorization assumptions or CVSS components against source, even
-though requirements FR-51 to FR-54 describe that.
+The model only proposes; `IndependentValidator` owns AI-driven finding-status
+decisions, and human review remains available. Model confidence and raw scanner
+observations do not count as independent proof. Terminal decisions require
+scoped supporting/counterevidence from trusted independent checks. Conflicting
+evidence stays unresolved. Blocked, failed, incomplete and fixed-variant checks
+cannot confirm the original finding. Decisions retain policy version, used IDs,
+ignored records and verification outcomes.
 
-**Known defect (2026-11-04):** a model verdict is recorded as supporting evidence whatever it
-says. With synthetic input, a `rejected` verdict with one scanner observation returns
-`confirmed`, and an `unresolved` verdict with two observations returns `confirmed`. A retained
-offline run shows the same result end to end
-(`evidence/native-ai-integration-r3-2026-11-04/offline-ui-run.json`). Do not read `confirmed`
-as verified until this is fixed.
+The previous counterevidence/counting defect is corrected. Its historical
+records remain unchanged; earlier `confirmed` labels are not recertified by
+this fix. Current scanner/model review does not run a general semantic source
+verifier, so those proposals normally remain unresolved for human review.
+FR-51/52/54 source checks and semantic verification of CVSS assumptions remain
+implementation gaps.
+
+The CVSS scorer now uses FIRST v4.0 MacroVectors and interpolation, strict metric
+order/values and all eleven Base metrics. Valid vectors are scored in both
+bounded-agent and single-shot review. Model numeric scores are ignored; missing
+or invalid vectors stay unscored. Base and contextual scores are recorded
+separately, with `metric_assumptions_verified=False`. See the
+[validator and CVSS guide](docs/VALIDATOR-CVSS.md) and its verification record.
 
 ## Training Laya (teach it to route)
 
@@ -601,10 +613,10 @@ labels created by agents record `labelled_by`; agents never self-assign
 
 ## Limitations
 
-- `IndependentValidator` turns some model verdicts into `confirmed`, including `rejected`
-  ones; see [Validation](#validation).
-- The CVSS v4.0 scorer is not called by the pipeline, and it differs from the `cvss` library on
-  4 of 5 reference vectors (`evidence/cvss-reference-2026-11-04/`).
+- Current scanner/model review does not independently re-derive sanitizer,
+  authorization or CVSS metric assumptions from source. Proposals stay unresolved
+  without trusted independent checks; historical validation labels are not
+  automatically rewritten. See [Validation](#validation).
 - AI review and hunt have no measured accuracy yet.
 - Native-hunt analyzes one file at a time and scores below Semgrep and CodeQL on OWASP
   Benchmark Java. Its rule confidence is not reliable: on Java, 0.9 rules have 56.02% precision

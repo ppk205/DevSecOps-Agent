@@ -18,6 +18,47 @@ Test everything against real artifacts; never claim a pass without an executed c
 
 ## 2. Test categories
 
+### Independent validator and CVSS correction (FR-50/53/56)
+
+`tests/validation/test_validator_regressions.py` covers model/scanner-only
+proposals, independent counterevidence, conflicts, duplicate/foreign identities,
+blocked/failed/incomplete procedures, fixed variants, model-claimed independent
+metadata and invalid confirmation thresholds. Positive controls use explicitly
+scoped synthetic independent checks. The verification helper now respects its
+requested outcome instead of hardcoding `demonstrated`.
+
+`test_cvss_conformance.py` compares exact Base/contextual scores to pinned FIRST
+JavaScript outputs, rejects invalid v4 metric values/order/duplicates, accepts
+active interaction and Supplemental Safety, and checks incomplete vectors and
+computed assessment fields. Old tests using v3-style Scope or missing mandatory
+subsequent impacts were corrected rather than treated as v4 reference vectors.
+
+`tests/ai/test_validation_cvss_pipeline.py` covers both real review parsers,
+assumption/error retention, JSON braces in rationale, persisted decisions and
+avoiding redundant single-shot calls after an already parsed verdict.
+`tests/platform/test_native_cvss.py` exercises EXE -> JSONL -> provider parser ->
+computed score -> SQLite/finding/report records with synthetic HTTP only.
+Scoring parity does not establish that metric assumptions fit source evidence.
+Conformance and executed-check records are under
+`evidence/validator-cvss-2026-11-04/`.
+
+### OWASP Top 10 report cross-reference (FR-61/68, T-REP-02)
+
+`tests/reporting/test_owasp.py` verifies published 2025 CWE membership, including
+SSRF in A01 and injection in A05, actual status partitions, primary/secondary
+labels, observation deduplication, explicit unmapped CWEs, empty categories,
+escaped finding references and consistent human/JSON/SARIF output. It does not
+infer parent-CWE mappings or treat a zero count as a passed security check.
+
+`test_owasp_narrative.py` covers deterministic/model narratives, empty/error
+fallbacks, replacing a model-authored OWASP section, preserving finding titles,
+and closing an incomplete model code fence before appending the section.
+`test_owasp_integration.py` exercises ScanService exports and the real native
+EXE/JSONL/report-generator path with synthetic scanner findings. Tests use no
+live providers, notification destinations or runtime mapping downloads. The
+official mapping snapshot is retained separately under
+`evidence/owasp-report-2026-11-04/official-cwe-mapping.json`.
+
 ### Outbound notifications (FR-75)
 
 `tests/notifications/` covers disabled defaults, event rules, redacted summary

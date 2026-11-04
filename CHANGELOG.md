@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+- Correct independent-validation logic: exclude model/raw-scanner proposals
+  from decision authority, separate counterevidence from support, scope records
+  by finding/run, deduplicate identities, and keep conflicts, blocked/failed
+  procedures and fixed-variant results from falsely confirming findings.
+- Replace the incorrect CVSS formula with FIRST v4.0 MacroVector scoring and
+  bundled reference tables. Validate metric order/values and eleven Base metrics;
+  leave incomplete vectors unscored. Record Base and contextual scores separately
+  and compute assessment numbers from vectors in both AI review paths. Preserve
+  assumptions, score errors and validation provenance. Keep metric assumptions
+  unverified and scanner severity unchanged by arithmetic alone.
+
+- Add an OWASP Top 10:2025 to CWE cross-reference to HTML, Markdown, text, Word
+  and final narrative reports, with matching JSON/SARIF metadata. Use bundled
+  official category-specific CWE lists, preserve primary/secondary labels and
+  finding status, and show unmapped labels and empty categories explicitly.
+  Keep the section application-generated when the narrative comes from a model.
+  Correct the duplicate CWE prefix in the deterministic final narrative.
+
 - Add opt-in Telegram Bot API and Discord incoming-webhook digests at scan
   completion. Choose events and automatic/manual mode through `notifications
   configure`, native/Textual F6 settings or the dashboard bell. Manual delivery

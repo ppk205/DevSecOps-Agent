@@ -1,0 +1,18 @@
+{
+  "command": [
+    "D:\\phuc\\Code Project\\DevSecOps-Agent\\.venv\\Scripts\\python.exe",
+    "-m",
+    "build",
+    "--no-isolation",
+    "--wheel",
+    "--outdir",
+    "D:\\phuc\\Code Project\\DevSecOps-Agent\\.devsec\\validator-cvss-wheel"
+  ],
+  "exit_code": 0,
+  "dependency_installation": false,
+  "license_packaged": true,
+  "tables_packaged": true,
+  "isolated_exit_code": 0,
+  "isolated_output": "Isolated wheel scorer: 9.3; no optional cvss package loaded\n",
+  "wheel_sha256": "bd95ab41e72d3ba25263e5e52c359580abb468accbb4083dbfe6d576e3a1d412"
+}

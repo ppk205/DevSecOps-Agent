@@ -114,7 +114,7 @@ class TestRunAiReview:
         assert report["status"] == "skipped"
         assert findings[0].status == FindingStatus.UNPROCESSED
 
-    def test_fake_loop_confirms_through_validator(self, monkeypatch, tmp_path):
+    def test_fake_loop_does_not_confirm_without_independent_checks(self, monkeypatch, tmp_path):
         import vulnscan.ai.review as review_mod
 
         (tmp_path / "src").mkdir()
@@ -139,8 +139,9 @@ class TestRunAiReview:
         report = run_ai_review(
             findings, routing, snapshot_root=str(tmp_path), profile_id="p", max_findings=5
         )
-        assert report["status"] == "completed"
-        assert findings[0].status == FindingStatus.CONFIRMED
+        assert report["status"] == "partial"
+        assert findings[0].status == FindingStatus.UNRESOLVED
+        assert report["assessments"][0]["proposed_status"] == "confirmed"
         assert report["decisions"][0]["decided_by"] == "independent-validator"
 
     def test_tool_handlers_jailed_to_snapshot(self, tmp_path):
@@ -197,7 +198,7 @@ class TestParseVerdict:
         report = run_ai_review(
             findings, routing, snapshot_root=str(tmp_path), profile_id="p", max_findings=5
         )
-        assert findings[0].status == FindingStatus.CONFIRMED
+        assert findings[0].status == FindingStatus.UNRESOLVED
         assert report["assessments"][0]["metadata"]["single_shot"] is True
 
 

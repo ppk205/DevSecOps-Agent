@@ -78,6 +78,12 @@ export interface LiveAssessment {
     base_score?: number | null;
     qualitative?: string | null;
     notes?: string;
+    overall_score?: number | null;
+    base_rating?: string | null;
+    overall_rating?: string | null;
+    nomenclature?: string | null;
+    calculation_source?: string | null;
+    metric_assumptions_verified?: boolean;
   } | null;
 }
 
@@ -368,7 +374,15 @@ export interface AiAssessment {
     base_score: number | null;
     qualitative: string | null;
     notes: string;
+    overall_score?: number | null;
+    base_rating?: string | null;
+    overall_rating?: string | null;
+    nomenclature?: string | null;
+    calculation_source?: string | null;
+    metric_assumptions_verified?: boolean;
   } | null;
+  cvss_score_status?: string;
+  cvss_validation_errors?: string[];
   confidence: number | null;
   assumptions: string[];
   rationale: string;

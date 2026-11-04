@@ -34,7 +34,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from vulnscan.agent.loop import AgentLoop, parse_verdict_text
+from vulnscan.agent.loop import AgentLoop, parse_cvss_and_assumptions, parse_verdict_text
 from vulnscan.agent.tools import TOOL_SCHEMAS  # noqa: F401  (re-exported for tests)
 from vulnscan.ai.excerpts import code_excerpt_for_finding as _code_excerpt
 from vulnscan.assessment.validator import IndependentValidator
@@ -289,7 +289,10 @@ def single_shot_verdict(
         "Scanner observations:\n" + "\n".join(obs_lines) + "\n\n"
         "Source excerpt:\n" + _code_excerpt(snapshot_root, finding) + "\n\n"
         'JSON schema: {"proposed_status": "confirmed|rejected|unresolved", '
-        '"confidence": 0.0-1.0, "rationale": "one or two sentences"}'
+        '"confidence": 0.0-1.0, "rationale": "one or two sentences", '
+        '"assumptions": [], "cvss_vector": null}. If evidence supports a complete CVSS v4.0 '
+        "vector, include AV/AC/AT/PR/UI/VC/VI/VA/SC/SI/SA in specification order. "
+        "Do not invent unknown metrics or numeric scores."
     )
     try:
         resp = client.chat(
@@ -302,6 +305,7 @@ def single_shot_verdict(
     status, confidence, rationale, explicit = parse_verdict_text(resp.content)
     if not explicit:
         return None
+    cvss, assumptions, cvss_errors = parse_cvss_and_assumptions(resp.content)
     now = datetime.now(UTC)
     return Assessment(
         assessment_id=f"assess-{finding.finding_id}-single",
@@ -309,13 +313,25 @@ def single_shot_verdict(
         run_id=finding.run_id,
         proposed_status=status,
         rationale=rationale,
+        cvss=cvss,
+        assumptions=assumptions,
         evidence_refs=[o.observation_id for o in finding.observations],
         confidence=confidence,
         provider_id=profile.id,
         model_id=resp.model or model or profile.default_model or "unknown",
         model_version="v1",
         created_at=now,
-        metadata={"single_shot": True, "total_tokens": resp.usage.get("total_tokens", 0)},
+        metadata={
+            "single_shot": True,
+            "total_tokens": resp.usage.get("total_tokens", 0),
+            "verdict_explicit": explicit,
+            "cvss_validation_errors": cvss_errors,
+            "cvss_score_status": "computed"
+            if cvss is not None
+            else "invalid"
+            if cvss_errors
+            else "not_provided",
+        },
     )
 
 
@@ -358,6 +374,11 @@ def evidence_for(
                 source_location=loc or None,
                 tool=obs.tool.value,
                 created_at=now,
+                metadata={
+                    "run_id": run_id,
+                    "origin": "scanner_observation",
+                    "independently_verified": False,
+                },
             )
         )
     verdict = (assessment.proposed_status or "").lower()
@@ -382,7 +403,12 @@ def evidence_for(
             source_description=desc,
             tool=f"{assessment.provider_id}/{assessment.model_id}",
             created_at=now,
-            metadata={"assessment_id": assessment.assessment_id},
+            metadata={
+                "assessment_id": assessment.assessment_id,
+                "run_id": run_id,
+                "origin": "model_proposal",
+                "independently_verified": False,
+            },
         )
     )
     return records
@@ -445,6 +471,7 @@ def run_ai_review(
         context = {"policy": {}, "source_index": {"snapshot": str(snapshot_root)}}
         assessment = loop.investigate(finding, context)
         _, _, _, explicit = parse_verdict_text(assessment.rationale)
+        explicit = assessment.metadata.get("verdict_explicit") is True or explicit
         if not explicit:
             # Tool-incapable model (reasoning-only gateway, empty or
             # tool-less reply): one bounded single-shot verdict with
@@ -458,6 +485,8 @@ def run_ai_review(
         assessment.validation_decision_id = decision.decision_id
         target = by_id[finding.finding_id]
         target.status = decision.new_status
+        target.metadata["validation_decision"] = decision.model_dump(mode="json")
+        target.metadata["ai_assessments"] = [assessment.model_dump(mode="json")]
         report["targets"].append(finding.finding_id)
         report["assessments"].append(json.loads(assessment.model_dump_json()))
         report["decisions"].append(json.loads(decision.model_dump_json()))

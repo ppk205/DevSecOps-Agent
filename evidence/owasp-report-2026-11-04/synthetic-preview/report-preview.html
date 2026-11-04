@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Security assessment run-1</title>
+<style>
+:root{--bg:#0e1319;--card:#161d24;--ink:#e8edf2;--muted:#9aa7b4;--hairline:#2a3440;
+--accent:#1c69d4;--green:#22c55e;--yellow:#f59e0b;--red:#e22718;--code:#0b0f14}
+*{box-sizing:border-box}html{scrollbar-color:#3a4654 var(--bg)}
+body{font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:1100px;
+margin:40px auto;padding:0 20px;background:var(--bg);color:var(--ink)}
+h1{font-size:28px;margin:0 0 4px}h2{font-size:19px;margin:36px 0 12px;
+padding-bottom:8px;border-bottom:1px solid var(--hairline)}
+a{color:#6ea8fe}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+font-size:.86em;background:var(--code);border:1px solid var(--hairline);
+border-radius:4px;padding:2px 6px}
+.meta{color:var(--muted);font-size:13px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.chip{font-size:12px;border:1px solid var(--hairline);border-radius:999px;padding:3px 12px;color:var(--muted)}
+.counts{display:flex;flex-wrap:wrap;gap:12px;padding:0;list-style:none;margin:20px 0}
+.counts li{flex:1 1 140px;background:var(--card);border:1px solid var(--hairline);
+border-left:4px solid var(--muted);border-radius:6px;padding:10px 14px}
+.counts li.ok{border-left-color:var(--green)}.counts li.warn{border-left-color:var(--yellow)}
+.counts li.bad{border-left-color:var(--red)}
+.count{font-size:28px;font-weight:700;line-height:1.1}.counts small{color:var(--muted)}
+.finding{background:var(--card);border:1px solid var(--hairline);border-radius:8px;
+padding:18px 20px;margin:14px 0}
+.finding h3{margin:0 0 6px;font-size:16px}
+.st{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
+border-radius:4px;padding:2px 8px;margin-right:6px}
+.st-confirmed{background:rgba(34,197,94,.15);color:var(--green);border:1px solid var(--green)}
+.st-unresolved,.st-unprocessed{background:rgba(245,158,11,.13);color:var(--yellow);border:1px solid var(--yellow)}
+.st-rejected{background:rgba(154,167,180,.13);color:var(--muted);border:1px solid var(--muted)}
+.sev-high{color:var(--red)}.sev-medium{color:var(--yellow)}.sev-low{color:#6ea8fe}
+pre{background:var(--code);border:1px solid var(--hairline);border-radius:6px;
+padding:12px 14px;overflow-x:auto;font-size:13px;line-height:1.5;scrollbar-color:#3a4654 var(--code)}
+pre::-webkit-scrollbar{height:10px}pre::-webkit-scrollbar-track{background:var(--code)}
+pre::-webkit-scrollbar-thumb{background:#3a4654;border-radius:5px}
+pre::-webkit-scrollbar-thumb:hover{background:#4d5c6e}
+::-webkit-scrollbar{width:12px;height:12px}::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#3a4654;border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:#4d5c6e}
+.cover{background:var(--card);border:1px solid var(--hairline);border-radius:8px;
+padding:12px 16px;margin:10px 0}
+.cover b{color:var(--ink)}.cover ul{margin:6px 0 0;padding-left:20px;color:var(--muted)}
+.owasp{overflow-x:auto}.owasp table{width:100%;border-collapse:collapse;font-size:13px}
+.owasp th,.owasp td{border:1px solid var(--hairline);padding:8px;text-align:left;vertical-align:top;overflow-wrap:anywhere}
+@media print{body{margin:20px;background:#fff;color:#000}.finding,.counts li,.cover{break-inside:avoid}}
+</style></head><body>
+<h1>Security assessment <code>run-1</code></h1>
+<p class="meta">devsecops-agent 0.3.0</p>
+<div class="chips"><span class="chip">example_only: True</span><span class="chip">note: Synthetic preview; no target was scanned. These are not measured findings.</span></div>
+<ul class="counts">
+<li class="ok"><span class="count">3</span><br><small>Total</small></li>
+<li class="ok"><span class="count">0</span><br><small>Confirmed</small></li>
+<li><span class="count">1</span><br><small>Rejected</small></li>
+<li class="warn"><span class="count">1</span><br><small>Unresolved</small></li>
+<li class="warn"><span class="count">1</span><br><small>Unprocessed</small></li>
+</ul>
+<h2>Coverage</h2>
+<p class="meta">No coverage recorded.</p>
+<h2>OWASP Top 10:2025 and CWE mapping</h2>
+<p class="meta">This is a CWE classification of reported findings, not a coverage or compliance assessment. An empty category means No mapped findings reported; it does not mean tested, safe or passed. Counts retain finding status; pending includes unprocessed, triaged, assessed and pending validation. A finding with multiple labels may appear in several rows/categories; do not add those row counts.</p>
+<div class="owasp"><table><thead><tr><th scope="col">OWASP category</th><th scope="col">Reported CWE</th><th scope="col">Finding IDs</th><th scope="col">Finding status counts</th></tr></thead>
+<tbody><tr><td>A01:2025 Broken Access Control</td><td>CWE-918</td><td>example-ssrf</td><td>Confirmed: 0; Rejected: 1; Unresolved: 0; Pending: 0</td></tr><tr><td>A02:2025 Security Misconfiguration</td><td>—</td><td>—</td><td>Confirmed: 0; Rejected: 0; Unresolved: 0; Pending: 0</td></tr><tr><td>A03:2025 Software Supply Chain Failures</td><td>—</td><td>—</td><td>Confirmed: 0; Rejected: 0; Unresolved: 0; Pending: 0</td></tr><tr><td>A04:2025 Cryptographic Failures</td><td>—</td><td>—</td><td>Confirmed: 0; Rejected: 0; Unresolved: 0; Pending: 0</td></tr><tr><td>A05:2025 Injection</td><td>CWE-79</td><td>example-sql</td><td>Confirmed: 0; Rejected: 0; Unresolved: 1; Pending: 0</td></tr><tr><td>A05:2025 Injection</td><td>CWE-89</td><td>example-sql</td><td>Confirmed: 0; Rejected: 0; Unresolved: 1; Pending: 0</td></tr><tr><td>A06:2025 Insecure Design</td><td>—</td><td>—</td><td>Confirmed: 0; Rejected: 0; Unresolved: 0; Pending: 0</td></tr><tr><td>A07:2025 Authentication Failures</td><td>—</td><td>—</td><td>Confirmed: 0; Rejected: 0; Unresolved: 0; Pending: 0</td></tr><tr><td>A08:2025 Software or Data Integrity Failures</td><td>—</td><td>—</td><td>Confirmed: 0; Rejected: 0; Unresolved: 0; Pending: 0</td></tr><tr><td>A09:2025 Security Logging &amp; Alerting Failures</td><td>—</td><td>—</td><td>Confirmed: 0; Rejected: 0; Unresolved: 0; Pending: 0</td></tr><tr><td>A10:2025 Mishandling of Exceptional Conditions</td><td>—</td><td>—</td><td>Confirmed: 0; Rejected: 0; Unresolved: 0; Pending: 0</td></tr><tr><td>Unmapped (not_listed_in_owasp_2025)</td><td>CWE-943</td><td>example-unmapped</td><td>Confirmed: 0; Rejected: 0; Unresolved: 0; Pending: 1</td></tr></tbody></table></div>
+<p class="meta">Mapping source: <a href="https://top10.owasp.org/2025/">OWASP Top 10:2025</a></p>
+<h2>Findings</h2>
+<section class="finding"><h3>Synthetic SQL injection example</h3>
+<p><span class="st st-unresolved">unresolved</span><span class="sev-high">high</span>
+<span class="meta"> · example-sql · CWE-89</span></p>
+<p>Synthetic SQL injection example</p>
+<p class="meta">semgrep / java.sql.injection / src/LoginServlet.java:42</p>
+
+</section><section class="finding"><h3>Synthetic SSRF example</h3>
+<p><span class="st st-rejected">rejected</span><span class="sev-high">high</span>
+<span class="meta"> · example-ssrf · CWE-918</span></p>
+<p>Synthetic SSRF example</p>
+<p class="meta">semgrep / java.sql.injection / src/LoginServlet.java:42</p>
+
+</section><section class="finding"><h3>Synthetic unlisted-CWE example</h3>
+<p><span class="st st-unprocessed">unprocessed</span><span class="sev-high">high</span>
+<span class="meta"> · example-unma · CWE-943</span></p>
+<p>Synthetic unlisted-CWE example</p>
+<p class="meta">semgrep / java.sql.injection / src/LoginServlet.java:42</p>
+
+</section>
+</body></html>

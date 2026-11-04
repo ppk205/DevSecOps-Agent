@@ -2,6 +2,7 @@
 
 import os
 import sys
+from json import dumps, loads
 from pathlib import Path
 
 import httpx
@@ -108,6 +109,20 @@ def main():
                     "content": '{"proposed_status":"unresolved","confidence":0.4,"rationale":"Fixture explanation: evidence needs human review."}',
                     "reasoning_content": reasoning,
                 }
+            if os.environ.get("DEVSECOPS_FIXTURE_CVSS"):
+                try:
+                    proposal = loads(message.get("content", ""))
+                except ValueError:
+                    proposal = None
+                if isinstance(proposal, dict) and "proposed_status" in proposal:
+                    proposal["cvss_vector"] = (
+                        "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N"
+                    )
+                    proposal["assumptions"] = [
+                        "Fixture assumption requires independent verification"
+                    ]
+                    proposal["base_score"] = 1.0  # Must never become the recorded score.
+                    message["content"] = dumps(proposal)
             payload = {
                 "choices": [{"message": message, "finish_reason": "stop"}],
                 "model": json["model"],

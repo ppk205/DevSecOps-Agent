@@ -1,0 +1,108 @@
+
+> pitwall-web-ui@0.1.0 test
+> vitest run
+
+
+ RUN  v2.1.9 D:/phuc/Code Project/DevSecOps-Agent/web-ui
+
+ ✓ src/api/__tests__/findingsQuery.test.ts (8 tests) 58ms
+stderr | src/components/__tests__/notifications.test.tsx > NotificationsBell > shows the unread count and opens a panel with ack
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/components/__tests__/notifications.test.tsx (4 tests) 470ms
+   ✓ NotificationsBell > shows the unread count and opens a panel with ack 333ms
+stderr | src/components/__tests__/aiFix.test.tsx > AI fix UI > drawer renders a Propose fix button that posts that finding_id
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+stderr | src/pages/__tests__/responsive.test.tsx > Phase 6 responsive + motion > live page ships mobile tabs and collapsing grids
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+(node:15608) Warning: `--localstorage-file` was provided without a valid path
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | src/pages/__tests__/phase2.test.tsx > Phase 2 pages (mock mode, standalone) > home renders hero, KPIs, charts, tool strip, 8 steps, history, CTA
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+stderr | src/pages/__tests__/live.test.tsx > Phase 3 live pipeline (mock mode) > renders the 8-node rail with a running stage
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/components/__tests__/aiFix.test.tsx (4 tests) 1695ms
+   ✓ AI fix UI > drawer renders a Propose fix button that posts that finding_id 834ms
+   ✓ AI fix UI > fix-all posts null ids with the first key profile as default 680ms
+(node:25848) Warning: `--localstorage-file` was provided without a valid path
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | src/components/__tests__/a11y.test.tsx > Phase 6 a11y > live page exposes polite live regions for AI/counters, none for log lines
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/pages/__tests__/responsive.test.tsx (4 tests) 1678ms
+   ✓ Phase 6 responsive + motion > live page ships mobile tabs and collapsing grids 903ms
+   ✓ Phase 6 responsive + motion > findings table scrolls horizontally instead of breaking layout 680ms
+ ✓ src/components/__tests__/a11y.test.tsx (5 tests) 2300ms
+   ✓ Phase 6 a11y > tabs support arrow-key navigation with roving tabindex 846ms
+   ✓ Phase 6 a11y > live page exposes polite live regions for AI/counters, none for log lines 840ms
+   ✓ Phase 6 a11y > stage rail keeps button semantics (listitem wrapper, pressed button) 514ms
+ ✓ src/pages/__tests__/phase2.test.tsx (4 tests) 2830ms
+   ✓ Phase 2 pages (mock mode, standalone) > home renders hero, KPIs, charts, tool strip, 8 steps, history, CTA 1299ms
+   ✓ Phase 2 pages (mock mode, standalone) > new scan renders TUI-mirror form, selectable DEEP, hunt switch, review panel, CLI command 370ms
+   ✓ Phase 2 pages (mock mode, standalone) > new scan start queues a run and shows the confirmation 875ms
+ ✓ src/pages/__tests__/live.test.tsx (5 tests) 3990ms
+   ✓ Phase 3 live pipeline (mock mode) > renders the 8-node rail with a running stage 1286ms
+   ✓ Phase 3 live pipeline (mock mode) > shows the AI panel with NOW ANALYZING and a CVSS proposal 897ms
+   ✓ Phase 3 live pipeline (mock mode) > renders confirmed-first results with counters and the claim table 712ms
+   ✓ Phase 3 live pipeline (mock mode) > supports click-to-filter and the timeline scrubber 591ms
+   ✓ Phase 3 live pipeline (mock mode) > streams scripted events into the log dock 490ms
+ ✓ src/i18n/__tests__/i18n.test.tsx (4 tests) 117ms
+ ✓ src/utils/__tests__/liveStages.test.ts (5 tests) 12ms
+stderr | src/pages/__tests__/reportsLogs.test.tsx > Reports page (mock mode) > lists formats with download and generate actions
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/components/__tests__/badges.test.tsx (3 tests) 216ms
+ ✓ src/components/__tests__/outbound.test.tsx (1 test) 690ms
+   ✓ requires an explicit event choice and save without sending 687ms
+ ✓ src/pages/__tests__/reportsLogs.test.tsx (3 tests) 1975ms
+   ✓ Reports page (mock mode) > lists formats with download and generate actions 901ms
+   ✓ Reports page (mock mode) > shows the compare panel with per-scanner tables 550ms
+   ✓ Logs page (mock mode) > streams lines with filters and actions 521ms
+stderr | src/__tests__/app.test.tsx > App shell (mock mode, no backend) > renders the 7-item topnav
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+(node:10288) Warning: `--localstorage-file` was provided without a valid path
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/app.test.tsx (4 tests) 1500ms
+   ✓ App shell (mock mode, no backend) > renders the 7-item topnav 312ms
+   ✓ App shell (mock mode, no backend) > renders home with the mock scan once loaded 543ms
+   ✓ App shell (mock mode, no backend) > renders the findings table from the scripted mock run 546ms
+stderr | src/components/__tests__/findingDrawer.test.tsx > FindingDrawer (mock mode) > shows assessment, evidence, and claim-vs-check sections
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/components/__tests__/findingDrawer.test.tsx (2 tests) 950ms
+   ✓ FindingDrawer (mock mode) > shows assessment, evidence, and claim-vs-check sections 619ms
+   ✓ FindingDrawer (mock mode) > toggles raw JSON with the V key 321ms
+stderr | src/__tests__/routes.test.tsx > Phase 6 acceptance: all 7 nav destinations reachable > renders /
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/utils/__tests__/redact.test.ts (4 tests) 14ms
+(node:6736) Warning: `--localstorage-file` was provided without a valid path
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/routes.test.tsx (8 tests) 1483ms
+   ✓ Phase 6 acceptance: all 7 nav destinations reachable > renders / 535ms
+   ✓ Phase 6 acceptance: all 7 nav destinations reachable > renders /live 358ms
+ ✓ src/mock/__tests__/mockFindingDetails.test.ts (4 tests) 59ms
+ ✓ src/components/__tests__/cvss.test.tsx (2 tests) 101ms
+ ✓ src/components/__tests__/datatable.test.tsx (2 tests) 89ms
+ ✓ src/mock/__tests__/mockRun.test.ts (3 tests) 9ms
+
+ Test Files  20 passed (20)
+      Tests  79 passed (79)
+   Start at  15:46:22
+   Duration  48.40s (transform 3.42s, setup 32.32s, collect 36.20s, tests 20.24s, environment 187.25s, prepare 14.45s)
+

@@ -43,6 +43,16 @@ controls. Set `DEVSECOPS_NATIVE=go` to select the native interface explicitly.
 Both interfaces accept repository URLs and local folders. Native `scan-run`, history, cancel, retry, export and
 `serve` use the same SQLite database and retained report data.
 
+Report exports include the shared OWASP Top 10:2025/CWE cross-reference in
+human formats and JSON/SARIF metadata. Native export reaches the Python report
+generator over the existing bridge. No native rebuild is needed for this
+reporting-only addition. See [OWASP-REPORTING.md](OWASP-REPORTING.md).
+
+AI review also uses the shared corrected validator and CVSS v4.0 scorer. Valid
+model vectors produce computed Base/contextual scores in retained assessments;
+model confidence and raw detections do not establish independent verification.
+Source assumptions stay unverified. See [VALIDATOR-CVSS.md](VALIDATOR-CVSS.md).
+
 For a released binary, rename the platform asset to `devsecops-agent-go`
 (`.exe` on Windows) and put it on PATH. Install the matching Python wheel.
 `DEVSECOPS_PYTHON` selects the Python interpreter; the console launcher sets it

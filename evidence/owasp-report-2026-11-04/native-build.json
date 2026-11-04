@@ -1,0 +1,17 @@
+{
+  "command": [
+    "D:\\phuc\\Code Project\\DevSecOps-Agent\\.venv\\Scripts\\python.exe",
+    "ci/build_native.py",
+    "--go",
+    ".tools/go/bin/go.exe",
+    "--out",
+    ".devsec/owasp-native-check"
+  ],
+  "exit_code": 0,
+  "runtime_platform": "Windows amd64",
+  "other_platform_runtime": "not run",
+  "go_source_changed": false,
+  "built_sha256": "6dae8ab5644123ffda812083727bf513eb1a8ef068442b3542055654ef9705fb",
+  "tested_exe_sha256": "6dae8ab5644123ffda812083727bf513eb1a8ef068442b3542055654ef9705fb",
+  "build_matches_tested_exe": true
+}

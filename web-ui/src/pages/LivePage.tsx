@@ -17,6 +17,7 @@ import type {
   ScanEvent,
 } from "../api/types";
 import { EmptyState } from "../components/EmptyState";
+import { CvssSummary } from "../components/CvssSummary";
 import { ProvenanceChip, provenanceOf } from "../components/ProvenanceChip";
 import { SeverityBadge } from "../components/SeverityBadge";
 import { StripeDivider } from "../components/StripeDivider";
@@ -537,8 +538,7 @@ export function LivePage() {
                 </div>
                 {assessment.cvss && (
                   <p data-testid="cvss-vector" className="mt-1 font-mono text-xs text-body">
-                    {assessment.cvss.vector}
-                    {typeof assessment.cvss.base_score === "number" ? ` · ${assessment.cvss.base_score}` : ""}
+                    <CvssSummary cvss={assessment.cvss} />
                   </p>
                 )}
                 {assessment.rationale && (

@@ -121,6 +121,10 @@ Python compute helpers -> owned Go worker for supported native operations
 - **H2.** Preserve the separation between AI proposals, independent validation
   and human review. Scanner or model output alone is not proof of a confirmed
   vulnerability. Retain the actual validation decision and evidence provenance.
+  Validator metadata asserting independent checks is reserved for trusted
+  verification producers. Raw scanner/model records MUST NOT assert it based on
+  confidence, verdict text or repeated detections. Keep finding/run scope,
+  polarity, duplicate/conflict handling and incomplete-procedure safeguards.
 - **H3.** Model-callable tools are registered in
   `src/vulnscan/agent/tools.py`. MUST NOT grant arbitrary shell execution,
   process creation, network access, credential access or file-writing tools.
@@ -225,6 +229,10 @@ Python compute helpers -> owned Go worker for supported native operations
 - **E4.** CVSS scores come from the existing deterministic scoring code under
   `src/vulnscan/assessment/`, using the supplied vector and recorded assumptions.
   MUST NOT replace computed scores with model-authored or hand-entered numbers.
+  Preserve FIRST v4.0 MacroVector scoring, strict metric order and all eleven
+  mandatory Base metrics. Incomplete vectors are unscored, never zero severity.
+  Base/contextual scores differ. Arithmetic validity MUST NOT assert that metric
+  assumptions are verified or override scanner severity/finding status.
 - **E5.** MUST NOT delete or rewrite anything under `evidence/`. New runs go
   into new dated folders such as `evidence/<target>-<kind>-YYYY-MM-DD/`.
 - **E6.** Keep held-out labels, expected answers and evaluation judgments out

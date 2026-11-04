@@ -1,0 +1,82 @@
+{
+  "package_version": "3.6",
+  "comparisons": [
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+      "first": 9.3,
+      "installed_cvss": 9.3
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H",
+      "first": 10,
+      "installed_cvss": 10.0
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:A/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+      "first": 8.6,
+      "installed_cvss": 8.6
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:N/SC:N/SI:N/SA:N",
+      "first": 0,
+      "installed_cvss": 0.0
+    },
+    {
+      "vector": "CVSS:4.0/AV:P/AC:H/AT:P/PR:H/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+      "first": 5.4,
+      "installed_cvss": 5.4
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:P",
+      "first": 8.9,
+      "installed_cvss": 8.9
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:U",
+      "first": 8.1,
+      "installed_cvss": 8.1
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X",
+      "first": 9.3,
+      "installed_cvss": 9.3
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/CR:L/IR:L/AR:L",
+      "first": 8.9,
+      "installed_cvss": 8.9
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/MAV:P/MAC:H/MAT:P/MPR:H/MUI:A",
+      "first": 5.4,
+      "installed_cvss": 5.4
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/MVC:N/MVI:N/MVA:N",
+      "first": 0,
+      "installed_cvss": 0.0
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/MSI:S/MSA:S",
+      "first": 10,
+      "installed_cvss": 10.0
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:P/CR:L/IR:M/AR:H/MAV:A/MSI:S",
+      "first": 9.2,
+      "installed_cvss": 9.2
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/S:P/AU:Y/R:I/V:C/RE:H/U:Red",
+      "first": 9.3,
+      "installed_cvss": 9.3
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:N/SC:N/SI:N/SA:N/MVI:H",
+      "first": 8.7,
+      "installed_cvss": 8.7
+    }
+  ],
+  "mismatches": 0,
+  "dependency_installed_for_this_task": false
+}

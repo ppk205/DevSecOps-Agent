@@ -1,0 +1,15 @@
+{
+  "category_count": 10,
+  "category_cwe_memberships": 249,
+  "matches_retained_official_extraction": true,
+  "preview": "synthetic-preview/report-preview.html",
+  "preview_is_synthetic": true,
+  "preview_hashes": {
+    "report-preview.docx": "dabf8e0f929289ccb86b87a410e145d3cfd0bb3a16b7b87850a550f6f50df03a",
+    "report-preview.html": "08d97bb2abcc8f4ec134d30cc8b00ae5e7927d81b7425bb4d44b26ed60a0d7f9",
+    "report-preview.json": "f1fcfb6e93fad926bf3889f63f4a814299990ccb28971e5ffc1d88e9068f7d1e",
+    "report-preview.md": "847a03ebe0e0d667181e88521524d13f800928fe7b4d60b0d469591435edea92",
+    "report-preview.sarif": "de00908c93bd21af610c28ebad5123733c41281564d8bd7d1dd70403e528c91a",
+    "report-preview.txt": "a4128619791ebba947d3e664f7beddd09c3f82a35bd67c7316c06a70ed47f382"
+  }
+}

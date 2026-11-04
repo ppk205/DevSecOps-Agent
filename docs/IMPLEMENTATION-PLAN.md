@@ -8,6 +8,32 @@
 
 ## 1. Ownership
 
+Validation/scoring correction (2026-11-04, FR-50/53/56): the validator now
+requires scoped independent evidence with explicit polarity and provenance for
+terminal status. Model confidence, raw detections, duplicate identities,
+conflicting evidence and incomplete/fixed-variant procedures cannot provide
+confirmation. The current evidence adapter labels scanner/model records as
+non-independent; a general semantic source verifier is still not implemented.
+
+CVSS uses pinned FIRST v4.0 MacroVector tables/interpolation, strict syntax and
+eleven Base metrics. Base and contextual scores are separate; incomplete input
+remains unscored. Assessment construction recomputes numbers, and both review
+paths preserve vector assumptions and score errors. Finding metadata retains
+the assessment/decision. A parsed explicit verdict no longer triggers a second
+model call merely because its extracted rationale omitted the JSON wrapper.
+These changes add no dependency or automatic source-verification capability.
+See [VALIDATOR-CVSS.md](VALIDATOR-CVSS.md).
+
+Report update (2026-11-04, FR-61/68): `reporting/owasp.py` bundles OWASP Top
+10:2025 category-specific mapped-CWE lists. The shared report generator adds
+the same cross-reference to human formats and JSON/SARIF metadata. Primary and
+secondary normalized labels participate; each category counts a finding once.
+Per-CWE rows preserve finding IDs and status counts. Exact unmapped labels stay
+unmapped, and empty categories do not establish coverage. The final narrative
+appends the deterministic section after any model response or fallback. This
+adds no scanners, dependency, provider call or finding-status decision. Reference
+sources and regeneration instructions are in [OWASP-REPORTING.md](OWASP-REPORTING.md).
+
 Notification implementation update (2026-11-04, SRS FR-75): shared Python
 delivery creates one digest per run/destination. ScanService invokes it after
 terminal persistence; native deterministic completion invokes the same service

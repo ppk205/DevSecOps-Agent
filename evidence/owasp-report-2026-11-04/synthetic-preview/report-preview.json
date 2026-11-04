@@ -1,0 +1,445 @@
+{
+  "application_version": "0.3.0",
+  "scan_metadata": {
+    "example_only": true,
+    "note": "Synthetic preview; no target was scanned. These are not measured findings."
+  },
+  "run_id": "run-1",
+  "generated_at": "2026-11-04T07:43:31.591933+00:00",
+  "counts": {
+    "version": "0.1.0",
+    "total": 3,
+    "confirmed": 0,
+    "rejected": 1,
+    "unresolved": 1,
+    "unprocessed": 1
+  },
+  "coverage_summary": {},
+  "owasp_top10": {
+    "edition": "2025",
+    "source_url": "https://top10.owasp.org/2025/",
+    "snapshot_date": "2026-11-04",
+    "classification_only": true,
+    "mapping_basis": "Exact normalized primary/secondary CWEs in OWASP category-specific mapped-CWE lists",
+    "note": "This is a CWE classification of reported findings, not a coverage or compliance assessment. An empty category means No mapped findings reported; it does not mean tested, safe or passed. Counts retain finding status; pending includes unprocessed, triaged, assessed and pending validation. A finding with multiple labels may appear in several rows/categories; do not add those row counts.",
+    "total_findings": 3,
+    "categories": [
+      {
+        "id": "A01:2025",
+        "name": "Broken Access Control",
+        "source_url": "https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/",
+        "source_sha256": "e51ca05866f4213489e82484f1f48ed4d779e1809e87f70449806b496a0320cd",
+        "total": 1,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 1,
+          "unresolved": 0
+        },
+        "finding_ids": [
+          "example-ssrf"
+        ],
+        "cwes": [
+          {
+            "cwe": "CWE-918",
+            "total": 1,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 1,
+              "unresolved": 0
+            },
+            "finding_ids": [
+              "example-ssrf"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "A02:2025",
+        "name": "Security Misconfiguration",
+        "source_url": "https://top10.owasp.org/2025/A02_2025-Security_Misconfiguration/",
+        "source_sha256": "532fbbd67f3db734b7ed5d47e0263dd3800fce80e22da327123a88f2947017c9",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A03:2025",
+        "name": "Software Supply Chain Failures",
+        "source_url": "https://top10.owasp.org/2025/A03_2025-Software_Supply_Chain_Failures/",
+        "source_sha256": "66090225ad8f54a836e5b9e94456243baa7d38b70176f4d720668ef36f3a793d",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A04:2025",
+        "name": "Cryptographic Failures",
+        "source_url": "https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures/",
+        "source_sha256": "5b140b4cadf334becc35334278494f98396dc9b5720df6c904688352b51dc834",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A05:2025",
+        "name": "Injection",
+        "source_url": "https://top10.owasp.org/2025/A05_2025-Injection/",
+        "source_sha256": "69d7ec591944699c49b89c544a52cb32adccbfad56c41784ca34fde837822de6",
+        "total": 1,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 1
+        },
+        "finding_ids": [
+          "example-sql"
+        ],
+        "cwes": [
+          {
+            "cwe": "CWE-79",
+            "total": 1,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 1
+            },
+            "finding_ids": [
+              "example-sql"
+            ]
+          },
+          {
+            "cwe": "CWE-89",
+            "total": 1,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 1
+            },
+            "finding_ids": [
+              "example-sql"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "A06:2025",
+        "name": "Insecure Design",
+        "source_url": "https://top10.owasp.org/2025/A06_2025-Insecure_Design/",
+        "source_sha256": "cf67ac90b3c088ca4566807fbc4bbd2090bccc81d61f15c0e25190032618195f",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A07:2025",
+        "name": "Authentication Failures",
+        "source_url": "https://top10.owasp.org/2025/A07_2025-Authentication_Failures/",
+        "source_sha256": "9decccf146242740ba34b1c14df7b729ef159274a3533182c6bcefc9f52c8816",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A08:2025",
+        "name": "Software or Data Integrity Failures",
+        "source_url": "https://top10.owasp.org/2025/A08_2025-Software_or_Data_Integrity_Failures/",
+        "source_sha256": "03082e5a3ce031d6d2425927653aca0ad47d474dafb4208862e86b4363d66d85",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A09:2025",
+        "name": "Security Logging & Alerting Failures",
+        "source_url": "https://top10.owasp.org/2025/A09_2025-Security_Logging_and_Alerting_Failures/",
+        "source_sha256": "e8f875d2db062bfd3eb00db65486b30dd64c417357f9346a395cf434b5055f31",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A10:2025",
+        "name": "Mishandling of Exceptional Conditions",
+        "source_url": "https://top10.owasp.org/2025/A10_2025-Mishandling_of_Exceptional_Conditions/",
+        "source_sha256": "492a7444a58c06ec76af06ed4f89e656804cde6b71f61ba2ed5703a9aa343864",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      }
+    ],
+    "unmapped": [
+      {
+        "cwe": "CWE-943",
+        "reason": "not_listed_in_owasp_2025",
+        "total": 1,
+        "status_counts": {
+          "unprocessed": 1,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [
+          "example-unmapped"
+        ]
+      }
+    ]
+  },
+  "findings": [
+    {
+      "version": "0.1.0",
+      "finding_id": "example-sql",
+      "run_id": "run-1",
+      "fingerprint": "fp-example-sql",
+      "title": "Synthetic SQL injection example",
+      "description": "Synthetic SQL injection example",
+      "cwe_category": "CWE-89",
+      "additional_cwe_labels": [
+        "CWE-79"
+      ],
+      "severity": "high",
+      "status": "unresolved",
+      "provenance": null,
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "obs-example-sql",
+          "run_id": "run-1",
+          "tool": "semgrep",
+          "tool_version": "1.0.0",
+          "rule_id": "java.sql.injection",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-89",
+          "severity": "high",
+          "native_severity": null,
+          "message": "Synthetic SQL injection example",
+          "confidence": 0.9,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "src/LoginServlet.java",
+            "language": "java",
+            "line_start": 42,
+            "line_end": 43,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": null
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-04T07:43:31.572535Z",
+          "metadata": {}
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [],
+      "created_at": "2026-11-04T07:43:31.572535Z",
+      "updated_at": "2026-11-04T07:43:31.572535Z",
+      "metadata": {}
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "example-ssrf",
+      "run_id": "run-1",
+      "fingerprint": "fp-example-ssrf",
+      "title": "Synthetic SSRF example",
+      "description": "Synthetic SSRF example",
+      "cwe_category": "CWE-918",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "rejected",
+      "provenance": null,
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "obs-example-ssrf",
+          "run_id": "run-1",
+          "tool": "semgrep",
+          "tool_version": "1.0.0",
+          "rule_id": "java.sql.injection",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-918",
+          "severity": "high",
+          "native_severity": null,
+          "message": "Synthetic SSRF example",
+          "confidence": 0.9,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "src/LoginServlet.java",
+            "language": "java",
+            "line_start": 42,
+            "line_end": 43,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": null
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-04T07:43:31.572535Z",
+          "metadata": {}
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [],
+      "created_at": "2026-11-04T07:43:31.572535Z",
+      "updated_at": "2026-11-04T07:43:31.572535Z",
+      "metadata": {}
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "example-unmapped",
+      "run_id": "run-1",
+      "fingerprint": "fp-example-unmapped",
+      "title": "Synthetic unlisted-CWE example",
+      "description": "Synthetic unlisted-CWE example",
+      "cwe_category": "CWE-943",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unprocessed",
+      "provenance": null,
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "obs-example-unmapped",
+          "run_id": "run-1",
+          "tool": "semgrep",
+          "tool_version": "1.0.0",
+          "rule_id": "java.sql.injection",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-943",
+          "severity": "high",
+          "native_severity": null,
+          "message": "Synthetic unlisted-CWE example",
+          "confidence": 0.9,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "src/LoginServlet.java",
+            "language": "java",
+            "line_start": 42,
+            "line_end": 43,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": null
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-04T07:43:31.572535Z",
+          "metadata": {}
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [],
+      "created_at": "2026-11-04T07:43:31.572535Z",
+      "updated_at": "2026-11-04T07:43:31.572535Z",
+      "metadata": {}
+    }
+  ],
+  "advisory_routing": {
+    "is_advisory_only": true,
+    "affects_finding_status": false,
+    "note": "Advisory recommendations never set or change a finding status; IndependentValidator remains the sole status owner.",
+    "route_counts": {},
+    "routed": 0,
+    "unavailable": 0,
+    "payloads": []
+  }
+}

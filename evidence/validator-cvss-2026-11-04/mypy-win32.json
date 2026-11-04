@@ -1,0 +1,15 @@
+{
+  "command": [
+    "D:\\phuc\\Code Project\\DevSecOps-Agent\\.venv\\Scripts\\python.exe",
+    "-m",
+    "mypy",
+    "--platform",
+    "win32",
+    "src/vulnscan/assessment",
+    "src/vulnscan/contracts/assessment.py",
+    "src/vulnscan/agent/loop.py",
+    "src/vulnscan/ai/review.py"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 13.67
+}
