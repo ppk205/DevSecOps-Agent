@@ -750,6 +750,11 @@ class ScanService:
                             model=config.provider_model,
                             families=hunt_families,
                             logic_pass=True,
+                            broad_pass=True,
+                            micro_passes=True,
+                            max_rounds=16,
+                            max_findings=200,
+                            deep=True,
                         )
                         hunt_candidates = [dict(c) for c in hunt_out.get("candidates", [])]
                         hunt_status = str(hunt_out.get("status", "partial"))

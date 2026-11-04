@@ -466,3 +466,160 @@ class TestDeepHunt:
         assert result["status"] == "completed"
         assert result["rounds"] == 1
         assert len(result["candidates"]) == 1
+
+
+class TestFamilyBrief:
+    def test_brief_covers_native_rule_classes(self):
+        from vulnscan.ai.hunt import brief_for
+
+        java = brief_for("java")
+        for marker in ("CWE-89", "CWE-798", "CWE-176", "printStackTrace", "MessageDigest"):
+            assert marker in java
+        js = brief_for("javascript")
+        for marker in ("CWE-489", "debugger", "CWE-1321"):
+            assert marker in js
+        assert "broad" in brief_for("broad").lower() or "second-chance" in brief_for("broad")
+
+    def test_unknown_family_falls_back_to_generic(self):
+        from vulnscan.ai.hunt import brief_for
+
+        assert brief_for("cobol") == brief_for("generic")
+
+
+class TestSweepExcerpts:
+    def test_excerpts_attach_numbered_window(self, tmp_path):
+        from vulnscan.ai.hunt import _sweep_excerpts
+        from vulnscan.ai.review import build_tool_handlers
+
+        _snapshot(tmp_path)
+        handlers = build_tool_handlers(str(tmp_path), [])
+        out = handlers["grep_code"]({"pattern": "executeQuery", "glob": "*.java"})
+        lines = [f"{h['file']}:{h['line']}: {h['text']}" for h in out["hits"]]
+        excerpts = _sweep_excerpts(str(tmp_path), lines)
+        assert excerpts
+        assert "src/LoginServlet.java" in excerpts[0]
+        assert "5:" in excerpts[0]
+
+    def test_excerpts_skip_bad_locations(self, tmp_path):
+        from vulnscan.ai.hunt import _sweep_excerpts
+
+        _snapshot(tmp_path)
+        assert _sweep_excerpts(str(tmp_path), ["nope.java:xx: zzz"]) == []
+
+
+class TestEvidenceRank:
+    def test_vendored_and_test_paths_deprioritized(self):
+        from vulnscan.ai.hunt import evidence_rank
+
+        assert evidence_rank("src/main/java/App.java") == 0
+        assert evidence_rank("src/test/java/AppTest.java") == 1
+        assert evidence_rank("src/it/java/AppIT.java") == 1
+        assert evidence_rank("src/main/resources/static/js/libs/ace.js") == 1
+        assert evidence_rank("src/main/resources/static/plugins/x/y.js") == 1
+
+    def test_sweep_prefers_app_code(self, tmp_path):
+        from vulnscan.ai.hunt import _sweep_sinks
+
+        class _Handlers(dict):
+            pass
+
+        hits = [
+            {"file": "src/main/resources/static/js/libs/big.js", "line": 9, "text": "x"},
+            {"file": "src/main/java/App.java", "line": 3, "text": "y"},
+        ]
+
+        def grep(args):
+            return {"hits": hits}
+
+        handlers = {"grep_code": grep}
+        import vulnscan.ai.hunt as hunt_mod
+
+        fam = {"globs": ["*.java"], "seeds": ("zzz",), "focus": "t"}
+        orig = hunt_mod._HUNT_FAMILIES.get("ranktest")
+        hunt_mod._HUNT_FAMILIES["ranktest"] = fam
+        try:
+            lines = _sweep_sinks(handlers, "ranktest")
+        finally:
+            if orig is None:
+                del hunt_mod._HUNT_FAMILIES["ranktest"]
+            else:
+                hunt_mod._HUNT_FAMILIES["ranktest"] = orig
+        assert lines and lines[0].startswith("src/main/java/App.java")
+
+
+class TestMicroPasses:
+    def test_micro_passes_opt_in_and_fast_only(self, tmp_path):
+        from vulnscan.ai.hunt import hunt_all
+        from vulnscan.providers.client import ChatResponse
+
+        _snapshot(tmp_path)
+        seen_tools: list[bool] = []
+
+        class _Client:
+            def chat(self, messages, **kwargs):
+                seen_tools.append("tools" in kwargs)
+                return ChatResponse(content="[]", tool_calls=[], usage={})
+
+        result = hunt_all(
+            snapshot_root=str(tmp_path),
+            client=_Client(),
+            model="m",
+            families=["java"],
+            logic_pass=False,
+            micro_passes=True,
+        )
+        assert [p["family"] for p in result["passes"]] == [
+            "java",
+            "secrets",
+            "encoding",
+            "debuglog",
+        ]
+
+    def test_micro_passes_default_off(self, tmp_path):
+        from vulnscan.ai.hunt import hunt_all
+        from vulnscan.providers.client import ChatResponse
+
+        _snapshot(tmp_path)
+
+        class _EmptyClient:
+            def chat(self, messages, **kwargs):
+                return ChatResponse(content="[]", tool_calls=[], usage={})
+
+        result = hunt_all(
+            snapshot_root=str(tmp_path),
+            client=_EmptyClient(),
+            model="m",
+            families=["java"],
+            logic_pass=False,
+        )
+        assert [p["family"] for p in result["passes"]] == ["java"]
+
+
+class TestBroadPass:
+    def test_broad_pass_opt_in(self, tmp_path):
+        from vulnscan.ai.hunt import hunt_all
+        from vulnscan.providers.client import ChatResponse
+
+        _snapshot(tmp_path)
+
+        class _EmptyClient:
+            def chat(self, messages, **kwargs):
+                return ChatResponse(content="[]", tool_calls=[], usage={})
+
+        without = hunt_all(
+            snapshot_root=str(tmp_path),
+            client=_EmptyClient(),
+            model="m",
+            families=["java"],
+            logic_pass=False,
+        )
+        assert [p["family"] for p in without["passes"]] == ["java"]
+        with_broad = hunt_all(
+            snapshot_root=str(tmp_path),
+            client=_EmptyClient(),
+            model="m",
+            families=["java"],
+            logic_pass=False,
+            broad_pass=True,
+        )
+        assert [p["family"] for p in with_broad["passes"]] == ["java", "broad"]
