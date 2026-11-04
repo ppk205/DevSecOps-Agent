@@ -7,15 +7,18 @@ as a single-user local application. Enabled AI stages can send source excerpts
 to the configured provider. Keys use masked entry and local environment storage;
 profiles contain credential variable references.
 
-```
-CLI (Typer) ─┬─ deterministic lane ──────────────────────────────┐
-             │                                                    ▼
-             │   static scanners ─► normalize/dedup ─► Laya routing ─► AI review ─► validator ─► report
-             │                                                    ▲                      │
-             └─ hunt lane ───────────────────────────────────────┘                      ▼
-                model multi-pass hunt (per language family + generic + logic)
-                  ─► scanners verify ─► compare ─► model-only promotion      fix proposals
-                                                                                 (diff → overlay → rescan)
+```text
+CLI / Textual TUI / web UI / Go TUI
+  intake
+    -> model hunt (only with --mode hunt, the Python default)
+    -> scanners (native-hunt alone, or a profile that adds Semgrep and Gitleaks)
+    -> normalize and dedup -> Laya routing (advisory)
+    -> only when the hunt returned candidates:
+         Laya candidate check -> compare -> promote model-only candidates
+    -> targeted AI review -> independent validation -> AI narrative report
+    -> policy gate -> report exports -> optional notifications
+
+Separate action: fix proposal -> isolated overlay -> rescan
 ```
 
 ## Quickstart
@@ -72,60 +75,88 @@ pass CI source checks. See [source input](docs/NATIVE-MIGRATION.md#source-input)
 
 ## Overview
 
-DevSecOps-Agent is a local application that detects, classifies, and assesses
-vulnerabilities in web projects. It combines conventional static analysis
-tools (Semgrep, SpotBugs/FindSecBugs, OWASP Dependency-Check, Gitleaks) with
-model-first hunting, AI-assisted contextual analysis and CVSS v4.0 severity
-assessments. Every AI-generated conclusion is independently verified through
-mechanical checks.
+DevSecOps-Agent is a local application that detects and reports vulnerabilities
+in web projects. Its own analyzer is native-hunt. Semgrep, SpotBugs/FindSecBugs,
+OWASP Dependency-Check, Gitleaks and CodeQL are integrated adapters and comparison
+baselines. A model can hunt for candidates and propose assessments; those proposals
+go through `IndependentValidator` and human review. The validator has a known defect
+and the CVSS scorer is not called by the pipeline; see [Limitations](#limitations).
 
-The experimental target is [JVA-bookstore](https://github.com/Moseyuh333/JVA-bookstore) (commit `dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5`): 97 Java source files, 38 JSP files, Java 11, Maven WAR packaging, PostgreSQL, `javax.servlet`.
+The experimental target is [JVA-bookstore](https://github.com/Moseyuh333/JVA-bookstore) (commit `dd48d1240fdbc3e5b2ffe8b0a2e3ad65e10d57f5`): 101 Java files, 38 JSP files, Java 11, Maven WAR packaging, PostgreSQL, `javax.servlet`.
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────┐
-│              CLI / PIT WALL Web UI / Go TUI              │
-│         (Typer + React SPA + FastAPI + native Go)        │
-├─────────────────────────────────────────────────────────┤
-│                   Orchestration Layer                    │
-│            (scan lifecycle, queue, retry)                │
-├─────────────────────────────────────────────────────────┤
-│  Deterministic lane        │  Model-first lane (--hunt)  │
-│  Semgrep, Gitleaks,        │  Model hunts (read-only     │
-│  SpotBugs, ODC             │  tools) → scanners verify    │
-├────────────────────────────┴────────────────────────────┤
-│              Normalization & Deduplication               │
-├─────────────────────────────────────────────────────────┤
-│   Laya advisory routing + independent verification      │
-├─────────────────────────────────────────────────────────┤
-│   Targeted AI review (CVSS v4.0) + independent validation│
-├─────────────────────────────────────────────────────────┤
-│          Reporting & Experiment Comparison               │
-│   (JSON, SARIF, HTML, Markdown, CSV, TXT, DOCX)          │
-├─────────────────────────────────────────────────────────┤
-│   Storage: SQLite (SQLAlchemy) + Artifact Files          │
-└─────────────────────────────────────────────────────────┘
+```text
+Clients:  Python CLI, Textual TUI, FastAPI + React web UI, Go CLI/TUI, native dashboard
+Service:  ScanService (scan lifecycle, snapshots, SQLite, retry, cancellation)
+          Go runs hunt and AI stages through the Python service over a JSONL bridge
+
+Stages in execution order (ScanService._run):
+  1. intake                  checkout manifest and source snapshot
+  2. model_hunt              only in hunt mode; skipped without a provider
+  3. scanners                selected tools, each with raw results and coverage
+  4. normalization           grouped findings
+  5. laya_batch_routing      advisory; routes scanner findings only
+  6. laya_verification       hunt with candidates only
+  7. model_scanner_compare   hunt with candidates only; file, line +/-3, CWE
+  8. promotion               hunt with candidates only; model-only candidates
+                             whose source excerpt can be re-read
+  9. targeted_deep_analysis  AI review of at most max_ai_findings findings
+ 10. independent_validation  skipped when no assessment exists
+ 11. final_report            AI narrative; the gate is still pending here
+ 12. policy gate             fail_on, default high
+ 13. exports and notifications
 ```
 
-## Supported Vulnerability Groups (CWE)
+## Vulnerability Groups (CWE)
 
-| CWE ID | Description |
-|--------|-------------|
-| CWE-89 | SQL Injection |
-| CWE-78 | OS Command Injection |
-| CWE-79 | Cross-Site Scripting (XSS) |
-| CWE-22 | Path Traversal |
-| CWE-434 | Unrestricted File Upload |
-| CWE-918 | Server-Side Request Forgery (SSRF) |
-| CWE-611 | XML External Entity (XXE) |
-| CWE-502 | Deserialization of Untrusted Data |
-| CWE-798 | Hard-coded Credentials |
-| CWE-327 | Broken or Risky Cryptographic Algorithm |
-| CWE-330 | Use of Insufficiently Random Values |
-| CWE-862/639 | Missing Authorization / Insecure Direct Object Reference |
+Native-hunt has 102 rules: Java 30, JavaScript/TypeScript 25, PHP 23, Python 23 and
+one generic rule (counted from `src/vulnscan/native_hunt/rules/` on 2026-11-04). A rule
+existing does not mean it works well; see [Measured Results](#measured-results).
 
-Dependency vulnerabilities (OWASP Dependency-Check) are evaluated separately from source-code findings.
+| CWE | Description | Native-hunt rule families |
+|-----|-------------|---------------------------|
+| CWE-89 | SQL injection | Java, JS/TS, PHP, Python |
+| CWE-78 | OS command injection | Java, JS/TS, PHP, Python |
+| CWE-79 | Cross-site scripting | Java, JS/TS, PHP, Python |
+| CWE-90 | LDAP injection | Java, Python |
+| CWE-643 | XPath injection | Java |
+| CWE-94, CWE-95 | Code injection | 95: JS/TS, PHP, Python; 94: generic |
+| CWE-22 | Path traversal | Java, JS/TS, PHP, Python |
+| CWE-918 | Server-side request forgery | Java, JS/TS, PHP, Python |
+| CWE-601 | Open redirect | Java, JS/TS, PHP, Python |
+| CWE-611 | XML external entity | Java, JS/TS, PHP, Python |
+| CWE-614 | Cookie without Secure | Java |
+| CWE-502 | Unsafe deserialization | Java, JS/TS, PHP, Python |
+| CWE-798 | Hard-coded credentials | Java, JS/TS, PHP, Python |
+| CWE-327 | Weak cryptographic algorithm | Java, JS/TS |
+| CWE-328 | Weak hash | JS/TS, PHP, Python |
+| CWE-330 | Insufficiently random values | Java, JS/TS, PHP, Python |
+| CWE-209, CWE-215 | Information exposure through errors or debug output | 209: Java; 215: Python |
+
+Native-hunt has no rule for CWE-434, CWE-501, CWE-306, CWE-862 or CWE-639. Only the
+model's logic pass can suggest those. Dependency findings (CWE-1395) come only from
+OWASP Dependency-Check or OSV, and are evaluated separately from source findings.
+
+## Measured Results
+
+OWASP Benchmark, measured on 2026-11-04 with no model called. A case counts as flagged
+when an accepted CWE is reported in the case's own file; every tool uses the same rule.
+J is TPR minus FPR, in percent, so 0 equals random guessing. Scoring script, raw output
+and limits are in `evidence/owasp-benchmark-tools-2026-11-04/`.
+
+| Suite | Tool | TPR | FPR | Precision | J |
+|-------|------|-----|-----|-----------|---|
+| Java 1.2 (2,740 cases) | native-hunt | 50.04% | 30.11% | 63.96% | 19.92 |
+| Java 1.2 | Semgrep CE, `p/java` + `p/security-audit` | 86.50% | 38.64% | 70.51% | 47.86 |
+| Java 1.2 | CodeQL 2.27.4 `security-extended` | 100% | 40.08% | 72.71% | 59.92 |
+| Python 0.1 (1,230 cases) | native-hunt | 26.55% | 3.98% | 79.47% | 22.56 |
+| Python 0.1 | Semgrep CE, `p/python` + `p/security-audit` | 29.65% | 11.57% | 59.82% | 18.08 |
+| Python 0.1 | CodeQL 2.27.4 `security-extended` | 25.22% | 19.28% | 43.18% | 5.94 |
+
+On Java, native-hunt reports SQL injection, XSS, LDAP and XPath cases at about the same
+rate whether or not they are vulnerable. AI review and model hunt have no measured
+quality result yet: retained model runs use synthetic providers or found no candidates.
 
 ## Tech Stack
 
@@ -135,78 +166,79 @@ Dependency vulnerabilities (OWASP Dependency-Check) are evaluated separately fro
 - **Database**: SQLite via SQLAlchemy (sync sessions)
 - **CLI**: Typer
 - **HTTP Client**: httpx
-- **Scanners**: Semgrep CE, SpotBugs + FindSecBugs, OWASP Dependency-Check, Gitleaks, CodeQL (experimental)
+- **Analyzer**: native-hunt (regex and intra-file taint, no external binary)
+- **Other scanners**: Semgrep CE, SpotBugs + FindSecBugs, OWASP Dependency-Check, OSV fallback, Gitleaks, CodeQL (opt-in)
 - **AI Provider**: Project-local profiles (`.providers/*.json`, OpenAI-compatible API) + BYOK env keys
 - **Web UI**: React SPA (PIT WALL) served by FastAPI; mock mode for frontend-only work
 - **Build**: Hatchling
 
 ## Project Structure
 
-```
+```text
 DevSecOps-Agent/
-├── src/vulnscan/           # Application source code
-│   ├── agent/              # Agentic loop + read-only code tools
-│   ├── ai/                 # Hunt, review, compare, fix proposals
-│   ├── assessment/         # CVSS v4.0 assessment logic
-│   ├── cli/                # CLI entry points (Typer)
-│   ├── contracts/          # Shared data contracts (findings, enums, providers)
-│   ├── core/               # Scan service, config, manifests, policy gate
-│   ├── decisions/          # Laya router, triage questions, calibration
-│   ├── normalization/      # Finding normalization & deduplication
-│   ├── providers/          # LLM provider abstraction (BYOK profiles)
-│   ├── reporting/          # Report generation (JSON/SARIF/HTML/MD/CSV/TXT/DOCX)
-│   ├── scanners/           # Scanner adapters + bundled rulesets (java/js/py/php)
-│   ├── storage/            # Database models & repositories
-│   ├── training/           # Laya dataset / finetune / evaluate pipeline
-│   ├── verification/       # Independent verification engine
-│   └── web/                # FastAPI backend + PIT WALL SPA contract
-├── tests/                  # Test suite
-│   ├── ai/                 # AI agent tests
-│   ├── analysis/           # Analysis pipeline tests
-│   ├── evaluation/         # Evaluation & accuracy tests
-│   ├── platform/           # Platform integration tests
-│   ├── reporting/          # Report generation tests
-│   ├── sandbox/            # Sandbox execution tests
-│   ├── validation/         # Verification engine tests
-│   └── web/                # Web API tests
-├── docs/                   # Documentation
-├── rules/                  # Semgrep custom rules
-├── prompts/                # AI prompt templates
-├── evaluation/             # Evaluation datasets & benchmarks
-├── harness/                # Test harness & fixtures
-├── infra/                  # Infrastructure configuration
-├── pyproject.toml          # Project metadata & dependencies
-├── LICENSE                 # MIT License
-└── .planning/              # Project planning documents
+├── src/vulnscan/
+│   ├── agent/           # Agent loop and seven read-only model tools
+│   ├── ai/              # Hunt, review, compare, promotion, fix proposals
+│   ├── assessment/      # IndependentValidator and CVSS v4.0 scorer
+│   ├── cli/             # CLI entry points (Typer)
+│   ├── context/         # Source context
+│   ├── contracts/       # Shared data contracts
+│   ├── core/            # ScanService, config, policy gate, RPC, source intake
+│   ├── decisions/       # Laya router, questions, calibration
+│   ├── evaluation/      # Metrics and calibration
+│   ├── infra/           # Credential file, isolated full-profile scans
+│   ├── native_hunt/     # Native-hunt engine, taint logic and rule packs
+│   ├── normalization/   # Finding normalization and deduplication
+│   ├── notifications/   # Telegram and Discord delivery
+│   ├── pipeline/        # Pipeline helpers
+│   ├── providers/       # OpenAI-compatible client and profiles
+│   ├── reporting/       # Report generation
+│   ├── scanners/        # Scanner adapters and bundled Semgrep rules
+│   ├── storage/         # SQLite models and repositories
+│   ├── training/        # Laya dataset, fine-tune and evaluation
+│   ├── tui/             # Textual interface
+│   ├── verification/    # Opt-in HTTP probes
+│   └── web/             # FastAPI backend and legacy Jinja pages
+├── cmd/, internal/      # Go CLI, TUI, bridge and native dashboard
+├── web-ui/              # React web UI
+├── ci/                  # Native build, release and Action helpers
+├── config/              # Shipped Laya and security configuration
+├── docs/                # Requirements, plans and verification records
+├── evidence/            # Retained measurements; never rewritten
+├── tests/               # Tests, one directory per area
+├── pyproject.toml
+└── LICENSE
 ```
+
+`src/vulnscan/harness/` has no tracked implementation on this branch.
 
 ## Scope — what it scans (and what it does not)
 
 | Area | Status |
 |------|--------|
-| Java Servlet/JSP | Full: 25 Semgrep rules (injection incl. LDAP/XPath/XXE/SSRF/log, crypto, cookie/session, open redirect, reflection, error exposure) + SpotBugs + ODC |
-| JavaScript/TypeScript | 20 Semgrep rules (SQLi, NoSQLi, XSS, exec/spawn, eval/implied-eval, ReDoS, JWT, postMessage, CORS, timing compare, weak hash, debug leftover, path traversal) |
-| Python | 20 Semgrep rules (SQLi, LDAPi, XXE, header injection, open redirect, command injection, eval, pickle/dill variants, JWT, TLS-verify-off, debug mode, weak hash, secrets) |
-| PHP | 20 Semgrep rules (SQLi concat, reflected XSS, command injection, XXE, open redirect, create_function, dynamic callable, parse_str/extract pollution, preg /e, phar wrapper, session fixation, JWT, weak random, eval) |
-| Secrets/credentials | Gitleaks, all languages and docs |
-| Java dependencies | OWASP Dependency-Check (DEEP profile), with **OSV.dev fallback** when the binary/NVD is unavailable |
-| Notifications | In-app bell plus selectable Telegram/Discord digests; automatic or manual delivery with retained status |
-| Targeted verification probes | Opt-in HTTP probes (reflected-XSS canary, SQL-error signatures) as extra evidence — never auto-findings |
-| Model-first hunt (`--mode hunt`) | Multi-pass, one per extension family present (java/js-ts/py/php) + generic fallback for other text + logic pass ON (authZ/session/crypto); findings carry an origin chip (model/scanner/both), model-only candidates land in hunt.json + final report for human review |
-| DAST / runtime attacks | **Not supported** — static analysis only |
-| Auto-remediation | **Not supported** — proposals only, you apply |
-| Other languages (Go, Ruby, C#…) | Generic hunt fallback pass covers any text, but no dedicated rules yet |
+| Java Servlet/JSP | Native-hunt 30 rules on `.java`, `.jsp`, `.jspx`; Semgrep 25 rules; SpotBugs and Dependency-Check on `full`. A retained 2026-11-01 run shows Semgrep analyzing 101 Java files and marking all 38 JSP files unsupported. Native-hunt reads JSP by pattern; JSP accuracy is not measured separately. |
+| JavaScript/TypeScript | Native-hunt 25 rules; Semgrep 20 rules. No answer-key measurement yet. |
+| Python | Native-hunt 23 rules; Semgrep 20 rules. Measured on OWASP BenchmarkPython. |
+| PHP | Native-hunt 23 rules; Semgrep 20 rules. No answer-key measurement yet. |
+| Secrets/credentials | Native-hunt CWE-798 rules; Gitleaks when selected. |
+| Java dependencies | OWASP Dependency-Check on `full`, with OSV.dev fallback when the binary or NVD is unavailable. |
+| Notifications | In-app bell plus selectable Telegram/Discord digests. Tested with synthetic HTTP responses, not delivered to the real services. |
+| Targeted verification probes | Opt-in HTTP probes (reflected-XSS canary, SQL-error signatures) as extra evidence, never findings by themselves. |
+| Model-first hunt (`--mode hunt`) | One pass per extension family present (java/js-ts/py/php), a generic pass for other text, and a logic pass (authZ/session/crypto). Findings carry a `provenance` of `model`, `scanner` or `both`. |
+| DAST / runtime attacks | **Not supported.** |
+| Auto-remediation | **Not supported.** Proposals only; you apply them. |
+| Kotlin, Go, Ruby, C# and others | No dedicated rules. The generic hunt pass can read their text. |
 
-Every rule is tested both directions: it must fire on its `Vuln*` fixture
-and stay silent on its `Safe*` fixture (`tests/scanners/test_*_rules.py`,
-single batched Semgrep run per language, no cross-language false positives).
+Semgrep rules have `Vuln*` and `Safe*` fixtures (`tests/scanners/test_*_rules.py`). These
+tests need a working Semgrep; in the last recorded Windows run they errored because Semgrep
+crashed on that machine (see [Development](#development)).
 
 ## Installation
 
 ### Prerequisites
 
 - Python 3.11 or later
-- Java 11+ (for Semgrep, SpotBugs, and target application analysis)
+- Java 11+ (only for SpotBugs and target builds)
 - Maven 3.6+ (for target application builds)
 - Git (repository URLs, commit verification and CI; optional for plain local folders)
 
@@ -275,7 +307,12 @@ upstream releases). Local dirty checkouts require `--allow-dirty`.
 ### CLI
 
 ```bash
-# Model-free scan (native-hunt + Semgrep + Gitleaks)
+# Model-free scan with native-hunt only (no external binary)
+# native.json: {"schema_version": 1, "tools": ["native-hunt"]}
+devsecops-agent scan-run --checkout /path/to/repo --out artifacts/native \
+  --config native.json --db-path scans.db --allow-dirty --mode deterministic --no-laya
+
+# Model-free scan with the fast profile (native-hunt + Semgrep + Gitleaks)
 devsecops-agent scan-run --checkout /path/to/repo --out artifacts/demo \
   --profile fast --db-path scans.db --allow-dirty --mode deterministic --no-laya
 
@@ -284,8 +321,8 @@ devsecops-agent scan-run --checkout /path/to/repo --out artifacts/demo-ai \
   --mode deterministic --no-laya --ai-review --provider my-provider \
   --model your-model --max-ai-findings 2 --ai-report
 
-# Model-first hunt: the model hunts with read-only tools, scanners verify,
-# Laya routes, AI reviews, validator confirms, report is written for humans
+# Model-first hunt: the model hunts with read-only tools, scanners run separately,
+# results are compared, AI reviews, the validator decides, a report is written
 devsecops-agent scan-run --checkout /path/to/repo --out artifacts/demo-hunt \
   --mode hunt --provider my-provider --model your-model \
   --max-ai-findings 5 --ai-report
@@ -357,35 +394,39 @@ Notes and decisions:
 
 ### Scan Pipeline
 
-Two lanes, one gate:
+This section follows `ScanService._run`. Both modes share one path:
 
-- **Deterministic lane** (`--profile fast|full`): intake → static scanners
-  (native-hunt, Semgrep, Gitleaks, + SpotBugs/ODC on full) → normalization
-  & dedup. `native-hunt` is the in-house engine (regex + intra-file taint,
-  90 rules across java/js-ts/py/php, no external binary); Semgrep/SpotBugs
-  stay as baseline oracles for evaluation, not the primary evidence.
-- **Model-first lane** (`--mode hunt`, Python default): the model hunts the snapshot
-  in sequential passes — one per extension family present (java/js-ts/py/php,
-  plus a generic pass for any other web-hostable text) + a logic pass
-  (authZ/IDOR/session/crypto, ON by default) — with read-only tools
-  (`list_files`, `grep_code`, `inspect_code`). Scanners verify each candidate
-  → model/scanner comparison → model-only candidates are promoted to findings
-  with a `provenance` chip (`model`/`scanner`/`both`) and get full AI review +
-  validator verdicts. Hunt detail (per-pass counts, trace) lands in `hunt.json`.
+1. **Intake**: checkout manifest and source snapshot.
+2. **Model hunt** (`--mode hunt`, the Python default): the model explores the snapshot in
+   sequential passes with `list_files`, `grep_code` and `inspect_code`. It is skipped with a
+   reason when no provider is available. In `--mode deterministic` this stage is skipped.
+3. **Scanners**: each selected tool scans the whole snapshot. Scanners do not receive the
+   model's candidates. `fast` selects Semgrep, native-hunt and Gitleaks; `full` adds SpotBugs
+   and Dependency-Check; a config file can select `tools: ["native-hunt"]`. For comparison
+   work, the product scanners are baselines and native-hunt is the project's analyzer.
+4. **Normalization and dedup**, then **Laya routing**. Laya is advisory and only sees scanner
+   findings at this point. `ScanConfig` enables it by default, but the shipped
+   `config/laya.json` is disabled.
+5. **Only when the hunt returned candidates**: Laya checks the candidates, code compares them
+   with scanner findings (file, line within 3, CWE), and model-only candidates whose excerpt
+   can be re-read become findings. Provenance is `model`, `scanner` or `both`. Hunt detail is
+   written to `hunt.json`.
+6. **Targeted AI review** of at most `max_ai_findings` (default 10). With candidates, it covers
+   only agreed and promoted findings, so scanner-only findings are not reviewed. Without
+   candidates, it selects from all findings, deep-analysis routes first.
+7. **Independent validation** of the review's assessments. It is skipped when none exist.
+8. **Final AI narrative**. The gate is still pending when this text is written.
+9. **Policy gate** (`fail_on`, default `high`), then **report exports** and
+   **optional notifications**.
 
-Then, for both lanes: Laya routing → targeted AI review with CVSS v4.0 →
-independent validation (conservative: only decisive evidence flips a status)
-→ final AI-written report (TXT/MD/DOCX) + machine exports
-(JSON/SARIF/HTML/Markdown/CSV).
-
-The policy gate fails when high-severity findings remain (`fail_on`,
-default `high`). Exit code 1 from `scan-run` means "vulnerabilities found",
-not "scan broken" — `errors: []` plus gate `failed` is the healthy
-vulnerable-repo signal.
+Exit code 1 from `scan-run` means vulnerabilities were found: `errors: []` with gate `failed`.
+Exit code 2 means the scan itself did not complete cleanly, for example incomplete scanner
+coverage or a failed export.
 
 ### Finding lifecycle and rail colors
 
-`unprocessed` → (`unresolved` | `confirmed` | `rejected`). On the Live rail:
+`unprocessed` → (`unresolved` | `confirmed` | `rejected`). The contract also defines
+`triaged`, `assessed` and `pending_validation`; the pipeline does not assign them. On the Live rail:
 **green** = completed/verified, **yellow** = partial/unresolved (needs a
 human), **red** = failed, gray = pending. The scanner lane aggregates all
 scanners; per-tool detail lives in the feed and log dock.
@@ -400,8 +441,9 @@ From any finding (drawer button) or the whole run (**Fix all**):
 2. You review the diff in the proposals panel.
 3. **Apply** patches a **copy** under `artifacts/reports/fix-<run>/`
    (your checkout is never modified).
-4. The app rescans the patched copy with the finding's rule:
-   `verified` (rule silent) or `failed` with the reason.
+4. The app rescans the patched copy with the finding's bundled Semgrep rule:
+   `verified` (rule silent) or `failed` with the reason. This needs Semgrep, and a rule
+   that is not in the bundled set reports `failed`.
 5. Statuses: `proposed` → `applied` → `verified` (yellow → green),
    `failed` is red with the error shown. Re-requesting skips already-proposed
    rows and retries failed ones.
@@ -411,16 +453,19 @@ API: `POST /api/scans/{id}/fix` (`finding_ids` or `null` = all),
 `GET /api/scans/{id}/fixes/{pid}/download` (raw `.diff` to take the patch
 anywhere, e.g. targets without git).
 
-### Verification Philosophy
+### Validation
 
-AI is a **supporting tool**, not the final authority. Every AI-generated assessment is subject to mechanical verification:
+The model only proposes; `IndependentValidator` sets the finding status and a person can
+review it. The validator counts evidence records and verification outcomes. It does not
+check sanitizer claims, authorization assumptions or CVSS components against source, even
+though requirements FR-51 to FR-54 describe that.
 
-- **Sanitization claims** are checked against actual encoding/context
-- **Authorization assumptions** are verified against the declared policy
-- **CVSS vector components** are validated against source evidence
-- **Scope and impact estimates** are cross-referenced with application architecture
-
-Failed verifications are flagged and reported — findings with unverifiable AI conclusions remain in their scanner-original state.
+**Known defect (2026-11-04):** a model verdict is recorded as supporting evidence whatever it
+says. With synthetic input, a `rejected` verdict with one scanner observation returns
+`confirmed`, and an `unresolved` verdict with two observations returns `confirmed`. A retained
+offline run shows the same result end to end
+(`evidence/native-ai-integration-r3-2026-11-04/offline-ui-run.json`). Do not read `confirmed`
+as verified until this is fixed.
 
 ## Training Laya (teach it to route)
 
@@ -430,10 +475,11 @@ loop in `src/vulnscan/training/` (`dataset.py` leakage-resistant export,
 `finetune.py` full fine-tune with gradient checkpointing + fp16,
 `evaluate.py` frozen-checkpoint scoring with calibration).
 
-Why train: the frozen checkpoint scored **31% route agreement** on real
-findings (over-cautious, mean confidence 0.43, 8× `fast_verification` dumped
-to `low_priority`). After teaching on 94 hand-checked labels it scores
-**93.75%** (ECE 0.06, confidence ~1.0).
+Why train: a local training run reported 31% route agreement for the frozen checkpoint and
+93.75% after teaching on 94 labels (holdout 16). That run's scores are not retained as an
+artifact in this repository, so treat them as unverified. The retained evaluation in
+`evidence/t09/` measures the frozen checkpoint at 55.17% route accuracy on 29 agent-labelled
+findings, with 9 dangerous downgrades.
 
 End to end on the RTX 3050 4GB machine:
 
@@ -505,21 +551,34 @@ score as encouraging rather than final — add hard labels
 ## Development
 
 ```bash
-PYTHONPATH=src .venv/Scripts/python.exe -m pytest -q -p no:randomly \
-  --ignore=tests/e2e --timeout=90 --timeout-method=thread   # full suite (~6 min, 790 passed)
-.venv/Scripts/python.exe -m ruff check src tests
-.venv/Scripts/python.exe -m ruff format --check src tests
-.venv/Scripts/python.exe -m mypy --platform win32 src/vulnscan
-cd web-ui && npx tsc -p tsconfig.json && npx vitest run && npm run build
+.venv/Scripts/python.exe -m ruff check src tests ci
+.venv/Scripts/python.exe -m ruff format --check src tests ci
+.venv/Scripts/python.exe -m mypy src/vulnscan
+.venv/Scripts/python.exe -m pytest -q
+go vet ./internal/... ./cmd/...
+go test ./internal/... ./cmd/...
+cd web-ui && npm run lint && npm test && npm run build
 ```
+
+The last recorded full run is not clean (`evidence/notifications-2026-11-04/`, Windows):
+
+| Check | Result |
+|-------|--------|
+| pytest | 760 passed, 15 failed, 1 skipped, 191 errors. All 191 errors are Semgrep rule tests; the 15 failures match the list from before that change. |
+| ruff check | 2 errors |
+| ruff format | 13 files would be reformatted |
+| mypy | 4 errors in 3 files |
+| web-ui | 77 tests passed; lint and build passed |
+| Go application packages | vet and test passed |
+| `go test ./...` | Fails only because of the local `artifacts/tui-verification` probe |
+| Native builds | Five cross-compiled binaries and the local Windows executable built; cross-compilation is not a run on those platforms |
 
 ```bash
 # Run a specific test module
 PYTHONPATH=src .venv/Scripts/python.exe -m pytest tests/scanners/ -q -p no:randomly
 ```
 
-Conventions: TDD per task, frequent commits (`git -c core.hooksPath=/dev/null`
-when hooks misbehave), plan/design docs stay local under `.hermes/`, never
+Conventions are in `AGENTS.md`: regression test first, no hook bypass, never
 commit weights, datasets, keys, `.providers/`, or `artifacts/`. Findings and
 labels created by agents record `labelled_by`; agents never self-assign
 `expected_route` and grading. DB migrations are additive with
@@ -540,8 +599,18 @@ labels created by agents record `labelled_by`; agents never self-assign
 5. Run `semgrep --validate`, the new test, and the full `tests/scanners/`
    suite (guards against cross-language false positives).
 
-## Limitations (honest)
+## Limitations
 
+- `IndependentValidator` turns some model verdicts into `confirmed`, including `rejected`
+  ones; see [Validation](#validation).
+- The CVSS v4.0 scorer is not called by the pipeline, and it differs from the `cvss` library on
+  4 of 5 reference vectors (`evidence/cvss-reference-2026-11-04/`).
+- AI review and hunt have no measured accuracy yet.
+- Native-hunt analyzes one file at a time and scores below Semgrep and CodeQL on OWASP
+  Benchmark Java. Its rule confidence is not reliable: on Java, 0.9 rules have 56.02% precision
+  and 0.3 rules have 84.10%.
+- Hunt and review prompts still describe the target as Java Servlet/JSP.
+- No prompt-injection test exists, and prompts do not mark source as untrusted data.
 - Local-only, single user; no hosted mode, no accounts. Optional Telegram Bot
   API and Discord incoming-webhook notifications send selected summary events.
   Configure event choices and credentials explicitly; see
@@ -550,8 +619,7 @@ labels created by agents record `labelled_by`; agents never self-assign
 - Static analysis only — no DAST, no runtime exploitation. Opt-in targeted
   HTTP probes (XSS canary, SQL-error signatures, allowlisted host only) can
   corroborate a finding as extra evidence.
-- Laya is advisory; the validator is conservative, so ambiguous findings stay
-  `unresolved` rather than guessed.
+- Laya is advisory and never sets a finding status.
 - Free-tier providers rate-limit (stages slow down with backoff) and some
   reasoning-only models return empty content the pipeline must work around.
 - Training on a 4GB laptop GPU fits only tiny datasets with microbatch 1;
@@ -563,7 +631,7 @@ labels created by agents record `labelled_by`; agents never self-assign
 
 - **Total budget**: USD 50 for AI usage
 - **Timeline**: 17 weeks (2 students)
-- **Target**: JVA-bookstore (97 Java files, 38 JSP files)
+- **Target**: JVA-bookstore (101 Java files, 38 JSP files)
 
 ## Team
 
@@ -574,7 +642,7 @@ labels created by agents record `labelled_by`; agents never self-assign
 ## License
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
-# v0.2.0 terminal and CI platform
+## Terminal and CI
 
 ```sh
 uv sync --frozen --extra dev

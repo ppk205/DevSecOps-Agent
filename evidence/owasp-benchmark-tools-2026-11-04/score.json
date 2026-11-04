@@ -1,0 +1,2673 @@
+{
+  "rule": "accepted CWE reported in the case file; other CWEs ignored",
+  "normalization": {
+    "327": [
+      "326",
+      "327"
+    ],
+    "328": [
+      "327",
+      "328"
+    ],
+    "94": [
+      "94",
+      "95"
+    ]
+  },
+  "BenchmarkJava": {
+    "cases": 2740,
+    "vulnerable": 1415,
+    "tools": {
+      "native-hunt": {
+        "strict": {
+          "total": {
+            "tp": 680,
+            "fp": 399,
+            "fn": 735,
+            "tn": 926,
+            "tpr": 0.4806,
+            "fpr": 0.3011,
+            "precision": 0.6302,
+            "f1": 0.5453,
+            "youden": 0.1794
+          },
+          "by_category": {
+            "cmdi": {
+              "tp": 10,
+              "fp": 10,
+              "fn": 116,
+              "tn": 115,
+              "tpr": 0.0794,
+              "fpr": 0.08,
+              "precision": 0.5,
+              "f1": 0.137,
+              "youden": -0.0006
+            },
+            "crypto": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 130,
+              "tn": 116,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "hash": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 129,
+              "tn": 107,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "ldapi": {
+              "tp": 21,
+              "fp": 25,
+              "fn": 6,
+              "tn": 7,
+              "tpr": 0.7778,
+              "fpr": 0.7812,
+              "precision": 0.4565,
+              "f1": 0.5753,
+              "youden": -0.0035
+            },
+            "pathtraver": {
+              "tp": 9,
+              "fp": 13,
+              "fn": 124,
+              "tn": 122,
+              "tpr": 0.0677,
+              "fpr": 0.0963,
+              "precision": 0.4091,
+              "f1": 0.1161,
+              "youden": -0.0286
+            },
+            "securecookie": {
+              "tp": 36,
+              "fp": 0,
+              "fn": 0,
+              "tn": 31,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 1.0,
+              "youden": 1.0
+            },
+            "sqli": {
+              "tp": 174,
+              "fp": 150,
+              "fn": 98,
+              "tn": 82,
+              "tpr": 0.6397,
+              "fpr": 0.6466,
+              "precision": 0.537,
+              "f1": 0.5839,
+              "youden": -0.0068
+            },
+            "trustbound": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 83,
+              "tn": 43,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "weakrand": {
+              "tp": 218,
+              "fp": 0,
+              "fn": 0,
+              "tn": 275,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 1.0,
+              "youden": 1.0
+            },
+            "xpathi": {
+              "tp": 15,
+              "fp": 20,
+              "fn": 0,
+              "tn": 0,
+              "tpr": 1.0,
+              "fpr": 1.0,
+              "precision": 0.4286,
+              "f1": 0.6,
+              "youden": 0.0
+            },
+            "xss": {
+              "tp": 197,
+              "fp": 181,
+              "fn": 49,
+              "tn": 28,
+              "tpr": 0.8008,
+              "fpr": 0.866,
+              "precision": 0.5212,
+              "f1": 0.6314,
+              "youden": -0.0652
+            }
+          }
+        },
+        "normalized": {
+          "total": {
+            "tp": 708,
+            "fp": 399,
+            "fn": 707,
+            "tn": 926,
+            "tpr": 0.5004,
+            "fpr": 0.3011,
+            "precision": 0.6396,
+            "f1": 0.5615,
+            "youden": 0.1992
+          },
+          "by_category": {
+            "cmdi": {
+              "tp": 10,
+              "fp": 10,
+              "fn": 116,
+              "tn": 115,
+              "tpr": 0.0794,
+              "fpr": 0.08,
+              "precision": 0.5,
+              "f1": 0.137,
+              "youden": -0.0006
+            },
+            "crypto": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 130,
+              "tn": 116,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "hash": {
+              "tp": 28,
+              "fp": 0,
+              "fn": 101,
+              "tn": 107,
+              "tpr": 0.2171,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 0.3567,
+              "youden": 0.2171
+            },
+            "ldapi": {
+              "tp": 21,
+              "fp": 25,
+              "fn": 6,
+              "tn": 7,
+              "tpr": 0.7778,
+              "fpr": 0.7812,
+              "precision": 0.4565,
+              "f1": 0.5753,
+              "youden": -0.0035
+            },
+            "pathtraver": {
+              "tp": 9,
+              "fp": 13,
+              "fn": 124,
+              "tn": 122,
+              "tpr": 0.0677,
+              "fpr": 0.0963,
+              "precision": 0.4091,
+              "f1": 0.1161,
+              "youden": -0.0286
+            },
+            "securecookie": {
+              "tp": 36,
+              "fp": 0,
+              "fn": 0,
+              "tn": 31,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 1.0,
+              "youden": 1.0
+            },
+            "sqli": {
+              "tp": 174,
+              "fp": 150,
+              "fn": 98,
+              "tn": 82,
+              "tpr": 0.6397,
+              "fpr": 0.6466,
+              "precision": 0.537,
+              "f1": 0.5839,
+              "youden": -0.0068
+            },
+            "trustbound": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 83,
+              "tn": 43,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "weakrand": {
+              "tp": 218,
+              "fp": 0,
+              "fn": 0,
+              "tn": 275,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 1.0,
+              "youden": 1.0
+            },
+            "xpathi": {
+              "tp": 15,
+              "fp": 20,
+              "fn": 0,
+              "tn": 0,
+              "tpr": 1.0,
+              "fpr": 1.0,
+              "precision": 0.4286,
+              "f1": 0.6,
+              "youden": 0.0
+            },
+            "xss": {
+              "tp": 197,
+              "fp": 181,
+              "fn": 49,
+              "tn": 28,
+              "tpr": 0.8008,
+              "fpr": 0.866,
+              "precision": 0.5212,
+              "f1": 0.6314,
+              "youden": -0.0652
+            }
+          }
+        }
+      },
+      "semgrep-default": {
+        "strict": {
+          "total": {
+            "tp": 840,
+            "fp": 512,
+            "fn": 575,
+            "tn": 813,
+            "tpr": 0.5936,
+            "fpr": 0.3864,
+            "precision": 0.6213,
+            "f1": 0.6072,
+            "youden": 0.2072
+          },
+          "by_category": {
+            "cmdi": {
+              "tp": 112,
+              "fp": 96,
+              "fn": 14,
+              "tn": 29,
+              "tpr": 0.8889,
+              "fpr": 0.768,
+              "precision": 0.5385,
+              "f1": 0.6707,
+              "youden": 0.1209
+            },
+            "crypto": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 130,
+              "tn": 116,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "hash": {
+              "tp": 89,
+              "fp": 0,
+              "fn": 40,
+              "tn": 107,
+              "tpr": 0.6899,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 0.8165,
+              "youden": 0.6899
+            },
+            "ldapi": {
+              "tp": 26,
+              "fp": 28,
+              "fn": 1,
+              "tn": 4,
+              "tpr": 0.963,
+              "fpr": 0.875,
+              "precision": 0.4815,
+              "f1": 0.642,
+              "youden": 0.088
+            },
+            "pathtraver": {
+              "tp": 120,
+              "fp": 106,
+              "fn": 13,
+              "tn": 29,
+              "tpr": 0.9023,
+              "fpr": 0.7852,
+              "precision": 0.531,
+              "f1": 0.6685,
+              "youden": 0.1171
+            },
+            "securecookie": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 36,
+              "tn": 31,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "sqli": {
+              "tp": 234,
+              "fp": 143,
+              "fn": 38,
+              "tn": 89,
+              "tpr": 0.8603,
+              "fpr": 0.6164,
+              "precision": 0.6207,
+              "f1": 0.7211,
+              "youden": 0.2439
+            },
+            "trustbound": {
+              "tp": 43,
+              "fp": 18,
+              "fn": 40,
+              "tn": 25,
+              "tpr": 0.5181,
+              "fpr": 0.4186,
+              "precision": 0.7049,
+              "f1": 0.5972,
+              "youden": 0.0995
+            },
+            "weakrand": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 218,
+              "tn": 275,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "xpathi": {
+              "tp": 14,
+              "fp": 13,
+              "fn": 1,
+              "tn": 7,
+              "tpr": 0.9333,
+              "fpr": 0.65,
+              "precision": 0.5185,
+              "f1": 0.6667,
+              "youden": 0.2833
+            },
+            "xss": {
+              "tp": 202,
+              "fp": 108,
+              "fn": 44,
+              "tn": 101,
+              "tpr": 0.8211,
+              "fpr": 0.5167,
+              "precision": 0.6516,
+              "f1": 0.7266,
+              "youden": 0.3044
+            }
+          }
+        },
+        "normalized": {
+          "total": {
+            "tp": 970,
+            "fp": 512,
+            "fn": 445,
+            "tn": 813,
+            "tpr": 0.6855,
+            "fpr": 0.3864,
+            "precision": 0.6545,
+            "f1": 0.6697,
+            "youden": 0.2991
+          },
+          "by_category": {
+            "cmdi": {
+              "tp": 112,
+              "fp": 96,
+              "fn": 14,
+              "tn": 29,
+              "tpr": 0.8889,
+              "fpr": 0.768,
+              "precision": 0.5385,
+              "f1": 0.6707,
+              "youden": 0.1209
+            },
+            "crypto": {
+              "tp": 130,
+              "fp": 0,
+              "fn": 0,
+              "tn": 116,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 1.0,
+              "youden": 1.0
+            },
+            "hash": {
+              "tp": 89,
+              "fp": 0,
+              "fn": 40,
+              "tn": 107,
+              "tpr": 0.6899,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 0.8165,
+              "youden": 0.6899
+            },
+            "ldapi": {
+              "tp": 26,
+              "fp": 28,
+              "fn": 1,
+              "tn": 4,
+              "tpr": 0.963,
+              "fpr": 0.875,
+              "precision": 0.4815,
+              "f1": 0.642,
+              "youden": 0.088
+            },
+            "pathtraver": {
+              "tp": 120,
+              "fp": 106,
+              "fn": 13,
+              "tn": 29,
+              "tpr": 0.9023,
+              "fpr": 0.7852,
+              "precision": 0.531,
+              "f1": 0.6685,
+              "youden": 0.1171
+            },
+            "securecookie": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 36,
+              "tn": 31,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "sqli": {
+              "tp": 234,
+              "fp": 143,
+              "fn": 38,
+              "tn": 89,
+              "tpr": 0.8603,
+              "fpr": 0.6164,
+              "precision": 0.6207,
+              "f1": 0.7211,
+              "youden": 0.2439
+            },
+            "trustbound": {
+              "tp": 43,
+              "fp": 18,
+              "fn": 40,
+              "tn": 25,
+              "tpr": 0.5181,
+              "fpr": 0.4186,
+              "precision": 0.7049,
+              "f1": 0.5972,
+              "youden": 0.0995
+            },
+            "weakrand": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 218,
+              "tn": 275,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "xpathi": {
+              "tp": 14,
+              "fp": 13,
+              "fn": 1,
+              "tn": 7,
+              "tpr": 0.9333,
+              "fpr": 0.65,
+              "precision": 0.5185,
+              "f1": 0.6667,
+              "youden": 0.2833
+            },
+            "xss": {
+              "tp": 202,
+              "fp": 108,
+              "fn": 44,
+              "tn": 101,
+              "tpr": 0.8211,
+              "fpr": 0.5167,
+              "precision": 0.6516,
+              "f1": 0.7266,
+              "youden": 0.3044
+            }
+          }
+        }
+      },
+      "semgrep-default+audit": {
+        "strict": {
+          "total": {
+            "tp": 1094,
+            "fp": 512,
+            "fn": 321,
+            "tn": 813,
+            "tpr": 0.7731,
+            "fpr": 0.3864,
+            "precision": 0.6812,
+            "f1": 0.7243,
+            "youden": 0.3867
+          },
+          "by_category": {
+            "cmdi": {
+              "tp": 112,
+              "fp": 96,
+              "fn": 14,
+              "tn": 29,
+              "tpr": 0.8889,
+              "fpr": 0.768,
+              "precision": 0.5385,
+              "f1": 0.6707,
+              "youden": 0.1209
+            },
+            "crypto": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 130,
+              "tn": 116,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "hash": {
+              "tp": 89,
+              "fp": 0,
+              "fn": 40,
+              "tn": 107,
+              "tpr": 0.6899,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 0.8165,
+              "youden": 0.6899
+            },
+            "ldapi": {
+              "tp": 26,
+              "fp": 28,
+              "fn": 1,
+              "tn": 4,
+              "tpr": 0.963,
+              "fpr": 0.875,
+              "precision": 0.4815,
+              "f1": 0.642,
+              "youden": 0.088
+            },
+            "pathtraver": {
+              "tp": 120,
+              "fp": 106,
+              "fn": 13,
+              "tn": 29,
+              "tpr": 0.9023,
+              "fpr": 0.7852,
+              "precision": 0.531,
+              "f1": 0.6685,
+              "youden": 0.1171
+            },
+            "securecookie": {
+              "tp": 36,
+              "fp": 0,
+              "fn": 0,
+              "tn": 31,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 1.0,
+              "youden": 1.0
+            },
+            "sqli": {
+              "tp": 234,
+              "fp": 143,
+              "fn": 38,
+              "tn": 89,
+              "tpr": 0.8603,
+              "fpr": 0.6164,
+              "precision": 0.6207,
+              "f1": 0.7211,
+              "youden": 0.2439
+            },
+            "trustbound": {
+              "tp": 43,
+              "fp": 18,
+              "fn": 40,
+              "tn": 25,
+              "tpr": 0.5181,
+              "fpr": 0.4186,
+              "precision": 0.7049,
+              "f1": 0.5972,
+              "youden": 0.0995
+            },
+            "weakrand": {
+              "tp": 218,
+              "fp": 0,
+              "fn": 0,
+              "tn": 275,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 1.0,
+              "youden": 1.0
+            },
+            "xpathi": {
+              "tp": 14,
+              "fp": 13,
+              "fn": 1,
+              "tn": 7,
+              "tpr": 0.9333,
+              "fpr": 0.65,
+              "precision": 0.5185,
+              "f1": 0.6667,
+              "youden": 0.2833
+            },
+            "xss": {
+              "tp": 202,
+              "fp": 108,
+              "fn": 44,
+              "tn": 101,
+              "tpr": 0.8211,
+              "fpr": 0.5167,
+              "precision": 0.6516,
+              "f1": 0.7266,
+              "youden": 0.3044
+            }
+          }
+        },
+        "normalized": {
+          "total": {
+            "tp": 1224,
+            "fp": 512,
+            "fn": 191,
+            "tn": 813,
+            "tpr": 0.865,
+            "fpr": 0.3864,
+            "precision": 0.7051,
+            "f1": 0.7769,
+            "youden": 0.4786
+          },
+          "by_category": {
+            "cmdi": {
+              "tp": 112,
+              "fp": 96,
+              "fn": 14,
+              "tn": 29,
+              "tpr": 0.8889,
+              "fpr": 0.768,
+              "precision": 0.5385,
+              "f1": 0.6707,
+              "youden": 0.1209
+            },
+            "crypto": {
+              "tp": 130,
+              "fp": 0,
+              "fn": 0,
+              "tn": 116,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 1.0,
+              "youden": 1.0
+            },
+            "hash": {
+              "tp": 89,
+              "fp": 0,
+              "fn": 40,
+              "tn": 107,
+              "tpr": 0.6899,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 0.8165,
+              "youden": 0.6899
+            },
+            "ldapi": {
+              "tp": 26,
+              "fp": 28,
+              "fn": 1,
+              "tn": 4,
+              "tpr": 0.963,
+              "fpr": 0.875,
+              "precision": 0.4815,
+              "f1": 0.642,
+              "youden": 0.088
+            },
+            "pathtraver": {
+              "tp": 120,
+              "fp": 106,
+              "fn": 13,
+              "tn": 29,
+              "tpr": 0.9023,
+              "fpr": 0.7852,
+              "precision": 0.531,
+              "f1": 0.6685,
+              "youden": 0.1171
+            },
+            "securecookie": {
+              "tp": 36,
+              "fp": 0,
+              "fn": 0,
+              "tn": 31,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 1.0,
+              "youden": 1.0
+            },
+            "sqli": {
+              "tp": 234,
+              "fp": 143,
+              "fn": 38,
+              "tn": 89,
+              "tpr": 0.8603,
+              "fpr": 0.6164,
+              "precision": 0.6207,
+              "f1": 0.7211,
+              "youden": 0.2439
+            },
+            "trustbound": {
+              "tp": 43,
+              "fp": 18,
+              "fn": 40,
+              "tn": 25,
+              "tpr": 0.5181,
+              "fpr": 0.4186,
+              "precision": 0.7049,
+              "f1": 0.5972,
+              "youden": 0.0995
+            },
+            "weakrand": {
+              "tp": 218,
+              "fp": 0,
+              "fn": 0,
+              "tn": 275,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 1.0,
+              "youden": 1.0
+            },
+            "xpathi": {
+              "tp": 14,
+              "fp": 13,
+              "fn": 1,
+              "tn": 7,
+              "tpr": 0.9333,
+              "fpr": 0.65,
+              "precision": 0.5185,
+              "f1": 0.6667,
+              "youden": 0.2833
+            },
+            "xss": {
+              "tp": 202,
+              "fp": 108,
+              "fn": 44,
+              "tn": 101,
+              "tpr": 0.8211,
+              "fpr": 0.5167,
+              "precision": 0.6516,
+              "f1": 0.7266,
+              "youden": 0.3044
+            }
+          }
+        }
+      },
+      "codeql-security-extended": {
+        "strict": {
+          "total": {
+            "tp": 1415,
+            "fp": 531,
+            "fn": 0,
+            "tn": 794,
+            "tpr": 1.0,
+            "fpr": 0.4008,
+            "precision": 0.7271,
+            "f1": 0.842,
+            "youden": 0.5992
+          },
+          "by_category": {
+            "cmdi": {
+              "tp": 126,
+              "fp": 64,
+              "fn": 0,
+              "tn": 61,
+              "tpr": 1.0,
+              "fpr": 0.512,
+              "precision": 0.6632,
+              "f1": 0.7975,
+              "youden": 0.488
+            },
+            "crypto": {
+              "tp": 130,
+              "fp": 27,
+              "fn": 0,
+              "tn": 89,
+              "tpr": 1.0,
+              "fpr": 0.2328,
+              "precision": 0.828,
+              "f1": 0.9059,
+              "youden": 0.7672
+            },
+            "hash": {
+              "tp": 129,
+              "fp": 33,
+              "fn": 0,
+              "tn": 74,
+              "tpr": 1.0,
+              "fpr": 0.3084,
+              "precision": 0.7963,
+              "f1": 0.8866,
+              "youden": 0.6916
+            },
+            "ldapi": {
+              "tp": 27,
+              "fp": 13,
+              "fn": 0,
+              "tn": 19,
+              "tpr": 1.0,
+              "fpr": 0.4062,
+              "precision": 0.675,
+              "f1": 0.806,
+              "youden": 0.5938
+            },
+            "pathtraver": {
+              "tp": 133,
+              "fp": 66,
+              "fn": 0,
+              "tn": 69,
+              "tpr": 1.0,
+              "fpr": 0.4889,
+              "precision": 0.6683,
+              "f1": 0.8012,
+              "youden": 0.5111
+            },
+            "securecookie": {
+              "tp": 36,
+              "fp": 0,
+              "fn": 0,
+              "tn": 31,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 1.0,
+              "youden": 1.0
+            },
+            "sqli": {
+              "tp": 272,
+              "fp": 207,
+              "fn": 0,
+              "tn": 25,
+              "tpr": 1.0,
+              "fpr": 0.8922,
+              "precision": 0.5678,
+              "f1": 0.7244,
+              "youden": 0.1078
+            },
+            "trustbound": {
+              "tp": 83,
+              "fp": 24,
+              "fn": 0,
+              "tn": 19,
+              "tpr": 1.0,
+              "fpr": 0.5581,
+              "precision": 0.7757,
+              "f1": 0.8737,
+              "youden": 0.4419
+            },
+            "weakrand": {
+              "tp": 218,
+              "fp": 0,
+              "fn": 0,
+              "tn": 275,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 1.0,
+              "youden": 1.0
+            },
+            "xpathi": {
+              "tp": 15,
+              "fp": 7,
+              "fn": 0,
+              "tn": 13,
+              "tpr": 1.0,
+              "fpr": 0.35,
+              "precision": 0.6818,
+              "f1": 0.8108,
+              "youden": 0.65
+            },
+            "xss": {
+              "tp": 246,
+              "fp": 90,
+              "fn": 0,
+              "tn": 119,
+              "tpr": 1.0,
+              "fpr": 0.4306,
+              "precision": 0.7321,
+              "f1": 0.8454,
+              "youden": 0.5694
+            }
+          }
+        },
+        "normalized": {
+          "total": {
+            "tp": 1415,
+            "fp": 531,
+            "fn": 0,
+            "tn": 794,
+            "tpr": 1.0,
+            "fpr": 0.4008,
+            "precision": 0.7271,
+            "f1": 0.842,
+            "youden": 0.5992
+          },
+          "by_category": {
+            "cmdi": {
+              "tp": 126,
+              "fp": 64,
+              "fn": 0,
+              "tn": 61,
+              "tpr": 1.0,
+              "fpr": 0.512,
+              "precision": 0.6632,
+              "f1": 0.7975,
+              "youden": 0.488
+            },
+            "crypto": {
+              "tp": 130,
+              "fp": 27,
+              "fn": 0,
+              "tn": 89,
+              "tpr": 1.0,
+              "fpr": 0.2328,
+              "precision": 0.828,
+              "f1": 0.9059,
+              "youden": 0.7672
+            },
+            "hash": {
+              "tp": 129,
+              "fp": 33,
+              "fn": 0,
+              "tn": 74,
+              "tpr": 1.0,
+              "fpr": 0.3084,
+              "precision": 0.7963,
+              "f1": 0.8866,
+              "youden": 0.6916
+            },
+            "ldapi": {
+              "tp": 27,
+              "fp": 13,
+              "fn": 0,
+              "tn": 19,
+              "tpr": 1.0,
+              "fpr": 0.4062,
+              "precision": 0.675,
+              "f1": 0.806,
+              "youden": 0.5938
+            },
+            "pathtraver": {
+              "tp": 133,
+              "fp": 66,
+              "fn": 0,
+              "tn": 69,
+              "tpr": 1.0,
+              "fpr": 0.4889,
+              "precision": 0.6683,
+              "f1": 0.8012,
+              "youden": 0.5111
+            },
+            "securecookie": {
+              "tp": 36,
+              "fp": 0,
+              "fn": 0,
+              "tn": 31,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 1.0,
+              "youden": 1.0
+            },
+            "sqli": {
+              "tp": 272,
+              "fp": 207,
+              "fn": 0,
+              "tn": 25,
+              "tpr": 1.0,
+              "fpr": 0.8922,
+              "precision": 0.5678,
+              "f1": 0.7244,
+              "youden": 0.1078
+            },
+            "trustbound": {
+              "tp": 83,
+              "fp": 24,
+              "fn": 0,
+              "tn": 19,
+              "tpr": 1.0,
+              "fpr": 0.5581,
+              "precision": 0.7757,
+              "f1": 0.8737,
+              "youden": 0.4419
+            },
+            "weakrand": {
+              "tp": 218,
+              "fp": 0,
+              "fn": 0,
+              "tn": 275,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 1.0,
+              "youden": 1.0
+            },
+            "xpathi": {
+              "tp": 15,
+              "fp": 7,
+              "fn": 0,
+              "tn": 13,
+              "tpr": 1.0,
+              "fpr": 0.35,
+              "precision": 0.6818,
+              "f1": 0.8108,
+              "youden": 0.65
+            },
+            "xss": {
+              "tp": 246,
+              "fp": 90,
+              "fn": 0,
+              "tn": 119,
+              "tpr": 1.0,
+              "fpr": 0.4306,
+              "precision": 0.7321,
+              "f1": 0.8454,
+              "youden": 0.5694
+            }
+          }
+        }
+      }
+    },
+    "native_by_confidence": {
+      "0.3": {
+        "tp": 291,
+        "fp": 55,
+        "fn": 1124,
+        "tn": 1270,
+        "tpr": 0.2057,
+        "fpr": 0.0415,
+        "precision": 0.841,
+        "f1": 0.3305,
+        "youden": 0.1641
+      },
+      "0.6": {
+        "tp": 3,
+        "fp": 0,
+        "fn": 1412,
+        "tn": 1325,
+        "tpr": 0.0021,
+        "fpr": 0.0,
+        "precision": 1.0,
+        "f1": 0.0042,
+        "youden": 0.0021
+      },
+      "0.9": {
+        "tp": 447,
+        "fp": 351,
+        "fn": 968,
+        "tn": 974,
+        "tpr": 0.3159,
+        "fpr": 0.2649,
+        "precision": 0.5602,
+        "f1": 0.404,
+        "youden": 0.051
+      }
+    },
+    "pairs_with_native": {
+      "semgrep-default": {
+        "tp_both": 393,
+        "tp_native_only": 315,
+        "tp_other_only": 577,
+        "tp_neither": 130,
+        "fp_native_only": 158,
+        "fp_other_only": 271,
+        "union": {
+          "tp": 1285,
+          "fn": 130,
+          "fp": 670,
+          "tn": 655,
+          "tpr": 0.9081,
+          "fpr": 0.5057,
+          "precision": 0.6573,
+          "f1": 0.7626,
+          "youden": 0.4025
+        }
+      },
+      "semgrep-default+audit": {
+        "tp_both": 647,
+        "tp_native_only": 61,
+        "tp_other_only": 577,
+        "tp_neither": 130,
+        "fp_native_only": 158,
+        "fp_other_only": 271,
+        "union": {
+          "tp": 1285,
+          "fn": 130,
+          "fp": 670,
+          "tn": 655,
+          "tpr": 0.9081,
+          "fpr": 0.5057,
+          "precision": 0.6573,
+          "f1": 0.7626,
+          "youden": 0.4025
+        }
+      },
+      "codeql-security-extended": {
+        "tp_both": 708,
+        "tp_native_only": 0,
+        "tp_other_only": 707,
+        "tp_neither": 0,
+        "fp_native_only": 155,
+        "fp_other_only": 287,
+        "union": {
+          "tp": 1415,
+          "fn": 0,
+          "fp": 686,
+          "tn": 639,
+          "tpr": 1.0,
+          "fpr": 0.5177,
+          "precision": 0.6735,
+          "f1": 0.8049,
+          "youden": 0.4823
+        }
+      }
+    }
+  },
+  "BenchmarkPython": {
+    "cases": 1230,
+    "vulnerable": 452,
+    "tools": {
+      "native-hunt": {
+        "strict": {
+          "total": {
+            "tp": 115,
+            "fp": 27,
+            "fn": 337,
+            "tn": 751,
+            "tpr": 0.2544,
+            "fpr": 0.0347,
+            "precision": 0.8099,
+            "f1": 0.3872,
+            "youden": 0.2197
+          },
+          "by_category": {
+            "cmdi": {
+              "tp": 7,
+              "fp": 7,
+              "fn": 6,
+              "tn": 0,
+              "tpr": 0.5385,
+              "fpr": 1.0,
+              "precision": 0.5,
+              "f1": 0.5185,
+              "youden": -0.4615
+            },
+            "codeinj": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 20,
+              "tn": 33,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "deserialization": {
+              "tp": 18,
+              "fp": 12,
+              "fn": 0,
+              "tn": 24,
+              "tpr": 1.0,
+              "fpr": 0.3333,
+              "precision": 0.6,
+              "f1": 0.75,
+              "youden": 0.6667
+            },
+            "hash": {
+              "tp": 37,
+              "fp": 0,
+              "fn": 34,
+              "tn": 80,
+              "tpr": 0.5211,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 0.6852,
+              "youden": 0.5211
+            },
+            "ldapi": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 11,
+              "tn": 13,
+              "tpr": 0.3125,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 0.4762,
+              "youden": 0.3125
+            },
+            "pathtraver": {
+              "tp": 10,
+              "fp": 5,
+              "fn": 55,
+              "tn": 98,
+              "tpr": 0.1538,
+              "fpr": 0.0485,
+              "precision": 0.6667,
+              "f1": 0.25,
+              "youden": 0.1053
+            },
+            "redirect": {
+              "tp": 3,
+              "fp": 2,
+              "fn": 10,
+              "tn": 19,
+              "tpr": 0.2308,
+              "fpr": 0.0952,
+              "precision": 0.6,
+              "f1": 0.3333,
+              "youden": 0.1355
+            },
+            "securecookie": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 24,
+              "tn": 15,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "sqli": {
+              "tp": 0,
+              "fp": 1,
+              "fn": 5,
+              "tn": 10,
+              "tpr": 0.0,
+              "fpr": 0.0909,
+              "precision": 0.0,
+              "f1": null,
+              "youden": -0.0909
+            },
+            "trustbound": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 18,
+              "tn": 19,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "weakrand": {
+              "tp": 35,
+              "fp": 0,
+              "fn": 64,
+              "tn": 227,
+              "tpr": 0.3535,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 0.5224,
+              "youden": 0.3535
+            },
+            "xpathi": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 51,
+              "tn": 135,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "xss": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 31,
+              "tn": 58,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "xxe": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 8,
+              "tn": 20,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            }
+          }
+        },
+        "normalized": {
+          "total": {
+            "tp": 120,
+            "fp": 31,
+            "fn": 332,
+            "tn": 747,
+            "tpr": 0.2655,
+            "fpr": 0.0398,
+            "precision": 0.7947,
+            "f1": 0.398,
+            "youden": 0.2256
+          },
+          "by_category": {
+            "cmdi": {
+              "tp": 7,
+              "fp": 7,
+              "fn": 6,
+              "tn": 0,
+              "tpr": 0.5385,
+              "fpr": 1.0,
+              "precision": 0.5,
+              "f1": 0.5185,
+              "youden": -0.4615
+            },
+            "codeinj": {
+              "tp": 5,
+              "fp": 4,
+              "fn": 15,
+              "tn": 29,
+              "tpr": 0.25,
+              "fpr": 0.1212,
+              "precision": 0.5556,
+              "f1": 0.3448,
+              "youden": 0.1288
+            },
+            "deserialization": {
+              "tp": 18,
+              "fp": 12,
+              "fn": 0,
+              "tn": 24,
+              "tpr": 1.0,
+              "fpr": 0.3333,
+              "precision": 0.6,
+              "f1": 0.75,
+              "youden": 0.6667
+            },
+            "hash": {
+              "tp": 37,
+              "fp": 0,
+              "fn": 34,
+              "tn": 80,
+              "tpr": 0.5211,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 0.6852,
+              "youden": 0.5211
+            },
+            "ldapi": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 11,
+              "tn": 13,
+              "tpr": 0.3125,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 0.4762,
+              "youden": 0.3125
+            },
+            "pathtraver": {
+              "tp": 10,
+              "fp": 5,
+              "fn": 55,
+              "tn": 98,
+              "tpr": 0.1538,
+              "fpr": 0.0485,
+              "precision": 0.6667,
+              "f1": 0.25,
+              "youden": 0.1053
+            },
+            "redirect": {
+              "tp": 3,
+              "fp": 2,
+              "fn": 10,
+              "tn": 19,
+              "tpr": 0.2308,
+              "fpr": 0.0952,
+              "precision": 0.6,
+              "f1": 0.3333,
+              "youden": 0.1355
+            },
+            "securecookie": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 24,
+              "tn": 15,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "sqli": {
+              "tp": 0,
+              "fp": 1,
+              "fn": 5,
+              "tn": 10,
+              "tpr": 0.0,
+              "fpr": 0.0909,
+              "precision": 0.0,
+              "f1": null,
+              "youden": -0.0909
+            },
+            "trustbound": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 18,
+              "tn": 19,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "weakrand": {
+              "tp": 35,
+              "fp": 0,
+              "fn": 64,
+              "tn": 227,
+              "tpr": 0.3535,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 0.5224,
+              "youden": 0.3535
+            },
+            "xpathi": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 51,
+              "tn": 135,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "xss": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 31,
+              "tn": 58,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "xxe": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 8,
+              "tn": 20,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            }
+          }
+        }
+      },
+      "semgrep-default": {
+        "strict": {
+          "total": {
+            "tp": 18,
+            "fp": 15,
+            "fn": 434,
+            "tn": 763,
+            "tpr": 0.0398,
+            "fpr": 0.0193,
+            "precision": 0.5455,
+            "f1": 0.0742,
+            "youden": 0.0205
+          },
+          "by_category": {
+            "cmdi": {
+              "tp": 7,
+              "fp": 7,
+              "fn": 6,
+              "tn": 0,
+              "tpr": 0.5385,
+              "fpr": 1.0,
+              "precision": 0.5,
+              "f1": 0.5185,
+              "youden": -0.4615
+            },
+            "codeinj": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 20,
+              "tn": 33,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "deserialization": {
+              "tp": 9,
+              "fp": 6,
+              "fn": 9,
+              "tn": 30,
+              "tpr": 0.5,
+              "fpr": 0.1667,
+              "precision": 0.6,
+              "f1": 0.5455,
+              "youden": 0.3333
+            },
+            "hash": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 71,
+              "tn": 80,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "ldapi": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 16,
+              "tn": 13,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "pathtraver": {
+              "tp": 2,
+              "fp": 2,
+              "fn": 63,
+              "tn": 101,
+              "tpr": 0.0308,
+              "fpr": 0.0194,
+              "precision": 0.5,
+              "f1": 0.058,
+              "youden": 0.0114
+            },
+            "redirect": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 13,
+              "tn": 21,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "securecookie": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 24,
+              "tn": 15,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "sqli": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 5,
+              "tn": 11,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "trustbound": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 18,
+              "tn": 19,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "weakrand": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 99,
+              "tn": 227,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "xpathi": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 51,
+              "tn": 135,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "xss": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 31,
+              "tn": 58,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "xxe": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 8,
+              "tn": 20,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            }
+          }
+        },
+        "normalized": {
+          "total": {
+            "tp": 72,
+            "fp": 15,
+            "fn": 380,
+            "tn": 763,
+            "tpr": 0.1593,
+            "fpr": 0.0193,
+            "precision": 0.8276,
+            "f1": 0.2672,
+            "youden": 0.14
+          },
+          "by_category": {
+            "cmdi": {
+              "tp": 7,
+              "fp": 7,
+              "fn": 6,
+              "tn": 0,
+              "tpr": 0.5385,
+              "fpr": 1.0,
+              "precision": 0.5,
+              "f1": 0.5185,
+              "youden": -0.4615
+            },
+            "codeinj": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 20,
+              "tn": 33,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "deserialization": {
+              "tp": 9,
+              "fp": 6,
+              "fn": 9,
+              "tn": 30,
+              "tpr": 0.5,
+              "fpr": 0.1667,
+              "precision": 0.6,
+              "f1": 0.5455,
+              "youden": 0.3333
+            },
+            "hash": {
+              "tp": 54,
+              "fp": 0,
+              "fn": 17,
+              "tn": 80,
+              "tpr": 0.7606,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 0.864,
+              "youden": 0.7606
+            },
+            "ldapi": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 16,
+              "tn": 13,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "pathtraver": {
+              "tp": 2,
+              "fp": 2,
+              "fn": 63,
+              "tn": 101,
+              "tpr": 0.0308,
+              "fpr": 0.0194,
+              "precision": 0.5,
+              "f1": 0.058,
+              "youden": 0.0114
+            },
+            "redirect": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 13,
+              "tn": 21,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "securecookie": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 24,
+              "tn": 15,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "sqli": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 5,
+              "tn": 11,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "trustbound": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 18,
+              "tn": 19,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "weakrand": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 99,
+              "tn": 227,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "xpathi": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 51,
+              "tn": 135,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "xss": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 31,
+              "tn": 58,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "xxe": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 8,
+              "tn": 20,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            }
+          }
+        }
+      },
+      "semgrep-default+audit": {
+        "strict": {
+          "total": {
+            "tp": 60,
+            "fp": 57,
+            "fn": 392,
+            "tn": 721,
+            "tpr": 0.1327,
+            "fpr": 0.0733,
+            "precision": 0.5128,
+            "f1": 0.2109,
+            "youden": 0.0595
+          },
+          "by_category": {
+            "cmdi": {
+              "tp": 7,
+              "fp": 7,
+              "fn": 6,
+              "tn": 0,
+              "tpr": 0.5385,
+              "fpr": 1.0,
+              "precision": 0.5,
+              "f1": 0.5185,
+              "youden": -0.4615
+            },
+            "codeinj": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 20,
+              "tn": 33,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "deserialization": {
+              "tp": 18,
+              "fp": 12,
+              "fn": 0,
+              "tn": 24,
+              "tpr": 1.0,
+              "fpr": 0.3333,
+              "precision": 0.6,
+              "f1": 0.75,
+              "youden": 0.6667
+            },
+            "hash": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 71,
+              "tn": 80,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "ldapi": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 16,
+              "tn": 13,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "pathtraver": {
+              "tp": 2,
+              "fp": 2,
+              "fn": 63,
+              "tn": 101,
+              "tpr": 0.0308,
+              "fpr": 0.0194,
+              "precision": 0.5,
+              "f1": 0.058,
+              "youden": 0.0114
+            },
+            "redirect": {
+              "tp": 1,
+              "fp": 1,
+              "fn": 12,
+              "tn": 20,
+              "tpr": 0.0769,
+              "fpr": 0.0476,
+              "precision": 0.5,
+              "f1": 0.1333,
+              "youden": 0.0293
+            },
+            "securecookie": {
+              "tp": 24,
+              "fp": 15,
+              "fn": 0,
+              "tn": 0,
+              "tpr": 1.0,
+              "fpr": 1.0,
+              "precision": 0.6154,
+              "f1": 0.7619,
+              "youden": 0.0
+            },
+            "sqli": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 5,
+              "tn": 11,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "trustbound": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 18,
+              "tn": 19,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "weakrand": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 99,
+              "tn": 227,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "xpathi": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 51,
+              "tn": 135,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "xss": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 31,
+              "tn": 58,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "xxe": {
+              "tp": 8,
+              "fp": 20,
+              "fn": 0,
+              "tn": 0,
+              "tpr": 1.0,
+              "fpr": 1.0,
+              "precision": 0.2857,
+              "f1": 0.4444,
+              "youden": 0.0
+            }
+          }
+        },
+        "normalized": {
+          "total": {
+            "tp": 134,
+            "fp": 90,
+            "fn": 318,
+            "tn": 688,
+            "tpr": 0.2965,
+            "fpr": 0.1157,
+            "precision": 0.5982,
+            "f1": 0.3964,
+            "youden": 0.1808
+          },
+          "by_category": {
+            "cmdi": {
+              "tp": 7,
+              "fp": 7,
+              "fn": 6,
+              "tn": 0,
+              "tpr": 0.5385,
+              "fpr": 1.0,
+              "precision": 0.5,
+              "f1": 0.5185,
+              "youden": -0.4615
+            },
+            "codeinj": {
+              "tp": 20,
+              "fp": 33,
+              "fn": 0,
+              "tn": 0,
+              "tpr": 1.0,
+              "fpr": 1.0,
+              "precision": 0.3774,
+              "f1": 0.5479,
+              "youden": 0.0
+            },
+            "deserialization": {
+              "tp": 18,
+              "fp": 12,
+              "fn": 0,
+              "tn": 24,
+              "tpr": 1.0,
+              "fpr": 0.3333,
+              "precision": 0.6,
+              "f1": 0.75,
+              "youden": 0.6667
+            },
+            "hash": {
+              "tp": 54,
+              "fp": 0,
+              "fn": 17,
+              "tn": 80,
+              "tpr": 0.7606,
+              "fpr": 0.0,
+              "precision": 1.0,
+              "f1": 0.864,
+              "youden": 0.7606
+            },
+            "ldapi": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 16,
+              "tn": 13,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "pathtraver": {
+              "tp": 2,
+              "fp": 2,
+              "fn": 63,
+              "tn": 101,
+              "tpr": 0.0308,
+              "fpr": 0.0194,
+              "precision": 0.5,
+              "f1": 0.058,
+              "youden": 0.0114
+            },
+            "redirect": {
+              "tp": 1,
+              "fp": 1,
+              "fn": 12,
+              "tn": 20,
+              "tpr": 0.0769,
+              "fpr": 0.0476,
+              "precision": 0.5,
+              "f1": 0.1333,
+              "youden": 0.0293
+            },
+            "securecookie": {
+              "tp": 24,
+              "fp": 15,
+              "fn": 0,
+              "tn": 0,
+              "tpr": 1.0,
+              "fpr": 1.0,
+              "precision": 0.6154,
+              "f1": 0.7619,
+              "youden": 0.0
+            },
+            "sqli": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 5,
+              "tn": 11,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "trustbound": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 18,
+              "tn": 19,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "weakrand": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 99,
+              "tn": 227,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "xpathi": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 51,
+              "tn": 135,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "xss": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 31,
+              "tn": 58,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "xxe": {
+              "tp": 8,
+              "fp": 20,
+              "fn": 0,
+              "tn": 0,
+              "tpr": 1.0,
+              "fpr": 1.0,
+              "precision": 0.2857,
+              "f1": 0.4444,
+              "youden": 0.0
+            }
+          }
+        }
+      },
+      "codeql-security-extended": {
+        "strict": {
+          "total": {
+            "tp": 114,
+            "fp": 150,
+            "fn": 338,
+            "tn": 628,
+            "tpr": 0.2522,
+            "fpr": 0.1928,
+            "precision": 0.4318,
+            "f1": 0.3184,
+            "youden": 0.0594
+          },
+          "by_category": {
+            "cmdi": {
+              "tp": 11,
+              "fp": 2,
+              "fn": 2,
+              "tn": 5,
+              "tpr": 0.8462,
+              "fpr": 0.2857,
+              "precision": 0.8462,
+              "f1": 0.8462,
+              "youden": 0.5604
+            },
+            "codeinj": {
+              "tp": 12,
+              "fp": 16,
+              "fn": 8,
+              "tn": 17,
+              "tpr": 0.6,
+              "fpr": 0.4848,
+              "precision": 0.4286,
+              "f1": 0.5,
+              "youden": 0.1152
+            },
+            "deserialization": {
+              "tp": 13,
+              "fp": 6,
+              "fn": 5,
+              "tn": 30,
+              "tpr": 0.7222,
+              "fpr": 0.1667,
+              "precision": 0.6842,
+              "f1": 0.7027,
+              "youden": 0.5556
+            },
+            "hash": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 71,
+              "tn": 80,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "ldapi": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 16,
+              "tn": 13,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "pathtraver": {
+              "tp": 45,
+              "fp": 65,
+              "fn": 20,
+              "tn": 38,
+              "tpr": 0.6923,
+              "fpr": 0.6311,
+              "precision": 0.4091,
+              "f1": 0.5143,
+              "youden": 0.0612
+            },
+            "redirect": {
+              "tp": 10,
+              "fp": 11,
+              "fn": 3,
+              "tn": 10,
+              "tpr": 0.7692,
+              "fpr": 0.5238,
+              "precision": 0.4762,
+              "f1": 0.5882,
+              "youden": 0.2454
+            },
+            "securecookie": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 24,
+              "tn": 15,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "sqli": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 5,
+              "tn": 11,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "trustbound": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 18,
+              "tn": 19,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "weakrand": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 99,
+              "tn": 227,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "xpathi": {
+              "tp": 19,
+              "fp": 40,
+              "fn": 32,
+              "tn": 95,
+              "tpr": 0.3725,
+              "fpr": 0.2963,
+              "precision": 0.322,
+              "f1": 0.3455,
+              "youden": 0.0763
+            },
+            "xss": {
+              "tp": 0,
+              "fp": 7,
+              "fn": 31,
+              "tn": 51,
+              "tpr": 0.0,
+              "fpr": 0.1207,
+              "precision": 0.0,
+              "f1": null,
+              "youden": -0.1207
+            },
+            "xxe": {
+              "tp": 4,
+              "fp": 3,
+              "fn": 4,
+              "tn": 17,
+              "tpr": 0.5,
+              "fpr": 0.15,
+              "precision": 0.5714,
+              "f1": 0.5333,
+              "youden": 0.35
+            }
+          }
+        },
+        "normalized": {
+          "total": {
+            "tp": 114,
+            "fp": 150,
+            "fn": 338,
+            "tn": 628,
+            "tpr": 0.2522,
+            "fpr": 0.1928,
+            "precision": 0.4318,
+            "f1": 0.3184,
+            "youden": 0.0594
+          },
+          "by_category": {
+            "cmdi": {
+              "tp": 11,
+              "fp": 2,
+              "fn": 2,
+              "tn": 5,
+              "tpr": 0.8462,
+              "fpr": 0.2857,
+              "precision": 0.8462,
+              "f1": 0.8462,
+              "youden": 0.5604
+            },
+            "codeinj": {
+              "tp": 12,
+              "fp": 16,
+              "fn": 8,
+              "tn": 17,
+              "tpr": 0.6,
+              "fpr": 0.4848,
+              "precision": 0.4286,
+              "f1": 0.5,
+              "youden": 0.1152
+            },
+            "deserialization": {
+              "tp": 13,
+              "fp": 6,
+              "fn": 5,
+              "tn": 30,
+              "tpr": 0.7222,
+              "fpr": 0.1667,
+              "precision": 0.6842,
+              "f1": 0.7027,
+              "youden": 0.5556
+            },
+            "hash": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 71,
+              "tn": 80,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "ldapi": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 16,
+              "tn": 13,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "pathtraver": {
+              "tp": 45,
+              "fp": 65,
+              "fn": 20,
+              "tn": 38,
+              "tpr": 0.6923,
+              "fpr": 0.6311,
+              "precision": 0.4091,
+              "f1": 0.5143,
+              "youden": 0.0612
+            },
+            "redirect": {
+              "tp": 10,
+              "fp": 11,
+              "fn": 3,
+              "tn": 10,
+              "tpr": 0.7692,
+              "fpr": 0.5238,
+              "precision": 0.4762,
+              "f1": 0.5882,
+              "youden": 0.2454
+            },
+            "securecookie": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 24,
+              "tn": 15,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "sqli": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 5,
+              "tn": 11,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "trustbound": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 18,
+              "tn": 19,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "weakrand": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 99,
+              "tn": 227,
+              "tpr": 0.0,
+              "fpr": 0.0,
+              "precision": null,
+              "f1": null,
+              "youden": 0.0
+            },
+            "xpathi": {
+              "tp": 19,
+              "fp": 40,
+              "fn": 32,
+              "tn": 95,
+              "tpr": 0.3725,
+              "fpr": 0.2963,
+              "precision": 0.322,
+              "f1": 0.3455,
+              "youden": 0.0763
+            },
+            "xss": {
+              "tp": 0,
+              "fp": 7,
+              "fn": 31,
+              "tn": 51,
+              "tpr": 0.0,
+              "fpr": 0.1207,
+              "precision": 0.0,
+              "f1": null,
+              "youden": -0.1207
+            },
+            "xxe": {
+              "tp": 4,
+              "fp": 3,
+              "fn": 4,
+              "tn": 17,
+              "tpr": 0.5,
+              "fpr": 0.15,
+              "precision": 0.5714,
+              "f1": 0.5333,
+              "youden": 0.35
+            }
+          }
+        }
+      }
+    },
+    "native_by_confidence": {
+      "0.3": {
+        "tp": 119,
+        "fp": 31,
+        "fn": 333,
+        "tn": 747,
+        "tpr": 0.2633,
+        "fpr": 0.0398,
+        "precision": 0.7933,
+        "f1": 0.3953,
+        "youden": 0.2234
+      },
+      "0.6": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 451,
+        "tn": 778,
+        "tpr": 0.0022,
+        "fpr": 0.0,
+        "precision": 1.0,
+        "f1": 0.0044,
+        "youden": 0.0022
+      },
+      "0.9": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 452,
+        "tn": 778,
+        "tpr": 0.0,
+        "fpr": 0.0,
+        "precision": null,
+        "f1": null,
+        "youden": 0.0
+      }
+    },
+    "pairs_with_native": {
+      "semgrep-default": {
+        "tp_both": 53,
+        "tp_native_only": 67,
+        "tp_other_only": 19,
+        "tp_neither": 313,
+        "fp_native_only": 18,
+        "fp_other_only": 2,
+        "union": {
+          "tp": 139,
+          "fn": 313,
+          "fp": 33,
+          "tn": 745,
+          "tpr": 0.3075,
+          "fpr": 0.0424,
+          "precision": 0.8081,
+          "f1": 0.4455,
+          "youden": 0.2651
+        }
+      },
+      "semgrep-default+audit": {
+        "tp_both": 67,
+        "tp_native_only": 53,
+        "tp_other_only": 67,
+        "tp_neither": 265,
+        "fp_native_only": 8,
+        "fp_other_only": 67,
+        "union": {
+          "tp": 187,
+          "fn": 265,
+          "fp": 98,
+          "tn": 680,
+          "tpr": 0.4137,
+          "fpr": 0.126,
+          "precision": 0.6561,
+          "f1": 0.5075,
+          "youden": 0.2878
+        }
+      },
+      "codeql-security-extended": {
+        "tp_both": 35,
+        "tp_native_only": 85,
+        "tp_other_only": 79,
+        "tp_neither": 253,
+        "fp_native_only": 13,
+        "fp_other_only": 132,
+        "union": {
+          "tp": 199,
+          "fn": 253,
+          "fp": 163,
+          "tn": 615,
+          "tpr": 0.4403,
+          "fpr": 0.2095,
+          "precision": 0.5497,
+          "f1": 0.4889,
+          "youden": 0.2308
+        }
+      }
+    }
+  }
+}

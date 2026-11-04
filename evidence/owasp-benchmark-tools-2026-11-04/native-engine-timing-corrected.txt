@@ -1,0 +1,5 @@
+note: native-engine-timing.txt passed absolute paths and found 0; this file replaces it
+BenchmarkJava files 2766 seconds 27.88 findings 0
+BenchmarkPython files 1230 seconds 6.17 findings 0
+manifest note: src_tests_dirty_lines=409 was measured by Linux git over a Windows checkout (line endings); Windows git shows the count below
+0

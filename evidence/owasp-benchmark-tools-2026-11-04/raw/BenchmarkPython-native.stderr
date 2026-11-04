@@ -1,0 +1,63 @@
+╭───────────────────── Traceback (most recent call last) ──────────────────────╮
+│ /mnt/d/phuc/Code Project/DevSecOps-Agent/src/vulnscan/cli/main.py:161 in     │
+│ scan_run                                                                     │
+│                                                                              │
+│   158 │   │   source = resolve_source(checkout, workdir, commit=commit)      │
+│   159 │   │   if not json_output:                                            │
+│   160 │   │   │   typer.echo(f"Repository: {source.repo_url}\nCommit:        │
+│       {source.commit}")                                                      │
+│ ❱ 161 │   │   result = ScanService(db_path).run(                             │
+│   162 │   │   │   source.checkout, config, repo=source.repo_url,             │
+│       public_id=run_id                                                       │
+│   163 │   │   )                                                              │
+│   164 │   except (ValueError, OSError, SQLAlchemyError) as exc:              │
+│                                                                              │
+│ /mnt/d/phuc/Code                                                             │
+│ Project/DevSecOps-Agent/src/vulnscan/core/scan_service.py:556 in run         │
+│                                                                              │
+│    553 │   │   │   raise ValueError("another scan is active in this          │
+│        database") from exc                                                   │
+│    554 │   │   try:                                                          │
+│    555 │   │   │   self._recover_locked(exclude_public_id=public_id)         │
+│ ❱  556 │   │   │   return self._run(                                         │
+│    557 │   │   │   │   checkout,                                             │
+│    558 │   │   │   │   config,                                               │
+│    559 │   │   │   │   repo,                                                 │
+│                                                                              │
+│ /mnt/d/phuc/Code                                                             │
+│ Project/DevSecOps-Agent/src/vulnscan/core/scan_service.py:1294 in _run       │
+│                                                                              │
+│   1291 │   │   )                                                             │
+│   1292 │   │   for fmt in ExportFormat:                                      │
+│   1293 │   │   │   try:                                                      │
+│ ❱ 1294 │   │   │   │   summary["reports"][fmt.value] =                       │
+│        str(generator.export(fmt, output).artifact_ref.path)                  │
+│   1295 │   │   │   except (OSError, ValueError) as exc:                      │
+│   1296 │   │   │   │   summary["errors"].append(sanitize(f"{fmt.value}       │
+│        export failed: {exc}"))                                               │
+│   1297 │   │   │   │   if not was_cancelled:                                 │
+│                                                                              │
+│ /mnt/d/phuc/Code                                                             │
+│ Project/DevSecOps-Agent/src/vulnscan/reporting/reporter.py:457 in export     │
+│                                                                              │
+│   454 │   │   export_id = f"export-{uuid.uuid4().hex[:12]}"                  │
+│   455 │   │   path = output / f"{export_id}.{_SUFFIX[fmt]}"                  │
+│   456 │   │   if fmt is ExportFormat.DOCX:                                   │
+│ ❱ 457 │   │   │   content_bytes: bytes = self.to_docx_bytes()                │
+│   458 │   │   │   encoded = content_bytes                                    │
+│   459 │   │   else:                                                          │
+│   460 │   │   │   text = {                                                   │
+│                                                                              │
+│ /mnt/d/phuc/Code                                                             │
+│ Project/DevSecOps-Agent/src/vulnscan/reporting/reporter.py:362 in            │
+│ to_docx_bytes                                                                │
+│                                                                              │
+│   359 │                                                                      │
+│   360 │   def to_docx_bytes(self) -> bytes:                                  │
+│   361 │   │   """Word rendering of the same single-source report data."""    │
+│ ❱ 362 │   │   from docx import Document                                      │
+│   363 │   │   from docx.shared import Pt                                     │
+│   364 │   │                                                                  │
+│   365 │   │   doc = Document()                                               │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ModuleNotFoundError: No module named 'docx'

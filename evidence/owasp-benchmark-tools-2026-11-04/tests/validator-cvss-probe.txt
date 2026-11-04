@@ -1,0 +1,17 @@
+CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N expected 9.3 got 9.5 Severity.CRITICAL missing []
+CVSS:4.0/AV:L/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N expected 8.5 got 7.7 Severity.HIGH missing []
+CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H expected 10.0 got 9.5 Severity.CRITICAL missing []
+cvss lib 3.6
+['version', 'assessment_id', 'finding_id', 'run_id', 'proposed_status', 'proposed_severity', 'cwe_category', 'cvss', 'confidence', 'assumptions', 'rationale', 'evidence_refs', 'evidence_strength', 'validation_outcome', 'validation_decision_id', 'model_id', 'model_version', 'provider_id', 'context_evidence_id', 'created_at', 'metadata']
+required ['assessment_id', 'finding_id', 'run_id', 'proposed_status', 'rationale', 'model_id', 'model_version', 'provider_id', 'created_at']
+verdict conf nobs -> status
+rejected 0.95 0 -> rejected
+rejected 0.95 1 -> confirmed
+rejected 0.5 1 -> confirmed
+rejected 0.95 2 -> confirmed
+confirmed 0.95 1 -> confirmed
+confirmed 0.5 1 -> confirmed
+confirmed 0.95 0 -> unresolved
+unresolved 0.4 1 -> unresolved
+unresolved 0.4 2 -> confirmed
+unresolved 0.4 3 -> confirmed
