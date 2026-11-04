@@ -170,10 +170,10 @@ DevSecOps-Agent/
 
 | Area | Status |
 |------|--------|
-| Java Servlet/JSP | Full: 25 Semgrep rules (injection incl. LDAP/XPath/XXE/SSRF/log, crypto, cookie/session, open redirect, reflection, error exposure) + SpotBugs + ODC |
-| JavaScript/TypeScript | 20 Semgrep rules (SQLi, NoSQLi, XSS, exec/spawn, eval/implied-eval, ReDoS, JWT, postMessage, CORS, timing compare, weak hash, debug leftover, path traversal) |
-| Python | 20 Semgrep rules (SQLi, LDAPi, XXE, header injection, open redirect, command injection, eval, pickle/dill variants, JWT, TLS-verify-off, debug mode, weak hash, secrets) |
-| PHP | 20 Semgrep rules (SQLi concat, reflected XSS, command injection, XXE, open redirect, create_function, dynamic callable, parse_str/extract pollution, preg /e, phar wrapper, session fixation, JWT, weak random, eval) |
+| Java Servlet/JSP | Full: 25 Semgrep rules (injection incl. LDAP/XPath/XXE/SSRF/log, crypto, cookie/session, open redirect, reflection, error exposure) + native-hunt 30 rules (taint) + SpotBugs + ODC |
+| JavaScript/TypeScript | 20 Semgrep rules (SQLi, NoSQLi, XSS, exec/spawn, eval/implied-eval, ReDoS, JWT, postMessage, CORS, timing compare, weak hash, debug leftover, path traversal) + native-hunt 25 rules (taint) |
+| Python | 20 Semgrep rules (SQLi, LDAPi, XXE, header injection, open redirect, command injection, eval, pickle/dill variants, JWT, TLS-verify-off, debug mode, weak hash, secrets) + native-hunt 23 rules (taint) |
+| PHP | 20 Semgrep rules (SQLi concat, reflected XSS, command injection, XXE, open redirect, create_function, dynamic callable, parse_str/extract pollution, preg /e, phar wrapper, session fixation, JWT, weak random, eval) + native-hunt 23 rules (taint) |
 | Secrets/credentials | Gitleaks, all languages and docs |
 | Java dependencies | OWASP Dependency-Check (DEEP profile), with **OSV.dev fallback** when the binary/NVD is unavailable |
 | Notifications | In-app bell + read/unread feed, optional gate-fail webhook |
@@ -338,9 +338,12 @@ Two lanes, one gate:
 
 - **Deterministic lane** (`--profile fast|full`): intake → static scanners
   (native-hunt, Semgrep, Gitleaks, + SpotBugs/ODC on full) → normalization
-  & dedup. `native-hunt` is the in-house engine (regex + intra-file taint,
-  90 rules across java/js-ts/py/php, no external binary); Semgrep/SpotBugs
+  & dedup. `native-hunt` is the in-house engine (regex + intra-file taint;
+  **102 rules total** — java 30, js-ts 25, python 23, php 23, generic 1 —
+  no external binary); Semgrep/SpotBugs
   stay as baseline oracles for evaluation, not the primary evidence.
+  Native-hunt covers exactly 4 language families (java, javascript,
+  python, php); anything else falls back to the single generic rule.
 - **Model-first lane** (`--mode hunt`, default): the model hunts the snapshot
   in sequential passes — one per extension family present (java/js-ts/py/php,
   plus a generic pass for any other web-hostable text) + a logic pass
@@ -349,6 +352,15 @@ Two lanes, one gate:
   → model/scanner comparison → model-only candidates are promoted to findings
   with a `provenance` chip (`model`/`scanner`/`both`) and get full AI review +
   validator verdicts. Hunt detail (per-pass counts, trace) lands in `hunt.json`.
+
+  **Model-hunt impact (measured, one repo):** on WebGoat FULL+hunt
+  (run #55) the pipeline reported 245 findings = 230 scanner-only +
+  4 scanner-agreed + **11 model-only promoted** — i.e. hunt adds ~4.5%
+  net-new findings on top of the deterministic lane, plus 4 corroborations.
+  Cost: extra model calls per pass + Laya verification time (≈6 min on
+  CUDA for 15 candidates here). Evidence is single-repo so far
+  (`hunt.json` + run #55 exports); the 5-repo deep-compare ran
+  deterministic-only, so cross-repo hunt gain is still unmeasured.
 
 Then, for both lanes: Laya routing → targeted AI review with CVSS v4.0 →
 independent validation (conservative: only decisive evidence flips a status)
