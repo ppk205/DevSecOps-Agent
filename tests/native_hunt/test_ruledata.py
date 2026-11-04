@@ -19,7 +19,15 @@ ROOT = Path(__file__).resolve().parents[2]
 RULES_DIR = ROOT / "src" / "vulnscan" / "native_hunt" / "rules"
 
 # language -> minimum rule count (java 12, others 10 each).
-MIN_COUNTS = {"java": 12, "javascript": 10, "python": 10, "php": 10}
+MIN_COUNTS = {
+    "java": 12,
+    "javascript": 10,
+    "python": 10,
+    "php": 10,
+    "go": 10,
+    "ruby": 10,
+    "csharp": 10,
+}
 
 REQUIRED_KEYS = {"id", "languages", "severity", "message", "cwe", "attack", "patterns"}
 
@@ -33,7 +41,15 @@ REQUIRED_ATTACKS = {
     "deserialization",
 }
 
-ID_PREFIXES = {"java": "java-", "javascript": "js-", "python": "py-", "php": "php-"}
+ID_PREFIXES = {
+    "java": "java-",
+    "javascript": "js-",
+    "python": "py-",
+    "php": "php-",
+    "go": "go-",
+    "ruby": "rb-",
+    "csharp": "cs-",
+}
 
 
 def load_pack(language: str) -> dict:
