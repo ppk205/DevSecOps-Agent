@@ -1,0 +1,5 @@
+Command: "D:\phuc\Code Project\DevSecOps-Agent\.venv\Scripts\python.exe" -m mypy --follow-imports=skip src/vulnscan/providers/client.py src/vulnscan/providers/events.py src/vulnscan/providers/credentials.py src/vulnscan/agent/loop.py
+
+Success: no issues found in 4 source files
+
+Exit code: 0

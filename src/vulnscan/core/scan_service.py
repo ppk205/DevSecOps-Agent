@@ -4,12 +4,13 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import shutil
 import tempfile
 import time
 import uuid
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -28,6 +29,7 @@ from vulnscan.contracts import (
 from vulnscan.contracts.enums import WEB_SOURCE_EXTENSIONS
 from vulnscan.decisions.config import LayaConfig
 from vulnscan.pipeline.runner import ScanPipeline
+from vulnscan.providers.events import model_progress
 from vulnscan.reporting.reporter import ReportGenerator
 from vulnscan.scanners.base import AdapterRegistry
 from vulnscan.scanners.process import ScanCancelled, _cancel_check, run_command
@@ -39,6 +41,7 @@ from .config import ScanConfig
 from .finding_view import project_finding
 from .policy import gate
 from .security import sanitize
+from .source import NO_REVISION, local_revision
 
 
 @dataclass(frozen=True)
@@ -55,6 +58,85 @@ class ProgressEvent:
 _TEST_SEGMENTS = frozenset({"test", "tests", "it", "e2e"})
 
 
+def _model_usage(calls: list[dict[str, Any]]) -> dict[str, Any]:
+    usage: dict[str, Any] = {
+        "requests": len(calls),
+        "completed_requests": sum(call["status"] == "completed" for call in calls),
+        "failed_requests": sum(call["status"] == "failed" for call in calls),
+        "usage_reported_requests": sum(bool(call.get("usage")) for call in calls),
+        "cost_usd": None,
+    }
+    for name in ("prompt_tokens", "completion_tokens", "total_tokens"):
+        reported = []
+        for call in calls:
+            raw = call.get("usage") or {}
+            if not isinstance(raw, dict):
+                continue
+            value = raw.get(name)
+            if name == "total_tokens" and value is None:
+                prompt, completion = raw.get("prompt_tokens"), raw.get("completion_tokens")
+                if type(prompt) is int and type(completion) is int:
+                    value = prompt + completion
+            if type(value) is int and value >= 0:
+                reported.append(value)
+        usage[name] = sum(reported) if reported else None
+    return usage
+
+
+_UNVERSIONED_DIRS = frozenset(
+    {
+        ".git",
+        ".hg",
+        ".svn",
+        ".devsec",
+        ".tools",
+        "venv",
+        "node_modules",
+        "__pycache__",
+        ".pytest_cache",
+        ".mypy_cache",
+        ".ruff_cache",
+    }
+)
+
+
+def _credential_path(name: str) -> bool:
+    return any(
+        part == ".secrets"
+        or part == ".env"
+        or (part.startswith(".env.") and part != ".env.example")
+        for part in name.lower().split("/")
+    )
+
+
+def _unversioned_files(root: Path, owned_runtime: Callable[[str], bool]) -> Iterator[str]:
+    def unreadable(error: OSError) -> None:
+        raise error
+
+    for directory, directories, filenames in os.walk(root, onerror=unreadable, followlinks=False):
+        kept = []
+        for name in sorted(directories):
+            path = Path(directory) / name
+            relative = path.relative_to(root).as_posix()
+            if (
+                name in _UNVERSIONED_DIRS
+                or name.startswith(".venv")
+                or _credential_path(relative)
+                or owned_runtime(relative)
+            ):
+                continue
+            if path.is_symlink():
+                raise ValueError(
+                    "symlink targets are unsupported; use a self-contained source folder"
+                )
+            kept.append(name)
+        directories[:] = kept
+        for name in sorted(filenames):
+            if name in {".git", ".hg", ".svn"}:
+                continue
+            yield (Path(directory) / name).relative_to(root).as_posix()
+
+
 def _live_event_kind(stage: str, status: str) -> str:
     """Map a pipeline stage to a scan_events kind (Phase 3 live feed).
 
@@ -62,7 +144,13 @@ def _live_event_kind(stage: str, status: str) -> str:
     operator sees: scanner work as ``log``, AI reasoning as ``ai_step``,
     proposals as ``ai_proposal``, and checks as ``verification_result``.
     """
-    if stage in {"model_hunt", "laya_batch_routing", "targeted_deep_analysis"}:
+    if stage in {
+        "model_hunt",
+        "laya_batch_routing",
+        "targeted_deep_analysis",
+        "model_call",
+        "model_tool",
+    }:
         return "ai_step"
     if stage in {"laya_verification", "model_scanner_compare", "independent_validation"}:
         return "verification_result" if status in {"completed", "partial"} else "ai_step"
@@ -92,35 +180,47 @@ def checkout_manifest(
     checkout: str, config: ScanConfig, expected: str = "", *, excluded: list[Path] | None = None
 ) -> dict[str, Any]:
     root = Path(checkout).resolve(strict=True)
+    if not root.is_dir():
+        raise ValueError("scan target must be a local source folder")
     runtime = [p.resolve() for p in (excluded or [])]
 
     def owned_runtime(name: str) -> bool:
         path = (root / name).resolve()
         return any(path == item or path.is_relative_to(item) for item in runtime)
 
-    result = run_command(["git", "rev-parse", "HEAD"], cwd=root)
-    if not result.succeeded:
-        raise ValueError("checkout must be a Git repository with a committed revision")
-    commit = result.stdout.strip()
-    if expected and not commit.startswith(expected):
+    commit, revision_reason = local_revision(root, run_command)
+    if expected and not commit.lower().startswith(expected.lower()):
         raise ValueError("requested commit does not match the checked-out commit")
-    status = run_command(["git", "status", "--porcelain", "-z", "--untracked-files=all"], cwd=root)
-    if not status.succeeded:
-        raise ValueError("cannot verify checkout cleanliness")
-    changes = [entry for entry in status.stdout.split("\0") if entry]
-    dirty = bool(changes) if config.ci else any(not owned_runtime(entry[3:]) for entry in changes)
-    if dirty and (config.ci or not config.allow_dirty):
-        raise ValueError(
-            "dirty checkout: commit changes or explicitly enable --allow-dirty locally"
+    dirty: bool | None = None
+    if commit == NO_REVISION:
+        if config.ci:
+            raise ValueError(
+                "CI requires a committed Git revision and verified checkout cleanliness"
+            )
+        names = _unversioned_files(root, owned_runtime)
+    else:
+        status = run_command(
+            ["git", "status", "--porcelain", "-z", "--untracked-files=all"], cwd=root
         )
-    listing = run_command(
-        ["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"], cwd=root
-    )
-    if not listing.succeeded:
-        raise ValueError("cannot inventory checkout")
+        if not status.succeeded:
+            raise ValueError("cannot verify checkout cleanliness")
+        changes = [entry for entry in status.stdout.split("\0") if entry]
+        dirty = (
+            bool(changes) if config.ci else any(not owned_runtime(entry[3:]) for entry in changes)
+        )
+        if dirty and (config.ci or not config.allow_dirty):
+            raise ValueError(
+                "dirty checkout: commit changes or explicitly enable --allow-dirty locally"
+            )
+        listing = run_command(
+            ["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"], cwd=root
+        )
+        if not listing.succeeded:
+            raise ValueError("cannot inventory checkout")
+        names = iter(sorted(set(listing.stdout.split("\0")) - {""}))
     files: dict[str, str] = {}
-    for name in sorted(set(listing.stdout.split("\0")) - {""}):
-        if owned_runtime(name):
+    for name in names:
+        if _credential_path(name) or owned_runtime(name):
             continue
         path = root / name
         if path.is_symlink() or not path.resolve().is_relative_to(root):
@@ -134,6 +234,7 @@ def checkout_manifest(
     return {
         "commit": commit,
         "dirty": dirty,
+        "revision_reason": revision_reason,
         "runtime_exclusions": [str(p) for p in runtime if p.is_relative_to(root)],
         "files": files,
         "inventory": [n for n in files if _is_scanned_source(n)],
@@ -306,7 +407,7 @@ class ScanService:
         """FR-71/DR-09: retained activity without loading full finding payloads."""
         pk = self.resolve_id(identifier)
         with get_session(self.db_path) as session:
-            names = ("gate", "exit_code", "errors", "reports", "summary_path")
+            names = ("gate", "exit_code", "errors", "reports", "summary_path", "ai_usage")
             row = session.execute(
                 select(
                     RunORM.public_id,
@@ -316,7 +417,7 @@ class ScanService:
                 ).where(RunORM.id == pk)
             ).one()
             result = dict(zip(names, row[3:], strict=True))
-            for name, default in (("errors", []), ("reports", {})):
+            for name, default in (("errors", []), ("reports", {}), ("ai_usage", {})):
                 result[name] = json.loads(result[name]) if result[name] else default
             result.update(
                 run_id=row[0] or str(pk),
@@ -340,6 +441,18 @@ class ScanService:
             if payload is None:
                 raise ValueError("finding not found")
             item: dict[str, Any] = json.loads(payload)
+            raw_assessments = session.scalar(
+                select(func.json_extract(RunORM.result_json, "$.assessments")).where(
+                    RunORM.id == pk
+                )
+            )
+            related = [
+                assessment
+                for assessment in json.loads(raw_assessments or "[]")
+                if assessment.get("finding_id") == finding_id
+            ]
+            if related:
+                item.setdefault("metadata", {})["ai_assessments"] = related
             return item
 
     def progress_since(self, identifier: int | str, cursor: int = 0) -> dict[str, Any]:
@@ -480,6 +593,8 @@ class ScanService:
         results: list[ScannerResult] = []
         findings: list[Finding] = []
         events: list[dict[str, Any]] = []
+        model_calls: list[dict[str, Any]] = []
+        model_stage = "model_hunt"
         errors: list[str] = []
         manifest: dict[str, Any] = {"inventory": [], "files": {}}
         spec = config.specification(
@@ -551,6 +666,10 @@ class ScanService:
                                 ]
                                 for r in results
                             },
+                            "model_calls": model_calls,
+                            "ai_usage": _model_usage(model_calls),
+                            "assessments": review["assessments"],
+                            "validation_decisions": review["decisions"],
                         }
                     )
                 )
@@ -640,8 +759,25 @@ class ScanService:
             if on_event:
                 on_event(event)
 
+        def model_event(event: dict[str, Any]) -> None:
+            if event["kind"] == "call" and event["status"] == "running" and cancelled():
+                raise ScanCancelled()
+            safe = sanitize(event)
+            if safe["kind"] == "call" and safe["status"] in {"completed", "failed"}:
+                model_calls.append(
+                    {
+                        "stage": model_stage,
+                        "status": safe["status"],
+                        "provider": safe.get("provider", ""),
+                        "model": safe.get("model", ""),
+                        "usage": safe.get("usage", {}),
+                    }
+                )
+            persist("model_" + safe["kind"], safe["status"], model_stage + " · " + safe["message"])
+
         snapshot = tempfile.TemporaryDirectory(prefix="vulnscan-snapshot-")
         token = _cancel_check.set(cancelled)
+        model_token = model_progress.set(model_event)
         was_cancelled = False
         routing: list[dict[str, Any]] = []
         review: dict[str, Any] = {
@@ -676,7 +812,7 @@ class ScanService:
             hunt_status = "skipped"
             hunt_detail = "scan ended before model hunt"
             verified = []
-            comparison = {
+            comparison: dict[str, Any] = {
                 "agreed": [],
                 "model_only": [],
                 "scanner_only": [],
@@ -713,7 +849,12 @@ class ScanService:
                     checkout_deps, snapshot_root / "target" / "dependency", dirs_exist_ok=True
                 )
                 manifest["dependencies_included"] = True
-            persist("intake", "completed", f"Verified commit {manifest['commit']}")
+            intake_message = (
+                f"Verified commit {manifest['commit']}"
+                if manifest["commit"] != NO_REVISION
+                else "Source snapshot hashed; no committed Git revision is available"
+            )
+            persist("intake", "completed", intake_message)
             hunt_detail = "deterministic mode — enable Hunt + a provider profile to run the model"
             if config.mode != "hunt":
                 persist("model_hunt", "skipped", hunt_detail)
@@ -728,6 +869,7 @@ class ScanService:
                         if not config.provider_model:
                             config.provider_model = _auto.default_model or None
                         hunt_detail = f"auto provider {_auto.id}"
+                        spec.metadata["configuration"] = config.model_dump()
                     else:
                         hunt_detail = "no provider key configured — set a key to enable the model"
                         persist("model_hunt", "skipped", hunt_detail)
@@ -1009,6 +1151,7 @@ class ScanService:
             review_profile = (
                 config.provider_profile if (config.ai_review or config.mode == "hunt") else None
             )
+            model_stage = "targeted_deep_analysis"
             review = run_ai_review(
                 review_findings,
                 routing,
@@ -1037,6 +1180,7 @@ class ScanService:
                     "skipped",
                     review["detail"] or "no assessment evidence supplied",
                 )
+            model_stage = "final_report"
             final = run_final_report(
                 findings,
                 decisions,
@@ -1061,6 +1205,7 @@ class ScanService:
             persist("execution", "failed", errors[-1])
         finally:
             _cancel_check.reset(token)
+            model_progress.reset(model_token)
             snapshot.cleanup()
         policy = gate(
             findings,
@@ -1095,7 +1240,8 @@ class ScanService:
                 "routing": routing,
                 "assessments": review["assessments"],
                 "validation_decisions": decisions,
-                "ai_usage": review["usage"],
+                "model_calls": model_calls,
+                "ai_usage": {**review["usage"], **_model_usage(model_calls)},
                 "final_report": {
                     "status": final["status"],
                     "ai_written": final["ai_written"],
@@ -1195,4 +1341,7 @@ class ScanService:
                     saved_stage.status = summary["status"]
                     saved_stage.completed_at = datetime.now(UTC)
             saved.result_json = json.dumps(summary)
+        from vulnscan.notifications.service import notify_finished
+
+        summary["notifications"] = notify_finished(self.db_path, pk)
         return summary

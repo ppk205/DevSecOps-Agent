@@ -1,8 +1,8 @@
 """ProviderProfile and ProviderUsage — BYOK Chat-Completions configuration and accounting.
 
-Provider profiles live on disk (encrypted at rest) and are injected into
-provider requests at run time.  Usage records are append-only and drive the
-USD 50 budget ceiling.
+Provider profiles are local JSON metadata with credential variable references.
+Provider requests resolve credentials at run time. Usage records carry reported
+counts and budget estimates; price availability is reported separately.
 """
 
 from __future__ import annotations

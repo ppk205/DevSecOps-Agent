@@ -1,0 +1,9 @@
+{
+  "command": [
+    "D:\\phuc\\Code Project\\DevSecOps-Agent\\.tools\\go\\bin\\go.exe",
+    "vet",
+    "./..."
+  ],
+  "exit_code": 1,
+  "elapsed_seconds": 48.88
+}

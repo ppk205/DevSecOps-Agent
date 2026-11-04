@@ -43,9 +43,9 @@ func stringsList(value any) []string {
 func (b *Backend) helper(ctx context.Context, method string, params any, target any) error {
 	return b.Client.Call(ctx, method, params, target, nil)
 }
-func (b *Backend) review(ctx context.Context, checkout, commit string, cfg Config) (map[string]any, error) {
+func (b *Backend) review(ctx context.Context, checkout, commit string, cfg Config, workdir string) (map[string]any, error) {
 	var result map[string]any
-	err := b.helper(ctx, "review", map[string]any{"checkout": checkout, "commit": commit, "configuration": cfg}, &result)
+	err := b.helper(ctx, "review", map[string]any{"checkout": checkout, "commit": commit, "workdir": workdir, "configuration": cfg}, &result)
 	return obj(result["manifest"]), err
 }
 func hashFile(path string) (string, error) {
@@ -132,10 +132,8 @@ func (b *Backend) nativeRun(ctx context.Context, params map[string]any, eventCal
 	if err := json.Unmarshal(data, &cfg); err != nil {
 		return nil, err
 	}
-	checkout, err := filepath.Abs(fmt.Sprint(params["checkout"]))
-	if err != nil {
-		return nil, err
-	}
+	checkout := fmt.Sprint(params["checkout"])
+	var err error
 	publicID, _ := params["public_id"].(string)
 	if publicID == "" {
 		var id [16]byte
@@ -161,6 +159,10 @@ func (b *Backend) nativeRun(ctx context.Context, params map[string]any, eventCal
 		return nil, err
 	}
 	commit, _ := params["commit"].(string)
+	workdir, _ := params["workdir"].(string)
+	if workdir == "" {
+		workdir = "harness"
+	}
 	repo, _ := params["repo"].(string)
 	if repo == "" {
 		repo = "local"
@@ -226,9 +228,19 @@ func (b *Backend) nativeRun(ctx context.Context, params map[string]any, eventCal
 			return e
 		}
 		var e error
-		manifest, e = b.review(deadlineCtx, checkout, commit, cfg)
+		manifest, e = b.review(deadlineCtx, checkout, commit, cfg, workdir)
 		if e != nil {
 			return e
+		}
+		resolved, ok := manifest["resolved_checkout"].(string)
+		if !ok || resolved == "" {
+			return fmt.Errorf("source review did not return a local checkout path")
+		}
+		checkout = resolved
+		commit, _ = manifest["commit"].(string)
+		spec["repository_checkout_path"] = checkout
+		if repo == "local" && manifest["source_kind"] == "remote" {
+			spec["target_repository_url"] = manifest["repo_url"]
 		}
 		spec["target_commit_sha"] = manifest["commit"]
 		metadata := obj(spec["metadata"])
@@ -247,7 +259,11 @@ func (b *Backend) nativeRun(ctx context.Context, params map[string]any, eventCal
 			execution[key] = value
 		}
 		execution["repository_checkout_path"] = root
-		if e = persist("intake", "completed", "Verified commit "+fmt.Sprint(manifest["commit"])); e != nil {
+		intakeMessage := "Verified commit " + commit
+		if commit == "no-revision" {
+			intakeMessage = "Source snapshot hashed; no committed Git revision is available"
+		}
+		if e = persist("intake", "completed", intakeMessage); e != nil {
 			return e
 		}
 		for _, toolConfig := range objects(spec["tools"]) {
@@ -346,7 +362,7 @@ func (b *Backend) nativeRun(ctx context.Context, params map[string]any, eventCal
 				return e
 			}
 		}
-		after, e := b.review(deadlineCtx, checkout, commit, cfg)
+		after, e := b.review(deadlineCtx, checkout, commit, cfg, workdir)
 		if e != nil {
 			return e
 		}
@@ -371,7 +387,7 @@ func (b *Backend) nativeRun(ctx context.Context, params map[string]any, eventCal
 		if e = persist(fmt.Sprint(stage["name"]), fmt.Sprint(stage["status"]), fmt.Sprint(stage["detail"])); e != nil {
 			return e
 		}
-		if e = persist("targeted_deep_analysis", "unavailable", "Deep analysis is not implemented"); e != nil {
+		if e = persist("targeted_deep_analysis", "skipped", "AI support is disabled; choose Hunt or enable AI review to run the model"); e != nil {
 			return e
 		}
 		return persist("independent_validation", "skipped", "No assessment evidence supplied; findings remain unprocessed")
@@ -436,7 +452,19 @@ func (b *Backend) nativeRun(ctx context.Context, params map[string]any, eventCal
 	if e = os.WriteFile(fmt.Sprint(summary["summary_path"]), []byte(marshal(summary)), 0600); e != nil {
 		return nil, e
 	}
-	return summary, b.Store.Finish(context.Background(), pk, summary)
+	if e = b.Store.Finish(context.Background(), pk, summary); e != nil {
+		return nil, e
+	}
+	// Completion may follow cancellation: retain evidence first, then notify.
+	notificationCtx, notificationCancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer notificationCancel()
+	receipt, notificationError := b.Notification(notificationCtx, map[string]any{"action": "complete", "run_id": pk})
+	if notificationError != nil {
+		summary["notifications"] = map[string]any{"status": "unknown", "detail": "Notification completion was not acknowledged; check retained receipts"}
+	} else {
+		summary["notifications"] = receipt
+	}
+	return summary, nil
 }
 func intNumber(value any) int {
 	if number, ok := value.(float64); ok {

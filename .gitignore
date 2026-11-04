@@ -82,6 +82,7 @@ odc/
 
 # Secrets / provider config — never commit keys
 .env
+.devsec-notifications.json
 .env.*
 !.env.example
 !.env.template
@@ -131,6 +132,7 @@ bin/
 
 # Logs and temporary Office documents
 *.log
+!evidence/notifications-2026-11-04/*.log
 ~$*
 
 # Local thesis working documents

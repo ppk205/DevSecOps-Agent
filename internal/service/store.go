@@ -141,7 +141,27 @@ func (s *Store) Finding(ctx context.Context, id, findingID string) (json.RawMess
 	}
 	var payload string
 	err = s.DB.QueryRowContext(ctx, "SELECT finding_json FROM findings WHERE run_id=? AND finding_id=? ORDER BY id LIMIT 1", info.ID, findingID).Scan(&payload)
-	return json.RawMessage(payload), err
+	if err != nil {
+		return nil, err
+	}
+	var assessments string
+	err = s.DB.QueryRowContext(ctx, `SELECT coalesce((SELECT json_group_array(json(value))
+		FROM json_each(result_json,'$.assessments') WHERE json_extract(value,'$.finding_id')=?),'[]')
+		FROM runs WHERE id=?`, findingID, info.ID).Scan(&assessments)
+	if err != nil || assessments == "[]" {
+		return json.RawMessage(payload), err
+	}
+	var item map[string]any
+	if err = json.Unmarshal([]byte(payload), &item); err != nil {
+		return nil, err
+	}
+	metadata, _ := item["metadata"].(map[string]any)
+	if metadata == nil {
+		metadata = map[string]any{}
+	}
+	metadata["ai_assessments"] = json.RawMessage(assessments)
+	item["metadata"] = metadata
+	return json.Marshal(item)
 }
 func (s *Store) Cancel(ctx context.Context, id string) error {
 	info, err := s.Summary(ctx, id)

@@ -21,6 +21,7 @@ from vulnscan.contracts.assessment import Assessment, CVSSAssessment
 from vulnscan.contracts.finding import Finding
 from vulnscan.providers.budget import BudgetExhausted
 from vulnscan.providers.client import ChatMessage, ChatResponse, ProviderClient, ProviderError
+from vulnscan.providers.events import emit_model_event
 
 from .tools import TOOL_NAME_SET, TOOL_SCHEMAS
 
@@ -155,6 +156,7 @@ class AgentLoop:
         for step in range(self.max_followups + 1):
             resp: ChatResponse = self.client.chat(
                 messages,
+                model=self.model_id if self.model_id != "unknown" else None,
                 tools=TOOL_SCHEMAS if step < self.max_followups else None,
                 tool_choice="auto" if step < self.max_followups else "none",
             )
@@ -194,6 +196,14 @@ class AgentLoop:
                         content=json.dumps(tool_result),
                         tool_call_id=tc["id"],
                     )
+                )
+                emit_model_event(
+                    "tool",
+                    "failed" if "error" in tool_result else "completed",
+                    f"Investigation tool {tool_name}: "
+                    + ("failed or rejected" if "error" in tool_result else "completed"),
+                    provider=self.provider_id,
+                    model=self.model_id,
                 )
                 tool_calls_made += 1
 

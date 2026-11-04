@@ -120,8 +120,7 @@ def migrate(engine: Engine) -> None:
                 )"""
             )
             conn.exec_driver_sql(
-                "CREATE INDEX IF NOT EXISTS scan_events_run_seq "
-                "ON scan_events(run_id, seq)"
+                "CREATE INDEX IF NOT EXISTS scan_events_run_seq ON scan_events(run_id, seq)"
             )
             conn.exec_driver_sql("INSERT INTO schema_migrations VALUES (4)")
         if not conn.exec_driver_sql("SELECT 1 FROM schema_migrations WHERE version = 5").first():
@@ -140,8 +139,7 @@ def migrate(engine: Engine) -> None:
                 )"""
             )
             conn.exec_driver_sql(
-                "CREATE INDEX IF NOT EXISTS fix_proposals_run "
-                "ON fix_proposals(run_id, finding_id)"
+                "CREATE INDEX IF NOT EXISTS fix_proposals_run ON fix_proposals(run_id, finding_id)"
             )
             conn.exec_driver_sql("INSERT INTO schema_migrations VALUES (5)")
         if not conn.exec_driver_sql("SELECT 1 FROM schema_migrations WHERE version = 6").first():
@@ -156,10 +154,11 @@ def migrate(engine: Engine) -> None:
                 )"""
             )
             conn.exec_driver_sql(
-                "CREATE INDEX IF NOT EXISTS notifications_run "
-                "ON notifications(run_id, kind)"
+                "CREATE INDEX IF NOT EXISTS notifications_run ON notifications(run_id, kind)"
             )
             conn.exec_driver_sql("INSERT INTO schema_migrations VALUES (6)")
+        # Base.metadata.create_all above adds the outbound ledger to older databases.
+        conn.exec_driver_sql("INSERT OR IGNORE INTO schema_migrations VALUES (7)")
 
 
 def init_db(db_path: str | Path = "vulnscan.db") -> None:

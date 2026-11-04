@@ -16,7 +16,10 @@ def recovery_advice(message: str) -> str:
     if any(word in text for word in ("scanner", "unavailable", "binary")):
         return "Check scanner availability and install the required tool before retrying."
     if any(word in text for word in ("checkout", "git", "dirty")):
-        return "Choose a committed Java checkout; review Advanced options for local dirty content."
+        return (
+            "Choose a local source folder or repository URL. Git is needed for URLs and "
+            "commit pins; review Advanced options for dirty Git checkouts."
+        )
     if any(
         word in text for word in ("configuration", "timeout", "threshold", "number", "timezone")
     ):
@@ -25,20 +28,42 @@ def recovery_advice(message: str) -> str:
 
 
 def review_summary(checkout: str, config: ScanConfig, manifest: dict[str, Any]) -> str:
-    scanners = "Semgrep + Gitleaks"
-    if config.profile == "full":
+    scanners = "Semgrep + native-hunt + Gitleaks"
+    if config.tools is not None:
+        scanners = ", ".join(config.tools) or "No scanners selected"
+    elif config.profile == "full":
         scanners += " + isolated Maven, SpotBugs/FindSecBugs, Dependency-Check"
+    unversioned = manifest["commit"] == "no-revision"
+    source = (
+        "Repository URL"
+        if manifest.get("source_kind") == "remote"
+        else "Local source folder (no Git revision)"
+        if unversioned
+        else "Local Git checkout"
+    )
     return "\n".join(
         [
             "Ready to scan",
+            f"Source: {source}",
             f"Checkout: {checkout}",
             f"Commit: {manifest['commit']}",
+            *(
+                [f"Revision unavailable: {manifest['revision_reason']}"]
+                if manifest.get("revision_reason")
+                else []
+            ),
             f"Java/JSP files: {len(manifest['inventory'])}",
             f"Profile: {config.profile} · {scanners}",
             f"Limits: {config.timeout} seconds · {config.max_files} files",
             f"Threshold: {config.fail_on}",
             "Checkout policy: "
-            + ("Local dirty contents allowed; hashes recorded" if config.allow_dirty else "Clean"),
+            + (
+                "Unversioned; file hashes recorded"
+                if unversioned
+                else "Local dirty contents allowed; hashes recorded"
+                if config.allow_dirty
+                else "Clean"
+            ),
             "Laya: " + ("Advisory enabled; local model required" if config.laya else "Disabled"),
             f"Artifacts: {config.output_dir}",
             f"Display timezone: {config.timezone}",
@@ -57,6 +82,16 @@ def finding_summary(item: dict[str, Any]) -> str:
         "",
         str(item.get("description", "")),
     ]
+    for assessment in (item.get("metadata") or {}).get("ai_assessments", []):
+        lines.extend(
+            [
+                "",
+                "AI support explanation",
+                f"Provider: {assessment.get('provider_id', 'unknown')} · Model: {assessment.get('model_id', 'unknown')}",
+                f"Model proposal: {assessment.get('proposed_status', 'unknown')}",
+                f"Explanation: {assessment.get('rationale', 'unavailable')}",
+            ]
+        )
     for observation in item.get("observations", []):
         location = observation.get("location", {})
         lines.extend(

@@ -60,12 +60,27 @@ func (b *Backend) Review(ctx context.Context, checkout string, config Config) (m
 	return result, err
 }
 func (b *Backend) Run(ctx context.Context, params map[string]any, event func(bridge.Event)) (map[string]any, error) {
+	cfg := Defaults()
+	data, err := json.Marshal(params["configuration"])
+	if err != nil {
+		return nil, err
+	}
+	if err = json.Unmarshal(data, &cfg); err != nil {
+		return nil, err
+	}
+	if cfg.AIEnabled() {
+		return b.PythonRun(ctx, params, event)
+	}
 	return b.nativeRun(ctx, params, event)
 }
 
 func (b *Backend) PythonRun(ctx context.Context, params map[string]any, event func(bridge.Event)) (map[string]any, error) {
+	return b.pythonCall(ctx, "run", params, event)
+}
+
+func (b *Backend) pythonCall(ctx context.Context, method string, params map[string]any, event func(bridge.Event)) (map[string]any, error) {
 	var result map[string]any
-	err := b.Client.Call(ctx, "run", params, &result, event)
+	err := b.Client.Call(ctx, method, params, &result, event)
 	if err == nil {
 		if ref, ok := result["result_ref"].(string); ok {
 			var data []byte
@@ -87,6 +102,17 @@ func (b *Backend) Retry(ctx context.Context, id string, event func(bridge.Event)
 	}
 	spec := obj(prior["spec"])
 	metadata := obj(spec["metadata"])
+	cfg := Defaults()
+	data, err := json.Marshal(metadata["configuration"])
+	if err != nil {
+		return nil, err
+	}
+	if err = json.Unmarshal(data, &cfg); err != nil {
+		return nil, err
+	}
+	if cfg.AIEnabled() {
+		return b.pythonCall(ctx, "retry", map[string]any{"run_id": id}, event)
+	}
 	return b.nativeRun(ctx, map[string]any{"checkout": spec["repository_checkout_path"], "repo": spec["target_repository_url"], "commit": spec["target_commit_sha"], "configuration": metadata["configuration"], "parent_id": intNumber(prior["id"])}, event)
 }
 func (b *Backend) Cancel(ctx context.Context, id string) error { return b.Store.Cancel(ctx, id) }
@@ -97,6 +123,7 @@ func (b *Backend) Export(ctx context.Context, id, format, output string) (string
 	err := b.Client.Call(ctx, "export", map[string]any{"run_id": id, "format": format, "output": output}, &result, nil)
 	return result.Path, err
 }
+
 // EnvList returns ONLY stored variable names — values never leave .env.
 func (b *Backend) EnvList(ctx context.Context) ([]string, error) {
 	var result struct {

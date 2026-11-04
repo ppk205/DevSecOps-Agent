@@ -1,0 +1,14 @@
+{
+  "command": [
+    "D:\\phuc\\Code Project\\DevSecOps-Agent\\.venv\\Scripts\\python.exe",
+    "-m",
+    "mypy",
+    "--platform",
+    "linux",
+    "src/vulnscan/notifications",
+    "src/vulnscan/cli/notifications.py",
+    "src/vulnscan/tui/notifications.py"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 17.98
+}

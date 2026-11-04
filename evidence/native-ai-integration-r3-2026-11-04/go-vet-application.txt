@@ -1,0 +1,4 @@
+Command: "D:\phuc\Code Project\DevSecOps-Agent\.tools\go\bin\go.exe" vet ./cmd/... ./internal/...
+
+
+Exit code: 0

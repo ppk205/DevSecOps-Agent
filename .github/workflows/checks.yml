@@ -59,7 +59,7 @@ jobs:
       - run: go vet ./...
       - run: go test ./...
       - run: uv run --frozen python ci/build_native.py
-      - run: uv run --frozen pytest tests/platform/test_native.py tests/platform/test_native_cancel.py tests/platform/test_native_dashboard.py tests/decisions/test_runtime.py tests/training
+      - run: uv run --frozen pytest tests/platform/test_native.py tests/platform/test_native_ai.py tests/platform/test_native_cancel.py tests/platform/test_native_dashboard.py tests/decisions/test_runtime.py tests/training
       - shell: bash
         run: DEVSECOPS_NATIVE=python uv run --frozen pytest tests/tui
   tests:

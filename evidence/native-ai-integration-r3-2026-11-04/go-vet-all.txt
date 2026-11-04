@@ -1,0 +1,7 @@
+Command: "D:\phuc\Code Project\DevSecOps-Agent\.tools\go\bin\go.exe" vet ./...
+
+# devsecops-agent/artifacts/tui-verification
+# [devsecops-agent/artifacts/tui-verification]
+vet.exe: artifacts\tui-verification\native_probe_test.go:12:5: undefined: fakeAPI
+
+Exit code: 1

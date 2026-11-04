@@ -1,0 +1,10 @@
+Command: "D:\phuc\Code Project\DevSecOps-Agent\.venv\Scripts\python.exe" -m mypy src/vulnscan
+
+src\vulnscan\core\stdio_worker.py:30: error: Module has no attribute "CREATE_NO_WINDOW"  [attr-defined]
+src\vulnscan\core\stdio_worker.py:59: error: Module has no attribute "CREATE_NO_WINDOW"  [attr-defined]
+src\vulnscan\decisions\model_worker.py:22: error: Cannot find implementation or library stub for module named "torch"  [import-not-found]
+src\vulnscan\decisions\model_worker.py:22: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+src\vulnscan\scanners\osv_adapter.py:458: error: Returning Any from function declared to return "ScannerResult"  [no-any-return]
+Found 4 errors in 3 files (checked 125 source files)
+
+Exit code: 1

@@ -1,0 +1,4 @@
+Command: "D:\phuc\Code Project\DevSecOps-Agent\.venv\Scripts\python.exe" ci/build_native.py --go "D:\phuc\Code Project\DevSecOps-Agent\.tools\go\bin\go.exe" --all --out "D:\phuc\Code Project\DevSecOps-Agent\.tools\llm-integration-20261104\platforms"
+
+
+Exit code: 0

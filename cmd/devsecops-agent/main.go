@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -25,16 +26,58 @@ import (
 var version = "0.2.0"
 
 func pythonExecutable() string {
+	executable, _ := os.Executable()
+	if resolved, err := filepath.EvalSymlinks(executable); err == nil {
+		executable = resolved
+	}
+	cwd, _ := os.Getwd()
+	return pythonExecutableAt(executable, cwd, runtime.GOOS)
+}
+
+// Anchor discovery on the application before considering the caller's directory.
+// Resolve links to the native binary, but retain Python's venv symlink itself.
+func pythonExecutableAt(executable, cwd, platform string) string {
 	if value := os.Getenv("DEVSECOPS_PYTHON"); value != "" {
 		return value
 	}
-	for _, path := range []string{filepath.Join(".venv", "Scripts", "python.exe"), filepath.Join(".venv", "bin", "python")} {
+	python := filepath.Join("bin", "python")
+	venvs := []string{".venv", ".venv-linux", "venv"}
+	names := []string{"python3", "python"}
+	if platform == "windows" {
+		python = filepath.Join("Scripts", "python.exe")
+		venvs = []string{".venv", "venv"}
+		names = []string{"python", "python3"}
+	}
+	roots := []string{}
+	if executable != "" {
+		directory := filepath.Dir(executable)
+		roots = append(roots, directory, filepath.Dir(directory))
+	}
+	if cwd != "" {
+		roots = append(roots, cwd)
+	}
+	for _, root := range roots {
+		for _, venv := range venvs {
+			path := filepath.Join(root, venv, python)
+			if info, err := os.Stat(path); err == nil && !info.IsDir() {
+				absolute, _ := filepath.Abs(path)
+				return absolute
+			}
+		}
+	}
+	if venv := os.Getenv("VIRTUAL_ENV"); venv != "" {
+		path := filepath.Join(venv, python)
 		if info, err := os.Stat(path); err == nil && !info.IsDir() {
 			absolute, _ := filepath.Abs(path)
 			return absolute
 		}
 	}
-	return "python"
+	for _, name := range names {
+		if path, err := exec.LookPath(name); err == nil {
+			return path
+		}
+	}
+	return names[0]
 }
 func main() { os.Exit(run(os.Args[1:])) }
 func run(args []string) int {
@@ -66,7 +109,8 @@ func run(args []string) int {
 	}
 	flags := flag.NewFlagSet(command, flag.ContinueOnError)
 	db := flags.String("db-path", "vulnscan.db", "SQLite database")
-	checkout := flags.String("checkout", ".", "Local Git checkout")
+	checkout := flags.String("checkout", ".", "Local source folder, repository URL or owner/repo")
+	workdir := flags.String("workdir", "harness", "Repository clone cache directory")
 	profile := flags.String("profile", "", "fast or full")
 	configPath := flags.String("config", "", "Versioned configuration JSON")
 	threshold := flags.String("fail-on", "", "Severity threshold")
@@ -80,6 +124,12 @@ func run(args []string) int {
 	dirty := flags.Bool("allow-dirty", false, "Consent to local dirty content")
 	laya := flags.Bool("laya", false, "Enable advisory Laya routing")
 	layaConfig := flags.String("laya-config", "", "Laya configuration")
+	scanMode := flags.String("mode", "", "deterministic or hunt")
+	provider := flags.String("provider", "", "AI provider profile")
+	providerModel := flags.String("model", "", "AI model override")
+	aiReview := flags.Bool("ai-review", false, "Enable AI finding review")
+	aiReport := flags.Bool("ai-report", false, "Enable an AI-written report")
+	maxAI := flags.Int("max-ai-findings", 0, "Maximum findings sent for AI review")
 	format := flags.String("fmt", "json", "Report format")
 	host := flags.String("host", "127.0.0.1", "Local dashboard host")
 	port := flags.Int("port", 8000, "Dashboard port")
@@ -103,7 +153,7 @@ func run(args []string) int {
 		fmt.Fprintln(os.Stderr, "The dashboard must bind to localhost")
 		return 2
 	}
-	client, err := bridge.Start(pythonExecutable(), *db)
+	client, err := bridge.StartWithEnvironment(pythonExecutable(), *db, pythonEnvironment())
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		return 2
@@ -206,6 +256,18 @@ func run(args []string) int {
 				values["laya"] = *laya
 			case "laya-config":
 				values["laya_config_path"] = *layaConfig
+			case "mode":
+				values["mode"] = *scanMode
+			case "provider":
+				values["provider_profile"] = *provider
+			case "model":
+				values["provider_model"] = *providerModel
+			case "ai-review":
+				values["ai_review"] = *aiReview
+			case "ai-report":
+				values["ai_report"] = *aiReport
+			case "max-ai-findings":
+				values["max_ai_findings"] = *maxAI
 			}
 		})
 		cfg, e := service.Resolve(*profile, *configPath, values)
@@ -216,7 +278,7 @@ func run(args []string) int {
 			data, _ := json.MarshalIndent(cfg, "", "  ")
 			fmt.Println(string(data))
 		}
-		params := map[string]any{"checkout": *checkout, "configuration": cfg, "repo": *repo, "commit": *commit}
+		params := map[string]any{"checkout": *checkout, "workdir": *workdir, "configuration": cfg, "repo": *repo, "commit": *commit}
 		if *publicID != "" {
 			params["public_id"] = *publicID
 		}
@@ -282,6 +344,9 @@ func pythonEnvironment() []string {
 	var userPythonPath string
 	for _, entry := range os.Environ() {
 		key, value, _ := strings.Cut(entry, "=")
+		if runtime.GOOS == "windows" {
+			key = strings.ToUpper(key)
+		}
 		switch key {
 		case "PYTHONPATH":
 			userPythonPath = value
@@ -310,7 +375,7 @@ func pythonSrcDir() string {
 	}
 	venv := filepath.Dir(filepath.Dir(exe))
 	base := filepath.Base(venv)
-	if base != ".venv" && base != "venv" {
+	if base != ".venv" && base != ".venv-linux" && base != "venv" {
 		return "" // not inside a venv; keep the user's PYTHONPATH
 	}
 	src := filepath.Join(filepath.Dir(venv), "src")

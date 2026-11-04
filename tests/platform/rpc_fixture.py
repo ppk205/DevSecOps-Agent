@@ -19,7 +19,12 @@ class SlowAdapter(FixtureAdapter):
         return super().run(spec, workdir=workdir)
 
 
-def main():
+def main(*, notification_settings=None):
+    from vulnscan.notifications import service as notifications
+    from vulnscan.notifications.settings import NotificationSettings
+
+    # Child processes do not inherit pytest monkeypatches. Never load owner rules.
+    notifications.load_settings = lambda: notification_settings or NotificationSettings()
     parser = argparse.ArgumentParser()
     parser.add_argument("--db-path", required=True)
     args = parser.parse_args()
@@ -28,6 +33,10 @@ def main():
     second = SlowAdapter() if os.environ.get("DEVSECOPS_FIXTURE_SLOW") else FixtureAdapter()
     second.tool = ToolName.GITLEAKS
     registry.register(second)
+    if os.environ.get("DEVSECOPS_FIXTURE_NATIVE_HUNT"):
+        from vulnscan.scanners.native_hunt_adapter import NativeHuntAdapter
+
+        registry.register(NativeHuntAdapter())
     with redirect_stdout(sys.stderr):
         service = ScanService(args.db_path, registry)
     ServiceRPC(service).serve()

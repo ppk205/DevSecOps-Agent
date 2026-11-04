@@ -17,7 +17,27 @@ import httpx
 from vulnscan.contracts.provider import ProviderProfile, ProviderUsage
 
 from .budget import BudgetManager
-from .credentials import load_api_key
+from .credentials import load_api_key, redact
+from .events import emit_model_event
+
+
+def _message_text(value: Any) -> str:
+    if isinstance(value, str):
+        return value
+    if isinstance(value, list):
+        return "\n".join(str(part.get("text", "")) for part in value if isinstance(part, dict))
+    return ""
+
+
+def _redact_data(value: Any, secret: str) -> Any:
+    if isinstance(value, str):
+        text = redact(value)
+        return text.replace(secret, "[REDACTED]") if secret else text
+    if isinstance(value, dict):
+        return {key: _redact_data(item, secret) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_redact_data(item, secret) for item in value]
+    return value
 
 
 @dataclass
@@ -38,6 +58,7 @@ class ChatResponse:
     model: str = ""
     finish_reason: str = ""
     raw: dict[str, Any] = field(default_factory=dict)
+    reasoning: str = ""
 
 
 class ProviderClient:
@@ -96,9 +117,17 @@ class ProviderClient:
         if self.budget:
             self.budget.check()
 
+        wire_messages = []
+        for message in messages:
+            wire: dict[str, Any] = {"role": message.role, "content": message.content}
+            if message.tool_calls:
+                wire["tool_calls"] = message.tool_calls
+            if message.tool_call_id:
+                wire["tool_call_id"] = message.tool_call_id
+            wire_messages.append(wire)
         payload: dict[str, Any] = {
             "model": use_model,
-            "messages": [{"role": m.role, "content": m.content} for m in messages],
+            "messages": wire_messages,
             "temperature": temperature,
             "max_tokens": max_tokens,
         }
@@ -106,8 +135,10 @@ class ProviderClient:
             payload["tools"] = tools
             payload["tool_choice"] = tool_choice
 
+        api_key = self._get_key()
+        payload = _redact_data(payload, api_key)
         headers = {
-            "Authorization": f"Bearer {self._get_key()}",
+            "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
         }
         for key, value in (self.profile.headers or {}).items():
@@ -120,12 +151,27 @@ class ProviderClient:
         resp = None
         attempts = max(1, self.profile.max_retries + 1)
         for attempt in range(attempts):
+            emit_model_event(
+                "call",
+                "running",
+                f"Calling {self.profile.id} / {use_model} (attempt {attempt + 1})",
+                provider=self.profile.id,
+                model=use_model,
+            )
             try:
                 with httpx.Client(timeout=self.profile.timeout_seconds) as client:
                     resp = client.post(url, json=payload, headers=headers)
                     resp.raise_for_status()
                 break
             except httpx.HTTPStatusError as exc:
+                emit_model_event(
+                    "call",
+                    "failed",
+                    f"Provider {self.profile.id} returned HTTP {exc.response.status_code}",
+                    provider=self.profile.id,
+                    model=use_model,
+                    usage={},
+                )
                 if exc.response.status_code == 429 and attempt < attempts - 1:
                     import time as _time
 
@@ -137,31 +183,62 @@ class ProviderClient:
                     _time.sleep(min(wait, 120.0))
                     continue
                 raise ProviderError(
-                    f"HTTP {exc.response.status_code} from {self.profile.id}: {exc.response.text[:500]}"
+                    _redact_data(
+                        f"HTTP {exc.response.status_code} from {self.profile.id}: {exc.response.text[:500]}",
+                        api_key,
+                    )
                 ) from exc
             except httpx.RequestError as exc:
-                raise ProviderError(f"Request failed for {self.profile.id}: {exc}") from exc
+                emit_model_event(
+                    "call",
+                    "failed",
+                    f"Provider request failed: {type(exc).__name__}",
+                    provider=self.profile.id,
+                    model=use_model,
+                    usage={},
+                )
+                raise ProviderError(
+                    _redact_data(f"Request failed for {self.profile.id}: {exc}", api_key)
+                ) from exc
+            except (OSError, ValueError, TypeError) as exc:
+                emit_model_event(
+                    "call",
+                    "failed",
+                    f"Provider transport could not start: {type(exc).__name__}",
+                    provider=self.profile.id,
+                    model=use_model,
+                    usage={},
+                )
+                raise ProviderError("Provider transport could not start") from exc
         assert resp is not None
 
-        data = resp.json()
+        try:
+            data = _redact_data(resp.json(), api_key)
+            choice = data.get("choices", [{}])[0]
+            message = choice.get("message", {})
+            reasoning = _message_text(message.get("reasoning_content") or message.get("reasoning"))
+            content = _message_text(message.get("content")) or reasoning
+        except (ValueError, TypeError, AttributeError, IndexError) as exc:
+            emit_model_event(
+                "call",
+                "failed",
+                "Provider returned an invalid response",
+                provider=self.profile.id,
+                model=use_model,
+                usage={},
+            )
+            raise ProviderError("Provider returned an invalid response") from exc
 
         # Parse response (some reasoning gateways put the answer in
         # `reasoning_content`/`reasoning` and leave `content` empty).
-        choice = data.get("choices", [{}])[0]
-        message = choice.get("message", {})
-        content = message.get("content") or ""
-        if not content:
-            content = message.get("reasoning_content") or message.get("reasoning") or ""
-            if isinstance(content, list):
-                content = "\n".join(str(p.get("text", "")) for p in content if isinstance(p, dict))
-
         chat_resp = ChatResponse(
             content=content if isinstance(content, str) else "",
             tool_calls=message.get("tool_calls") or [],
-            usage=data.get("usage", {}),
-            model=data.get("model", use_model),
+            usage=data.get("usage") or {},
+            model=data.get("model") or use_model,
             finish_reason=choice.get("finish_reason", ""),
             raw=data,
+            reasoning=reasoning,
         )
 
         # Record usage
@@ -182,6 +259,26 @@ class ProviderClient:
             )
             self.budget.record(usage)
 
+        # ponytail: call-level progress, not a token-by-token provider stream.
+        explanation = reasoning or chat_resp.content
+        text = f"Response from {self.profile.id} / {chat_resp.model}"
+        if explanation:
+            text += "\nReturned explanation/response:\n" + explanation[:8000]
+        requested = [
+            str(call.get("function", {}).get("name", "unknown"))
+            for call in chat_resp.tool_calls
+            if isinstance(call, dict)
+        ]
+        if requested:
+            text += "\nRequested tools: " + ", ".join(requested)
+        emit_model_event(
+            "call",
+            "completed",
+            text,
+            provider=self.profile.id,
+            model=chat_resp.model,
+            usage=chat_resp.usage,
+        )
         return chat_resp
 
 

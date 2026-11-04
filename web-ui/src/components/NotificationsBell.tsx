@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ackNotification, fetchNotifications } from "../api/client";
 import { useStrings } from "../i18n/lang";
+import { OutboundNotifications } from "./OutboundNotifications";
 
 /**
  * Task 4: header bell with unread-count polling + dropdown panel with ack.
@@ -73,6 +74,7 @@ export function NotificationsBell() {
           className="absolute right-0 z-50 mt-2 w-80 border border-hairline bg-elevated p-3 shadow-lg"
         >
           <p className="label-m mb-2 text-[11px] text-muted">{t.notifications.title}</p>
+          <OutboundNotifications />
           {notifications.length === 0 ? (
             <p data-testid="notifications-empty" className="text-sm text-muted">
               {t.notifications.empty}

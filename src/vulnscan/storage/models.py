@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from sqlalchemy import ForeignKey, Integer, String, Text
+from sqlalchemy import ForeignKey, Integer, String, Text, UniqueConstraint
 from sqlalchemy.engine import Dialect
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy.types import TypeDecorator
@@ -180,3 +180,20 @@ class NotificationORM(Base):
     created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=_utcnow)
 
     run: Mapped[RunORM] = relationship("RunORM")
+
+
+class NotificationDeliveryORM(Base):
+    """One outbound digest per run/channel; an atomic claim prevents duplicates."""
+
+    __tablename__ = "notification_deliveries"
+    __table_args__ = (UniqueConstraint("run_id", "channel"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    run_id: Mapped[int] = mapped_column(ForeignKey("runs.id"))
+    channel: Mapped[str] = mapped_column(String(16))
+    events_json: Mapped[str] = mapped_column(Text, default="[]")
+    selected_events_json: Mapped[str] = mapped_column(Text, default="[]")
+    status: Mapped[str] = mapped_column(String(16), default="pending")
+    detail: Mapped[str] = mapped_column(Text, default="Awaiting event selection")
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=_utcnow)
+    updated_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=_utcnow, onupdate=_utcnow)

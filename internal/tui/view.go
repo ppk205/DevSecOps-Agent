@@ -11,28 +11,32 @@ import (
 )
 
 func (m Model) footer() string {
-	hint := "Tab: next control · Enter: edit or activate · Ctrl+E: review"
+	hint := "Up/Down: controls · Left/Right: views/choices · Enter: edit/activate"
 	switch {
+	case m.notificationPanel != nil:
+		hint = "Up/Down: choose · Enter/Space: toggle or submit · Esc: close"
 	case m.menu:
 		hint = "Up/Down: choose action · Enter: run · Esc: close"
+	case m.keyInput:
+		hint = "Up/Down: key field · Left/Right: cursor · Ctrl+K: save · Esc: back"
 	case m.editing:
-		hint = "Enter/Esc: finish editing · Tab: next · Ctrl+Space: path"
+		hint = "Left/Right: cursor · Up/Down: controls · Enter/Esc: finish editing"
 	case m.tab == 1 && m.reviewMode:
 		hint = "Up/Down/PgUp/PgDown: scroll · V: details · Ctrl+S: start"
 	case m.tab == 0:
-		hint = "Up/Down: run · Enter: inspect · Ctrl+T: retry · Ctrl+O: export"
+		hint = "Up/Down: run · Left/Right: views · Enter: inspect · Ctrl+T: retry"
 	case m.tab == 2:
-		hint = "Up/Down/PgUp/PgDown: scroll · Ctrl+4: findings"
+		hint = "Up/Down/PgUp/PgDown: scroll · Left/Right: views"
 	case m.tab == 3 && m.evidenceFocus:
 		hint = "Up/Down/PgUp/PgDown: scroll · V: raw details · Esc: table"
 	case m.tab == 3 && m.searching:
 		hint = "Type to filter · Enter/Esc: return to findings table"
 	case m.tab == 3:
-		hint = "Enter: details · /: filter · PgUp/PgDown: result pages"
+		hint = "Up/Down: findings · Left/Right: views · Enter: details · /: filter"
 	case m.tab == 4:
-		hint = "Tab: next · Enter: edit/choose · Ctrl+O: export named run"
+		hint = "Up/Down: controls · Left/Right: views/choices · Ctrl+O: export"
 	}
-	global := "Ctrl+K: save key / actions · Ctrl+N: new scan · Ctrl+Q: quit"
+	global := "F6: notifications · F7: send review · Ctrl+K: keys/actions · Ctrl+Q: quit"
 	if m.scanning {
 		global += " · Ctrl+X: cancel"
 	}
@@ -129,7 +133,7 @@ func (m Model) formView() string {
 			if value == "" {
 				value = "(optional)"
 			}
-			if len(choices[control]) > 0 {
+			if len(m.choiceOptions(control)) > 0 {
 				value += "  [Left/Right or Enter to choose]"
 			} else if m.editing && control == m.field {
 				value = m.inputs[control].View()
@@ -141,6 +145,7 @@ func (m Model) formView() string {
 		lines = append(lines, "", "Export target: "+m.runLabel(m.target()))
 	}
 	if m.tab == 1 {
+		lines = append(lines, "", m.modelHint())
 		// API keys (values never shown): entry lives on the Workspace tab
 		// next to the scan configuration it authorizes. Ctrl+K saves from
 		// here (or whenever a key entry is in progress); elsewhere Ctrl+K
@@ -153,9 +158,11 @@ func (m Model) formView() string {
 		nameLabel, valueLabel := "  Variable", "  Value (hidden)"
 		if m.keyInput && m.keysFocus == 0 {
 			nameLabel = "> Variable"
+			focusedLine = len(lines)
 		}
 		if m.keyInput && m.keysFocus == 1 {
 			valueLabel = "> Value (hidden)"
+			focusedLine = len(lines) + 2
 		}
 		lines = append(lines, nameLabel, "  "+m.keysName.View())
 		lines = append(lines, valueLabel, "  "+m.keysValue.View())
@@ -210,7 +217,9 @@ func (m Model) View() tea.View {
 	}
 	height := m.bodyHeight()
 	body := ""
-	if m.menu {
+	if m.notificationPanel != nil {
+		body = m.notificationView(height)
+	} else if m.menu {
 		body = m.menuView()
 	} else {
 		switch m.tab {

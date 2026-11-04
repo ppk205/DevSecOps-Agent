@@ -46,7 +46,7 @@ func (s *Server) Handler() http.Handler {
 		cfg.OutputDir = s.Output
 		checkout := r.FormValue("repository_checkout_path")
 		if checkout == "" {
-			checkout = "."
+			checkout = r.FormValue("target_repository_url")
 		}
 		result, err := s.Backend.Run(r.Context(), map[string]any{"checkout": checkout, "repo": r.FormValue("target_repository_url"), "commit": r.FormValue("target_commit_sha"), "configuration": cfg}, nil)
 		if err != nil {

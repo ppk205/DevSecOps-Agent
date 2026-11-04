@@ -17,6 +17,7 @@ type workflowAPI struct {
 	fakeAPI
 	retried, exported, exportedOutput string
 	configuration                     any
+	parameters                        map[string]any
 }
 
 func (f *workflowAPI) History(context.Context) ([]service.RunSummary, error) {
@@ -38,7 +39,28 @@ func (f *workflowAPI) Review(_ context.Context, checkout string, config service.
 }
 func (f *workflowAPI) Run(_ context.Context, params map[string]any, _ func(bridge.Event)) (map[string]any, error) {
 	f.configuration = params["configuration"]
+	f.parameters = params
 	return map[string]any{"id": 3, "run_id": "run-new", "status": "completed", "gate": "passed", "exit_code": 0, "findings": 1}, nil
+}
+
+func TestFR01RemoteReviewStartsTheResolvedCheckoutAndPinnedCommit(t *testing.T) {
+	m, api := readyWorkflow(t)
+	url, checkout, commit := "https://example.test/owner/repo.git", t.TempDir(), strings.Repeat("a", 40)
+	m.inputs[0].SetValue(url)
+	result := reviewResult{config: service.Defaults(), signature: m.signature(), target: url,
+		result: map[string]any{"manifest": map[string]any{"resolved_checkout": checkout, "repo_url": url, "commit": commit, "source_kind": "remote"}}}
+	updated, _ := m.Update(loaded{kind: "review", generation: m.reviewGeneration, value: result})
+	m = updated.(Model)
+	if m.reviewedTarget() != checkout {
+		t.Fatalf("reviewed target = %q, want resolved local checkout %q", m.reviewedTarget(), checkout)
+	}
+	if !strings.Contains(m.reviewText, "Repository URL") || !strings.Contains(m.reviewText, checkout) {
+		t.Fatalf("review does not distinguish the remote repository and checkout: %s", m.reviewText)
+	}
+	m = press(m, ctrl('s'))
+	if api.parameters["checkout"] != checkout || api.parameters["repo"] != url || api.parameters["commit"] != commit {
+		t.Fatalf("scan lost its reviewed source: %#v", api.parameters)
+	}
 }
 func (f *workflowAPI) Retry(_ context.Context, id string, _ func(bridge.Event)) (map[string]any, error) {
 	f.retried = id
@@ -48,7 +70,7 @@ func (f *workflowAPI) Export(_ context.Context, id, format, output string) (stri
 	f.exported, f.exportedOutput = id, output
 	return output + "/export." + format, nil
 }
-func (f *workflowAPI) EnvList(context.Context) ([]string, error) { return nil, nil }
+func (f *workflowAPI) EnvList(context.Context) ([]string, error)    { return nil, nil }
 func (f *workflowAPI) EnvSet(context.Context, string, string) error { return nil }
 func keyState(m Model, key tea.KeyPressMsg) (Model, tea.Cmd) {
 	state, cmd := m.Update(key)
@@ -118,11 +140,15 @@ func TestFR71QR21KeyboardWorkflowReviewInspectExport(t *testing.T) {
 	m, _ = keyState(m, ctrl('n'))
 	updated, _ := m.Update(tea.PasteMsg{Content: "-fixture"})
 	m = updated.(Model)
-	m = press(m, tea.KeyPressMsg{Code: tea.KeyTab}) // Profile.
-	m = press(m, tea.KeyPressMsg{Code: tea.KeyTab}) // Advanced.
+	m = press(m, tea.KeyPressMsg{Code: tea.KeyDown}) // Profile.
+	m = press(m, tea.KeyPressMsg{Code: tea.KeyDown}) // Scan mode.
+	m = press(m, tea.KeyPressMsg{Code: tea.KeyDown}) // Advanced.
 	m = press(m, tea.KeyPressMsg{Code: tea.KeyEnter})
 	for i := 0; i < 4; i++ {
-		m = press(m, tea.KeyPressMsg{Code: tea.KeyTab}) // Output directory.
+		m = press(m, tea.KeyPressMsg{Code: tea.KeyDown}) // Output directory.
+	}
+	if !m.advanced || m.field != 5 {
+		t.Fatal("arrow navigation did not reach the artifact directory")
 	}
 	m, _ = keyState(m, tea.KeyPressMsg{Code: tea.KeyEnter})
 	m = press(m, ctrl('u'))
@@ -161,10 +187,11 @@ func TestFR71QR21KeyboardWorkflowReviewInspectExport(t *testing.T) {
 		t.Fatal("keyboard quit was inaccessible")
 	}
 }
-func TestFR71ReviewSurvivesCursorMovementButRejectsEdits(t *testing.T) {
+func TestFR71ReviewSurvivesControlMovementButRejectsEdits(t *testing.T) {
 	m, _ := readyWorkflow(t)
 	m, pending := keyState(m, ctrl('e'))
-	m = press(m, tea.KeyPressMsg{Code: tea.KeyLeft})
+	m = press(m, tea.KeyPressMsg{Code: tea.KeyDown})
+	m = press(m, tea.KeyPressMsg{Code: tea.KeyUp})
 	m = deliver(m, pending)
 	if m.reviewed == nil {
 		t.Fatal("cursor movement discarded a valid review")

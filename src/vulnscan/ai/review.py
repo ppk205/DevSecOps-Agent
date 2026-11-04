@@ -243,6 +243,9 @@ def build_review_agent(
     at call time; it is never stored, logged, or embedded in any artifact.
     """
     profile = load_profile(profile_id)
+    selected_model = model or profile.default_model or next(iter(profile.models), None)
+    if not selected_model:
+        raise ProviderError("The selected provider profile has no configured model")
     own_budget = budget or BudgetManager()
     client = ProviderClient(profile, own_budget)
     loop = AgentLoop(
@@ -250,7 +253,7 @@ def build_review_agent(
         tool_handlers,
         max_followups=max_followups,
         provider_id=profile.id,
-        model_id=model or profile.default_model or "unknown",
+        model_id=selected_model,
         model_version="v1",
     )
     return loop, client, profile, own_budget

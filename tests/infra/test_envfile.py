@@ -20,6 +20,19 @@ def test_mask_secret_empty_stays_empty():
     assert mask_secret("") == ""
 
 
+def test_saved_key_rotation_refreshes_only_a_file_loaded_runtime_value(tmp_path, monkeypatch):
+    name = "TEST_ROTATED_MODEL_KEY"
+    monkeypatch.delenv(name, raising=False)
+    env = EnvFile(tmp_path / ".env")
+    env.set(name, "synthetic-initial-value")
+    env.load_into_environ()
+    env.set(name, "synthetic-updated-value")
+    assert os.environ[name] == "synthetic-updated-value"
+    monkeypatch.setenv(name, "external-process-value")
+    env.set(name, "synthetic-stored-value")
+    assert os.environ[name] == "external-process-value"
+
+
 def test_envfile_roundtrip(tmp_path, monkeypatch):
     env = EnvFile(tmp_path / ".env")
     env.set("TEST_API_KEY", "super-secret-123")

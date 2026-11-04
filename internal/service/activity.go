@@ -27,6 +27,8 @@ func (s *Store) Activity(ctx context.Context, id string) (RunActivity, error) {
 		'exit_code', json_extract(result_json,'$.exit_code'),
 		'findings', (SELECT count(*) FROM findings WHERE run_id=runs.id),
 		'errors', json_extract(result_json,'$.errors'),
+		'ai_usage', json_extract(result_json,'$.ai_usage'),
+		'ai_assessment_count', json_array_length(result_json,'$.assessments'),
 		'reports', json_extract(result_json,'$.reports'),
 		'summary_path', json_extract(result_json,'$.summary_path'))
 		FROM runs WHERE id=?`, info.ID).Scan(&events, &result)

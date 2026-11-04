@@ -1,0 +1,10 @@
+[
+  {
+    "check": "focused-ai",
+    "exit_code": 0
+  },
+  {
+    "check": "launch-source-regressions",
+    "exit_code": 0
+  }
+]

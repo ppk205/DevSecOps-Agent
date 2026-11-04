@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import threading
 from contextlib import redirect_stdout
@@ -17,11 +18,13 @@ from typing import Any
 from filelock import FileLock, Timeout
 
 from vulnscan.contracts import ExportFormat
-from vulnscan.core.config import ScanConfig, resolve_config
+from vulnscan.core.config import ScanConfig, resolve_config, resolve_model_config
 from vulnscan.core.scan_service import ScanService, checkout_manifest
 from vulnscan.core.security import sanitize
-from vulnscan.core.source import resolve_source
+from vulnscan.core.source import RemoteSource, resolve_source
 from vulnscan.core.stdio_worker import MAX_MESSAGE_BYTES, PROTOCOL_VERSION
+from vulnscan.infra.envfile import EnvFile
+from vulnscan.providers.profile_store import list_profiles, load_profile
 from vulnscan.scanners.process import ScanCancelled, _cancel_check
 from vulnscan.version import APP_VERSION
 
@@ -62,6 +65,10 @@ class ServiceRPC:
         self, method: str, params: dict[str, Any], identifier: str, cancel: threading.Event
     ) -> Any:
         pk = str(params.get("run_id", ""))
+        if method == "notification":
+            from vulnscan.notifications.service import handle
+
+            return handle(self.service.db_path, params)
         if method == "render_page":
             from pathlib import Path
 
@@ -208,7 +215,7 @@ class ServiceRPC:
                 params.get("profile"), params.get("config_path"), **params.get("flags", {})
             ).model_dump()
         if method == "review":
-            config = ScanConfig.model_validate(params["configuration"])
+            config = resolve_model_config(ScanConfig.model_validate(params["configuration"]))
             source = resolve_source(
                 str(params["checkout"]),
                 str(params.get("workdir", "harness")),
@@ -224,7 +231,51 @@ class ServiceRPC:
             manifest["resolved_checkout"] = source.checkout
             manifest["repo_url"] = source.repo_url
             manifest["commit_sha"] = source.commit
-            return {"manifest": manifest, "configuration": config.model_dump()}
+            manifest["source_kind"] = "remote" if isinstance(source, RemoteSource) else "local"
+            enabled = config.mode == "hunt" or config.ai_review or config.ai_report
+            info: dict[str, Any] = {
+                "enabled": enabled,
+                "status": "disabled",
+                "key_set": False,
+                "provider": config.provider_profile,
+                "model": config.provider_model,
+                "detail": "AI support is disabled for this scan",
+            }
+            if enabled:
+                info.update(status="unavailable", detail="No keyed provider profile is available")
+                if config.provider_profile:
+                    try:
+                        profile = load_profile(config.provider_profile)
+                        key_set = bool(os.environ.get(profile.api_key_env, "").strip())
+                        info.update(
+                            key_set=key_set,
+                            status="ready" if key_set else "unavailable",
+                            detail="Source excerpts will be sent to the selected provider"
+                            if key_set
+                            else "The selected provider has no runtime API key",
+                        )
+                        if not config.provider_model:
+                            info.update(
+                                status="unavailable",
+                                detail="The selected provider profile has no configured model",
+                            )
+                    except (FileNotFoundError, ValueError):
+                        info["detail"] = "The selected provider profile is unavailable"
+            return {"manifest": manifest, "configuration": config.model_dump(), "ai_support": info}
+        if method == "model_profiles":
+            EnvFile().load_into_environ()
+            return {
+                "profiles": [
+                    {
+                        "id": profile.id,
+                        "label": profile.label,
+                        "models": profile.models,
+                        "default_model": profile.default_model or next(iter(profile.models), ""),
+                        "key_set": bool(os.environ.get(profile.api_key_env, "").strip()),
+                    }
+                    for profile in list_profiles()
+                ]
+            }
         if method == "capabilities":
             return [
                 asdict(adapter.capabilities())
@@ -233,19 +284,17 @@ class ServiceRPC:
         if method == "env_list":
             # Keys management: return ONLY variable names — values never
             # cross the RPC boundary (project .env, gitignored).
-            from vulnscan.infra.envfile import EnvFile
-
             env = EnvFile()
             return {"names": env.names(), "path": str(env.path)}
         if method == "env_set":
             # Save a secret to the project-local .env (permissions 0600).
             # The raw value is accepted here but NEVER returned or logged;
             # callers must pass it through and drop their copy afterwards.
-            from vulnscan.infra.envfile import EnvFile
-
             name = str(params.get("name", "")).strip()
             value = str(params.get("value", ""))
-            path = EnvFile().set(name, value)
+            env = EnvFile()
+            path = env.set(name, value)
+            env.load_into_environ()
             return {"name": name.strip().upper().replace("-", "_"), "path": str(path)}
         if method == "cancel":
             self.service.cancel(pk)
@@ -274,11 +323,16 @@ class ServiceRPC:
             if method == "retry":
                 result = self.service.retry(pk, progress, cancel_signal=cancel.is_set)
             else:
-                result = self.service.run(
+                source = resolve_source(
                     str(params["checkout"]),
-                    ScanConfig.model_validate(params["configuration"]),
-                    repo=str(params.get("repo", "local")),
-                    expected_commit=str(params.get("commit", "")),
+                    str(params.get("workdir", "harness")),
+                    commit=str(params.get("commit", "")),
+                )
+                result = self.service.run(
+                    source.checkout,
+                    resolve_model_config(ScanConfig.model_validate(params["configuration"])),
+                    repo=str(params.get("repo") or source.repo_url),
+                    expected_commit=source.commit,
                     public_id=params.get("public_id"),
                     on_event=progress,
                     cancel_signal=cancel.is_set,

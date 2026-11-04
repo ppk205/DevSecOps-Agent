@@ -1,11 +1,11 @@
 {% extends "base.html" %}{% block title %}Targets · DevSecOps Agent{% endblock %}
 {% block content %}
-<h1>Target registration</h1><p class="muted">Pin a revision before scanning. Moving refs such as HEAD or main are rejected.</p><div class="rule"></div>
+<h1>Target registration</h1><p class="muted">Choose a local source folder or repository URL. Git checkouts record their commit. Folders without a Git revision use file hashes. A commit pin requires Git.</p><div class="rule"></div>
 <section class="panel"><form method="post" action="/scans">
   <input type="hidden" name="_csrf" value="{{ csrf_token }}">
-  <label for="target_repository_url">Repository URL</label><input id="target_repository_url" name="target_repository_url" type="url" required>
-  <label for="target_commit_sha">Commit SHA</label><input id="target_commit_sha" name="target_commit_sha" minlength="7" required>
-  <label for="repository_checkout_path">Checkout path</label><input id="repository_checkout_path" name="repository_checkout_path" value=".">
+  <label for="target_repository_url">Repository URL or local folder</label><input id="target_repository_url" name="target_repository_url" type="text" required placeholder="https://host/owner/repo or a local source folder">
+  <label for="target_commit_sha">Commit SHA (optional)</label><input id="target_commit_sha" name="target_commit_sha" minlength="7">
+  <label for="repository_checkout_path">Local checkout override (optional)</label><input id="repository_checkout_path" name="repository_checkout_path" placeholder="Leave blank to resolve the source above">
   <div class="actions"><button type="submit">Queue scan</button></div>
 </form></section>
 <h2>Recent runs</h2>

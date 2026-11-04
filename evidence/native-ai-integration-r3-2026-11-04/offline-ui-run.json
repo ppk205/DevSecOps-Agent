@@ -1,0 +1,353 @@
+{
+  "verification_type": "offline synthetic HTTP provider and scanner fixtures",
+  "live_provider_called": false,
+  "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+  "status": "completed",
+  "gate": "passed",
+  "model_calls": [
+    {
+      "stage": "model_hunt",
+      "status": "completed",
+      "provider": "offline-native",
+      "model": "fixture-model",
+      "usage": {
+        "prompt_tokens": 7,
+        "completion_tokens": 5,
+        "total_tokens": 12
+      }
+    },
+    {
+      "stage": "model_hunt",
+      "status": "completed",
+      "provider": "offline-native",
+      "model": "fixture-model",
+      "usage": {
+        "prompt_tokens": 7,
+        "completion_tokens": 5,
+        "total_tokens": 12
+      }
+    },
+    {
+      "stage": "model_hunt",
+      "status": "completed",
+      "provider": "offline-native",
+      "model": "fixture-model",
+      "usage": {
+        "prompt_tokens": 7,
+        "completion_tokens": 5,
+        "total_tokens": 12
+      }
+    },
+    {
+      "stage": "model_hunt",
+      "status": "completed",
+      "provider": "offline-native",
+      "model": "fixture-model",
+      "usage": {
+        "prompt_tokens": 7,
+        "completion_tokens": 5,
+        "total_tokens": 12
+      }
+    },
+    {
+      "stage": "targeted_deep_analysis",
+      "status": "completed",
+      "provider": "offline-native",
+      "model": "fixture-model",
+      "usage": {
+        "prompt_tokens": 7,
+        "completion_tokens": 5,
+        "total_tokens": 12
+      }
+    },
+    {
+      "stage": "targeted_deep_analysis",
+      "status": "completed",
+      "provider": "offline-native",
+      "model": "fixture-model",
+      "usage": {
+        "prompt_tokens": 7,
+        "completion_tokens": 5,
+        "total_tokens": 12
+      }
+    },
+    {
+      "stage": "targeted_deep_analysis",
+      "status": "completed",
+      "provider": "offline-native",
+      "model": "fixture-model",
+      "usage": {
+        "prompt_tokens": 7,
+        "completion_tokens": 5,
+        "total_tokens": 12
+      }
+    },
+    {
+      "stage": "final_report",
+      "status": "completed",
+      "provider": "offline-native",
+      "model": "fixture-model",
+      "usage": {
+        "prompt_tokens": 7,
+        "completion_tokens": 5,
+        "total_tokens": 12
+      }
+    }
+  ],
+  "ai_usage": {
+    "total_budget": 50.0,
+    "total_spent": 0.0,
+    "available": 50.0,
+    "spent_offline-native": 0.0,
+    "requests": 8,
+    "completed_requests": 8,
+    "failed_requests": 0,
+    "usage_reported_requests": 8,
+    "cost_usd": null,
+    "prompt_tokens": 56,
+    "completion_tokens": 40,
+    "total_tokens": 96
+  },
+  "assessments": [
+    {
+      "version": "0.1.0",
+      "assessment_id": "assess-1756ba048eb70442-ai",
+      "finding_id": "1756ba048eb70442",
+      "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+      "proposed_status": "unresolved",
+      "proposed_severity": "undetermined",
+      "cwe_category": null,
+      "cvss": null,
+      "confidence": 0.4,
+      "assumptions": [],
+      "rationale": "Fixture explanation: evidence needs human review.",
+      "evidence_refs": [
+        "semgrep-test",
+        "gitleaks-test"
+      ],
+      "evidence_strength": "none",
+      "validation_outcome": "not_verified",
+      "validation_decision_id": "val-1756ba048eb70442",
+      "model_id": "fixture-model",
+      "model_version": "v1",
+      "provider_id": "offline-native",
+      "context_evidence_id": null,
+      "created_at": "2026-11-04T01:17:58.038683Z",
+      "metadata": {
+        "tool_calls_made": 1,
+        "total_tokens": 24
+      }
+    }
+  ],
+  "validation_decisions": [
+    {
+      "version": "0.1.0",
+      "decision_id": "val-1756ba048eb70442",
+      "finding_id": "1756ba048eb70442",
+      "previous_status": "unprocessed",
+      "new_status": "confirmed",
+      "outcome": "not_verified",
+      "evidence_refs": [
+        "ev-1756ba048eb70442-semgrep-test",
+        "ev-1756ba048eb70442-gitleaks-test",
+        "ev-1756ba048eb70442-model"
+      ],
+      "evidence_strength": "moderate",
+      "rationale": "Confirmed with 2 supporting evidence (0 verification demonstrations).",
+      "decided_by": "independent-validator",
+      "decided_at": "2026-11-04T01:17:58.078419Z",
+      "metadata": {}
+    }
+  ],
+  "model_events": [
+    {
+      "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+      "stage": "model_hunt",
+      "status": "running",
+      "timestamp": "2026-11-04T01:17:57.537713+00:00",
+      "message": "Model exploring snapshot for vulnerabilities",
+      "pk": 1,
+      "sequence": 3
+    },
+    {
+      "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+      "stage": "model_call",
+      "status": "running",
+      "timestamp": "2026-11-04T01:17:57.571178+00:00",
+      "message": "model_hunt \u00b7 Calling offline-native / fixture-model (attempt 1)",
+      "pk": 1,
+      "sequence": 4
+    },
+    {
+      "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+      "stage": "model_call",
+      "status": "completed",
+      "timestamp": "2026-11-04T01:17:57.577812+00:00",
+      "message": "model_hunt \u00b7 Response from offline-native / fixture-model\nReturned explanation/response:\nFixture explanation: inspect cited source and preserve uncertainty.",
+      "pk": 1,
+      "sequence": 5
+    },
+    {
+      "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+      "stage": "model_call",
+      "status": "running",
+      "timestamp": "2026-11-04T01:17:57.589812+00:00",
+      "message": "model_hunt \u00b7 Calling offline-native / fixture-model (attempt 1)",
+      "pk": 1,
+      "sequence": 6
+    },
+    {
+      "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+      "stage": "model_call",
+      "status": "completed",
+      "timestamp": "2026-11-04T01:17:57.596663+00:00",
+      "message": "model_hunt \u00b7 Response from offline-native / fixture-model\nReturned explanation/response:\nFixture explanation: inspect cited source and preserve uncertainty.",
+      "pk": 1,
+      "sequence": 7
+    },
+    {
+      "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+      "stage": "model_call",
+      "status": "running",
+      "timestamp": "2026-11-04T01:17:57.615241+00:00",
+      "message": "model_hunt \u00b7 Calling offline-native / fixture-model (attempt 1)",
+      "pk": 1,
+      "sequence": 8
+    },
+    {
+      "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+      "stage": "model_call",
+      "status": "completed",
+      "timestamp": "2026-11-04T01:17:57.623469+00:00",
+      "message": "model_hunt \u00b7 Response from offline-native / fixture-model\nReturned explanation/response:\nFixture explanation: inspect cited source and preserve uncertainty.",
+      "pk": 1,
+      "sequence": 9
+    },
+    {
+      "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+      "stage": "model_call",
+      "status": "running",
+      "timestamp": "2026-11-04T01:17:57.635975+00:00",
+      "message": "model_hunt \u00b7 Calling offline-native / fixture-model (attempt 1)",
+      "pk": 1,
+      "sequence": 10
+    },
+    {
+      "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+      "stage": "model_call",
+      "status": "completed",
+      "timestamp": "2026-11-04T01:17:57.643324+00:00",
+      "message": "model_hunt \u00b7 Response from offline-native / fixture-model\nReturned explanation/response:\nFixture explanation: inspect cited source and preserve uncertainty.",
+      "pk": 1,
+      "sequence": 11
+    },
+    {
+      "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+      "stage": "model_hunt",
+      "status": "completed",
+      "timestamp": "2026-11-04T01:17:57.650629+00:00",
+      "message": "1 candidates in 4 rounds (1 candidates from 2 passes (java:1, logic:1))",
+      "pk": 1,
+      "sequence": 12
+    },
+    {
+      "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+      "stage": "model_call",
+      "status": "running",
+      "timestamp": "2026-11-04T01:17:57.932248+00:00",
+      "message": "targeted_deep_analysis \u00b7 Calling offline-native / fixture-model (attempt 1)",
+      "pk": 1,
+      "sequence": 24
+    },
+    {
+      "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+      "stage": "model_call",
+      "status": "completed",
+      "timestamp": "2026-11-04T01:17:57.951514+00:00",
+      "message": "targeted_deep_analysis \u00b7 Response from offline-native / fixture-model\nReturned explanation/response:\nFixture explanation: inspect cited source and preserve uncertainty.\nRequested tools: inspect_code",
+      "pk": 1,
+      "sequence": 25
+    },
+    {
+      "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+      "stage": "model_tool",
+      "status": "completed",
+      "timestamp": "2026-11-04T01:17:57.970557+00:00",
+      "message": "targeted_deep_analysis \u00b7 Investigation tool inspect_code: completed",
+      "pk": 1,
+      "sequence": 26
+    },
+    {
+      "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+      "stage": "model_call",
+      "status": "running",
+      "timestamp": "2026-11-04T01:17:57.993561+00:00",
+      "message": "targeted_deep_analysis \u00b7 Calling offline-native / fixture-model (attempt 1)",
+      "pk": 1,
+      "sequence": 27
+    },
+    {
+      "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+      "stage": "model_call",
+      "status": "completed",
+      "timestamp": "2026-11-04T01:17:58.020628+00:00",
+      "message": "targeted_deep_analysis \u00b7 Response from offline-native / fixture-model\nReturned explanation/response:\nFixture explanation: inspect cited source and preserve uncertainty.",
+      "pk": 1,
+      "sequence": 28
+    },
+    {
+      "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+      "stage": "model_call",
+      "status": "running",
+      "timestamp": "2026-11-04T01:17:58.041255+00:00",
+      "message": "targeted_deep_analysis \u00b7 Calling offline-native / fixture-model (attempt 1)",
+      "pk": 1,
+      "sequence": 29
+    },
+    {
+      "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+      "stage": "model_call",
+      "status": "completed",
+      "timestamp": "2026-11-04T01:17:58.059800+00:00",
+      "message": "targeted_deep_analysis \u00b7 Response from offline-native / fixture-model\nReturned explanation/response:\nFixture explanation: inspect cited source and preserve uncertainty.",
+      "pk": 1,
+      "sequence": 30
+    },
+    {
+      "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+      "stage": "targeted_deep_analysis",
+      "status": "completed",
+      "timestamp": "2026-11-04T01:17:58.078419+00:00",
+      "message": "1 investigated, 1 confirmed, 0 rejected, 0 unresolved",
+      "pk": 1,
+      "sequence": 31
+    },
+    {
+      "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+      "stage": "model_call",
+      "status": "running",
+      "timestamp": "2026-11-04T01:17:58.123015+00:00",
+      "message": "final_report \u00b7 Calling offline-native / fixture-model (attempt 1)",
+      "pk": 1,
+      "sequence": 33
+    },
+    {
+      "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+      "stage": "model_call",
+      "status": "completed",
+      "timestamp": "2026-11-04T01:17:58.143158+00:00",
+      "message": "final_report \u00b7 Response from offline-native / fixture-model\nReturned explanation/response:\nFixture explanation: inspect cited source and preserve uncertainty.",
+      "pk": 1,
+      "sequence": 34
+    },
+    {
+      "run_id": "run-789bf6eb97334f578460b89c7a2f2669",
+      "stage": "final_report",
+      "status": "completed",
+      "timestamp": "2026-11-04T01:17:58.163938+00:00",
+      "message": "12 reported tokens",
+      "pk": 1,
+      "sequence": 35
+    }
+  ]
+}

@@ -1,11 +1,11 @@
 # DevSecOps-Agent
 
-Automated vulnerability scanning and severity assessment for **web projects**
-— **Java/Servlet/JSP, JavaScript/TypeScript, Python, and PHP** — powered by a
-multi-scanner pipeline with model-first hunting, Agentic AI analysis,
-independent mechanical verification, an AI-written final report, and
-AI-generated fix proposals. Single-user, local-only: everything runs on your
-machine, API keys stay in your shell and never in the repo.
+Source analysis for **Java/Servlet/JSP, JavaScript/TypeScript, Python and PHP**.
+The application combines the native-hunt analyzer, scanner baselines, AI support
+for investigation, independent validation, reports and fix proposals. It runs
+as a single-user local application. Enabled AI stages can send source excerpts
+to the configured provider. Keys use masked entry and local environment storage;
+profiles contain credential variable references.
 
 ```
 CLI (Typer) ─┬─ deterministic lane ──────────────────────────────┐
@@ -20,7 +20,8 @@ CLI (Typer) ─┬─ deterministic lane ─────────────
 
 ## Quickstart
 
-Prerequisites: Python 3.11+, Git, Node 18+ (web UI only). Java 11+ only if
+Prerequisites: Python 3.11+, Node 18+ (web UI only). Git is needed for URLs,
+commit verification and CI; plain local folders work without it. Java 11+ only if
 you want the DEEP profile (SpotBugs). Semgrep and Gitleaks resolve via `PATH`
 with a `sys.prefix` fallback (`pip install semgrep`, Gitleaks binary next to
 the venv).
@@ -35,7 +36,7 @@ uv sync --frozen --extra dev --extra scanners --extra laya
 
 # 1) Scan from the terminal (deterministic, no key needed)
 devsecops-agent scan-run --checkout /path/to/repo --out artifacts/demo \
-  --profile fast --db-path scans.db --allow-dirty
+  --profile fast --db-path scans.db --allow-dirty --mode deterministic --no-laya
 
 # 2) Or use the web UI
 devsecops-agent serve --host 127.0.0.1 --port 8000   # backend
@@ -53,8 +54,21 @@ arrow/page keys; **V** shows raw details. See the
 
 The default Textual workspace retains repository URL input, pinned commits,
 clone-cache settings and the API Keys tab. Set `DEVSECOPS_NATIVE=go` to use the
-native TUI for local checkouts; `DEVSECOPS_NATIVE=python` selects Python for
+native TUI for repository URLs and local source folders; `DEVSECOPS_NATIVE=python` selects Python for
 all commands. The `devsec` alias is also available.
+
+The native executable in `bin` discovers the project's virtual environment from
+its own location, including when launched from another directory. Set
+`DEVSECOPS_PYTHON` to select a different Python environment with the application
+installed. See [native build and launch](docs/NATIVE-MIGRATION.md#build-and-launch)
+for platform layouts and fallback behavior.
+
+Repository input accepts local paths (including quoted paths with spaces),
+HTTPS/SSH/Git URLs and `owner/repo` shorthand. Existing local folders take
+precedence over shorthand; prefix a path with `./` or `../` to keep it local.
+Plain source folders also work without Git: reports record `no-revision`, the
+reason, and file hashes. Git is required to clone URLs, verify commit pins or
+pass CI source checks. See [source input](docs/NATIVE-MIGRATION.md#source-input).
 
 ## Overview
 
@@ -176,7 +190,7 @@ DevSecOps-Agent/
 | PHP | 20 Semgrep rules (SQLi concat, reflected XSS, command injection, XXE, open redirect, create_function, dynamic callable, parse_str/extract pollution, preg /e, phar wrapper, session fixation, JWT, weak random, eval) |
 | Secrets/credentials | Gitleaks, all languages and docs |
 | Java dependencies | OWASP Dependency-Check (DEEP profile), with **OSV.dev fallback** when the binary/NVD is unavailable |
-| Notifications | In-app bell + read/unread feed, optional gate-fail webhook |
+| Notifications | In-app bell plus selectable Telegram/Discord digests; automatic or manual delivery with retained status |
 | Targeted verification probes | Opt-in HTTP probes (reflected-XSS canary, SQL-error signatures) as extra evidence — never auto-findings |
 | Model-first hunt (`--mode hunt`) | Multi-pass, one per extension family present (java/js-ts/py/php) + generic fallback for other text + logic pass ON (authZ/session/crypto); findings carry an origin chip (model/scanner/both), model-only candidates land in hunt.json + final report for human review |
 | DAST / runtime attacks | **Not supported** — static analysis only |
@@ -194,7 +208,7 @@ single batched Semgrep run per language, no cross-language false positives).
 - Python 3.11 or later
 - Java 11+ (for Semgrep, SpotBugs, and target application analysis)
 - Maven 3.6+ (for target application builds)
-- Git
+- Git (repository URLs, commit verification and CI; optional for plain local folders)
 
 ### Setup
 
@@ -221,28 +235,36 @@ pip install -e ".[dev,scanners]"
 
 ### Configuration
 
-AI keys are **bring-your-own** and never stored in the repo. Register a
-provider profile once, then export the key in your shell:
+Register an OpenAI-compatible Chat Completions profile using your endpoint and
+model name. The following endpoint and model are placeholders:
 
 ```bash
-# Register a profile (writes .providers/kios-free.json; gitignored)
-devsecops-agent provider-add --id kios-free --base-url https://kiosapi.com/v1 \
-  --api-key-env KIOS_API_KEY --models beam-free --default-model beam-free
-
-# Export the key for this shell only (never commit it)
-export KIOS_API_KEY='<paste-key-here>'        # git-bash / Linux
-# setx KIOS_API_KEY "<paste-key-here>"         # Windows cmd (new shells)
-
-# Models that must route through a session header (opencode go gateway)
-# declare it in the profile's "headers", e.g. {"x-opencode-session": "..."}
-
-Known-good setups: **KiosAPI free** (3 req/min; reasoning-only models often
-return empty content — prefer instruct models) and **opencode go gateway**
-(`https://opencode.ai/zen/go/v1`, model `iceman-contributor-free` follows
-hunt JSON reliably, no call limit). Free-tier rate limits surface as slow
-stages with backoff, never silent corruption. The Keys page never shows
-secrets back — only the env var name and a masked fingerprint.
+devsecops-agent provider-add --id my-provider \
+  --base-url https://your-provider.example/v1 \
+  --api-key-env MY_PROVIDER_API_KEY --models your-model --default-model your-model
+devsecops-agent env set MY_PROVIDER_API_KEY
 ```
+
+The key command prompts without echoing the value. Native Workspace also has
+masked key entry. Profiles are local JSON under `.providers`; keys can be saved
+through `EnvFile` in the local gitignored `.env`. Profiles and keys resolve from
+the project root when launching inside `bin`. An externally injected process
+value takes precedence. Updating a key loaded from the same local file refreshes
+it for subsequent scans. The application does not encrypt these files.
+
+In the native EXE, select **Hunt** in **Scan mode**, choose a provider profile,
+and optionally enter a model override. Review with **Ctrl+E**, check the provider,
+model and key status, then start with **Ctrl+S**. Hunt includes AI review and the
+final narrative. For review or report support without hunting, keep deterministic
+mode and enable the corresponding controls in Advanced. Saving a key alone does
+not enable native model calls.
+
+**Activity** shows model requests, returned explanations and tool steps as calls
+finish. Open a finding with **Enter** to inspect its retained AI rationale and
+proposed status. Reported token counts are retained; omitted usage and monetary
+cost are shown as unavailable. This is call-level progress; token-by-token
+streaming is not implemented. See [native AI support](docs/NATIVE-MIGRATION.md#ai-support)
+and the [verification record](docs/NATIVE-AI-VERIFICATION-2026-11-04.md).
 
 Scanner binaries resolve via `PATH` with a `sys.prefix` fallback; install them
 once (Semgrep: `pip install semgrep`, Gitleaks/SpotBugs/ODC from their
@@ -253,18 +275,19 @@ upstream releases). Local dirty checkouts require `--allow-dirty`.
 ### CLI
 
 ```bash
-# Deterministic scan (Semgrep + Gitleaks)
+# Model-free scan (native-hunt + Semgrep + Gitleaks)
 devsecops-agent scan-run --checkout /path/to/repo --out artifacts/demo \
-  --profile fast --db-path scans.db --allow-dirty
+  --profile fast --db-path scans.db --allow-dirty --mode deterministic --no-laya
 
 # + targeted AI review and AI-written final report (needs a provider profile)
 devsecops-agent scan-run --checkout /path/to/repo --out artifacts/demo-ai \
-  --ai-review --provider kios-free --model beam-free --max-ai-findings 2 --ai-report
+  --mode deterministic --no-laya --ai-review --provider my-provider \
+  --model your-model --max-ai-findings 2 --ai-report
 
 # Model-first hunt: the model hunts with read-only tools, scanners verify,
 # Laya routes, AI reviews, validator confirms, report is written for humans
 devsecops-agent scan-run --checkout /path/to/repo --out artifacts/demo-hunt \
-  --mode hunt --provider opencode-free --model iceman-contributor-free \
+  --mode hunt --provider my-provider --model your-model \
   --max-ai-findings 5 --ai-report
 
 # Export retained evidence without rerunning scanners
@@ -341,7 +364,7 @@ Two lanes, one gate:
   & dedup. `native-hunt` is the in-house engine (regex + intra-file taint,
   90 rules across java/js-ts/py/php, no external binary); Semgrep/SpotBugs
   stay as baseline oracles for evaluation, not the primary evidence.
-- **Model-first lane** (`--mode hunt`, default): the model hunts the snapshot
+- **Model-first lane** (`--mode hunt`, Python default): the model hunts the snapshot
   in sequential passes — one per extension family present (java/js-ts/py/php,
   plus a generic pass for any other web-hostable text) + a logic pass
   (authZ/IDOR/session/crypto, ON by default) — with read-only tools
@@ -519,9 +542,11 @@ labels created by agents record `labelled_by`; agents never self-assign
 
 ## Limitations (honest)
 
-- Local-only, single user; no hosted mode, no accounts. In-app notification
-  feed + optional webhook cover alerts (nothing leaves the machine unless you
-  configure a webhook URL).
+- Local-only, single user; no hosted mode, no accounts. Optional Telegram Bot
+  API and Discord incoming-webhook notifications send selected summary events.
+  Configure event choices and credentials explicitly; see
+  [notification setup](docs/NOTIFICATIONS.md). New installations disable both
+  destinations. The legacy `WEBHOOK_URL` gate-failure integration remains separate.
 - Static analysis only — no DAST, no runtime exploitation. Opt-in targeted
   HTTP probes (XSS canary, SQL-error signatures, allowlisted host only) can
   corroborate a finding as extra evidence.
@@ -562,14 +587,18 @@ uv run devsecops-agent scan-run --checkout /path/to/clean/repo --profile fast --
 The TUI offers saved history, configuration review, live progress, searchable
 findings/evidence, cancellation, retries and JSON/SARIF/HTML/Markdown exports.
 Use Ctrl+N for setup, Ctrl+R for history refresh, Ctrl+X to cancel and Ctrl+Q to
-quit. A running scan must finish cancellation before quitting. Tab and arrow keys
-navigate controls. UTC timestamps display in Asia/Saigon by default.
+quit. A running scan must finish cancellation before quitting. In the native
+TUI, Up/Down moves between controls; Left/Right switches views or cycles choices.
+While editing text, Left/Right moves the cursor. Enter activates or edits, and
+Esc returns. Tab remains optional. UTC timestamps display in Asia/Saigon by default.
 
 Scanners must be installed separately. Fast scans require Semgrep and Gitleaks;
 missing tools produce an actionable failure and partial reports. Local dirty
 checkouts require `--allow-dirty` and retain a content-hash manifest. CI rejects
 dirty checkouts. AI stages (Laya routing, review, validation, AI report) run
-when a provider profile + key is configured; hunt mode requires one.
+when Hunt or the corresponding AI option is selected and a provider profile/key
+is available. Python configuration defaults to Hunt; native configuration
+defaults to deterministic scanning with AI review/report disabled.
 The existing `serve` command keeps the local web interface available.
 
 See [consumer workflows, required checks and GitHub releases](docs/CI-INTEGRATION.md)

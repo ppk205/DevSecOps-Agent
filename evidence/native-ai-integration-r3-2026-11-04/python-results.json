@@ -1,0 +1,7 @@
+[
+  {
+    "check": "pytest-full",
+    "exit_code": 1,
+    "log": "pytest-full.txt"
+  }
+]

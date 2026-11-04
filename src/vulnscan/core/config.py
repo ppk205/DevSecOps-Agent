@@ -97,3 +97,29 @@ def resolve_config(
     except ValidationError as exc:
         fields = ", ".join(".".join(str(p) for p in e["loc"]) for e in exc.errors())
         raise ValueError(f"Invalid scan configuration fields: {fields}") from None
+
+
+def resolve_model_config(config: ScanConfig) -> ScanConfig:
+    """Resolve an explicitly enabled model stage without changing offline defaults."""
+    if config.mode != "hunt" and not config.ai_review and not config.ai_report:
+        return config
+    from vulnscan.infra.envfile import EnvFile
+    from vulnscan.providers.profile_store import default_profile, load_profile
+
+    EnvFile().load_into_environ()
+    try:
+        profile = (
+            load_profile(config.provider_profile) if config.provider_profile else default_profile()
+        )
+    except (FileNotFoundError, ValueError):
+        return config
+    if profile is None:
+        return config
+    return config.model_copy(
+        update={
+            "provider_profile": profile.id,
+            "provider_model": config.provider_model
+            or profile.default_model
+            or next(iter(profile.models), None),
+        }
+    )

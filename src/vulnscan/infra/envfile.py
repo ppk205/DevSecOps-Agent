@@ -18,6 +18,7 @@ import os
 from pathlib import Path
 
 _ENV_FILENAME = ".env"
+_FILE_LOADED_VALUES: dict[tuple[str, str], str] = {}
 
 
 def mask_secret(value: str) -> str:
@@ -89,6 +90,11 @@ class EnvFile:
         self.path.write_text("".join(lines), encoding="utf-8")
         if os.name == "posix":
             os.chmod(self.path, 0o600)
+        identity = (str(self.path.resolve()), name)
+        previous = _FILE_LOADED_VALUES.get(identity)
+        if previous is not None and os.environ.get(name) == previous:
+            os.environ[name] = value
+            _FILE_LOADED_VALUES[identity] = value
         return self.path
 
     def load_into_environ(self) -> list[str]:
@@ -97,6 +103,7 @@ class EnvFile:
         for key, value in self._read_pairs():
             if key and value and key not in os.environ:
                 os.environ[key] = value
+                _FILE_LOADED_VALUES[(str(self.path.resolve()), key)] = value
                 loaded.append(key)
         return loaded
 

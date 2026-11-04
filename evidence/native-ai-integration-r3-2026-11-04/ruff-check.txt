@@ -1,0 +1,5 @@
+Command: "D:\phuc\Code Project\DevSecOps-Agent\.venv\Scripts\python.exe" -m ruff check src tests ci
+
+All checks passed!
+
+Exit code: 0

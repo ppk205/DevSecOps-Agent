@@ -1,8 +1,8 @@
 """Provider profile persistence — JSON on disk.
 
-Profiles are stored encrypted at rest in production; for development we
-keep them as plain JSON files under ``.providers/``.  The API key is
-referenced by environment variable name, never stored in the profile file.
+Profiles are plain JSON files under the project-root ``.providers/`` directory.
+The API key is referenced by environment variable name, never stored in the
+profile file. Profile encryption is not implemented.
 """
 
 from __future__ import annotations
@@ -13,6 +13,7 @@ from pathlib import Path
 from pydantic import ValidationError
 
 from vulnscan.contracts.provider import ProviderProfile
+from vulnscan.infra.envfile import find_project_root
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +21,7 @@ _DEFAULT_DIR = Path(".providers")
 
 
 def _dir(base: Path | None = None) -> Path:
-    d = base or _DEFAULT_DIR
+    d = base if base is not None else find_project_root() / _DEFAULT_DIR
     d.mkdir(parents=True, exist_ok=True)
     return d
 

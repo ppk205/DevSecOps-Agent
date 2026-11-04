@@ -1,0 +1,24 @@
+{
+  "previous_failure_count": 15,
+  "current_failure_count": 15,
+  "new_failures": [],
+  "resolved_failures": [],
+  "current_failures": [
+    "tests/ai/test_fix.py::test_apply_and_verify_roundtrip",
+    "tests/platform/test_native.py::test_fr70_native_scan_matches_python_findings_policy_and_history[False]",
+    "tests/platform/test_native.py::test_fr70_native_scan_matches_python_findings_policy_and_history[True]",
+    "tests/platform/test_native_dashboard.py::test_native_dashboard_routes_csrf_and_exports",
+    "tests/platform/test_scan_service.py::test_fr70_persist_export_restart_and_retry",
+    "tests/platform/test_scan_service.py::test_fr73_action_transport_uses_shared_policy",
+    "tests/platform/test_scan_service.py::test_ir15_cli_uses_same_gate",
+    "tests/platform/test_scan_service.py::test_local_runtime_files_do_not_dirty_the_source_snapshot",
+    "tests/scanners/test_native_hunt_adapter.py::test_livesqli_finds_known_vulns",
+    "tests/scanners/test_spotbugs_coverage.py::test_clean_compiled_files_marked_analyzed",
+    "tests/tui/test_app.py::test_fr71_configure_scan_inspect_export_restart",
+    "tests/tui/test_workflow.py::test_fr71_keyboard_review_scan_inspect_export_restart[size0]",
+    "tests/tui/test_workflow.py::test_fr71_keyboard_review_scan_inspect_export_restart[size1]",
+    "tests/web/test_phase2.py::TestScans::test_execute_hunt_without_key_skips_with_reason",
+    "tests/web/test_phase2.py::TestScans::test_run_adopts_queued_placeholder_row"
+  ],
+  "current_summary": "15 failed, 760 passed, 1 skipped, 2 warnings, 191 errors in 265.98s (0:04:25)"
+}

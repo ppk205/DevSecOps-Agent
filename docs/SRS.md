@@ -3,7 +3,7 @@
 **Project**: DevSecOps-Agent — Automated Vulnerability Scanning and Assessment for Java Servlet/JSP Applications
 
 **Document ID**: SRS-001  
-**Version**: 1.3 (terminal workflow acceptance)
+**Version**: 1.5 (selectable outbound notifications)
 **Status**: Approved implementation baseline
 **Authors**: Tran Doan Hoa (23162026), Nguyen Minh Khoi (23162046)  
 **Supervisor**: Nguyen Thi Thanh Van
@@ -11,6 +11,18 @@
 ---
 
 ## 1. Introduction
+
+**Revision 1.5 — 2026-11-04:** Owner-requested Telegram and Discord alerts extend
+the notification scope. FR-75 specifies opt-in destinations, selected events,
+operator choice and recorded delivery outcomes. Transport failures must not
+change scan results or finding status.
+
+**Revision 1.4 — 2026-11-04:** FR-01/10, FR-48/49, FR-71, IR-11/12/13 and
+QR-20/21 now describe local folders without Git, native source resolution,
+arrow navigation, explicit model controls and retained explanations. Native
+AI execution reuses Python ScanService and IndependentValidator. Offline
+execution checks do not establish model accuracy or live provider availability.
+Price estimation and full request transcripts remain implementation gaps.
 
 **Revision 1.3 — 2026-10-03:** FR-71 and QR-21 now state terminal workflow
 acceptance for run targeting, effective review, readable diagnostics, retained
@@ -49,7 +61,7 @@ The application performs static analysis of Java Servlet/JSP source code. It doe
 
 - Hosted or multi-tenant deployment
 - Multi-user accounts and authentication for the scanner itself
-- Push or email notifications
+- Hosted push infrastructure and email delivery
 - Automatic code remediation
 - Dynamic application security testing (DAST)
 - Hosted deployment, PyPI/GHCR publishing, detached scans, moving version tags
@@ -117,6 +129,16 @@ The sole experimental target is JVA-bookstore at the pinned commit `dd48d1240fdb
 
 **FR-01**: The application shall accept a local filesystem path to a Java Servlet/JSP project and register it as a scan target, recording the source revision (git commit hash) or an explicit "no-revision" marker.
 
+Source input accepts absolute and relative folders, quoted paths with spaces,
+repository clone URLs and `owner/repo` shorthand. Existing folders take
+precedence over shorthand. Explicit relative, drive and UNC paths must never be
+reinterpreted as remote repositories because they do not exist. Local source
+folders can be scanned without Git; the manifest records `no-revision`, its
+reason, unknown Git cleanliness and file hashes. A commit pin or CI source check
+requires a verifiable committed revision. Remote URLs require Git and a matching
+cache origin; repositories with the same name must not share another origin's
+cached content.
+
 **FR-02**: The application shall maintain the pristine target revision separate from build overlays, generated test fixtures, and seeded vulnerable variants. Overlay and variant content shall be versioned and recorded separately in the scan manifest.
 
 **FR-03**: The application shall inventory every `.java` and `.jsp` file in the target tree at intake time and record the inventory as the coverage baseline. Files skipped by any later stage must remain visible as skipped, never as successfully analyzed.
@@ -138,7 +160,7 @@ The target application has four user roles. The application declares an authoriz
 
 ### 2.3 Constraints
 
-**C-01**: The application must run entirely locally. Network access is limited to dependency/tool installation, advisory database updates, optional model downloads and explicitly enabled LLM API calls.
+**C-01**: The application runs locally. Network access is limited to dependency/tool installation, advisory database updates, optional model downloads, explicitly enabled LLM API calls and operator-configured outbound notifications (FR-75).
 
 **C-02**: Total AI-usage budget is USD 50 for the project lifetime. The application must track cumulative spend and refuse to exceed the budget without explicit override.
 
@@ -306,9 +328,22 @@ Feature IDs below are stable and carried unchanged into the test plan and eviden
 
 **FR-48 — AI assessment request.** For each finding requiring assessment, the application shall send the finding with its assembled context to the configured LLM and request a CVSS v4.0 assessment with a stated rationale.
 
+Native Hunt, AI-review and AI-report selections shall invoke the shared Python
+pipeline through the owned bridge. Review shall show the effective provider,
+model and availability before execution. Returned explanations and tool outcomes
+shall be visible in Activity; matching assessment rationales shall remain
+available in finding details after reopening a run. Model proposals remain
+separate from independently validated finding status.
+
 *Evidence*: LLM request/response artifacts retained per finding; test `T-CTX-18`.
 
 **FR-49 — AI cost accounting.** The application shall record token counts and estimated cost per LLM call and accumulate them against the USD 50 budget, refusing further calls when the budget is exhausted unless explicitly overridden.
+
+Implementation note: current call records aggregate provider-reported token
+counts. Omitted usage is unknown. Provider prices are not configured, so monetary
+cost is unavailable and must not be presented as free execution. The existing
+budget tracker only operates on recorded estimates; the monetary requirement is
+not fully implemented or validated by the offline execution checks.
 
 *Evidence*: usage ledger; test `T-CTX-19`.
 
@@ -388,6 +423,11 @@ Feature IDs below are stable and carried unchanged into the test plan and eviden
 
 **FR-71: Terminal interface.** Interactive bare invocation and `tui` open a keyboard-accessible terminal interface (Textual in Python; Bubble Tea in Go) with overview/history, checkout/profile/limits configuration and effective settings review, live progress, filtered findings/evidence and report exports. Quitting an active scan offers stay or cancel and quit. No detached execution.
 
+Source review distinguishes repository URLs, local Git checkouts and local
+folders without a Git revision. It shows the resolved local folder and revision
+limitations. Scan execution uses the reviewed folder, identity and commit rather
+than converting the original URL into a filesystem path.
+
 Terminal acceptance criteria (2026-10-03): configure and review a scan in one
 Workspace with expandable advanced options; expose existing operations through
 a keyboard action menu and contextual hints. Review and evidence readers must
@@ -398,9 +438,27 @@ Finding summaries preserve recorded status, source locations, retained snippets
 and evidence references; raw payloads remain optional details. Cursor movement
 must not invalidate a pending review unless configuration values change.
 
-**FR-72: CI policy.** Fast selects Semgrep and Gitleaks; full adds isolated Maven compilation, SpotBugs/FindSecBugs and Dependency-Check. AI and Laya default off. All selected scanners and coverage reconciliation must succeed. Independently rejected findings alone are excluded; unresolved and unprocessed findings count. Validated assessment severity takes precedence over native severity; unknown remains explicit. Default threshold high includes critical.
+Native form navigation uses Up/Down; Enter edits or activates the focused
+control. Left/Right switches views outside text editing and focused readers,
+cycles focused choices, and moves the cursor while editing. Reader scrolling
+and table-row navigation retain Up/Down. Tab remains an optional focus shortcut.
+
+**FR-72: CI policy.** Fast selects Semgrep, native-hunt and Gitleaks; full adds isolated Maven compilation, SpotBugs/FindSecBugs and Dependency-Check. CI supplies no provider secrets or model downloads. Native configuration defaults to deterministic mode with AI review/report disabled; Python ScanConfig retains its Hunt default. All selected scanners and coverage reconciliation must succeed. Independently rejected findings alone are excluded; unresolved and unprocessed findings count. Validated assessment severity takes precedence over native severity; unknown remains explicit. Default threshold high includes critical.
 
 **FR-73: Consumer Action.** Root Ubuntu composite Action accepts checkout, profile, config, threshold and output directory; publishes sanitized artifacts/job summary before enforcing the gate. Outputs identify run, status, gate, summary and SARIF. Record verified commit; reject dirty CI sources. Local dirty sources require explicit consent and content manifest.
+
+**FR-75: Selectable outbound notifications.** The application shall support
+optional Telegram Bot API and Discord incoming-webhook destinations. Operators
+shall choose which scan events may be sent and whether delivery follows saved
+rules or requires selection after each scan. Destinations default to disabled.
+Credential values belong in EnvFile/process storage; settings and API responses
+contain references and configured/missing status only. Messages contain redacted
+run summaries and selected event counts, not source code, diffs or full model
+transcripts. Delivery results shall distinguish sent, pending, failed and
+unacknowledged outcomes and prevent duplicate sends on refresh or concurrent
+requests. Delivery failure shall not change scan/finding status. Notification
+network calls belong to the human-facing service and must never become
+model-callable tools.
 
 **FR-74: Release.** Maintainer selects X.Y.Z after version/changelog PR. Freeze main commit, verify exact package version, rerun required checks and full integration, build once and publish GitHub wheel/sdist/checksums/notes. Serialize releases; never move tags or overwrite assets. Resume only matching commit and artifact identities.
 
@@ -460,7 +518,18 @@ must not invalidate a pending review unless configuration values change.
 
 **IR-11**: The LLM provider shall be configured by base URL, API key, and model name, with per-request timeout and retry policy.
 
+Profiles store endpoint/model metadata and a credential variable reference.
+Native model choices expose aliases, models and key set/missing status only.
+Keys use EnvFile and masked entry. Process-injected values take precedence;
+updating a value previously loaded from the same local file refreshes later
+scans. Project-root discovery shall work when the EXE starts inside `bin`.
+
 **IR-12**: Every LLM request and response shall be persisted with the prompt template version so that assessments are reproducible.
+
+Implementation note: sanitized call metadata, returned explanation/response text,
+tool outcomes, assessments and reported usage are retained. Complete prompt/wire
+transcripts and token-by-token streaming are not implemented. Only text actually
+returned by the provider can be displayed.
 
 **IR-13**: The provider abstraction shall support any OpenAI-compatible endpoint, and the dashboard shall allow switching providers and models between scans.
 
@@ -529,6 +598,13 @@ must not invalidate a pending review unless configuration values change.
 ### 6.7 Portability
 
 **QR-20 — Platform support.** The Python application shall run on Linux, macOS, and Windows with Python 3.11 or later. Scanner availability may differ by platform; missing scanners shall degrade gracefully per FR-21.
+
+Native launches shall discover the application environment relative to the
+executable as well as the caller's directory, with an explicit
+`DEVSECOPS_PYTHON` override. CLI forwarding and service workers shall use the same
+Python import environment. Launching from `bin` or an unrelated directory shall
+not require activating the application's virtual environment. The native binary
+requires an installed Python application; it does not bundle that runtime.
 
 ---
 

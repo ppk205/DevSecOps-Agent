@@ -1,0 +1,13 @@
+Command: "D:\phuc\Code Project\DevSecOps-Agent\.venv\Scripts\python.exe" -m pytest -q tests/core/test_source.py tests/core/test_unversioned_source.py tests/cli/test_source_input.py tests/web/test_source_input.py tests/platform/test_native.py -k "not fr70_native_scan and not native_group" --tb=short
+
+........................................................................ [ 85%]
+............                                                             [100%]
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  D:\phuc\Code Project\DevSecOps-Agent\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+84 passed, 3 deselected, 1 warning in 20.60s
+
+Exit code: 0

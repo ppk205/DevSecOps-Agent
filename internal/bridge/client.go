@@ -57,11 +57,18 @@ type Client struct {
 }
 
 func Start(python, db string) (*Client, error) {
+	return StartWithEnvironment(python, db, nil)
+}
+
+// StartWithEnvironment gives the service the same import environment as the
+// Python CLI. A nil environment retains the caller's environment, as Start does.
+func StartWithEnvironment(python, db string, env []string) (*Client, error) {
 	module := os.Getenv("DEVSECOPS_RPC_MODULE")
 	if module == "" {
 		module = "vulnscan.core.rpc"
 	}
 	cmd := exec.Command(python, "-m", module, "--db-path", db)
+	cmd.Env = env
 	process.Configure(cmd)
 	input, err := cmd.StdinPipe()
 	if err != nil {

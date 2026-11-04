@@ -1,0 +1,7 @@
+Command: "D:\phuc\Code Project\DevSecOps-Agent\.venv\Scripts\python.exe" -m pytest -q tests/ai tests/providers tests/infra/test_envfile.py tests/platform/test_rpc_models.py tests/platform/test_rpc_review.py tests/tui/test_presentation.py tests/reporting/test_final_report_compare.py tests/platform/test_native_ai.py --ignore=tests/ai/test_fix.py --tb=short
+
+........................................................................ [ 54%]
+...........................................................              [100%]
+131 passed in 30.24s
+
+Exit code: 0

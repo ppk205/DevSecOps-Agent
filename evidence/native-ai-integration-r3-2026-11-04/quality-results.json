@@ -1,0 +1,22 @@
+[
+  {
+    "check": "ruff-check",
+    "exit_code": 0,
+    "log": "ruff-check.txt"
+  },
+  {
+    "check": "ruff-format",
+    "exit_code": 1,
+    "log": "ruff-format.txt"
+  },
+  {
+    "check": "mypy",
+    "exit_code": 1,
+    "log": "mypy.txt"
+  },
+  {
+    "check": "mypy-provider-focus",
+    "exit_code": 0,
+    "log": "mypy-provider-focus.txt"
+  }
+]

@@ -1,7 +1,7 @@
 # Test Plan — DevSecOps-Agent
 
-**Version:** 1.0
-**Status:** Draft (T00)
+**Version:** 1.1
+**Status:** Active acceptance plan; execution results are recorded separately
 **Related:** [SRS.md](SRS.md), [IMPLEMENTATION-PLAN.md](IMPLEMENTATION-PLAN.md)
 
 ---
@@ -17,6 +17,22 @@ Test everything against real artifacts; never claim a pass without an executed c
 | Dashboard workflow | **Playwright** | Browser-driven scan submission → report export |
 
 ## 2. Test categories
+
+### Outbound notifications (FR-75)
+
+`tests/notifications/` covers disabled defaults, event rules, redacted summary
+payloads, Telegram/Discord acknowledgements, missing credentials, URL validation,
+manual selection, duplicate and concurrent sends, delivery failure isolation,
+CLI prompts, CSRF-protected HTTP settings, JSONL dispatch, Textual selection and
+real native completion with synthetic HTTP. Native arrow navigation and bounded
+layouts are in `internal/tui/notifications_test.go`. Dashboard preference tests
+are in `web-ui/src/components/__tests__/outbound.test.tsx`.
+
+Tests isolate operator preferences and forbid live notification HTTP. The native
+fixture explicitly replaces child-process preferences, because pytest patches
+do not cross the process boundary. Test acknowledgements prove wiring, not live
+destination permissions or availability. No live Telegram/Discord send is needed
+for regression verification. Cross-builds do not prove Linux/macOS runtime behavior.
 
 ### 2.1 Unit tests
 
@@ -178,3 +194,28 @@ weights are required by ordinary tests. JUnit and module coverage are uploaded
 with `always()`; integrations retain sanitized reports. Real scanner integration
 is a separate required check, not simulated by adapter fixtures. Repository branch
 protection must select required jobs in GitHub settings.
+
+## Native AI acceptance (2026-11-04)
+
+| Requirements | Checks |
+| --- | --- |
+| FR-48, IR-11/13 | EXE Hunt and explicit review/report settings reach Python; chosen provider/model and tool-call IDs survive the bridge. |
+| FR-48/50/71 | Returned explanations appear in Activity and the matching finding card; model proposals remain separate from validation status. |
+| FR-49, E1/E2 repository rules | Reported token counts are retained; missing usage and pricing stay unavailable. Failed requests do not appear completed. |
+| FR-70, DR-09 | AI retry preserves settings and creates a new attempt; history retrieves retained usage and the correct assessment. |
+| QR-21 | Model controls and hidden key entry remain usable at the required small terminal sizes; navigation remains asynchronous. |
+| IR-11, credential boundaries | Model metadata returns aliases and key status only; saved-key refresh preserves process-injected values. |
+
+Tests are in `tests/platform/test_native_ai.py`,
+`tests/platform/test_rpc_models.py`, `tests/ai/test_native_observability.py`,
+`tests/infra/test_envfile.py`, `internal/service/ai_test.go` and
+`internal/tui/ai_test.go`. The fixture `tests/platform/ai_rpc_fixture.py` replaces
+HTTP transport and uses test-owned credential paths; it does not call a live
+provider or download Laya weights. Its scanner observations are synthetic.
+
+The EXE integration tests cover successful Hunt/review/report execution, tool
+round trips, retry, unavailable providers, HTTP failure and deterministic defaults
+with a keyed profile present. CI's native job includes this test file. These
+tests do not replace real-scanner coverage checks or independent model accuracy
+evaluation. The actual commands, passes, failures and skipped work are documented
+in [NATIVE-AI-VERIFICATION-2026-11-04.md](NATIVE-AI-VERIFICATION-2026-11-04.md).

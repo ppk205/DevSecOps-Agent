@@ -16,6 +16,7 @@ from typing import Any, TypedDict
 from vulnscan.agent.tools import TOOL_SCHEMAS
 from vulnscan.ai.review import build_tool_handlers
 from vulnscan.providers.client import ChatMessage, ProviderClient
+from vulnscan.providers.events import emit_model_event
 
 logger = logging.getLogger(__name__)
 
@@ -529,6 +530,12 @@ def hunt_vulns(
                         logger.warning("Hunt tool %s failed: %s", name, exc)
                         result = {"error": str(exc)[:500]}
                 result_json = json.dumps(result)
+                emit_model_event(
+                    "tool",
+                    "failed" if "error" in result else "completed",
+                    f"Hunt tool {name}: "
+                    + ("failed or rejected" if "error" in result else "completed"),
+                )
                 tool_evidence.append(f"{name} -> {result_json[:1500]}")
                 messages.append(
                     ChatMessage(

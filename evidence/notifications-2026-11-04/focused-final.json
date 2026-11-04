@@ -1,0 +1,16 @@
+{
+  "command": [
+    "D:\\phuc\\Code Project\\DevSecOps-Agent\\.venv\\Scripts\\python.exe",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/notifications",
+    "tests/web/test_notifications.py",
+    "tests/platform/test_rpc_models.py",
+    "tests/platform/test_native_ai.py",
+    "tests/platform/test_scan_boundaries.py",
+    "--tb=short"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 37.7
+}

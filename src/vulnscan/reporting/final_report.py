@@ -75,7 +75,8 @@ def model_only_track_paragraph(
     """
     comp = comparison if isinstance(comparison, dict) else {}
     meta = run_metadata if isinstance(run_metadata, dict) else {}
-    counts = comp.get("counts") if isinstance(comp.get("counts"), dict) else {}
+    raw_counts = comp.get("counts")
+    counts = raw_counts if isinstance(raw_counts, dict) else {}
 
     def _num(key: str, bucket: Any) -> int:
         try:
@@ -279,7 +280,12 @@ def run_final_report(
         report["ai_written"] = True
         if resp.content.strip():
             report["status"] = "completed"
-            report["detail"] = f"{resp.usage.get('total_tokens', 0)} tokens"
+            reported_tokens = resp.usage.get("total_tokens")
+            report["detail"] = (
+                f"{reported_tokens} reported tokens"
+                if type(reported_tokens) is int
+                else "Token count unavailable"
+            )
         else:
             # Empty model reply: keep a deterministic narrative so the
             # report file is never 0 bytes; mark partial, not failed.

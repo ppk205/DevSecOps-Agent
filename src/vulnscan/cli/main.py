@@ -9,8 +9,11 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from ..storage.database import get_session, init_db
 from ..storage.models import RunORM, TargetORM
+from .notifications import app as notifications_app
 
 app = typer.Typer(help="DevSecOps-Agent: automated vulnerability scanning.")
+
+app.add_typer(notifications_app, name="notifications")
 
 
 @app.callback(invoke_without_command=True)
@@ -126,7 +129,7 @@ def scan_run(
     """Scan any repository (URL or local path) and enforce policy."""
     from pathlib import Path
 
-    from ..core.config import resolve_config
+    from ..core.config import resolve_config, resolve_model_config
     from ..core.scan_service import ScanService
     from ..core.security import sanitize
     from ..core.source import resolve_source
@@ -151,6 +154,7 @@ def scan_run(
         )
         if not json_output:
             typer.echo(f"Resolving target: {checkout}")
+        config = resolve_model_config(config)
         source = resolve_source(checkout, workdir, commit=commit)
         if not json_output:
             typer.echo(f"Repository: {source.repo_url}\nCommit: {source.commit}")
@@ -173,6 +177,22 @@ def scan_run(
             result["errors"].append(
                 "Summary could not be written; check output directory permissions"
             )
+    if not json_output:
+        import sys
+
+        receipts = result.get("notifications", {})
+        if (
+            receipts.get("mode") == "manual"
+            and any(r["status"] == "pending" for r in receipts.get("deliveries", []))
+            and sys.stdin.isatty()
+            and sys.stdout.isatty()
+        ):
+            from .notifications import review_pending
+
+            try:
+                review_pending(db_path, str(result["id"]))
+            except (ValueError, OSError, EOFError):
+                typer.echo("Notifications remain pending; use `notifications review RUN_ID`.")
     typer.echo(json.dumps(result, indent=2))
     raise typer.Exit(code=result["exit_code"])
 

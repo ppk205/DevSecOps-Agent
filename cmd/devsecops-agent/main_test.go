@@ -3,9 +3,119 @@ package main
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
+
+func TestQR20PythonExecutableFindsEnvironmentBesideBinary(t *testing.T) {
+	for _, tc := range []struct {
+		platform string
+		venv     string
+		python   string
+	}{
+		{"windows", ".venv", filepath.Join("Scripts", "python.exe")},
+		{"linux", ".venv", filepath.Join("bin", "python")},
+		{"darwin", ".venv", filepath.Join("bin", "python")},
+		{"linux", ".venv-linux", filepath.Join("bin", "python")},
+		{"windows", "venv", filepath.Join("Scripts", "python.exe")},
+		{"darwin", "venv", filepath.Join("bin", "python")},
+	} {
+		t.Run(tc.platform+"/"+tc.venv, func(t *testing.T) {
+			t.Setenv("DEVSECOPS_PYTHON", "")
+			t.Setenv("VIRTUAL_ENV", "")
+			root := filepath.Join(t.TempDir(), "application with spaces")
+			want := filepath.Join(root, tc.venv, tc.python)
+			writePythonFixture(t, want)
+			// The caller may be inside bin or anywhere else on the machine.
+			for _, cwd := range []string{root, filepath.Join(root, "bin"), t.TempDir()} {
+				got := pythonExecutableAt(filepath.Join(root, "bin", "devsecops-agent-go"), cwd, tc.platform)
+				if got != want {
+					t.Fatalf("from %q: python = %q, want %q", cwd, got, want)
+				}
+			}
+		})
+	}
+}
+
+func TestQR20PythonExecutablePrefersApplicationOverCallerEnvironment(t *testing.T) {
+	t.Setenv("DEVSECOPS_PYTHON", "")
+	t.Setenv("VIRTUAL_ENV", "")
+	root, caller := t.TempDir(), t.TempDir()
+	want := filepath.Join(root, ".venv", "bin", "python")
+	writePythonFixture(t, want)
+	writePythonFixture(t, filepath.Join(caller, ".venv", "bin", "python"))
+	if got := pythonExecutableAt(filepath.Join(root, "bin", "devsecops-agent-go"), caller, "linux"); got != want {
+		t.Fatalf("python = %q, want the application's %q", got, want)
+	}
+}
+
+func TestQR20ExplicitPythonOverrideIsAuthoritative(t *testing.T) {
+	want := filepath.Join(t.TempDir(), "chosen environment", "python")
+	t.Setenv("DEVSECOPS_PYTHON", want)
+	if got := pythonExecutableAt("", t.TempDir(), "linux"); got != want {
+		t.Fatalf("python = %q, want explicit override %q", got, want)
+	}
+}
+
+func TestQR20PythonExecutableUsesActiveEnvironment(t *testing.T) {
+	t.Setenv("DEVSECOPS_PYTHON", "")
+	venv := t.TempDir()
+	t.Setenv("VIRTUAL_ENV", venv)
+	want := filepath.Join(venv, "bin", "python")
+	writePythonFixture(t, want)
+	if got := pythonExecutableAt("", t.TempDir(), "linux"); got != want {
+		t.Fatalf("python = %q, want active environment %q", got, want)
+	}
+}
+
+func TestQR20PythonExecutableSupportsPython3OnPATH(t *testing.T) {
+	t.Setenv("DEVSECOPS_PYTHON", "")
+	t.Setenv("VIRTUAL_ENV", "")
+	bin := t.TempDir()
+	name := "python3"
+	if runtime.GOOS == "windows" {
+		name += ".exe"
+		t.Setenv("PATHEXT", ".EXE")
+	}
+	want := filepath.Join(bin, name)
+	writePythonFixture(t, want)
+	t.Setenv("PATH", bin)
+	if got := pythonExecutableAt("", t.TempDir(), "linux"); got != want {
+		t.Fatalf("python = %q, want PATH's %q", got, want)
+	}
+}
+
+func TestQR20PythonExecutablePreservesVenvSymlink(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("POSIX virtual environments use interpreter symlinks")
+	}
+	t.Setenv("DEVSECOPS_PYTHON", "")
+	t.Setenv("VIRTUAL_ENV", "")
+	root := t.TempDir()
+	base := filepath.Join(root, "system-python")
+	writePythonFixture(t, base)
+	want := filepath.Join(root, ".venv", "bin", "python")
+	if err := os.MkdirAll(filepath.Dir(want), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Symlink(base, want); err != nil {
+		t.Fatal(err)
+	}
+	if got := pythonExecutableAt(filepath.Join(root, "bin", "devsecops-agent-go"), t.TempDir(), "linux"); got != want {
+		t.Fatalf("python = %q, want virtual-environment symlink %q", got, want)
+	}
+}
+
+func writePythonFixture(t *testing.T, path string) {
+	t.Helper()
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(path, []byte("test interpreter"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+}
 
 func TestPythonSrcDirAnchorsOnVenv(t *testing.T) {
 	t.Setenv("DEVSECOPS_PYTHON", filepath.Join(t.TempDir(), ".venv", "Scripts", "python.exe"))

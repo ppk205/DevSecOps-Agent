@@ -1,0 +1,3 @@
+# devsecops-agent/artifacts/tui-verification
+# [devsecops-agent/artifacts/tui-verification]
+vet.exe: artifacts\tui-verification\native_probe_test.go:12:5: undefined: fakeAPI

@@ -1,0 +1,27 @@
+[
+  {
+    "check": "go-vet-all",
+    "exit_code": 1,
+    "log": "go-vet-all.txt"
+  },
+  {
+    "check": "go-test-all",
+    "exit_code": 1,
+    "log": "go-test-all.txt"
+  },
+  {
+    "check": "go-vet-application",
+    "exit_code": 0,
+    "log": "go-vet-application.txt"
+  },
+  {
+    "check": "go-test-application",
+    "exit_code": 0,
+    "log": "go-test-application.txt"
+  },
+  {
+    "check": "native-platform-builds",
+    "exit_code": 0,
+    "log": "native-platform-builds.txt"
+  }
+]

@@ -66,7 +66,7 @@ func (s *Store) Persist(ctx context.Context, pk int, spec, result map[string]any
 	if _, err = tx.ExecContext(ctx, "UPDATE runs SET events_json=?,scan_spec_json=?,result_json=?,updated_at=? WHERE id=?", marshal(events), marshal(spec), marshal(result), utcStamp(), pk); err != nil {
 		return err
 	}
-	if _, err = tx.ExecContext(ctx, "UPDATE targets SET commit_sha=? WHERE id=(SELECT target_id FROM runs WHERE id=?)", spec["target_commit_sha"], pk); err != nil {
+	if _, err = tx.ExecContext(ctx, "UPDATE targets SET repository_url=?,commit_sha=? WHERE id=(SELECT target_id FROM runs WHERE id=?)", spec["target_repository_url"], spec["target_commit_sha"], pk); err != nil {
 		return err
 	}
 	event := events[len(events)-1]

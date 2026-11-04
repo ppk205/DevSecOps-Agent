@@ -27,6 +27,7 @@ from pydantic import BaseModel
 from sqlalchemy import Engine
 from sqlalchemy.orm import Session, sessionmaker
 from sse_starlette.sse import EventSourceResponse
+from starlette.concurrency import run_in_threadpool
 
 from vulnscan.contracts.enums import ExportFormat, FindingStatus
 from vulnscan.contracts.finding import Finding
@@ -219,16 +220,27 @@ def create_app(
     @app.post("/scans")
     def submit_scan(
         session: SessionDep,
-        target_repository_url: str = Form(...),
-        target_commit_sha: str = Form(...),
-        repository_checkout_path: str = Form("."),
+        target_repository_url: str = Form(""),
+        target_commit_sha: str = Form(""),
+        repository_checkout_path: str = Form(""),
     ) -> RedirectResponse:
+        from vulnscan.core.source import resolve_source
+
+        try:
+            source = resolve_source(
+                repository_checkout_path.strip() or target_repository_url,
+                commit=target_commit_sha.strip(),
+            )
+        except (ValueError, OSError) as exc:
+            raise HTTPException(422, redact_secrets(str(exc))) from exc
         service = ScanService(str(db_engine.url.database))
         result = service.run(
-            repository_checkout_path,
+            source.checkout,
             ScanConfig(output_dir=str(output)),
-            repo=target_repository_url,
-            expected_commit=target_commit_sha,
+            repo=(target_repository_url or source.repo_url)
+            if repository_checkout_path.strip()
+            else source.repo_url,
+            expected_commit=source.commit,
         )
         return RedirectResponse(f"/runs/{result['id']}", status_code=303)
 
@@ -1373,6 +1385,50 @@ def create_app(
         }
 
     # ---- Task 4: notifications + fix .diff download ---------------------------
+    @app.get("/api/outbound/settings")
+    def outbound_settings() -> dict[str, Any]:
+        from vulnscan.notifications.service import handle
+
+        try:
+            return handle("", {"action": "settings"})
+        except (ValueError, OSError):
+            raise HTTPException(400, "Cannot load notification settings") from None
+
+    @app.post("/api/outbound/settings")
+    async def outbound_save(request: Request) -> dict[str, Any]:
+        from vulnscan.notifications.service import handle
+
+        try:
+            payload = await request.json()
+            if not isinstance(payload, dict):
+                raise TypeError("Expected settings object")
+            return await run_in_threadpool(handle, "", {"action": "save", "settings": payload})
+        except (TypeError, ValueError, OSError):
+            raise HTTPException(400, "Invalid notification settings") from None
+
+    @app.get("/api/scans/{run_id}/outbound")
+    def outbound_receipts(run_id: str, request: Request) -> dict[str, Any]:
+        from vulnscan.notifications.service import deliveries
+
+        try:
+            return deliveries(_fixes_db(request), run_id)
+        except ValueError:
+            raise HTTPException(404, "Unknown scan") from None
+
+    @app.post("/api/scans/{run_id}/outbound")
+    async def outbound_send(run_id: str, request: Request) -> dict[str, Any]:
+        from vulnscan.notifications.service import handle
+
+        try:
+            payload = await request.json()
+            if not isinstance(payload, dict):
+                raise TypeError("Expected selection object")
+            return await run_in_threadpool(
+                handle, _fixes_db(request), {**payload, "action": "send", "run_id": run_id}
+            )
+        except (TypeError, ValueError, OSError):
+            raise HTTPException(400, "Invalid event or destination selection") from None
+
     # The scan-completion writer lives in scan_service (untouched here); this
     # module owns the record helper plus a lazy ensure pass so terminal runs
     # always surface a notification even if the writer predates this table.
@@ -1453,9 +1509,7 @@ def create_app(
     def list_notifications(session: SessionDep) -> dict[str, Any]:
         """List notifications, newest first, with an unread count."""
         _ensure_scan_notifications(session)
-        rows = (
-            session.query(NotificationORM).order_by(NotificationORM.id.desc()).all()
-        )
+        rows = session.query(NotificationORM).order_by(NotificationORM.id.desc()).all()
         items = [_notification_to_dict(row) for row in rows]
         return {
             "notifications": items,
@@ -1463,9 +1517,7 @@ def create_app(
         }
 
     @app.post("/api/notifications/{notification_id}/ack")
-    def ack_notification(
-        notification_id: int, session: SessionDep
-    ) -> dict[str, Any]:
+    def ack_notification(notification_id: int, session: SessionDep) -> dict[str, Any]:
         """Acknowledge a notification (marks it read)."""
         row = session.get(NotificationORM, notification_id)
         if row is None:
@@ -1483,9 +1535,7 @@ def create_app(
         return Response(
             content=proposal.diff_text,
             media_type="text/plain",
-            headers={
-                "Content-Disposition": f'attachment; filename="proposal-{proposal_id}.diff"'
-            },
+            headers={"Content-Disposition": f'attachment; filename="proposal-{proposal_id}.diff"'},
         )
 
     # ---- Phase 5 Reports + Logs -------------------------------------------

@@ -1,0 +1,58 @@
+{
+  "assets": [
+    {
+      "name": "devsecops-agent-go-darwin-amd64",
+      "bytes": 14052608,
+      "sha256": "21b4a172a4ec22c8ca7e92184d7fdc6d02c918afd1e9b1c3265c3cd468845355"
+    },
+    {
+      "name": "devsecops-agent-go-darwin-arm64",
+      "bytes": 13364818,
+      "sha256": "d1ea4b0b1a99bb1730b8d71500d770444bb05ed5b5c1eb7cbf14d2cc4ac90f78"
+    },
+    {
+      "name": "devsecops-agent-go-linux-amd64",
+      "bytes": 13787296,
+      "sha256": "883c4a738ed35a6e4d48707f208f2535de122f83149a656f88655428b880c324"
+    },
+    {
+      "name": "devsecops-agent-go-linux-arm64",
+      "bytes": 12976288,
+      "sha256": "24ac614fba3eee6a41752f9b97f20d368f6d0bfb6e1e87857a58d0527a657550"
+    },
+    {
+      "name": "devsecops-agent-go-windows-amd64.exe",
+      "bytes": 14130176,
+      "sha256": "6dae8ab5644123ffda812083727bf513eb1a8ef068442b3542055654ef9705fb"
+    },
+    {
+      "name": "devsecops-agent-go.exe",
+      "bytes": 14130176,
+      "sha256": "6dae8ab5644123ffda812083727bf513eb1a8ef068442b3542055654ef9705fb"
+    }
+  ],
+  "build_commands": [
+    ".venv/Scripts/python.exe ci/build_native.py --go .tools/go/bin/go.exe --all",
+    ".venv/Scripts/python.exe ci/build_native.py --go .tools/go/bin/go.exe"
+  ],
+  "build_exit_codes": [
+    0,
+    0
+  ],
+  "runtime_platform": "Windows amd64",
+  "other_platform_runtime": "not run",
+  "forwarding_checks": [
+    {
+      "binary": "devsecops-agent-go.exe",
+      "exit_code": 0,
+      "cwd": "isolated project path containing spaces",
+      "result": "disabled defaults and reference-only settings"
+    },
+    {
+      "binary": "devsecops-agent-go-windows-amd64.exe",
+      "exit_code": 0,
+      "cwd": "isolated project path containing spaces",
+      "result": "disabled defaults and reference-only settings"
+    }
+  ]
+}

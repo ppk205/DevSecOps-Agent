@@ -12,6 +12,28 @@ that users can comfortably complete the terminal workflow.
 
 ## Implementation (2026-10-03)
 
+Notification update (2026-11-04, FR-75): both terminal interfaces expose F6
+preferences and F7 review of retained deliveries. Manual drafts open with no
+send choices selected. Native controls use Up/Down and Enter/Space; Esc closes
+without sending. Settings saves do not send or replay notifications. Delivery
+uses worker commands, keeping network calls outside UI updates and rendering.
+See [notification setup](NOTIFICATIONS.md) and the notification tests named there.
+
+Native AI update (2026-11-04): Workspace now exposes Hunt and provider/model
+selection. Advanced offers independent AI review/report controls in deterministic
+mode. Activity shows returned explanations and tool steps, and finding details
+retain the matching rationale and model proposal. Explicit AI settings use the
+Python pipeline; keys alone do not enable calls. See the current
+[AI support guide](NATIVE-MIGRATION.md#ai-support) and
+[verification record](NATIVE-AI-VERIFICATION-2026-11-04.md). The original review
+and measured results below describe their stated earlier revisions.
+
+Native navigation update (2026-11-03): forms now use Up/Down to move between
+controls. Left/Right switches views or cycles choices while preserving text
+cursor movement and focused-reader scrolling. Tab remains optional. See
+[arrow navigation tests](../internal/tui/navigation_test.go) and the current
+[keyboard workflow](NATIVE-MIGRATION.md#keyboard-workflow).
+
 The review is implemented in both terminal interfaces. The default launcher
 opens the Textual Workspace, preserving the newer repository URL, pinned commit,
 clone-cache and hidden API-key controls from GitHub main. `DEVSECOPS_NATIVE=go`

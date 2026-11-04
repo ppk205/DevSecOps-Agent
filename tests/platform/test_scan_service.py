@@ -230,6 +230,7 @@ def test_qr22_subprocess_credentials_excluded_and_cancelled(monkeypatch):
 
 
 def test_ir15_cli_uses_same_gate(service, checkout, tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
     monkeypatch.setattr("vulnscan.core.scan_service.ScanService", lambda _: service)
     result = CliRunner().invoke(
         app, ["scan-run", "--checkout", str(checkout), "--out", str(tmp_path / "reports"), "--json"]
@@ -332,7 +333,8 @@ def test_local_runtime_files_do_not_dirty_the_source_snapshot(service, checkout)
     assert strict["exit_code"] == 2
 
 
-def test_ir15_database_failure_is_execution_exit_two(tmp_path):
+def test_ir15_database_failure_is_execution_exit_two(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
     result = CliRunner().invoke(
         app, ["scan-run", "--db-path", str(tmp_path), "--out", str(tmp_path / "reports"), "--json"]
     )

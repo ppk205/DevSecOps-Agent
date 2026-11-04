@@ -29,6 +29,8 @@ type API interface {
 	Cancel(context.Context, string) error
 	Export(context.Context, string, string, string) (string, error)
 	Capabilities(context.Context) ([]map[string]any, error)
+	ModelProfiles(context.Context) ([]service.ModelProfile, error)
+	Notification(context.Context, map[string]any) (service.NotificationResponse, error)
 	// EnvList/EnvSet manage API keys in the project-local .env.
 	// EnvList returns ONLY variable names (values are never shown);
 	// EnvSet saves one secret (values are never logged or returned).
@@ -66,6 +68,7 @@ func (m *Model) reviewedTarget() string {
 	}
 	return m.reviewedCheckout
 }
+
 type Model struct {
 	api                API
 	Send               func(tea.Msg)
@@ -97,6 +100,8 @@ type Model struct {
 	reviewSignature    string
 	reviewed           *service.Config
 	reviewedCheckout   string
+	reviewedRepo       string
+	reviewedCommit     string
 	dirty              bool
 	status             string
 	availability       string
@@ -130,14 +135,17 @@ type Model struct {
 	followActive       bool
 	layoutWidth        int
 	activityLoading    bool
+	modelProfiles      []service.ModelProfile
+	modelStatus        string
+	notificationPanel  *notificationPanel
 }
 
-var labels = []string{"Checkout", "Profile (fast/full)", "Configuration file", "Timeout (seconds)", "Maximum files", "Artifact directory", "Timezone", "Threshold", "Allow dirty (yes/no)", "Laya (yes/no)", "Laya configuration file", "Export format"}
+var labels = []string{"Repository URL or local folder", "Profile (fast/full)", "Configuration file", "Timeout (seconds)", "Maximum files", "Artifact directory", "Timezone", "Threshold", "Allow dirty (yes/no)", "Laya (yes/no)", "Laya configuration file", "Export format", "Scan mode (deterministic/hunt)", "Provider profile (blank = automatic)", "Model override (blank = profile default)", "AI review (yes/no)", "AI report (yes/no)", "Maximum AI findings"}
 var tabs = []string{"History", "Workspace", "Activity", "Findings", "Reports"}
 
 func New(api API) Model {
 	m := Model{api: api, tab: 1, width: 100, height: 35, status: "Loading scan workspace…", availability: "Checking scanner availability…", edited: make(map[int]bool)}
-	defaults := []string{".", "fast", "", "600", "100000", "artifacts", "Asia/Saigon", "high", "no", "no", "", "json"}
+	defaults := []string{".", "fast", "", "600", "100000", "artifacts", "Asia/Saigon", "high", "no", "no", "", "json", "deterministic", "", "", "no", "no", "10"}
 	for _, value := range defaults {
 		input := textinput.New()
 		input.SetValue(value)
@@ -201,7 +209,10 @@ func (m Model) findingsCmd() tea.Cmd {
 }
 func (m Model) signature() string {
 	values := []string{}
-	for _, input := range m.inputs[:11] {
+	for index, input := range m.inputs {
+		if index == 11 {
+			continue
+		}
 		values = append(values, input.Value())
 	}
 	data, _ := json.Marshal(values)
@@ -236,7 +247,7 @@ func formConfig(values []string, edited map[int]bool) (service.Config, error) {
 			flags[name] = values[index]
 		}
 	}
-	for index, name := range map[int]string{8: "allow_dirty", 9: "laya"} {
+	for index, name := range map[int]string{8: "allow_dirty", 9: "laya", aiReviewControl: "ai_review", aiReportControl: "ai_report"} {
 		value := strings.ToLower(values[index])
 		if value != "yes" && value != "no" {
 			return defaults, fmt.Errorf("%s must be yes or no", name)
@@ -247,6 +258,25 @@ func formConfig(values []string, edited map[int]bool) (service.Config, error) {
 	}
 	if values[10] != "" {
 		flags["laya_config_path"] = values[10]
+	}
+	if values[aiModeControl] != "deterministic" || edited[aiModeControl] {
+		flags["mode"] = values[aiModeControl]
+	}
+	for index, name := range map[int]string{providerControl: "provider_profile", modelControl: "provider_model"} {
+		if values[index] != "" || edited[index] {
+			if value := strings.TrimSpace(values[index]); value != "" {
+				flags[name] = value
+			} else {
+				flags[name] = ""
+			}
+		}
+	}
+	if values[aiLimitControl] != "10" || edited[aiLimitControl] {
+		limit, err := strconv.Atoi(values[aiLimitControl])
+		if err != nil {
+			return defaults, fmt.Errorf("Maximum AI findings must be a whole number")
+		}
+		flags["max_ai_findings"] = limit
 	}
 	return service.Resolve(values[1], values[2], flags)
 }
@@ -270,6 +300,7 @@ func (m *Model) begin(retry bool) tea.Cmd {
 	m.cancelRun = cancel
 	api, send, id := m.api, m.Send, m.selected
 	config, checkout := m.reviewed, m.reviewedTarget()
+	repo, commit := m.reviewedRepo, m.reviewedCommit
 	if checkout == "" {
 		checkout = m.inputs[0].Value()
 	}
@@ -284,7 +315,7 @@ func (m *Model) begin(retry bool) tea.Cmd {
 		if retry {
 			result, err = api.Retry(ctx, id, progress)
 		} else {
-			result, err = api.Run(ctx, map[string]any{"checkout": checkout, "configuration": config}, progress)
+			result, err = api.Run(ctx, map[string]any{"checkout": checkout, "repo": repo, "commit": commit, "configuration": config}, progress)
 		}
 		return finishedMsg{result, err}
 	}
@@ -296,10 +327,19 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.width, m.height = msg.Width, msg.Height
 		m.resize()
 	case loaded:
+		if msg.kind == "notification" {
+			m.notificationLoaded(msg)
+			m.resize()
+			return m, nil
+		}
 		if msg.kind == "review" && msg.generation != m.reviewGeneration || msg.kind == "findings" && (msg.generation != m.generation || msg.id != m.selected) || msg.kind == "history" && msg.generation != m.historyGeneration || msg.kind == "activity" && (msg.generation != m.activityGeneration || msg.id != m.activityID) || msg.kind == "evidence" && (msg.generation != m.evidenceGeneration || msg.id != m.selected) {
 			break
 		}
 		if msg.err != nil {
+			if msg.kind == "model_profiles" {
+				m.modelStatus = "AI provider list unavailable: " + msg.err.Error()
+				break
+			}
 			if msg.kind == "activity" {
 				m.activityLoading = false
 			}
@@ -399,6 +439,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.reviewSignature = result.signature
 				m.reviewed = &result.config
 				m.reviewedCheckout = result.target
+				manifest, _ := result.result["manifest"].(map[string]any)
+				if checkout, ok := manifest["resolved_checkout"].(string); ok && checkout != "" {
+					m.reviewedCheckout = checkout
+				}
+				m.reviewedRepo, _ = manifest["repo_url"].(string)
+				m.reviewedCommit, _ = manifest["commit"].(string)
 				m.status = "Settings reviewed. Ctrl+S starts this scan."
 			}
 		case "keys":
@@ -410,6 +456,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else if m.envStatus == "" || m.envStatus == "Loading saved keys…" {
 				m.envStatus = fmt.Sprintf("%d key(s) stored (values never shown)", len(m.envNames))
 			}
+			cmds = append(cmds, func() tea.Msg {
+				profiles, err := m.api.ModelProfiles(context.Background())
+				return loaded{kind: "model_profiles", value: profiles, err: err}
+			})
+		case "model_profiles":
+			m.modelProfiles, _ = msg.value.([]service.ModelProfile)
+			m.modelStatus = ""
 		case "export":
 			m.status = "Exported: " + msg.value.(string)
 		case "cancel":
@@ -468,6 +521,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		m.cancelRun = nil
 		m.activeResult = msg.result
+		if data, err := json.Marshal(msg.result["notifications"]); err == nil {
+			var receipt service.NotificationResponse
+			if json.Unmarshal(data, &receipt) == nil && receipt.Mode == "manual" && len(receipt.Deliveries) > 0 && !m.quitAfter {
+				m.notificationPanel = &notificationPanel{mode: "review", receipt: receipt, selected: map[string]bool{}}
+				m.status = "Choose which notifications to send. Esc retains pending drafts."
+			}
+		}
 		if m.activePK == "" && msg.result["id"] != nil {
 			m.activePK, m.active = fmt.Sprint(msg.result["id"]), display(msg.result["run_id"])
 			if m.followActive {

@@ -2,6 +2,42 @@
 
 ## Unreleased
 
+- Add opt-in Telegram Bot API and Discord incoming-webhook digests at scan
+  completion. Choose events and automatic/manual mode through `notifications
+  configure`, native/Textual F6 settings or the dashboard bell. Manual delivery
+  retains drafts for explicit selection. Keep credentials in EnvFile/process
+  variables, messages summary-only, and delivery receipts separate from scan
+  status. Prevent duplicate concurrent sends and require explicit retries for
+  failed or uncertain deliveries. Add offline channel, CLI/API, TUI and EXE tests.
+
+- Connect native Hunt/review/report settings to the Python AI pipeline. Add
+  provider/model selection, effective-settings review, call/tool progress,
+  retained finding explanations and reported token usage. Preserve AI settings
+  on retry and keep native defaults deterministic. Missing providers and failed
+  calls remain explicit; unknown usage and monetary cost remain unavailable.
+- Preserve provider-returned explanation fields, tool-call IDs and selected
+  models in investigation requests. Resolve profiles from the project root and
+  refresh locally loaded saved keys while preserving process-environment
+  precedence. Add offline EXE-to-provider-parser regression tests.
+
+- Use arrow keys for native TUI navigation: Up/Down moves between controls,
+  Left/Right switches views or cycles choices, and text fields keep cursor
+  movement. Preserve reader scrolling and keep Tab as an optional shortcut.
+
+- Resolve local paths, repository URLs and shorthand consistently in terminal,
+  CLI and web source input. Keep explicit missing paths local, normalize quoted
+  inputs and URL slashes, and reject invalid clone URLs without invoking Git.
+  Local folders work without Git and record `no-revision`, revision limits and
+  file hashes; commit pins and CI still require a verified revision. Preserve
+  reviewed source identity in native scans and isolate clone caches by URL and
+  origin. Add native `--workdir` support and optional web commit input.
+
+- Fix direct native launches from `bin` and other working directories by
+  discovering the application's Python environment relative to the executable.
+  Support Windows, Linux/macOS and `.venv-linux` layouts, active environments
+  and `python3` on PATH. Apply the same import-path cleanup to the Python
+  service bridge and CLI forwarding.
+
 - Kill the four honest limitations: OSV.dev CVE lookup replaces flaky NVD
   downloads (auto-fallback when the ODC binary is missing); CodeQL promoted
   from experimental stub to an opt-in DEEP step with SARIF parsing;
@@ -10,9 +46,10 @@
   SQL-error signatures, allowlist + request caps) as opt-in DAST evidence.
 - Narrow secret redaction to key formats + loaded env values
   (`token.isEmpty()`, diff lines and JSON pass through).
-- Every scan runs model hunt by default (deterministic + model in one
+- Python configuration runs model hunt by default (deterministic + model in one
   pass); without a provider key the hunt stages skip with a reason instead
-  of failing. Pass `--mode deterministic` to opt out.
+  of failing. Pass `--mode deterministic` to opt out. Native defaults keep model
+  stages disabled until Hunt or an AI option is selected.
 
 - Scan any web language, not just Java: new Semgrep rulesets `javascript.yml` (JS/TS), `python.yml`, `php.yml` (10 rules each, two-direction fixtures, batched tests), `LanguageKind` extended + `language_from_extension` hub, inventory covers `.js/.ts/.py/.php/...`, default Semgrep load is every bundled `rules/*.yml`. Live-verified: CWE-78 JS, CWE-89 PY, CWE-79 PHP, safe code silent.
 

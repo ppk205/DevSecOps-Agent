@@ -1,0 +1,12 @@
+{
+  "command": [
+    "D:\\phuc\\Code Project\\DevSecOps-Agent\\.venv\\Scripts\\python.exe",
+    "-m",
+    "ruff",
+    "check",
+    "src",
+    "tests",
+    "ci"
+  ],
+  "exit_code": 0
+}

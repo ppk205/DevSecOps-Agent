@@ -2,6 +2,7 @@ package tui
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -15,20 +16,48 @@ const (
 	reviewControl   = -2
 	startControl    = -3
 	exportControl   = -4
+	aiModeControl   = 12
+	providerControl = 13
+	modelControl    = 14
+	aiReviewControl = 15
+	aiReportControl = 16
+	aiLimitControl  = 17
 )
 
-var choices = map[int][]string{1: {"fast", "full"}, 7: {"critical", "high", "medium", "low", "info", "none"}, 8: {"no", "yes"}, 9: {"no", "yes"}, 11: {"json", "sarif", "html", "markdown"}}
+var choices = map[int][]string{1: {"fast", "full"}, 7: {"critical", "high", "medium", "low", "info", "none"}, 8: {"no", "yes"}, 9: {"no", "yes"}, 11: {"json", "sarif", "html", "markdown"}, aiModeControl: {"deterministic", "hunt"}, aiReviewControl: {"no", "yes"}, aiReportControl: {"no", "yes"}}
 var actionNames = []string{"New scan", "History", "Activity", "Findings", "Review checkout", "Start reviewed scan", "Retry run", "Export run", "Reports", "Cancel active scan"}
 
 func (m Model) controls() []int {
 	if m.tab == 4 {
 		return []int{5, 11, exportControl}
 	}
-	fields := []int{0, 1, advancedControl}
+	fields := []int{0, 1, aiModeControl}
+	if m.inputs[aiModeControl].Value() == "hunt" {
+		fields = append(fields, providerControl, modelControl)
+	}
+	fields = append(fields, advancedControl)
 	if m.advanced {
 		fields = append(fields, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+		if m.inputs[aiModeControl].Value() != "hunt" {
+			fields = append(fields, providerControl, modelControl)
+		}
+		if m.inputs[aiModeControl].Value() != "hunt" {
+			fields = append(fields, aiReviewControl, aiReportControl)
+		}
+		fields = append(fields, aiLimitControl)
 	}
 	return append(fields, reviewControl, startControl)
+}
+
+func (m Model) choiceOptions(field int) []string {
+	if field != providerControl || len(m.modelProfiles) == 0 {
+		return choices[field]
+	}
+	options := []string{""}
+	for _, profile := range m.modelProfiles {
+		options = append(options, profile.ID)
+	}
+	return options
 }
 func (m Model) target() string {
 	if m.tab == 0 {
@@ -61,6 +90,7 @@ func (m *Model) invalidateReview(field int) {
 	m.reviewGeneration++
 	m.reviewed = nil
 	m.reviewedCheckout = ""
+	m.reviewedRepo, m.reviewedCommit = "", ""
 	m.status = "Settings changed. Ctrl+E reviews the current scan."
 }
 func (m *Model) clearEvidence() {
@@ -106,6 +136,9 @@ func (m *Model) refreshActivity() {
 			lines = append(lines, fmt.Sprintf("Running · %.0f seconds · partial evidence is retained", time.Since(m.started).Seconds()))
 			if m.savedActivity.RunID != "" {
 				lines = append(lines, "Findings retained: "+display(m.savedActivity.Result["findings"]))
+				if usage := modelUsageText(m.savedActivity.Result["ai_usage"]); usage != "" {
+					lines = append(lines, usage)
+				}
 			}
 		}
 		lines = append(lines, "")
@@ -131,7 +164,9 @@ func (m *Model) refreshActivity() {
 func (m *Model) navigate(tab int) tea.Cmd {
 	id := m.target()
 	m.tab = tab
-	m.editing, m.searching = false, false
+	m.editing, m.searching, m.keyInput = false, false, false
+	m.keysName.Blur()
+	m.keysValue.Blur()
 	m.search.Blur()
 	for i := range m.inputs {
 		m.inputs[i].Blur()
@@ -171,6 +206,7 @@ func (m *Model) reviewCmd() tea.Cmd {
 	}
 	m.reviewed = nil
 	m.reviewedCheckout = ""
+	m.reviewedRepo, m.reviewedCommit = "", ""
 	m.reviewGeneration++
 	generation, signature, api := m.reviewGeneration, m.signature(), m.api
 	m.status = "Reviewing checkout…"
@@ -180,6 +216,14 @@ func (m *Model) reviewCmd() tea.Cmd {
 			return loaded{kind: "review", generation: generation, err: err}
 		}
 		result, err := api.Review(context.Background(), values[0], cfg)
+		if err == nil && result["configuration"] != nil {
+			data, marshalErr := json.Marshal(result["configuration"])
+			if marshalErr != nil {
+				err = marshalErr
+			} else {
+				err = json.Unmarshal(data, &cfg)
+			}
+		}
 		return loaded{kind: "review", generation: generation, value: reviewResult{config: cfg, signature: signature, target: values[0], result: result}, err: err}
 	}
 }
@@ -204,7 +248,7 @@ func (m *Model) evidenceCmd() tea.Cmd {
 	}
 }
 func (m *Model) changeChoice(delta int) {
-	options := choices[m.field]
+	options := m.choiceOptions(m.field)
 	if len(options) == 0 {
 		return
 	}
@@ -243,32 +287,32 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 	}
 	if key == "ctrl+k" && !m.keyInput {
 		if m.tab == 1 || m.keysName.Focused() || m.keysValue.Focused() {
-		// Save one API key to the project-local .env. Only the variable
-		// NAME is ever shown or listed again; the value is passed through
-		// once and dropped (EchoPassword on the value field).
-		name := strings.TrimSpace(m.keysName.Value())
-		if name == "" {
-			m.envStatus = "Type a VARIABLE_NAME first."
-			m.keyInput = true
-			m.keysFocus = 0
-			m.keysValue.Blur()
-			return m, m.keysName.Focus()
-		}
-		value := m.keysValue.Value()
-		m.keysValue.SetValue("")
-		m.envStatus = "Saving " + strings.ToUpper(strings.ReplaceAll(name, "-", "_")) + "…"
-		api := m.api
-		return m, func() tea.Msg {
-			if err := api.EnvSet(context.Background(), name, value); err != nil {
-				return loaded{kind: "keys", err: err}
+			// Save one API key to the project-local .env. Only the variable
+			// NAME is ever shown or listed again; the value is passed through
+			// once and dropped (EchoPassword on the value field).
+			name := strings.TrimSpace(m.keysName.Value())
+			if name == "" {
+				m.envStatus = "Type a VARIABLE_NAME first."
+				m.keyInput = true
+				m.keysFocus = 0
+				m.keysValue.Blur()
+				return m, m.keysName.Focus()
 			}
-			names, err := api.EnvList(context.Background())
-			return loaded{kind: "keys", value: names, err: err}
+			value := m.keysValue.Value()
+			m.keysValue.SetValue("")
+			m.envStatus = "Saving " + strings.ToUpper(strings.ReplaceAll(name, "-", "_")) + "…"
+			api := m.api
+			return m, func() tea.Msg {
+				if err := api.EnvSet(context.Background(), name, value); err != nil {
+					return loaded{kind: "keys", err: err}
+				}
+				names, err := api.EnvList(context.Background())
+				return loaded{kind: "keys", value: names, err: err}
+			}
 		}
-	}
-	// Elsewhere Ctrl+K keeps its newer role: open the action menu (FR71).
-	m.menu, m.menuCursor = true, 0
-	return m, nil
+		// Elsewhere Ctrl+K keeps its newer role: open the action menu (FR71).
+		m.menu, m.menuCursor = true, 0
+		return m, nil
 	}
 	if m.menu {
 		switch key {
@@ -284,6 +328,21 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 			return m.handleKey(keys[m.menuCursor])
 		}
 		return m, nil
+	}
+	if m.notificationPanel != nil {
+		return m.notificationKey(key)
+	}
+	if key == "f6" || key == "f7" {
+		mode, params := "settings", map[string]any{"action": "settings"}
+		if key == "f7" {
+			if m.target() == "" {
+				m.status = "Select a retained run first."
+				return m, nil
+			}
+			mode, params = "review", map[string]any{"action": "deliveries", "run_id": m.target()}
+		}
+		m.notificationPanel = &notificationPanel{mode: mode, busy: true, selected: map[string]bool{}}
+		return m, m.notificationCmd(params)
 	}
 	if key == "ctrl+n" {
 		m.navigate(1)
@@ -358,11 +417,8 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 		case m.keyInput:
 			// Leaving key entry keeps whatever is typed; Ctrl+K saves it.
 			m.keyInput = false
-			if m.keysFocus == 0 {
-				m.keysValue.Blur()
-			} else {
-				m.keysName.Blur()
-			}
+			m.keysName.Blur()
+			m.keysValue.Blur()
 		case m.editing:
 			m.editing = false
 			m.inputs[m.field].Blur()
@@ -377,6 +433,15 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 			m.navigate(1)
 		}
 		return m, nil
+	}
+	if (key == "left" || key == "right") && !m.editing && !m.searching && !m.keyInput &&
+		!(m.tab == 1 && m.reviewMode) && !(m.tab == 3 && m.evidenceFocus) &&
+		!((m.tab == 1 || m.tab == 4) && len(m.choiceOptions(m.field)) > 0) {
+		delta := 1
+		if key == "left" {
+			delta = -1
+		}
+		return m, m.navigate((m.tab + delta + len(tabs)) % len(tabs))
 	}
 	if m.tab == 0 {
 		if key == "enter" {
@@ -417,8 +482,8 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 		return m, cmd
 	}
 	if m.tab == 1 || m.tab == 4 {
-		if key == "tab" && m.keyInput {
-			// Inside API-key entry: Tab moves name -> value -> name.
+		if (key == "tab" || key == "shift+tab" || key == "up" || key == "down") && m.keyInput {
+			// Move between the name and hidden value without saving either field.
 			m.keysFocus = (m.keysFocus + 1) % 2
 			if m.keysFocus == 0 {
 				m.keysValue.Blur()
@@ -436,7 +501,7 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 			value := m.inputs[0].Value()
 			return m, func() tea.Msg { return loaded{kind: "completion", id: value, value: completePath(value)} }
 		}
-		if key == "tab" || key == "shift+tab" {
+		if key == "tab" || key == "shift+tab" || key == "up" || key == "down" {
 			if m.field >= 0 {
 				m.inputs[m.field].Blur()
 			}
@@ -448,7 +513,7 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 				}
 			}
 			delta := 1
-			if key == "shift+tab" {
+			if key == "shift+tab" || key == "up" {
 				delta = -1
 			}
 			m.field = controls[(index+delta+len(controls))%len(controls)]
@@ -465,7 +530,7 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 			case exportControl:
 				return m.handleKey(tea.KeyPressMsg{Code: 'o', Mod: tea.ModCtrl})
 			default:
-				if len(choices[m.field]) > 0 {
+				if len(m.choiceOptions(m.field)) > 0 {
 					m.changeChoice(1)
 				} else {
 					m.editing = !m.editing
@@ -477,7 +542,7 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 			}
 			return m, nil
 		}
-		if len(choices[m.field]) > 0 && (key == "left" || key == "right" || key == "space") {
+		if len(m.choiceOptions(m.field)) > 0 && (key == "left" || key == "right" || key == "space") {
 			delta := 1
 			if key == "left" {
 				delta = -1
@@ -550,7 +615,7 @@ func (m Model) handleInput(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		return m, cmd
 	}
-	if (m.tab == 1 || m.tab == 4) && m.editing && m.field >= 0 && len(choices[m.field]) == 0 {
+	if (m.tab == 1 || m.tab == 4) && m.editing && m.field >= 0 && len(m.choiceOptions(m.field)) == 0 {
 		old := m.inputs[m.field].Value()
 		var cmd tea.Cmd
 		m.inputs[m.field], cmd = m.inputs[m.field].Update(msg)

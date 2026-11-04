@@ -411,3 +411,28 @@ export interface NotificationsResponse {
   notifications: ScanNotification[];
   unread: number;
 }
+// FR-75: environment references only; destination credentials never cross this API.
+export interface OutboundChannel {
+  enabled: boolean;
+  events: string[];
+  token_env?: string;
+  chat_env?: string;
+  webhook_env?: string;
+}
+export interface OutboundSettings {
+  schema_version: 1;
+  mode: "manual" | "automatic";
+  telegram: OutboundChannel;
+  discord: OutboundChannel;
+}
+export interface OutboundConfig { settings: OutboundSettings; events: Record<string, string> }
+export interface OutboundReceipt {
+  run_id: string;
+  deliveries: Array<{
+    channel: string;
+    status: string;
+    detail: string;
+    events: Array<{ kind: string; label: string; message: string }>;
+    selected_events: string[];
+  }>;
+}

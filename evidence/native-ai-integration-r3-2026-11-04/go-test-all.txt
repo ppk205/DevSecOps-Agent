@@ -1,0 +1,23 @@
+Command: "D:\phuc\Code Project\DevSecOps-Agent\.tools\go\bin\go.exe" test ./...
+
+# devsecops-agent/artifacts/tui-verification [devsecops-agent/artifacts/tui-verification.test]
+artifacts\tui-verification\native_probe_test.go:12:5: undefined: fakeAPI
+artifacts\tui-verification\native_probe_test.go:21:19: undefined: Model
+artifacts\tui-verification\native_probe_test.go:30:10: undefined: New
+artifacts\tui-verification\native_probe_test.go:43:10: undefined: New
+artifacts\tui-verification\native_probe_test.go:43:15: undefined: fakeAPI
+artifacts\tui-verification\native_probe_test.go:57:14: undefined: New
+artifacts\tui-verification\native_probe_test.go:57:19: undefined: fakeAPI
+artifacts\tui-verification\native_probe_test.go:69:10: undefined: New
+artifacts\tui-verification\native_probe_test.go:69:15: undefined: fakeAPI
+FAIL	devsecops-agent/artifacts/tui-verification [build failed]
+ok  	devsecops-agent/cmd/devsecops-agent	(cached)
+ok  	devsecops-agent/internal/analysis	(cached)
+?   	devsecops-agent/internal/bridge	[no test files]
+?   	devsecops-agent/internal/dashboard	[no test files]
+?   	devsecops-agent/internal/process	[no test files]
+ok  	devsecops-agent/internal/service	(cached)
+ok  	devsecops-agent/internal/tui	(cached)
+FAIL
+
+Exit code: 1

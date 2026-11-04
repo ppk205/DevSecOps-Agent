@@ -92,6 +92,8 @@ class ScanApp(App[None]):
     TITLE = f"DevSecOps Agent {APP_VERSION}"
     BINDINGS: ClassVar = [
         Binding("ctrl+k", "command_palette", "Actions", priority=True),
+        Binding("f6", "notifications", "Notifications", priority=True),
+        Binding("f7", "notification_review", "Send review", show=False, priority=True),
         Binding("ctrl+q", "quit", "Quit", priority=True),
         Binding("ctrl+n", "setup", "New scan", priority=True),
         Binding("ctrl+r", "history", "History", show=False, priority=True),
@@ -1021,6 +1023,7 @@ class ScanApp(App[None]):
             manifest = checkout_manifest(
                 *selected, expected=source.commit, excluded=self.service.runtime_paths(selected[1])
             )
+            manifest["source_kind"] = "remote" if isinstance(source, RemoteSource) else "local"
             summary = (
                 "Repository: "
                 + source.repo_url
@@ -1155,6 +1158,35 @@ class ScanApp(App[None]):
         self.update_targets()
         if self.quit_after_scan:
             self.exit()
+        else:
+            receipt = message.result.get("notifications", {})
+            if receipt.get("mode") == "manual" and any(
+                r["status"] == "pending" for r in receipt.get("deliveries", [])
+            ):
+                from .notifications import NotificationsDialog
+
+                self.push_screen(NotificationsDialog(self.service.db_path, receipt))
+
+    def action_notifications(self) -> None:
+        self.load_notifications({"action": "settings"})
+
+    def action_notification_review(self) -> None:
+        if self.selected_pk is None:
+            self.notify("Select a retained run first.")
+        else:
+            self.load_notifications({"action": "deliveries", "run_id": self.selected_pk})
+
+    @work(thread=True, group="notification-settings", exclusive=True)
+    def load_notifications(self, params: dict[str, Any]) -> None:
+        from vulnscan.notifications.service import handle
+
+        from .notifications import NotificationsDialog
+
+        try:
+            data = handle(self.service.db_path, params)
+            self._post_ui(self.push_screen, NotificationsDialog(self.service.db_path, data))
+        except (ValueError, OSError):
+            self._post_ui(self.notify, "Cannot load notifications; check settings or selected run.")
 
     def action_cancel(self) -> None:
         self.cancel_pending = self.scanning

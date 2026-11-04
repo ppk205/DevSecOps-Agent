@@ -1,12 +1,45 @@
 # Implementation Plan — DevSecOps-Agent
 
-**Version:** 1.1
+**Version:** 1.2
 **Status:** In progress — T00–T10 implemented; T09 evaluated on JVA-bookstore
 **Related:** [SRS.md](SRS.md), [TEST-PLAN.md](TEST-PLAN.md), [../.planning/AGENT-HANDOFF.md](../.planning/AGENT-HANDOFF.md), [Laya decision-routing plan](../.hermes/plans/2026-09-23_000000-laya-decision-routing.md)
 
 ---
 
 ## 1. Ownership
+
+Notification implementation update (2026-11-04, SRS FR-75): shared Python
+delivery creates one digest per run/destination. ScanService invokes it after
+terminal persistence; native deterministic completion invokes the same service
+over version-1 JSONL. SQLite migration 7 adds a delivery ledger with a unique
+run/channel key and atomic send claims. Pending, sending, sent, failed, unknown
+and unconfigured outcomes remain separate from scan/finding status. Preferences
+store environment references only. CLI, native/Textual F6/F7 and the dashboard
+offer event selection. Defaults disable delivery; no old drafts are flushed on
+settings saves or reads. Offline tests replace only HTTP transport, while native
+integration exercises the actual EXE, bridge, digest creation and payloads.
+
+Current implementation update (2026-11-04): the native EXE now routes Hunt,
+AI-review and AI-report scans through the existing Python ScanService. Native
+deterministic execution remains available. Both paths use the shared database,
+run identity, history, reports and cancellation boundaries. AI retries preserve
+the saved configuration and use the Python retry path.
+
+Workspace exposes scan mode, provider/model choices and bounded review settings.
+Effective review shows provider readiness. Activity records call/tool progress
+and returned explanations; finding details retrieve assessments for the matching
+run and finding. Provider message serialization now includes tool-call IDs and
+the selected model. Profiles resolve from the same project root as EnvFile.
+
+Verification uses synthetic HTTP responses through the real EXE/bridge/parser
+and investigation loop. This establishes execution and display behavior. Live
+provider health, model accuracy, monetary price estimates, full prompt transcripts
+and token-by-token streaming remain outside the verified implementation. Actual
+checks and remaining failures are recorded in
+[NATIVE-AI-VERIFICATION-2026-11-04.md](NATIVE-AI-VERIFICATION-2026-11-04.md).
+
+These additions trace to SRS FR-48/49/71, IR-11/12/13 and QR-21. The historical
+task results below retain their original evidence and limitations.
 
 | Area | Owner | Exclusive paths |
 |------|-------|-----------------|

@@ -58,6 +58,11 @@ export const api = {
   },
 };
 
+export const fetchOutboundSettings = () => get<import("./types").OutboundConfig>("/api/outbound/settings");
+export const saveOutboundSettings = (settings: import("./types").OutboundSettings) => postJson<import("./types").OutboundConfig>("/api/outbound/settings", settings);
+export const fetchOutbound = (runId: string) => get<import("./types").OutboundReceipt>(`/api/scans/${encodeURIComponent(runId)}/outbound`);
+export const sendOutbound = (runId: string, events: string[], channels: string[]) => postJson<import("./types").OutboundReceipt>(`/api/scans/${encodeURIComponent(runId)}/outbound`, { events, channels });
+
 export async function fetchScans(): Promise<import("../api/types").ScanSummary[]> {
   if (isMock) return mockApi.scans();
   const data = await get<{ scans: import("../api/types").ScanSummary[] }>(`/api/scans`);

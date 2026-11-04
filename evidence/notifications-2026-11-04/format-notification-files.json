@@ -1,0 +1,24 @@
+{
+  "command": [
+    "D:\\phuc\\Code Project\\DevSecOps-Agent\\.venv\\Scripts\\python.exe",
+    "-m",
+    "ruff",
+    "format",
+    "--check",
+    "src/vulnscan/notifications",
+    "src/vulnscan/cli/main.py",
+    "src/vulnscan/cli/notifications.py",
+    "src/vulnscan/core/scan_service.py",
+    "src/vulnscan/core/rpc.py",
+    "src/vulnscan/storage",
+    "src/vulnscan/tui/app.py",
+    "src/vulnscan/tui/notifications.py",
+    "src/vulnscan/web/app.py",
+    "tests/notifications",
+    "tests/conftest.py",
+    "tests/platform/notification_rpc_fixture.py",
+    "tests/platform/rpc_fixture.py",
+    "tests/platform/test_scan_boundaries.py"
+  ],
+  "exit_code": 0
+}

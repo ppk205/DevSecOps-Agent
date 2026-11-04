@@ -1,0 +1,19 @@
+Command: "D:\phuc\Code Project\DevSecOps-Agent\.venv\Scripts\python.exe" -m ruff format --check --output-format concise src tests ci
+
+src\vulnscan\native_hunt\engine.py:92:26: unformatted: File would be reformatted
+src\vulnscan\native_hunt\taint.py:34:20: unformatted: File would be reformatted
+src\vulnscan\reporting\reporter.py:427:30: unformatted: File would be reformatted
+src\vulnscan\scanners\codeql_adapter.py:266:23: unformatted: File would be reformatted
+src\vulnscan\scanners\dependency_check_adapter.py:237:26: unformatted: File would be reformatted
+src\vulnscan\scanners\native_hunt_adapter.py:110:68: unformatted: File would be reformatted
+src\vulnscan\storage\database.py:123:65: unformatted: File would be reformatted
+tests\native_hunt\test_engine.py:136:9: unformatted: File would be reformatted
+tests\scanners\test_codeql_adapter.py:69:54: unformatted: File would be reformatted
+tests\scanners\test_spotbugs_coverage.py:77:62: unformatted: File would be reformatted
+tests\web\test_notifications.py:18:5: unformatted: File would be reformatted
+tests\web\test_phase3_live.py:121:16: unformatted: File would be reformatted
+tests\web\test_phase4_findings.py:246:28: unformatted: File would be reformatted
+tests\web\test_phase5_reports_logs.py:237:31: unformatted: File would be reformatted
+14 files would be reformatted, 269 files already formatted
+
+Exit code: 1

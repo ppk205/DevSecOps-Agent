@@ -16,6 +16,15 @@ import (
 
 type fakeAPI struct{ calls int }
 
+func (f *fakeAPI) Notification(context.Context, map[string]any) (service.NotificationResponse, error) {
+	f.calls++
+	return service.NotificationResponse{}, nil
+}
+
+func (f *fakeAPI) ModelProfiles(context.Context) ([]service.ModelProfile, error) {
+	return nil, nil
+}
+
 func (f *fakeAPI) Init(context.Context) error                            { f.calls++; return nil }
 func (f *fakeAPI) History(context.Context) ([]service.RunSummary, error) { f.calls++; return nil, nil }
 func (f *fakeAPI) Activity(context.Context, string) (service.RunActivity, error) {
