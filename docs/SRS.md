@@ -3,7 +3,7 @@
 **Project**: DevSecOps-Agent — Automated Vulnerability Scanning and Assessment for Java Servlet/JSP Applications
 
 **Document ID**: SRS-001  
-**Version**: 1.7 (independent evidence decisions and CVSS v4.0 correction)
+**Version**: 1.8 (native language intake and remote hunt integration)
 **Status**: Approved implementation baseline
 **Authors**: Tran Doan Hoa (23162026), Nguyen Minh Khoi (23162046)  
 **Supervisor**: Nguyen Thi Thanh Van
@@ -11,6 +11,12 @@
 ---
 
 ## 1. Introduction
+
+**Revision 1.8 — 2026-11-05:** FR-01/10 and C-04 record the native language
+integration: Go, Ruby and C# join the scan inventory, language contracts and
+native adapter. Semgrep records those languages as unsupported under its bundled
+rules. The merged hunt-recall lane adds bounded passes/excerpts; its historical
+recall figures are not new measurements of this checkout.
 
 **Revision 1.7 — 2026-11-04:** FR-50/53 distinguish model proposals and raw
 scanner observations from scoped independent evidence, and require conformant
@@ -176,7 +182,7 @@ The target application has four user roles. The application declares an authoriz
 
 **C-03**: Timeline is 17 weeks with two developers.
 
-**C-04**: The application supports Python 3.11+ and a native Go interface and service implementation. Components migrate after compatibility and performance verification; Python remains supported for Laya inference, training, and components awaiting those gates. The analyzed application is Java-only.
+**C-04**: The application supports Python 3.11+ and a native Go interface and service implementation. Components migrate after compatibility and performance verification; Python remains supported for Laya inference, training, and components awaiting those gates. Java Servlet/JSP remains the original experimental target. Native-hunt rule families also cover JavaScript/TypeScript, Python, PHP, Go, Ruby and C# with separately recorded coverage and limitations. Rule-pack availability is not evidence of measured language accuracy.
 
 **C-05**: Scanning is static. Function tests and optional targeted sandbox execution strengthen evidence but are not required for every finding.
 
@@ -191,6 +197,14 @@ Feature IDs below are stable and carried unchanged into the test plan and eviden
 ### 3.1 Source Intake and Inventory (FR-10..FR-19)
 
 **FR-10 — Target registration.** The application shall register a target by local path, record its git revision, and store a manifest of project metadata (build system, Java version, dependency file locations).
+
+The scan inventory and language contracts shall recognize Go (`.go`), Ruby
+(`.rb`, `.erb`) and C# (`.cs`, `.cshtml`, `.razor`) for the native adapter, in
+addition to its existing families. A native-only vulnerable fixture must produce
+findings and fail its configured gate instead of appearing clean. Semgrep shall
+record these languages as unsupported when its bundled rules do not analyze
+them. This does not add dedicated model-hunt language passes or claim semantic
+coverage/accuracy for all code in those languages.
 
 *Evidence*: registration record with revision hash and file inventory; test `T-INTAKE-01`.
 

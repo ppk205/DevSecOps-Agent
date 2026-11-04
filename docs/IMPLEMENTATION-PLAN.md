@@ -8,6 +8,14 @@
 
 ## 1. Ownership
 
+Remote integration (2026-11-05): combine `my_tool_call` at `d082435` and
+`lane-hunt-recall` at `1cab83d` with the local workflow/CVSS/report commits and
+pending native-language coverage fixes. Both remote tips are retained in merge
+history. The original dirty checkout is preserved in place; work uses a separate
+integration worktree and branch. No dependency or model installation is needed.
+See [REMOTE-INTEGRATION-2026-11-05.md](REMOTE-INTEGRATION-2026-11-05.md) for
+executed checks, source/environment isolation and remaining limits.
+
 Validation/scoring correction (2026-11-04, FR-50/53/56): the validator now
 requires scoped independent evidence with explicit polarity and provenance for
 terminal status. Model confidence, raw detections, duplicate identities,

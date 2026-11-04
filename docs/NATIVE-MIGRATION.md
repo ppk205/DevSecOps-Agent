@@ -11,6 +11,13 @@ These libraries retain the existing scan and report contracts. Python remains
 usable as a complete fallback. No detached service is started. Closing the
 owned bridge requests cancellation and waits for evidence persistence.
 
+The native-language integration joins Go/Ruby/C# files to source inventory,
+`LanguageKind` and the native-hunt adapter. Semgrep reports those units as
+unsupported with its bundled rules. Model hunt still has no dedicated passes
+for them. The hunt-recall branch adds bounded broad/concern passes to the Python
+pipeline; its historical recall figures were not rerun for this merge. See
+[the integration record](REMOTE-INTEGRATION-2026-11-05.md).
+
 Outbound notifications (FR-75) also use the owned Python bridge. Native scans
 persist their final result before invoking the shared notification completion
 handler. AI-enabled scans already reach it through ScanService. F6 opens event

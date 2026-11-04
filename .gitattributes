@@ -1,3 +1,4 @@
 # These retained verification records include byte hashes; preserve their bytes.
 evidence/owasp-report-2026-11-04/** -text
 evidence/validator-cvss-2026-11-04/** -text
+evidence/remote-integration-2026-11-05/** -text

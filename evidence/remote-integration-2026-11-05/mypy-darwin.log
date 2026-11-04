@@ -1,0 +1,4 @@
+src\vulnscan\decisions\model_worker.py:22: error: Cannot find implementation or library stub for module named "torch"  [import-not-found]
+src\vulnscan\decisions\model_worker.py:22: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+src\vulnscan\scanners\osv_adapter.py:458: error: Returning Any from function declared to return "ScannerResult"  [no-any-return]
+Found 2 errors in 2 files (checked 135 source files)

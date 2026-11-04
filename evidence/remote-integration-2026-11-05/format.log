@@ -1,0 +1,372 @@
+unformatted: File would be reformatted
+   --> src\vulnscan\native_hunt\engine.py:97:26
+    |
+96  | #: the lone ``TAG;`` terminator interpolate ``{$var}``/``$var``.
+    - _HEREDOC_RE = re.compile(
+    -     r"(?P<var>\$\w+)\s*(?P<op>\.?=)\s*<<<\s*(?P<tag>[A-Za-z_]\w*)"
+    - )
+97  + _HEREDOC_RE = re.compile(r"(?P<var>\$\w+)\s*(?P<op>\.?=)\s*<<<\s*(?P<tag>[A-Za-z_]\w*)")
+98  |
+--------------------------------------------------------------------------------
+230 |                     continue
+    -                 for arg, param in zip(
+    -                     call.group("args").split(","), method_defs[callee]
+    -                 ):
+231 +                 for arg, param in zip(call.group("args").split(","), method_defs[callee]):
+232 |                     for tvar, (origin, hops) in list(tainted.items()):
+--------------------------------------------------------------------------------
+327 |                 source_line = best_ref[0]
+    -                 confidence = "High" if best_ref[1] == 0 else "Medium" if best_ref[1] == 1 else "Weak"
+328 +                 confidence = (
+329 +                     "High" if best_ref[1] == 0 else "Medium" if best_ref[1] == 1 else "Weak"
+330 +                 )
+331 |         findings.append(
+    |
+
+unformatted: File would be reformatted
+  --> src\vulnscan\native_hunt\taint.py:34:20
+   |
+33 |     "python": [r"request\.(args|form|values|json|data|GET|POST)", r"\binput\s*\("],
+   -     "javascript": [r"req\.(query|body|params)", r"location\.(search|hash)", r"document\.URL", r"event\.data", r"window\.name"],
+34 +     "javascript": [
+35 +         r"req\.(query|body|params)",
+36 +         r"location\.(search|hash)",
+37 +         r"document\.URL",
+38 +         r"event\.data",
+39 +         r"window\.name",
+40 +     ],
+41 |     "java": [
+   |
+
+unformatted: File would be reformatted
+   --> src\vulnscan\scanners\codeql_adapter.py:266:23
+    |
+265 |             errors=[_MISSING_BINARY_REASON],
+    -             warnings=["CodeQL is an opt-in DEEP step; skipping it leaves baseline coverage unchanged"],
+266 +             warnings=[
+267 +                 "CodeQL is an opt-in DEEP step; skipping it leaves baseline coverage unchanged"
+268 +             ],
+269 |         )
+--------------------------------------------------------------------------------
+341 |         if any(str(p).lower().endswith(_JSP_SUFFIXES) for p in inventory):
+    -             warnings.append("JSP sources sit outside the CodeQL database; no JSP coverage is claimed")
+342 +             warnings.append(
+343 +                 "JSP sources sit outside the CodeQL database; no JSP coverage is claimed"
+344 +             )
+345 |
+    |
+
+unformatted: File would be reformatted
+   --> src\vulnscan\scanners\dependency_check_adapter.py:237:26
+    |
+236 |                 return self._fatal(
+    -                     spec, started, finished, result, note=f"dependency-check produced no report; osv fallback: {exc}"
+237 +                     spec,
+238 +                     started,
+239 +                     finished,
+240 +                     result,
+241 +                     note=f"dependency-check produced no report; osv fallback: {exc}",
+242 |                 )
+--------------------------------------------------------------------------------
+252 |                 return self._fatal(
+    -                     spec, started, finished, result, note=f"unreadable dependency-check report: {exc}; osv fallback: {fallback_exc}"
+253 +                     spec,
+254 +                     started,
+255 +                     finished,
+256 +                     result,
+257 +                     note=f"unreadable dependency-check report: {exc}; osv fallback: {fallback_exc}",
+258 |                 )
+    |
+
+unformatted: File would be reformatted
+   --> tests\native_hunt\test_engine.py:136:9
+    |
+135 |     target.write_text(
+    -         "String user = req.getParameter(\"u\");\n"
+    -         "ResultSet rs = st.executeQuery(\"SELECT '\" + user + \"'\");\n",
+136 +         'String user = req.getParameter("u");\n'
+137 +         'ResultSet rs = st.executeQuery("SELECT \'" + user + "\'");\n',
+138 |         encoding="utf-8",
+139 |     )
+140 |     findings = scan_file(target, load_rules("java"))
+    -     assert any(
+    -         f.rule_id == "java-sql-concatenation" and f.line == 2 for f in findings
+    -     )
+141 +     assert any(f.rule_id == "java-sql-concatenation" and f.line == 2 for f in findings)
+142 |
+--------------------------------------------------------------------------------
+163 |     target.write_text(
+    -         "public AttackResult completed(@RequestParam(value = \"u\") String userId) {\n"
+164 +         'public AttackResult completed(@RequestParam(value = "u") String userId) {\n'
+165 |         "    return injectableQuery(userId);\n"
+166 |         "}\n"
+167 |         "public AttackResult injectableQuery(String accountName) {\n"
+    -         "    String query = \"SELECT * WHERE name = '\" + accountName + \"'\";\n"
+168 +         '    String query = "SELECT * WHERE name = \'" + accountName + "\'";\n'
+169 |         "    ResultSet r = st.executeQuery(query);\n"
+--------------------------------------------------------------------------------
+174 |     findings = scan_file(target, load_rules("java"))
+    -     assert any(
+    -         f.rule_id == "java-sql-concatenation" and f.line == 6 for f in findings
+    -     )
+175 +     assert any(f.rule_id == "java-sql-concatenation" and f.line == 6 for f in findings)
+176 |
+--------------------------------------------------------------------------------
+183 |         "String q = null;\n"
+    -         "while ((q = req.getParameter(\"x\")) != null) {\n"
+184 +         'while ((q = req.getParameter("x")) != null) {\n'
+185 |         "    st.executeQuery(q);\n"
+--------------------------------------------------------------------------------
+189 |     findings = scan_file(target, load_rules("java"))
+    -     assert any(
+    -         f.rule_id == "java-sql-concatenation" and f.line == 3 for f in findings
+    -     )
+190 +     assert any(f.rule_id == "java-sql-concatenation" and f.line == 3 for f in findings)
+191 |
+--------------------------------------------------------------------------------
+200 |         "    void a() throws Exception {\n"
+    -         "        BufferedReader r = new BufferedReader(new FileReader(\"x\"));\n"
+201 +         '        BufferedReader r = new BufferedReader(new FileReader("x"));\n'
+202 |         "        System.out.println(r.readLine());\n"
+203 |         "    }\n"
+204 |         "    void b() throws Exception {\n"
+    -         "        try (BufferedReader q = new BufferedReader(new FileReader(\"y\"))) {\n"
+205 +         '        try (BufferedReader q = new BufferedReader(new FileReader("y"))) {\n'
+206 |         "            System.out.println(q.readLine());\n"
+207 |         "        }\n"
+208 |         "    }\n"
+209 |         "    void c() throws Exception {\n"
+    -         "        BufferedReader s = new BufferedReader(new FileReader(\"z\"));\n"
+210 +         '        BufferedReader s = new BufferedReader(new FileReader("z"));\n'
+211 |         "        s.close();\n"
+--------------------------------------------------------------------------------
+237 |     findings = scan_file(target, load_rules("php"))
+    -     assert any(
+    -         f.rule_id == "php-reflected-xss" and f.line == 7 for f in findings
+    -     )
+238 +     assert any(f.rule_id == "php-reflected-xss" and f.line == 7 for f in findings)
+    |
+
+unformatted: File would be reformatted
+   --> tests\native_hunt\test_new_families.py:110:42
+    |
+109 |     target.write_text(
+    -         'name := r.URL.Query().Get("n")\n'
+    -         'w.Write([]byte("hello " + name))\n',
+110 +         'name := r.URL.Query().Get("n")\nw.Write([]byte("hello " + name))\n',
+111 |         encoding="utf-8",
+--------------------------------------------------------------------------------
+117 |     clean.write_text(
+    -         'if (a == r.URL.Query().Get("n")) {\n'
+    -         '    w.Write([]byte("static"))\n'
+    -         "}\n",
+118 +         'if (a == r.URL.Query().Get("n")) {\n    w.Write([]byte("static"))\n}\n',
+119 |         encoding="utf-8",
+--------------------------------------------------------------------------------
+138 |     target.write_text(
+    -         "qq = params[:qq]\n"
+    -         'system("ls", Shellwords.escape(qq))\n',
+139 +         'qq = params[:qq]\nsystem("ls", Shellwords.escape(qq))\n',
+140 |         encoding="utf-8",
+    |
+
+unformatted: File would be reformatted
+   --> tests\scanners\test_codeql_adapter.py:69:54
+    |
+68  |                             "physicalLocation": {
+    -                                 "artifactLocation": {
+    -                                     "uri": "src/main/java/com/example/Db.java"
+    -                                 },
+69  +                                 "artifactLocation": {"uri": "src/main/java/com/example/Db.java"},
+70  |                                 "region": {
+--------------------------------------------------------------------------------
+88  |                             "physicalLocation": {
+    -                                 "artifactLocation": {
+    -                                     "uri": "src/main/java/com/example/Web.java"
+    -                                 },
+89  +                                 "artifactLocation": {"uri": "src/main/java/com/example/Web.java"},
+90  |                                 "region": {
+--------------------------------------------------------------------------------
+140 |
+    - def test_disabled_tool_is_skipped(
+    -     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    - ) -> None:
+141 + def test_disabled_tool_is_skipped(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+142 |     monkeypatch.setattr(codeql_adapter, "which", lambda name: None)
+--------------------------------------------------------------------------------
+231 |
+    - def test_run_creates_database_and_analyzes(
+    -     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    - ) -> None:
+232 + def test_run_creates_database_and_analyzes(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+233 |     monkeypatch.setattr(codeql_adapter, "which", lambda name: "/usr/bin/codeql")
+--------------------------------------------------------------------------------
+251 |
+    - def test_run_reuses_cached_database(
+    -     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    - ) -> None:
+252 + def test_run_reuses_cached_database(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+253 |     monkeypatch.setattr(codeql_adapter, "which", lambda name: "/usr/bin/codeql")
+    |
+
+unformatted: File would be reformatted
+   --> tests\scanners\test_spotbugs_coverage.py:77:62
+    |
+76  |     (classes / "Clean.class").write_bytes(b"\xca\xfe\xba\xbe")
+    -     (tmp_path / "target" / "spotbugs-report.xml").write_text(
+    -         _BUGGY_XML, encoding="utf-8"
+    -     )
+77  +     (tmp_path / "target" / "spotbugs-report.xml").write_text(_BUGGY_XML, encoding="utf-8")
+78  |     adapter = SpotBugsAdapter()
+--------------------------------------------------------------------------------
+90  |     # No compiled counterpart -> unsupported with reason, never "missing".
+    -     assert by_path.get("src/main/java/org/example/NeverCompiled.java") == CoverageUnitStatus.UNSUPPORTED
+91  +     assert (
+92  +         by_path.get("src/main/java/org/example/NeverCompiled.java")
+93  +         == CoverageUnitStatus.UNSUPPORTED
+94  +     )
+95  |     # Non-Java units are out of scope, recorded not missing.
+--------------------------------------------------------------------------------
+102 |
+    -     assert _spotbugs_cwe("SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE", "SQL") == CWECategory.SQL_INJECTION
+103 +     assert (
+104 +         _spotbugs_cwe("SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE", "SQL")
+105 +         == CWECategory.SQL_INJECTION
+106 +     )
+107 |     assert _spotbugs_cwe("EI_EXPOSE_REP2", "BAD_PRACTICE") == CWECategory.SENSITIVE_DATA_EXPOSURE
+    -     assert _spotbugs_cwe("DMI_RANDOM_USED_ONLY_ONCE", "BAD_PRACTICE") == CWECategory.INSECURE_RANDOMNESS
+    -     assert _spotbugs_cwe("RV_RETURN_VALUE_IGNORED", "BAD_PRACTICE") == CWECategory.UNCHECKED_RETURN_VALUE
+108 +     assert (
+109 +         _spotbugs_cwe("DMI_RANDOM_USED_ONLY_ONCE", "BAD_PRACTICE")
+110 +         == CWECategory.INSECURE_RANDOMNESS
+111 +     )
+112 +     assert (
+113 +         _spotbugs_cwe("RV_RETURN_VALUE_IGNORED", "BAD_PRACTICE")
+114 +         == CWECategory.UNCHECKED_RETURN_VALUE
+115 +     )
+116 |     assert _spotbugs_cwe("URF_UNREAD_FIELD", "STYLE") == CWECategory.UNUSED_ASSIGNMENT
+    -     assert _spotbugs_cwe("OBL_UNSATISFIED_OBLIGATION", "BAD_PRACTICE") == CWECategory.IMPROPER_RESOURCE_SHUTDOWN
+    -     assert _spotbugs_cwe("REC_CATCH_EXCEPTION", "BAD_PRACTICE") == CWECategory.GENERIC_EXCEPTION_CAUGHT
+117 +     assert (
+118 +         _spotbugs_cwe("OBL_UNSATISFIED_OBLIGATION", "BAD_PRACTICE")
+119 +         == CWECategory.IMPROPER_RESOURCE_SHUTDOWN
+120 +     )
+121 +     assert (
+122 +         _spotbugs_cwe("REC_CATCH_EXCEPTION", "BAD_PRACTICE") == CWECategory.GENERIC_EXCEPTION_CAUGHT
+123 +     )
+124 |     assert _spotbugs_cwe("DM_DEFAULT_ENCODING", "I18N") == CWECategory.UNICODE_ENCODING_ERROR
+125 |     assert _spotbugs_cwe("DE_MIGHT_IGNORE", "BAD_PRACTICE") == CWECategory.IMPROPER_EXCEPTION_CHECK
+    -     assert _spotbugs_cwe("VA_FORMAT_STRING_USES_NEWLINE", "I18N") == CWECategory.EXTERNALLY_CONTROLLED_FORMAT_STRING
+126 +     assert (
+127 +         _spotbugs_cwe("VA_FORMAT_STRING_USES_NEWLINE", "I18N")
+128 +         == CWECategory.EXTERNALLY_CONTROLLED_FORMAT_STRING
+129 +     )
+130 |     assert _spotbugs_cwe("MS_PKGPROTECT", "MALICIOUS_CODE") is None
+    |
+
+unformatted: File would be reformatted
+  --> tests\web\test_notifications.py:18:5
+   |
+17 |     "--- a/src/app.py\n+++ b/src/app.py\n"
+   -     "@@ -8 +8 @@\n-    cur.execute(\"SELECT * FROM x\")\n+    cur.execute(\"SELECT * FROM x WHERE n = ?\", (n,))\n"
+18 +     '@@ -8 +8 @@\n-    cur.execute("SELECT * FROM x")\n+    cur.execute("SELECT * FROM x WHERE n = ?", (n,))\n'
+19 | )
+20 |
+21 |
+   - def _client(tmp_path: Path, monkeypatch, result_json: str = '{"gate": "failed"}') -> tuple[TestClient, int, int]:
+22 + def _client(
+23 +     tmp_path: Path, monkeypatch, result_json: str = '{"gate": "failed"}'
+24 + ) -> tuple[TestClient, int, int]:
+25 |     monkeypatch.chdir(tmp_path)
+   |
+
+unformatted: File would be reformatted
+   --> tests\web\test_phase3_live.py:121:16
+    |
+120 |         client, pk = _seeded(tmp_path, status="running")
+    -         assert client.post(f"/api/scans/{pk}/retry", headers=self._headers(client)).status_code == 409
+121 +         assert (
+122 +             client.post(f"/api/scans/{pk}/retry", headers=self._headers(client)).status_code == 409
+123 +         )
+124 |
+--------------------------------------------------------------------------------
+147 |         subprocess.run(
+    -             ["git", "-C", str(checkout), "-c", "user.email=t@t.t", "-c", "user.name=t",
+    -              "commit", "-qm", "init"],
+148 +             [
+149 +                 "git",
+150 +                 "-C",
+151 +                 str(checkout),
+152 +                 "-c",
+153 +                 "user.email=t@t.t",
+154 +                 "-c",
+155 +                 "user.name=t",
+156 +                 "commit",
+157 +                 "-qm",
+158 +                 "init",
+159 +             ],
+160 |             check=True,
+    |
+
+unformatted: File would be reformatted
+   --> tests\web\test_phase4_findings.py:246:28
+    |
+245 |         assert by_title["total"] == 4 and len(by_title["items"]) == 2
+    -         page2 = client.get(
+    -             f"/api/scans/{client.run_pk}/findings?page=2&page_size=3"
+    -         ).json()
+246 +         page2 = client.get(f"/api/scans/{client.run_pk}/findings?page=2&page_size=3").json()
+247 |         assert page2["page"] == 2 and len(page2["items"]) == 1
+    |
+
+unformatted: File would be reformatted
+   --> tests\web\test_phase5_reports_logs.py:237:31
+    |
+236 |         client = _seeded_client(tmp_path)
+    -         response = client.get(
+    -             f"/api/compare?scan_ids={client.run1},{client.run2}"
+    -         )
+237 +         response = client.get(f"/api/compare?scan_ids={client.run1},{client.run2}")
+238 |         assert response.status_code == 200
+--------------------------------------------------------------------------------
+266 |         client = _seeded_client(tmp_path)
+    -         response = client.get(
+    -             f"/api/compare?scan_ids={client.run1},{client.run2}&export=html"
+    -         )
+267 +         response = client.get(f"/api/compare?scan_ids={client.run1},{client.run2}&export=html")
+268 |         assert response.status_code == 200
+--------------------------------------------------------------------------------
+286 |         client = _seeded_client(tmp_path)
+    -         debug = client.get(
+    -             f"/api/logs?scan_id={client.run1}&level=debug"
+    -         ).json()
+287 +         debug = client.get(f"/api/logs?scan_id={client.run1}&level=debug").json()
+288 |         assert debug["lines"]
+289 |         assert all(line["level"] == "debug" for line in debug["lines"])
+    -         hunt = client.get(
+    -             f"/api/logs?scan_id={client.run1}&source=hunt"
+    -         ).json()
+290 +         hunt = client.get(f"/api/logs?scan_id={client.run1}&source=hunt").json()
+291 |         assert hunt["lines"]
+--------------------------------------------------------------------------------
+296 |         client = _seeded_client(tmp_path)
+    -         with client.stream(
+    -             "GET", f"/api/logs/stream?scan_id={client.run1}"
+    -         ) as response:
+297 +         with client.stream("GET", f"/api/logs/stream?scan_id={client.run1}") as response:
+298 |             assert response.status_code == 200
+--------------------------------------------------------------------------------
+328 |         ]
+    -         with client.stream(
+    -             "GET", f"/api/logs/stream?scan_id={run_id}"
+    -         ) as stream:
+329 +         with client.stream("GET", f"/api/logs/stream?scan_id={run_id}") as stream:
+330 |             tainted.append(stream.read().decode())
+    -         with client.stream(
+    -             "GET", f"/api/scans/{run_id}/events"
+    -         ) as stream:
+331 +         with client.stream("GET", f"/api/scans/{run_id}/events") as stream:
+332 |             tainted.append(stream.read().decode())
+    |
+
+12 files would be reformatted, 299 files already formatted

@@ -1,0 +1,10 @@
+{
+  "command": [
+    "D:\\phuc\\Code Project\\DevSecOps-Agent\\.devsec\\remote-integration-20261104\\worktree\\.venv\\Scripts\\python.exe",
+    "ci/build_native.py",
+    "--go",
+    "D:\\phuc\\Code Project\\DevSecOps-Agent\\.tools\\go\\bin\\go.exe"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 0.45
+}

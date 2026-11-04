@@ -2,7 +2,7 @@
 
 Rules for every AI coding agent working in this repository. These rules describe
 the current scan-service and native-hunt lineage (`my_tool_call` and
-`lane-native-universal` merged with the native workflow, notification, validator
+`lane-native-universal` and `lane-hunt-recall` merged with the native workflow, notification, validator
 and OWASP report work). They do not assume that features from another branch have
 been implemented here.
 

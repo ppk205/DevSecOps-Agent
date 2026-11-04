@@ -1,0 +1,25 @@
+{
+  "command": [
+    "D:\\phuc\\Code Project\\DevSecOps-Agent\\.devsec\\remote-integration-20261104\\worktree\\.venv\\Scripts\\python.exe",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/ai/test_hunt.py",
+    "tests/ai/test_hunt_recall.py",
+    "tests/platform/test_hunt_mode.py",
+    "tests/native_hunt/test_new_families.py",
+    "tests/native_hunt/test_ruledata.py",
+    "tests/core/test_scanned_source.py",
+    "tests/platform/test_scan_boundaries.py",
+    "tests/scanners/test_native_hunt_adapter.py",
+    "tests/validation",
+    "tests/reporting",
+    "tests/notifications",
+    "tests/platform/test_native_ai.py",
+    "tests/platform/test_native_cvss.py",
+    "--deselect=tests/scanners/test_native_hunt_adapter.py::test_livesqli_finds_known_vulns",
+    "--tb=short"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 132.92
+}

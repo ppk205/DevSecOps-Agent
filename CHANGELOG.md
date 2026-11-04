@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Integrate the latest `my_tool_call` and `lane-hunt-recall` remote tips while
+  retaining native workflows, notification, validation, CVSS and OWASP reporting
+  work. Hunt adds bounded broad/concern passes, source excerpts and larger caps.
+- Exclude paired Go scanner fixtures from Go compilation while retaining them
+  as scanner inputs. Isolate PATH-fallback launcher tests from active virtual
+  environments and remove full-environment failure diagnostics.
+
 - Run the Go, Ruby and C# native-hunt packs through `scan-run`. These files now
   join the scan inventory and report their own language. A vulnerable target in
   these languages previously ended with no native-hunt findings and a passed gate.

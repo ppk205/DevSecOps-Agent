@@ -1,0 +1,7 @@
+ok  	devsecops-agent/cmd/devsecops-agent	1.059s
+ok  	devsecops-agent/internal/analysis	(cached)
+?   	devsecops-agent/internal/bridge	[no test files]
+?   	devsecops-agent/internal/dashboard	[no test files]
+?   	devsecops-agent/internal/process	[no test files]
+ok  	devsecops-agent/internal/service	(cached)
+ok  	devsecops-agent/internal/tui	(cached)

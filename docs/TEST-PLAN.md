@@ -18,6 +18,22 @@ Test everything against real artifacts; never claim a pass without an executed c
 
 ## 2. Test categories
 
+### Remote/native-language integration (2026-11-05)
+
+`tests/scanners/test_native_hunt_adapter.py` covers Go/Ruby/C# vulnerable and
+safe controls, adapter language/coverage and actual single-language ScanService
+runs. Source inventory and Semgrep unsupported-language cases are covered by
+`test_scanned_source.py` and `test_scan_boundaries.py`. Go fixture build tags
+exclude intentionally conflicting sample programs from the application's Go
+build, not from source analysis. The paired scanner controls must still pass.
+
+The merged recall matcher and hunt-loop tests run offline, alongside validator,
+CVSS, report, notification and native AI regressions. No live provider or full
+target scan is needed for integration verification. Launcher tests isolate PATH
+and VIRTUAL_ENV where fallback is expected and never print the process
+environment. Verification processes exclude credential-like environment names;
+initial inherited-environment diagnostics are not shared evidence.
+
 ### Independent validator and CVSS correction (FR-50/53/56)
 
 `tests/validation/test_validator_regressions.py` covers model/scanner-only

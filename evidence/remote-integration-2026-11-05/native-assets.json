@@ -1,0 +1,12 @@
+{
+  "assets": {
+    "devsecops-agent-go-darwin-amd64": "935b95d63964b216546024182821ca9c01f4c36e25ef348595724625b6f91226",
+    "devsecops-agent-go-darwin-arm64": "ef0c3f3bacdea836b8cc1c105e9bc86e607ce275b2d29021f6228c2425eecb07",
+    "devsecops-agent-go-linux-amd64": "b3c98bfcf00ec26e8f6fcc9f4238ea77cb0e9fd5ca5d0e8548dbdd39c809a6fa",
+    "devsecops-agent-go-linux-arm64": "c44da8941c294ffca4b980bb93c8ec3036ce2a7e1ff72fe57e13d5312c00e8bc",
+    "devsecops-agent-go-windows-amd64.exe": "3f94cc33e2bdac21ed0835559a242302574abdefac1c506235535454544534be",
+    "devsecops-agent-go.exe": "3f94cc33e2bdac21ed0835559a242302574abdefac1c506235535454544534be"
+  },
+  "runtime_platform": "Windows amd64",
+  "other_platform_runtime": "not tested"
+}

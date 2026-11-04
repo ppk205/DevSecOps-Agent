@@ -1,0 +1,35 @@
+{
+  "base": "03c5533857a975dd7b5fdd33ef49ea1960c53e7f",
+  "original_branch": "feat/native-workflow-notifications",
+  "tracked_changes": [
+    "AGENTS.md",
+    "CHANGELOG.md",
+    "README.md",
+    "src/vulnscan/contracts/enums.py",
+    "src/vulnscan/scanners/native_hunt_adapter.py",
+    "src/vulnscan/scanners/semgrep_adapter.py",
+    "tests/core/test_scanned_source.py",
+    "tests/platform/test_scan_boundaries.py",
+    "tests/scanners/test_native_hunt_adapter.py"
+  ],
+  "working_file_sha256": {
+    "AGENTS.md": "bbd890f44abe8a44942483987449fa3ea185c76570cb01ae3568579636eeee1b",
+    "CHANGELOG.md": "d0ddbf9afe25c7762bb79c4b4aa9a6aa0add4b86c556497996ab5950bdab50ff",
+    "README.md": "321d7dc53504d8831db04f701e7e6e01f94664baec6f11de9fdef2b8d8f75012",
+    "src/vulnscan/contracts/enums.py": "b8350d579665b9e8911ab904a1176ed77f67328f02eefa4cf10a93fa4ed4a83f",
+    "src/vulnscan/scanners/native_hunt_adapter.py": "ddc61c3ee9b244ae8cfcf50635daf43a4bb47c10dbd8b77ba330e5c63a47ed16",
+    "src/vulnscan/scanners/semgrep_adapter.py": "1abefb682eb659832726569b22d1b54dc1e47d41fcb5716a0e1c567c47a0a2ad",
+    "tests/core/test_scanned_source.py": "cd491bb15a150b85b1584126b361736d6a30b8f8345b9a8fc4382948ee19c6a1",
+    "tests/platform/test_scan_boundaries.py": "3f029f2942fdb02e9adc162509c64ec302403d65d775ee668a50f671e4457cb3",
+    "tests/scanners/test_native_hunt_adapter.py": "271903d7485fea2b93cdc8299e5d63ce3e7ef53610179a2950f91cea5deed115"
+  },
+  "remote_branches": {
+    "my_tool_call": "d082435ba9ec5958ae30e4da113fdb48a88447e6",
+    "lane-hunt-recall": "1cab83db91570fc790aced053e6f2bb3c5615064"
+  },
+  "integration_branch": "feat/integrate-latest-remote-20261104",
+  "selection_basis": "Latest origin tip commit dates at fetch time",
+  "original_checkout_preserved": true,
+  "environment": "Isolated interpreter with existing locked dependencies; common credential variables excluded from all checks",
+  "unshared_initial_logs": "Initial inherited-environment logs are local only and must not be published"
+}

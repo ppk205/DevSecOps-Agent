@@ -1,0 +1,12 @@
+{
+  "command": [
+    "D:\\phuc\\Code Project\\DevSecOps-Agent\\.devsec\\remote-integration-20261104\\worktree\\.venv\\Scripts\\python.exe",
+    "-m",
+    "mypy",
+    "--platform",
+    "darwin",
+    "src/vulnscan"
+  ],
+  "exit_code": 1,
+  "elapsed_seconds": 17.95
+}

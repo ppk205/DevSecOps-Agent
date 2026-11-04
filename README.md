@@ -228,7 +228,7 @@ DevSecOps-Agent/
 | Notifications | In-app bell plus selectable Telegram/Discord digests. Tested with synthetic HTTP responses, not delivered to the real services. |
 | OWASP/CWE report cross-reference | OWASP Top 10:2025 section from primary and secondary CWE labels, with finding references, status counts and explicit unmapped cases; [report guide](docs/OWASP-REPORTING.md) |
 | Targeted verification probes | Opt-in HTTP probes (reflected-XSS canary, SQL-error signatures) as extra evidence, never findings by themselves. |
-| Model-first hunt (`--mode hunt`) | One pass per extension family present (java/js-ts/py/php), a generic pass for other text, and a logic pass (authZ/session/crypto). Findings carry a `provenance` of `model`, `scanner` or `both`. |
+| Model-first hunt (`--mode hunt`) | Language-family passes (java/js-ts/py/php), logic/broad sweeps and focused concern passes with bounded source excerpts. Findings carry a `provenance` of `model`, `scanner` or `both`. Go/Ruby/C# have no dedicated model pass. [Hunt lane history](docs/HUNT-RECALL.md) records earlier experiments; it is not current accuracy evidence. |
 | DAST / runtime attacks | **Not supported.** |
 | Auto-remediation | **Not supported.** Proposals only; you apply them. |
 | Go, Ruby, C# | Native-hunt 13, 13 and 14 rules, on `.go`, `.rb`, `.erb`, `.cs`, `.cshtml` and `.razor`. Semgrep has no rules for them and records these files as `unsupported`. No answer-key measurement yet. Model hunt has no dedicated pass; the generic pass can read their text. |

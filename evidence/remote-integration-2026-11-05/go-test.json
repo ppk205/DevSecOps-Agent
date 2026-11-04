@@ -1,0 +1,9 @@
+{
+  "command": [
+    "D:\\phuc\\Code Project\\DevSecOps-Agent\\.tools\\go\\bin\\go.exe",
+    "test",
+    "./..."
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 3.03
+}

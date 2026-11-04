@@ -1,0 +1,23 @@
+
+> pitwall-web-ui@0.1.0 build
+> tsc --noEmit && vite build
+
+vite v5.4.21 building for production...
+transforming...
+✓ 129 modules transformed.
+[plugin:vite:reporter] [plugin vite:reporter] 
+(!) D:/phuc/Code Project/DevSecOps-Agent/.devsec/remote-integration-20261104/worktree/web-ui/src/api/findingsQuery.ts is dynamically imported by D:/phuc/Code Project/DevSecOps-Agent/.devsec/remote-integration-20261104/worktree/web-ui/src/api/client.ts but also statically imported by D:/phuc/Code Project/DevSecOps-Agent/.devsec/remote-integration-20261104/worktree/web-ui/src/mock/mockFindingDetails.ts, D:/phuc/Code Project/DevSecOps-Agent/.devsec/remote-integration-20261104/worktree/web-ui/src/pages/FindingsPage.tsx, dynamic import will not move module into another chunk.
+
+rendering chunks...
+computing gzip size...
+dist/index.html                                              0.58 kB │ gzip:   0.37 kB
+dist/assets/inter-vietnamese-wght-normal-CBcvBZtf.woff2     10.25 kB
+dist/assets/inter-greek-ext-wght-normal-DlzME5K_.woff2      11.23 kB
+dist/assets/inter-cyrillic-wght-normal-DqGufNeO.woff2       18.75 kB
+dist/assets/inter-greek-wght-normal-CkhJZR-_.woff2          19.00 kB
+dist/assets/inter-cyrillic-ext-wght-normal-BOeWTOD4.woff2   25.96 kB
+dist/assets/inter-latin-wght-normal-Dx4kXJAl.woff2          48.26 kB
+dist/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2      85.07 kB
+dist/assets/index-BlAIWn5r.css                              23.26 kB │ gzip:   5.71 kB
+dist/assets/index-BPVePMlk.js                              351.76 kB │ gzip: 106.38 kB
+✓ built in 3.20s

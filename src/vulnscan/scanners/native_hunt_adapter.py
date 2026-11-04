@@ -106,12 +106,8 @@ class NativeHuntAdapter(ScannerAdapter):
                     tool=self.tool,
                     tool_version=TOOL_VERSION,
                     rule_id=finding.rule_id,
-                    cwe_category=cwe_category(f"CWE-{finding.cwe}")
-                    if finding.cwe
-                    else None,
-                    severity=_SEVERITY_MAP.get(
-                        finding.severity.upper(), Severity.MEDIUM
-                    ),
+                    cwe_category=cwe_category(f"CWE-{finding.cwe}") if finding.cwe else None,
+                    severity=_SEVERITY_MAP.get(finding.severity.upper(), Severity.MEDIUM),
                     native_severity=finding.severity,
                     message=f"{finding.rule_id}: {finding.message or finding.attack}",
                     confidence=_CONFIDENCE_MAP.get(finding.confidence, 0.3),
@@ -175,9 +171,7 @@ class NativeHuntAdapter(ScannerAdapter):
             raw_output_refs=[],
             eligible_units=len(coverage),
             analyzed_units=sum(1 for c in coverage if c.status == CoverageUnitStatus.ANALYZED),
-            skipped_units=sum(
-                1 for c in coverage if c.status == CoverageUnitStatus.UNSUPPORTED
-            ),
+            skipped_units=sum(1 for c in coverage if c.status == CoverageUnitStatus.UNSUPPORTED),
             failed_units=0,
             errors=[],
         )

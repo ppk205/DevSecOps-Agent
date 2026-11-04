@@ -136,6 +136,9 @@ bin/
 !evidence/owasp-report-2026-11-04/*.log
 !evidence/owasp-report-2026-11-04/synthetic-preview/report-preview.sarif
 !evidence/validator-cvss-2026-11-04/*.log
+!evidence/remote-integration-2026-11-05/*.log
+# Initial inherited-environment diagnostics are local only and must not be shared.
+evidence/remote-integration-2026-11-04/
 ~$*
 
 # Local thesis working documents
