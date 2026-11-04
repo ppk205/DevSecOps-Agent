@@ -60,6 +60,9 @@ def _map_severity(raw: str) -> Severity:
     return _SEVERITY_MAP.get(raw.upper().strip(), Severity.UNDETERMINED)
 
 
+# The bundled rule packs have no rules for these languages.
+_NO_RULE_LANGUAGES = frozenset({LanguageKind.GO, LanguageKind.RUBY, LanguageKind.CSHARP})
+
 _TIMEOUT_RE = re.compile(r"Timeout when running \S+ on (\S+?)(?::\s*$|\s*$)")
 
 
@@ -451,7 +454,8 @@ class SemgrepAdapter(ScannerAdapter):
                 continue
             timed = any(t == norm or norm.endswith(t.lstrip("/")) for t in timed_out)
             minified = norm.endswith(".min.js")
-            if timed or minified:
+            no_rules = language_from_extension(norm) in _NO_RULE_LANGUAGES
+            if timed or minified or no_rules:
                 coverage_records.append(
                     CoverageRecord(
                         run_id=spec.run_id or "unassigned",
@@ -463,7 +467,9 @@ class SemgrepAdapter(ScannerAdapter):
                         eligible=True,
                         status=CoverageUnitStatus.UNSUPPORTED,
                         limitation_reason=(
-                            "rule timeout on oversized/minified file"
+                            "no Semgrep rules ran for this language"
+                            if no_rules
+                            else "rule timeout on oversized/minified file"
                             if timed
                             else "minified bundle: pattern scan skipped"
                         ),

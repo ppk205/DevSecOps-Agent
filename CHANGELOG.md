@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Run the Go, Ruby and C# native-hunt packs through `scan-run`. These files now
+  join the scan inventory and report their own language. A vulnerable target in
+  these languages previously ended with no native-hunt findings and a passed gate.
+  Semgrep records these files as `unsupported` instead of `analyzed` because its
+  bundled rules do not cover them.
+
 - Correct independent-validation logic: exclude model/raw-scanner proposals
   from decision authority, separate counterevidence from support, scope records
   by finding/run, deduplicate identities, and keep conflicts, blocked/failed

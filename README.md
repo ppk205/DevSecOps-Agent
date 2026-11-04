@@ -113,8 +113,8 @@ Stages in execution order (ScanService._run):
 
 Native-hunt has 142 rules: Java 30, JavaScript/TypeScript 25, PHP 23, Python 23, C# 14,
 Go 13, Ruby 13 and one generic rule (counted from `src/vulnscan/native_hunt/rules/` on
-2026-11-04). The `scan-run` adapter runs only the Java, JavaScript/TypeScript, PHP and
-Python packs, which the table below lists. A rule
+2026-11-04). `scan-run` runs every language pack but not the generic rule. The table
+below covers the Java, JavaScript/TypeScript, PHP and Python packs. A rule
 existing does not mean it works well; see [Measured Results](#measured-results).
 
 | CWE | Description | Native-hunt rule families |
@@ -231,7 +231,7 @@ DevSecOps-Agent/
 | Model-first hunt (`--mode hunt`) | One pass per extension family present (java/js-ts/py/php), a generic pass for other text, and a logic pass (authZ/session/crypto). Findings carry a `provenance` of `model`, `scanner` or `both`. |
 | DAST / runtime attacks | **Not supported.** |
 | Auto-remediation | **Not supported.** Proposals only; you apply them. |
-| Go, Ruby, C# | Native-hunt engine packs (13, 13 and 14 rules) pass fixture tests through `scan_snapshot`. The scanner adapter requests only Java, JavaScript, Python and PHP, so `scan-run` gives no native-hunt findings for these languages. Model hunt has no dedicated pass for them; the generic pass can read their text. |
+| Go, Ruby, C# | Native-hunt 13, 13 and 14 rules, on `.go`, `.rb`, `.erb`, `.cs`, `.cshtml` and `.razor`. Semgrep has no rules for them and records these files as `unsupported`. No answer-key measurement yet. Model hunt has no dedicated pass; the generic pass can read their text. |
 | Kotlin, Rust, Swift and others | No dedicated rules. The generic hunt pass can read their text. |
 
 Semgrep rules have `Vuln*` and `Safe*` fixtures (`tests/scanners/test_*_rules.py`). These
