@@ -167,6 +167,7 @@ def test_hunt_mode_persists_three_stages_and_artifact(service, checkout, tmp_pat
         logic_pass=True,
         max_rounds=12,
         max_findings=20,
+        **_kwargs,
     ):
         assert Path(snapshot_root, "Example.java").is_file()
         return {
