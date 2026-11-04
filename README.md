@@ -174,14 +174,17 @@ DevSecOps-Agent/
 | JavaScript/TypeScript | 20 Semgrep rules (SQLi, NoSQLi, XSS, exec/spawn, eval/implied-eval, ReDoS, JWT, postMessage, CORS, timing compare, weak hash, debug leftover, path traversal) + native-hunt 25 rules (taint) |
 | Python | 20 Semgrep rules (SQLi, LDAPi, XXE, header injection, open redirect, command injection, eval, pickle/dill variants, JWT, TLS-verify-off, debug mode, weak hash, secrets) + native-hunt 23 rules (taint) |
 | PHP | 20 Semgrep rules (SQLi concat, reflected XSS, command injection, XXE, open redirect, create_function, dynamic callable, parse_str/extract pollution, preg /e, phar wrapper, session fixation, JWT, weak random, eval) + native-hunt 23 rules (taint) |
+| Go | native-hunt 13 rules (taint: SQLi, command injection, XSS, path traversal, SSRF, open redirect, template injection, weak hash, insecure random, TLS-verify-off, gob deserialization, XXE, log injection) |
+| Ruby | native-hunt 13 rules (taint: SQLi, command injection, XSS, path traversal, SSRF, open redirect, eval, Marshal/YAML deserialization, XXE, weak hash, insecure random, TLS-verify-off, ERB injection) |
+| C# | native-hunt 14 rules (taint: SQLi, command injection, XSS, path traversal, SSRF, open redirect, LDAP/XPath injection, XXE, weak hash, BinaryFormatter deserialization, insecure random, header injection, code injection) |
 | Secrets/credentials | Gitleaks, all languages and docs |
 | Java dependencies | OWASP Dependency-Check (DEEP profile), with **OSV.dev fallback** when the binary/NVD is unavailable |
 | Notifications | In-app bell + read/unread feed, optional gate-fail webhook |
 | Targeted verification probes | Opt-in HTTP probes (reflected-XSS canary, SQL-error signatures) as extra evidence — never auto-findings |
-| Model-first hunt (`--mode hunt`) | Multi-pass, one per extension family present (java/js-ts/py/php) + generic fallback for other text + logic pass ON (authZ/session/crypto); findings carry an origin chip (model/scanner/both), model-only candidates land in hunt.json + final report for human review |
+| Model-first hunt (`--mode hunt`) | Multi-pass, one per extension family present (java/js-ts/py/php/go/ruby/csharp) + generic fallback for other text + logic pass ON (authZ/session/crypto); findings carry an origin chip (model/scanner/both), model-only candidates land in hunt.json + final report for human review |
 | DAST / runtime attacks | **Not supported** — static analysis only |
 | Auto-remediation | **Not supported** — proposals only, you apply |
-| Other languages (Go, Ruby, C#…) | Generic hunt fallback pass covers any text, but no dedicated rules yet |
+| Other languages (Rust, Kotlin, Swift…) | Generic hunt fallback pass covers any text, but no dedicated rules yet |
 
 Every rule is tested both directions: it must fire on its `Vuln*` fixture
 and stay silent on its `Safe*` fixture (`tests/scanners/test_*_rules.py`,
@@ -339,14 +342,17 @@ Two lanes, one gate:
 - **Deterministic lane** (`--profile fast|full`): intake → static scanners
   (native-hunt, Semgrep, Gitleaks, + SpotBugs/ODC on full) → normalization
   & dedup. `native-hunt` is the in-house engine (regex + intra-file taint;
-  **102 rules total** — java 30, js-ts 25, python 23, php 23, generic 1 —
+  **142 rules total** — java 30, js-ts 25, python 23, php 23, go 13,
+  ruby 13, csharp 14, generic 1 —
   no external binary); Semgrep/SpotBugs
   stay as baseline oracles for evaluation, not the primary evidence.
-  Native-hunt covers exactly 4 language families (java, javascript,
-  python, php); anything else falls back to the single generic rule.
+  Native-hunt covers exactly 7 language families (java, javascript,
+  python, php, go, ruby, csharp); anything else falls back to the
+  single generic rule.
 - **Model-first lane** (`--mode hunt`, default): the model hunts the snapshot
   in sequential passes — one per extension family present (java/js-ts/py/php,
-  plus a generic pass for any other web-hostable text) + a logic pass
+  go/ruby/csharp, plus a generic pass for any other web-hostable text)
+  + a logic pass
   (authZ/IDOR/session/crypto, ON by default) — with read-only tools
   (`list_files`, `grep_code`, `inspect_code`). Scanners verify each candidate
   → model/scanner comparison → model-only candidates are promoted to findings

@@ -53,18 +53,22 @@ FAMILY_EXTENSIONS: dict[str, frozenset[str]] = {
     "javascript": frozenset({".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".vue"}),
     "java": frozenset({".java", ".jsp", ".jspx"}),
     "php": frozenset({".php", ".phtml"}),
+    "go": frozenset({".go"}),
+    "ruby": frozenset({".rb", ".erb"}),
+    "csharp": frozenset({".cs", ".cshtml", ".razor"}),
 }
 
 Confidence = Literal["High", "Medium", "Weak"]
 
 _ASSIGN_RE = re.compile(
     r"^\s*(?:(?:final\s+)?[A-Za-z_][\w<>\[\].,\s]*?\s+)?"
-    r"(?P<var>[A-Za-z_]\w*)\s*(?<![=!<>])=\s*(?![=>])(?P<rhs>.+)$"
+    r"(?P<var>[A-Za-z_]\w*)\s*(?<![=!<>]):?=\s*(?![=>])(?P<rhs>.+)$"
 )
 
 #: Method/function definitions captured for same-file call→param taint:
 #: ``name`` + raw parameter list. Covers Java methods, Python defs,
-#: JS functions/methods (best-effort, single-line signatures only).
+#: JS functions/methods, Go funcs, Ruby defs, C# methods
+#: (best-effort, single-line signatures only).
 _DEF_RE = re.compile(
     r"(?:def\s+|function\s+)?(?P<name>[A-Za-z_]\w*)\s*\((?P<params>.*)\)\s*(?:\{|:|throws\b)?\s*$"
 )
@@ -76,8 +80,9 @@ _DEF_RE = re.compile(
 _ENTRY_MARK_RE = re.compile(
     r"@RequestParam|@RequestBody|@PathVariable|@RequestHeader|@CookieValue|"
     r"HttpServletRequest|HttpServletResponse|MultipartFile|"
+    r"FromQuery|FromRoute|FromForm|FromBody|HttpRequest|"
     r"request\.(?:args|form|values|json|data|GET|POST|query|body|params)\b|"
-    r"req\.(?:query|body|params)\b"
+    r"req\.(query|body|params)\b"
 )
 
 _CALL_RE = re.compile(r"(?P<name>[A-Za-z_]\w*)\s*\((?P<args>[^();]*)\)")

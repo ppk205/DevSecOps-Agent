@@ -1,0 +1,247 @@
+{
+  "language": "go",
+  "rules": [
+    {
+      "id": "go-sql-concatenation",
+      "languages": [
+        "go"
+      ],
+      "severity": "ERROR",
+      "message": "SQL built with string concatenation; use parameterized queries ($1, ?).",
+      "cwe": "89",
+      "attack": "sql_injection",
+      "patterns": [
+        "(?<!URL)\\.(Query|QueryRow|Exec)(Context)?\\s*\\([^)]*\\+",
+        "Sprintf\\s*\\([^)]*SELECT"
+      ],
+      "taint_sinks": [
+        "(?<!URL)\\.(Query|QueryRow|Exec)(Context)?\\s*\\(",
+        "Sprintf\\s*\\("
+      ],
+      "mode": "search"
+    },
+    {
+      "id": "go-command-injection",
+      "languages": [
+        "go"
+      ],
+      "severity": "ERROR",
+      "message": "Request data reaches os/exec; avoid shell strings, pass an argv list.",
+      "cwe": "78",
+      "attack": "command_injection",
+      "patterns": [
+        "exec\\.Command\\s*\\(",
+        "exec\\.CommandContext\\s*\\("
+      ],
+      "taint_sinks": [
+        "exec\\.Command\\s*\\(",
+        "exec\\.CommandContext\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "go-reflected-xss",
+      "languages": [
+        "go"
+      ],
+      "severity": "ERROR",
+      "message": "Request data written to the response; escape with template.HTMLEscapeString.",
+      "cwe": "79",
+      "attack": "xss",
+      "patterns": [
+        "w\\.Write\\s*\\(",
+        "fmt\\.Fprintf\\s*\\(\\s*w"
+      ],
+      "taint_sinks": [
+        "w\\.Write\\s*\\(",
+        "fmt\\.Fprintf\\s*\\(\\s*w"
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "go-path-traversal",
+      "languages": [
+        "go"
+      ],
+      "severity": "ERROR",
+      "message": "File path includes externally controlled input; validate or confine it.",
+      "cwe": "22",
+      "attack": "path_traversal",
+      "patterns": [
+        "os\\.(Open|OpenFile|ReadFile|Create)\\s*\\(",
+        "ioutil\\.ReadFile\\s*\\(",
+        "http\\.ServeFile\\s*\\("
+      ],
+      "taint_sinks": [
+        "os\\.(Open|OpenFile|ReadFile|Create)\\s*\\(",
+        "ioutil\\.ReadFile\\s*\\(",
+        "http\\.ServeFile\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "go-ssrf",
+      "languages": [
+        "go"
+      ],
+      "severity": "ERROR",
+      "message": "Request data used as an outbound URL; allowlist the target host.",
+      "cwe": "918",
+      "attack": "ssrf",
+      "patterns": [
+        "http\\.Get\\s*\\(",
+        "http\\.Post\\s*\\(",
+        "http\\.NewRequest\\s*\\(",
+        "client\\.Do\\s*\\("
+      ],
+      "taint_sinks": [
+        "http\\.Get\\s*\\(",
+        "http\\.Post\\s*\\(",
+        "http\\.NewRequest\\s*\\(",
+        "client\\.Do\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "go-open-redirect",
+      "languages": [
+        "go"
+      ],
+      "severity": "WARNING",
+      "message": "Redirect target comes from the request; validate it against an allowlist.",
+      "cwe": "601",
+      "attack": "open_redirect",
+      "patterns": [
+        "http\\.Redirect\\s*\\(",
+        "c\\.Redirect\\s*\\("
+      ],
+      "taint_sinks": [
+        "http\\.Redirect\\s*\\(",
+        "\\.Redirect\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "go-template-injection",
+      "languages": [
+        "go"
+      ],
+      "severity": "ERROR",
+      "message": "Request data parsed as a template; never parse untrusted template source.",
+      "cwe": "94",
+      "attack": "code_injection",
+      "patterns": [
+        "template\\.New\\s*\\([^)]*\\+",
+        "\\.Parse\\s*\\([^)]*\\+"
+      ],
+      "taint_sinks": [
+        "template\\.New\\s*\\(",
+        "\\.Parse\\s*\\("
+      ],
+      "mode": "search"
+    },
+    {
+      "id": "go-weak-hash",
+      "languages": [
+        "go"
+      ],
+      "severity": "WARNING",
+      "message": "MD5/SHA-1 is broken for security use; use SHA-256 or better.",
+      "cwe": "327",
+      "attack": "crypto",
+      "patterns": [
+        "md5\\.New\\s*\\(",
+        "md5\\.Sum\\s*\\(",
+        "sha1\\.New\\s*\\(",
+        "sha1\\.Sum\\s*\\("
+      ],
+      "mode": "search"
+    },
+    {
+      "id": "go-insecure-random",
+      "languages": [
+        "go"
+      ],
+      "severity": "WARNING",
+      "message": "math/rand is not secure for tokens; use crypto/rand.",
+      "cwe": "330",
+      "attack": "crypto",
+      "patterns": [
+        "rand\\.Intn\\s*\\(",
+        "rand\\.Seed\\s*\\(",
+        "rand\\.Float64\\s*\\("
+      ],
+      "mode": "search"
+    },
+    {
+      "id": "go-tls-verify-off",
+      "languages": [
+        "go"
+      ],
+      "severity": "ERROR",
+      "message": "TLS certificate verification disabled; connections are interceptable.",
+      "cwe": "295",
+      "attack": "crypto",
+      "patterns": [
+        "InsecureSkipVerify\\s*:\\s*true"
+      ],
+      "mode": "search"
+    },
+    {
+      "id": "go-deserialization-gob",
+      "languages": [
+        "go"
+      ],
+      "severity": "ERROR",
+      "message": "Request body decoded with encoding/gob; only decode trusted data.",
+      "cwe": "502",
+      "attack": "deserialization",
+      "patterns": [
+        "gob\\.NewDecoder\\s*\\("
+      ],
+      "taint_sinks": [
+        "gob\\.NewDecoder\\s*\\(",
+        "\\.Decode\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "go-xxe",
+      "languages": [
+        "go"
+      ],
+      "severity": "ERROR",
+      "message": "Request body parsed as XML; disable external entities/DTD expansion.",
+      "cwe": "611",
+      "attack": "xxe",
+      "patterns": [
+        "xml\\.Unmarshal\\s*\\(",
+        "xml\\.NewDecoder\\s*\\("
+      ],
+      "taint_sinks": [
+        "xml\\.Unmarshal\\s*\\(",
+        "xml\\.NewDecoder\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "go-log-injection",
+      "languages": [
+        "go"
+      ],
+      "severity": "WARNING",
+      "message": "Request data written to logs; strip newlines to stop log forging.",
+      "cwe": "117",
+      "attack": "log_injection",
+      "patterns": [
+        "log\\.(Printf|Println|Fatalf)\\s*\\(",
+        "slog\\.(Info|Error|Warn)\\s*\\("
+      ],
+      "taint_sinks": [
+        "log\\.(Printf|Println|Fatalf)\\s*\\(",
+        "slog\\.(Info|Error|Warn)\\s*\\("
+      ],
+      "mode": "taint"
+    }
+  ]
+}

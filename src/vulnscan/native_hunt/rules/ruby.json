@@ -1,0 +1,232 @@
+{
+  "language": "ruby",
+  "rules": [
+    {
+      "id": "rb-sql-concatenation",
+      "languages": ["ruby"],
+      "severity": "ERROR",
+      "message": "SQL built with interpolation/concatenation; use bound parameters (?).",
+      "cwe": "89",
+      "attack": "sql_injection",
+      "patterns": [
+        "where\\s*\\([^)]*(#\\{|\\+)",
+        "find_by_sql\\s*\\(",
+        "execute\\s*\\([^)]*(#\\{|\\+)"
+      ],
+      "taint_sinks": [
+        "\\.where\\s*\\(",
+        "find_by_sql\\s*\\(",
+        "\\.execute\\s*\\(",
+        "\\.order\\s*\\("
+      ],
+      "mode": "search"
+    },
+    {
+      "id": "rb-command-injection",
+      "languages": ["ruby"],
+      "severity": "ERROR",
+      "message": "Request data reaches a shell command; use an argv list or Shellwords.escape.",
+      "cwe": "78",
+      "attack": "command_injection",
+      "patterns": [
+        "(?<![\\w.:])system\\s*\\(",
+        "(?<![\\w.:])exec\\s*\\(",
+        "spawn\\s*\\(",
+        "popen\\s*\\("
+      ],
+      "taint_sinks": [
+        "(?<![\\w.:])system\\s*\\(",
+        "(?<![\\w.:])exec\\s*\\(",
+        "spawn\\s*\\(",
+        "popen\\d?\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "rb-reflected-xss",
+      "languages": ["ruby"],
+      "severity": "ERROR",
+      "message": "Request data marked html_safe; escape with h() or html_escape first.",
+      "cwe": "79",
+      "attack": "xss",
+      "patterns": [
+        "\\.html_safe\\b",
+        "(?<![\\w:])raw\\s*\\("
+      ],
+      "taint_sinks": [
+        "\\.html_safe\\b",
+        "(?<![\\w:])raw\\s*\\(",
+        "render\\s+inline\\b"
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "rb-path-traversal",
+      "languages": ["ruby"],
+      "severity": "ERROR",
+      "message": "File path includes externally controlled input; validate or confine it.",
+      "cwe": "22",
+      "attack": "path_traversal",
+      "patterns": [
+        "File\\.(read|open|write)\\s*\\(",
+        "IO\\.read\\s*\\(",
+        "send_file\\b"
+      ],
+      "taint_sinks": [
+        "File\\.(read|open)\\s*\\(",
+        "IO\\.read\\s*\\(",
+        "send_file\\b",
+        "File\\.join\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "rb-ssrf",
+      "languages": ["ruby"],
+      "severity": "ERROR",
+      "message": "Request data used as an outbound URL; allowlist the target host.",
+      "cwe": "918",
+      "attack": "ssrf",
+      "patterns": [
+        "Net::HTTP",
+        "URI\\.open\\s*\\(",
+        "HTTParty\\.(get|post)\\s*\\(",
+        "Faraday\\.(get|post)\\s*\\("
+      ],
+      "taint_sinks": [
+        "URI\\.open\\s*\\(",
+        "Net::HTTP",
+        "HTTParty",
+        "Faraday",
+        "RestClient"
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "rb-open-redirect",
+      "languages": ["ruby"],
+      "severity": "WARNING",
+      "message": "Redirect target comes from the request; validate it against an allowlist.",
+      "cwe": "601",
+      "attack": "open_redirect",
+      "patterns": [
+        "\\bredirect_to\\b"
+      ],
+      "taint_sinks": [
+        "\\bredirect_to\\b"
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "rb-code-injection-eval",
+      "languages": ["ruby"],
+      "severity": "ERROR",
+      "message": "Request data reaches eval(); never execute untrusted code.",
+      "cwe": "94",
+      "attack": "code_injection",
+      "patterns": [
+        "(?<![\\w.])eval\\s*\\(",
+        "class_eval\\s*\\(",
+        "instance_eval\\s*\\(",
+        "module_eval\\s*\\("
+      ],
+      "taint_sinks": [
+        "(?<![\\w.])eval\\s*\\(",
+        "class_eval\\s*\\(",
+        "instance_eval\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "rb-deserialization",
+      "languages": ["ruby"],
+      "severity": "ERROR",
+      "message": "Request data deserialized with Marshal/YAML; only load trusted data.",
+      "cwe": "502",
+      "attack": "deserialization",
+      "patterns": [
+        "Marshal\\.load\\s*\\(",
+        "YAML\\.load\\s*\\(",
+        "Oj\\.load\\s*\\("
+      ],
+      "taint_sinks": [
+        "Marshal\\.load\\s*\\(",
+        "YAML\\.load\\s*\\(",
+        "Oj\\.load\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "rb-xxe",
+      "languages": ["ruby"],
+      "severity": "ERROR",
+      "message": "Request data parsed as XML; disable external entities/DTD expansion.",
+      "cwe": "611",
+      "attack": "xxe",
+      "patterns": [
+        "Nokogiri::XML\\s*\\(",
+        "REXML::Document\\.new\\s*\\(",
+        "Ox\\.parse\\s*\\("
+      ],
+      "taint_sinks": [
+        "Nokogiri::XML\\s*\\(",
+        "REXML::Document\\.new\\s*\\(",
+        "Ox\\.parse\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "rb-weak-hash",
+      "languages": ["ruby"],
+      "severity": "WARNING",
+      "message": "MD5/SHA-1 is broken for security use; use SHA-256 or better.",
+      "cwe": "327",
+      "attack": "crypto",
+      "patterns": [
+        "Digest::MD5",
+        "Digest::SHA1"
+      ],
+      "mode": "search"
+    },
+    {
+      "id": "rb-insecure-random",
+      "languages": ["ruby"],
+      "severity": "WARNING",
+      "message": "rand() is not secure for tokens; use SecureRandom.",
+      "cwe": "330",
+      "attack": "crypto",
+      "patterns": [
+        "(?<![\\w.])rand\\s*\\(",
+        "Random\\.rand\\s*\\("
+      ],
+      "mode": "search"
+    },
+    {
+      "id": "rb-tls-verify-none",
+      "languages": ["ruby"],
+      "severity": "WARNING",
+      "message": "TLS verification disabled (VERIFY_NONE); connections are interceptable.",
+      "cwe": "295",
+      "attack": "crypto",
+      "patterns": [
+        "VERIFY_NONE"
+      ],
+      "mode": "search"
+    },
+    {
+      "id": "rb-template-injection",
+      "languages": ["ruby"],
+      "severity": "ERROR",
+      "message": "Request data compiled as ERB; never render untrusted template source.",
+      "cwe": "94",
+      "attack": "template_injection",
+      "patterns": [
+        "ERB\\.new\\s*\\("
+      ],
+      "taint_sinks": [
+        "ERB\\.new\\s*\\("
+      ],
+      "mode": "taint"
+    }
+  ]
+}
