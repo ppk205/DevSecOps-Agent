@@ -49,6 +49,34 @@ _FAMILY_SOURCES: dict[str, list[str]] = {
         r"getPrincipal\s*\(",
     ],
     "php": [r"\$_(GET|POST|REQUEST|COOKIE)"],
+    "go": [
+        r"r\.URL\.Query\s*\(",
+        r"r\.FormValue\s*\(",
+        r"r\.PostFormValue\s*\(",
+        r"r\.URL\.Path\b",
+        r"r\.Header\.Get\s*\(",
+        r"r\.Body\b",
+        r"mux\.Vars\s*\(",
+        r"c\.Query\s*\(",
+        r"c\.Param\s*\(",
+        r"c\.PostForm\s*\(",
+        r"c\.GetHeader\s*\(",
+        r"os\.Args\b",
+    ],
+    "ruby": [
+        r"\bparams\b",
+        r"request\.(body|query_string|headers|cookies|path|url)\b",
+        r"cookies\s*\[",
+        r"ENV\s*\[",
+        r"(?<![\w.])gets\b",
+        r"\bSTDIN\b",
+    ],
+    "csharp": [
+        r"Request\.(Query|Form|Params|Cookies|Headers|Body|QueryString|InputStream)\b",
+        r"Console\.ReadLine\s*\(",
+        r"Environment\.GetEnvironmentVariable\s*\(",
+        r"\bargs\s*\[",
+    ],
     "generic": [r"\brequest\b", r"\binput\s*\(", r"\bargv\b"],
 }
 
@@ -60,6 +88,18 @@ _FAMILY_SANITIZERS: dict[tuple[str, str], list[tuple[str, list[str]]]] = {
     ("java", "xss"): [(r"escapeHtml|StringEscapeUtils", ["xss"])],
     ("php", "xss"): [(r"htmlspecialchars\s*\(", ["xss"])],
     ("php", "command_injection"): [(r"escapeshellarg\s*\(", ["command_injection"])],
+    ("go", "xss"): [(r"template\.HTMLEscapeString\s*\(|html\.EscapeString\s*\(", ["xss"])],
+    ("ruby", "xss"): [(r"ERB::Util\.html_escape\s*\(|html_escape\s*\(|(?<![\w:])h\s*\(", ["xss"])],
+    ("ruby", "command_injection"): [(r"Shellwords\.(escape|join)\s*\(", ["command_injection"])],
+    ("csharp", "xss"): [
+        (
+            (
+                r"HtmlEncoder\.Default\.Encode\s*\(|HttpUtility\.HtmlEncode\s*\(|"
+                r"WebUtility\.HtmlEncode\s*\(|AntiXssEncoder\.HtmlEncode\s*\("
+            ),
+            ["xss"],
+        )
+    ],
 }
 
 

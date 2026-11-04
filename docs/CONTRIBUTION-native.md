@@ -29,10 +29,11 @@ báo cáo nên ưu tiên High/Medium, Weak dùng làm lane verify.
 
 1. **Engine taint intra-file tự viết** (`src/vulnscan/native_hunt/`):
    worklist 3 vòng, kill-taint theo sanitizer/attack, tham số entry
-   (`@RequestParam`, servlet), lan truyền call→param cùng file, gán trong
-   điều kiện, cửa sổ continuation 3 dòng, confidence High/Medium/Weak,
+   (`@RequestParam`, servlet, `[FromQuery]`/C# `HttpRequest`), lan truyền call→param cùng file, gán trong
+   điều kiện, gán `:=` kiểu Go, cửa sổ continuation 3 dòng, confidence High/Medium/Weak,
    skip minified/long-line có lý do.
-2. **87 rule packs JSON tự port** (4 họ ngôn ngữ) + 17 `taint_sinks` và
+2. **127 rule packs JSON tự port/viết** (7 họ ngôn ngữ: java 30, js 25,
+   python 23, php 23, go 13, ruby 13, csharp 14) + `taint_sinks` và
    `mode: taint|search` phục hồi từ rule gốc (bản port thô đã làm mất).
 3. **Adapter `native-hunt`** đăng ký pipeline như scanner hạng nhất
    (coverage analyzed/unsupported, observation chuẩn Finding).
