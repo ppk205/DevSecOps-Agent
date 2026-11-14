@@ -52,7 +52,7 @@ def checkout(tmp_path):
 
 
 class FixtureAdapter(ScannerAdapter):
-    tool = ToolName.SEMGREP
+    tool = ToolName.NATIVE_HUNT
     binary_name = "fixture"
 
     def capabilities(self):

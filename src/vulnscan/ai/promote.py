@@ -49,7 +49,7 @@ _MODEL_RULE_ID = "model-hunt"
 # sẽ mang thông tin nguồn gốc model cho đến khi có thành viên này.
 _candidate_tool: object = getattr(ToolName, "MODEL_HUNT", None)
 _MODEL_TOOL: ToolName = (
-    _candidate_tool if isinstance(_candidate_tool, ToolName) else ToolName.SEMGREP
+    _candidate_tool if isinstance(_candidate_tool, ToolName) else ToolName.NATIVE_HUNT
 )
 
 

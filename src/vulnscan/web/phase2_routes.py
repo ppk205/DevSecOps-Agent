@@ -221,6 +221,7 @@ def api_key_put(profile: str, body: KeyPutIn) -> dict[str, Any]:
     metadata = dict(existing.metadata) if existing and existing.metadata else {}
     # Key chỉ nằm trong env của tiến trình / .env dự án — không bao giờ nằm trên JSON profile.
     EnvFile().set(api_key_env, raw)
+    os.environ[api_key_env] = raw
     saved = ProviderProfile(
         id=slug,
         label=label,
@@ -269,11 +270,16 @@ def api_key_test(profile: str) -> dict[str, Any]:
     model = existing.default_model or (existing.models[0] if existing.models else "gpt-4o-mini")
     url = existing.base_url.rstrip("/") + "/chat/completions"
     started = time.monotonic()
+    req_headers = {
+        "Authorization": f"Bearer {secret}",
+        "Content-Type": "application/json",
+        **(existing.headers or {}),
+    }
     try:
         with httpx.Client(timeout=10.0) as client:
             real = client.post(
                 url,
-                headers={"Authorization": f"Bearer {secret}", "Content-Type": "application/json"},
+                headers=req_headers,
                 json={
                     "model": model,
                     "messages": [{"role": "user", "content": "ping"}],

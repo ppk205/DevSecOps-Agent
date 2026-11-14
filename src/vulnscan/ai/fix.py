@@ -192,59 +192,36 @@ def verify_fixed(
     file_path: str,
     rule_id: str,
     line: int | None,
-    semgrep_bin: str = "semgrep",
+    semgrep_bin: str = "semgrep",  # giữ tham số để tương thích chữ ký cũ
 ) -> dict[str, Any]:
-    """Quét lại tệp đã vá bằng các rule đi kèm; finding phải biến mất.
+    """Quét lại tệp đã vá bằng ``native-hunt``; finding phải biến mất.
 
     Trả về {fixed: bool, detail: str}. Việc cùng một rule kích hoạt lại tại cùng
     vị trí đồng nghĩa với việc bản vá chưa khắc phục được nó.
     """
-    import json as _json
+    from vulnscan.native_hunt import scan_snapshot
 
-    rules_dir = Path(__file__).resolve().parent.parent / "scanners" / "rules"
-    rule_id = str(rule_id).split(".")[-1]
-    rule_file = None
-    for candidate in sorted(rules_dir.glob("*.yml")):
-        text = candidate.read_text(encoding="utf-8")
-        if re.search(rf"(?m)^\s*-\s+id:\s+{re.escape(rule_id)}\s*$", text):
-            rule_file = candidate
-            break
-    if rule_file is None:
-        return {"fixed": False, "detail": f"rule {rule_id} not in bundled rules"}
-    proc = subprocess.run(
-        [
-            semgrep_bin,
-            "--metrics",
-            "off",
-            "--disable-version-check",
-            "--config",
-            str(rule_file),
-            "--json",
-            str(overlay / file_path),
-        ],
-        capture_output=True,
-        text=True,
-        timeout=300,
-        check=False,
-    )
-    if proc.returncode not in (0, 1, 2, 7):
-        return {"fixed": False, "detail": f"semgrep exit {proc.returncode}"}
-    try:
-        data = _json.loads(proc.stdout or "{}")
-    except ValueError:
-        return {"fixed": False, "detail": "semgrep output not JSON"}
-    refires = [
-        r
-        for r in data.get("results", [])
-        if r.get("check_id", "").endswith(rule_id)
-        and (line is None or r.get("start", {}).get("line") == line)
+    del semgrep_bin
+    norm_file = Path(file_path).as_posix()
+    short_rule = str(rule_id).split(".")[-1]
+    result = scan_snapshot(str(overlay), ["java", "javascript", "python", "php"])
+    file_findings = [
+        f for f in result.findings if Path(f.file).as_posix() == norm_file
     ]
+    if short_rule and short_rule != "model-hunt":
+        refires = [
+            f
+            for f in file_findings
+            if f.rule_id.endswith(short_rule) and (line is None or f.line == line)
+        ]
+    else:
+        refires = [f for f in file_findings if line is None or f.line == line]
     if refires:
         return {
             "fixed": False,
-            "detail": f"rule refired at {[r.get('start', {}) for r in refires]}",
+            "detail": f"native-hunt refired: {[(f.rule_id, f.line) for f in refires]}",
         }
-    return {"fixed": True, "detail": "rule no longer fires on the patched file"}
+    return {"fixed": True, "detail": "native-hunt found no matching issue on the patched file"}
 
 
 def prepare_overlay(checkout: str, file_path: str, overlay_root: Path) -> Path:
