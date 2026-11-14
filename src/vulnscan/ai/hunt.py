@@ -1,9 +1,9 @@
-"""Agentic model-first hunt: the model explores the snapshot, then lists vulns.
+"""Săn tìm ưu tiên mô hình theo cơ chế agentic: mô hình khám phá snapshot, sau đó liệt kê các lỗ hổng.
 
-Position: runs before the deterministic scanners in ``--mode hunt``. The
-model explores the immutable snapshot with read-only tools (list_files,
-grep_code, inspect_code) and ends with a JSON vulnerability list. The
-list is advisory — verification happens downstream (Laya + validator).
+Vị trí: chạy trước các scanner xác định trong ``--mode hunt``. Mô hình
+khám phá snapshot bất biến bằng các công cụ chỉ đọc (list_files,
+grep_code, inspect_code) và kết thúc với một danh sách lỗ hổng JSON.
+Danh sách này mang tính cố vấn — việc xác minh diễn ra ở hạ nguồn (Laya + validator).
 """
 
 from __future__ import annotations
@@ -70,14 +70,14 @@ _SINK_SEEDS = (
 _HUNT_SEVERITIES = frozenset({"critical", "high", "medium", "low", "info"})
 
 
-# Extension-family hunt table: one pass per family present in the
-# snapshot inventory. Any web-hostable source gets hunted — families
-# without dedicated seeds fall back to "generic" broad sinks.
+# Bảng săn tìm theo họ phần mở rộng: một lượt cho mỗi họ xuất hiện trong
+# danh mục snapshot. Mọi mã nguồn có thể lưu trữ trên web đều được săn tìm — các họ
+# không có seed chuyên dụng sẽ fallback về các sink rộng kiểu "generic".
 #
-# NOTE on globs: "*" is deliberately avoided. On trees with build output
-# or a .git dir the jailed list_files/grep_code tools refuse globs
-# matching >2000 files, which would blind the pass entirely. The bounded
-# source-glob tuple below covers every web-hostable text kind instead.
+# LƯU Ý về glob: cố tình tránh dùng "*". Trên các cây thư mục có kết quả build
+# hoặc thư mục .git, các công cụ bị cô lập list_files/grep_code từ chối glob
+# khớp >2000 tệp, điều này sẽ làm mù hoàn toàn lượt quét. Bộ tuple
+# source-glob có giới hạn bên dưới thay vào đó sẽ bao quát mọi loại văn bản lưu trữ được trên web.
 _SOURCE_GLOBS: tuple[str, ...] = (
     "*.java",
     "*.jsp",
@@ -112,8 +112,8 @@ _HUNT_FAMILIES: dict[str, _FamilySpec] = {
         "globs": ["*.java", "*.jsp", "*.jspx"],
         "seeds": _SINK_SEEDS
         + (
-            # Native-rule mirrors: pattern-visible weaknesses the sink-only
-            # seeds miss (recall-critical: default-encoding, secrets,
+            # Bộ phản chiếu native-rule: các điểm yếu nhận diện được qua mẫu mà những seed
+            # chỉ nhắm vào sink bỏ sót (rất quan trọng cho recall: default-encoding, secrets,
             # randomness, stack traces, redirects, XXE factories, ...).
             "new String(",
             "getBytes()",
@@ -165,7 +165,7 @@ _HUNT_FAMILIES: dict[str, _FamilySpec] = {
             "document.write",
             "location.href",
             "location.replace",
-            # Native-rule mirrors: debug leftovers (top native hit class),
+            # Bộ phản chiếu native-rule: tàn dư debug (lớp hit native hàng đầu),
             # weak hashing, dynamic RegExp, prototype pollution, SSRF,
             # file sinks, postMessage, secrets.
             "debugger",
@@ -289,9 +289,9 @@ _HUNT_FAMILIES: dict[str, _FamilySpec] = {
         ),
     },
     "broad": {
-        # Second-chance pass: pattern-visible weaknesses that sink-focused
-        # passes miss. Runs over every file regardless of extension so no
-        # family-exclusive blind spot survives (encoding, secrets, weak
+        # Lượt quét cơ hội thứ hai: các điểm yếu nhận diện được qua mẫu mà những lượt quét
+        # tập trung vào sink bỏ sót. Chạy trên mọi tệp bất kể phần mở rộng để không
+        # điểm mù độc quyền theo họ nào còn sót lại (encoding, secrets, weak
         # crypto/random, debug leftovers, stack traces, log sinks).
         "globs": list(_SOURCE_GLOBS),
         "seeds": (
@@ -323,10 +323,10 @@ _HUNT_FAMILIES: dict[str, _FamilySpec] = {
             "debug leftovers, stack-trace and log-injection sinks)"
         ),
     },
-    # Micro-passes: tight, fast-only (no tool loop) second chances for the
-    # native rule classes generic hunting under-reports. Small seed sets keep
-    # prompts short so the calls survive flaky upstreams; each pass cites
-    # excerpt lines for exact file+line accuracy.
+    # Lượt vi quét (micro-passes): các cơ hội thứ hai gọn gàng, chỉ chạy nhanh (không vòng lặp công cụ) cho
+    # các lớp rule native mà săn tìm generic báo cáo thiếu. Tập seed nhỏ giúp giữ
+    # prompt ngắn để các lượt gọi vượt qua được upstream chập chờn; mỗi lượt quét trích dẫn
+    # các dòng trích đoạn nhằm đạt độ chính xác tệp+dòng tuyệt đối.
     "secrets": {
         "globs": list(_SOURCE_GLOBS),
         "seeds": (
@@ -363,9 +363,9 @@ _HUNT_FAMILIES: dict[str, _FamilySpec] = {
     },
 }
 
-# Per-family hunt brief: CWE focus + what "also check" beyond taint sinks.
-# Appended to the system prompt so each pass hunts its family's full native
-# rule surface, not just the classic injection sinks.
+# Bản tóm tắt săn tìm theo họ: trọng tâm CWE + những gì "cần kiểm tra thêm" ngoài các taint sink.
+# Được gắn vào cuối system prompt để mỗi lượt săn tìm toàn bộ bề mặt rule native
+# của họ đó, không chỉ riêng các injection sink cổ điển.
 _FAMILY_BRIEF: dict[str, str] = {
     "java": (
         "Java brief — hunt these CWE classes: SQL injection CWE-89 "
@@ -475,7 +475,7 @@ _FAMILY_BRIEF: dict[str, str] = {
 
 
 def brief_for(family: str) -> str:
-    """Per-family hunt brief; generic text for unknown families."""
+    """Bản tóm tắt săn tìm theo từng họ; văn bản chung cho các họ chưa biết."""
     return _FAMILY_BRIEF.get(family, _FAMILY_BRIEF["generic"])
 
 
@@ -499,11 +499,11 @@ _FAMILY_ORDER = ("java", "javascript", "python", "php")
 
 
 def detect_families(inventory: list[str], cap: int = 5) -> list[str]:
-    """Map snapshot inventory files to hunt families, in stable order.
+    """Ánh xạ các tệp trong danh mục snapshot sang các họ săn tìm, theo thứ tự ổn định.
 
-    Known web families present win first (java/js/python/php order);
-    anything else falls back to one "generic" pass so no web-hostable
-    source is ever skipped. Pure function, never raises.
+    Các họ web đã biết hiện diện được ưu tiên trước (thứ tự java/js/python/php);
+    bất kỳ thứ gì khác fallback về một lượt "generic" để không bỏ sót bất kỳ mã nguồn
+    lưu trữ được trên web nào. Hàm thuần túy, không bao giờ ném ngoại lệ.
     """
     found: set[str] = set()
     other = False
@@ -526,10 +526,10 @@ def detect_families(inventory: list[str], cap: int = 5) -> list[str]:
 
 
 def dedupe_candidates(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Drop exact duplicates across passes: (path, line, CWE digits).
+    """Loại bỏ các mục trùng lặp hoàn toàn giữa các lượt: (path, line, CWE digits).
 
-    Same line with a different CWE is kept — families may legitimately
-    disagree on the weakness class. First wins, input order kept.
+    Cùng một dòng với CWE khác nhau vẫn được giữ lại — các họ có thể bất đồng
+    hợp lệ về phân loại điểm yếu. Ưu tiên mục đầu tiên, giữ nguyên thứ tự đầu vào.
     """
     seen: set[tuple[str, int, str]] = set()
     out: list[dict[str, Any]] = []
@@ -551,10 +551,10 @@ def dedupe_candidates(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return out
 
 
-# Evidence ranking: vendored libraries and test-only sources are real
-# code, but the model spends its whole budget on them when they lead the
-# sweep (e.g. __proto__ hits concentrated in ace.js). Rank application
-# sources first; deprioritized hits still follow, never dropped.
+# Xếp hạng bằng chứng: thư viện vendored và mã nguồn chỉ dành cho test là code thực sự,
+# nhưng mô hình sẽ tiêu tốn toàn bộ ngân sách vào chúng nếu chúng đứng đầu lượt
+# quét (ví dụ: các hit __proto__ tập trung trong ace.js). Xếp hạng mã nguồn
+# ứng dụng lên trước; các hit bị giảm độ ưu tiên vẫn theo sau, không bao giờ bị bỏ rơi.
 _EVIDENCE_DEPRIORITIZED = (
     "/test/",
     "/it/",
@@ -574,7 +574,7 @@ _EVIDENCE_DEPRIORITIZED = (
 
 
 def evidence_rank(path: str) -> int:
-    """0 for application sources, 1 for vendored/test-only paths."""
+    """0 cho mã nguồn ứng dụng, 1 cho đường dẫn vendored/chỉ dùng cho test."""
     lowered = str(path or "").replace("\\", "/").lower()
     return 1 if any(m in lowered for m in _EVIDENCE_DEPRIORITIZED) else 0
 
@@ -586,11 +586,11 @@ def _sweep_sinks(
     per_seed_hits: int = 12,
     cap: int = 150,
 ) -> list[str]:
-    """Deterministic sink sweep for one family (tool calls only, no model).
+    """Quét sink xác định cho một họ (chỉ gọi công cụ, không dùng mô hình).
 
-    The model judges every line; the sweep only points at sinks.
-    Per-seed hits are application-first so vendored libraries and test
-    sources cannot crowd app code out of the evidence window.
+    Mô hình đánh giá từng dòng; lượt quét chỉ chỉ ra các sink.
+    Các hit theo từng seed ưu tiên ứng dụng trước để các thư viện vendored và mã nguồn
+    kiểm thử không chiếm hết chỗ của mã nguồn ứng dụng trong phạm vi bằng chứng.
     """
     fam = _HUNT_FAMILIES.get(family, _HUNT_FAMILIES["generic"])
     globs = fam["globs"]
@@ -640,11 +640,11 @@ def _sweep_excerpts(
     max_excerpts: int = 12,
     radius: int = 12,
 ) -> list[str]:
-    """Attach numbered source windows to the top sweep hits.
+    """Đính kèm các cửa sổ mã nguồn có đánh số dòng vào các hit quét hàng đầu.
 
-    The sweep only shows one line per hit; the model judges better with a
-    ±*radius* window around each location (same jailed reader the review
-    and promote lanes use). Best-effort: unreadable locations are skipped.
+    Lượt quét chỉ hiển thị một dòng cho mỗi hit; mô hình đánh giá tốt hơn với một
+    cửa sổ ±*radius* xung quanh mỗi vị trí (cùng bộ đọc bị cô lập mà các luồng đánh giá
+    và quảng bá sử dụng). Nỗ lực tối đa: các vị trí không đọc được sẽ bị bỏ qua.
     """
     from vulnscan.ai.excerpts import code_excerpt
 
@@ -674,9 +674,9 @@ def _sweep_excerpts(
 
 
 def parse_hunt_list(text: str, max_findings: int = 20) -> list[dict[str, Any]]:
-    """Parse the model's closing JSON array into validated candidates.
+    """Phân tích mảng JSON kết thúc của mô hình thành các ứng viên đã được xác thực.
 
-    Drops items without a usable file+line; never raises.
+    Bỏ qua các mục không có file+line khả dụng; không bao giờ ném ngoại lệ.
     """
     cap = max(1, max_findings)
     candidates: list[str] = []
@@ -735,15 +735,15 @@ def hunt_vulns(
     max_findings: int = 80,
     deep: bool = False,
 ) -> dict[str, Any]:
-    """One tool-loop: model explores via tools, ends with a JSON list.
+    """Một vòng lặp công cụ: mô hình khám phá thông qua công cụ, kết thúc bằng danh sách JSON.
 
-    Returns {"candidates": [...], "rounds": int, "usage": {...},
-    "status": "completed"|"partial"|"failed"}. Each candidate holds
+    Trả về {"candidates": [...], "rounds": int, "usage": {...},
+    "status": "completed"|"partial"|"failed"}. Mỗi ứng viên chứa
     title, file, line, cwe, severity, rationale, evidence.
 
-    With deep=True the fast-path verdict becomes the starting point,
-    not the finish: the model must then drive the tool loop to dig for
-    more, and both batches merge (deduped) at the end.
+    Khi deep=True, kết luận của tuyến nhanh trở thành điểm xuất phát chứ không phải
+    điểm kết thúc: mô hình sau đó phải vận hành vòng lặp công cụ để đào sâu hơn,
+    và cả hai đợt sẽ được hợp nhất (đã lọc trùng) ở cuối.
     """
     fam = _HUNT_FAMILIES.get(family, _HUNT_FAMILIES["generic"])
     focus = str(fam["focus"])
@@ -761,9 +761,9 @@ def hunt_vulns(
     tool_evidence: list[str] = []
     trace: list[dict[str, Any]] = []
     try:
-        # Fast path first: file tree + sink sweep up front in a single
-        # no-tools call. Reasoning-only gateways answer these reliably
-        # (proven live), tool-capable models can still drive the loop below.
+        # Tuyến nhanh trước: cây tệp + quét sink ngay từ đầu trong một
+        # lệnh gọi không dùng công cụ (no-tools). Các gateway chuyên lập luận trả lời những phần này rất tin cậy
+        # (đã chứng minh thực tế), các mô hình hỗ trợ công cụ vẫn có thể vận hành vòng lặp bên dưới.
         fam_globs = fam["globs"]
         tree_files: list[str] = []
         for _glob in fam_globs:
@@ -846,8 +846,8 @@ def hunt_vulns(
                         }
                     last_content = opening.content or ""
                     if candidates:
-                        # Deep mode: fast path is seed, not verdict. Keep the
-                        # batch and force the model into the tool loop.
+                        # Chế độ Deep: tuyến nhanh là điểm khởi đầu (seed), không phải phán quyết. Giữ lại
+                        # mẻ dữ liệu và buộc mô hình đi vào vòng lặp công cụ.
                         tool_evidence.append(f"fast-path batch -> {json.dumps(candidates)[:1500]}")
                         fast_candidates = list(candidates)
                         messages.append(ChatMessage(role="assistant", content=last_content))
@@ -953,11 +953,11 @@ def hunt_vulns(
         )[: max(1, max_findings)]
         detail = f"loop ended with {len(candidates)} candidates"
         if not candidates:
-            # Reasoning-only gateways return no usable content when tools are
-            # attached: one final no-tools call over the gathered evidence.
-            # A deterministic sink sweep tops up the evidence map so the
-            # verdict still has sinks to judge; the MODEL decides what is a
-            # vuln, the sweep only points at lines.
+            # Các gateway chuyên lập luận không trả về nội dung khả dụng khi gắn kèm
+            # công cụ: thực hiện một lệnh gọi không dùng công cụ cuối cùng trên bằng chứng thu thập được.
+            # Lượt quét sink xác định bổ sung vào bản đồ bằng chứng để
+            # phán quyết vẫn có sink để đánh giá; MÔ HÌNH quyết định cái gì là
+            # lỗ hổng, lượt quét chỉ chỉ ra các dòng code.
             try:
                 closing_sweep = _sweep_sinks(handlers, family)
                 closing_excerpts = _sweep_excerpts(snapshot_root, closing_sweep)
@@ -1005,7 +1005,7 @@ def hunt_vulns(
                     f"(reply {len(reply)} chars: {reply[:150]})"
                 )
                 if not candidates and (reply or "").strip():
-                    # One stricter retry: some gateways prepend prose.
+                    # Một lần thử lại nghiêm ngặt hơn: một số gateway chèn thêm văn xuôi phía trước.
                     try:
                         retry = client.chat(
                             [
@@ -1078,18 +1078,17 @@ def hunt_all(
     max_findings: int = 200,
     deep: bool = True,
 ) -> dict[str, Any]:
-    """Model-first hunt over every extension family in the snapshot.
+    """Săn tìm ưu tiên mô hình trên mọi họ phần mở rộng trong snapshot.
 
-    One sequential pass per family (fail-soft each), then dedupe across
-    passes. Deep mode (default): the fast-path batch seeds a full tool
-    loop per pass instead of ending it. With broad_pass=True a final
-    "broad" second-chance pass re-sweeps all files for pattern-visible
-    weaknesses (encoding, secrets, weak crypto, debug leftovers) that
-    sink-focused passes under-report. With micro_passes=True three tight
-    fast-only passes (secrets/encoding/debuglog, no tool loop) run last:
-    their small prompts survive flaky upstreams that reject tools-attached
-    calls. The model is the primary finder; deterministic scanners
-    corroborate downstream. Never raises for provider problems.
+    Mỗi họ chạy một lượt tuần tự (tự phục hồi lỗi cho từng họ), sau đó lọc trùng giữa
+    các lượt. Chế độ Deep (mặc định): mẻ tuyến nhanh sẽ làm seed cho một vòng lặp công cụ
+    đầy đủ theo từng lượt thay vì kết thúc nó. Với broad_pass=True, lượt cơ hội thứ hai
+    "rộng" cuối cùng sẽ quét lại toàn bộ tệp để tìm các điểm yếu nhận diện được qua mẫu
+    (encoding, secrets, weak crypto, debug leftovers) mà các lượt tập trung vào sink báo cáo thiếu.
+    Với micro_passes=True, ba lượt vi quét chỉ chạy nhanh (secrets/encoding/debuglog, không có
+    vòng lặp công cụ) sẽ chạy cuối cùng: prompt nhỏ của chúng tồn tại được trước các upstream
+    chập chờn từ chối các lệnh gọi gắn kèm công cụ. Mô hình là bên tìm kiếm chính; các scanner
+    xác định sẽ xác thực chứng thực ở hạ nguồn. Không bao giờ ném ngoại lệ khi gặp vấn đề từ provider.
     """
     inventory: list[str] = []
     try:
@@ -1158,7 +1157,7 @@ def hunt_all(
             }
         )
         all_candidates.extend(cands)
-        # Pacing: free-tier upstreams shed bursty back-to-back passes.
+        # Điều phối nhịp độ: các upstream gói miễn phí thường từ chối các lượt gọi dồn dập liên tiếp.
         time.sleep(3)
     merged = dedupe_candidates(all_candidates)[: max(1, max_findings)]
     ok = [p for p in passes if p["status"] == "completed"]

@@ -1,13 +1,13 @@
-"""Scanner adapters for the DevSecOps-Agent pipeline.
+"""Các scanner adapter cho pipeline của DevSecOps-Agent.
 
-Every adapter implements :class:`vulnscan.scanners.base.ScannerAdapter` and
-returns a :class:`vulnscan.contracts.ScannerResult` envelope.  Adapters are the
-*only* place vendor-specific output shapes are understood: downstream stages
-see normalized observations only.
+Mỗi adapter hiện thực :class:`vulnscan.scanners.base.ScannerAdapter` và
+trả về một vỏ bọc (envelope) :class:`vulnscan.contracts.ScannerResult`. Adapter là nơi
+*duy nhất* hiểu định dạng đầu ra đặc thù của từng nhà cung cấp: các giai đoạn phía sau
+chỉ nhìn thấy các observation đã được chuẩn hóa.
 
-Missing binaries are a documented condition, never an exception: the adapter
-records the unavailability in ``errors`` and returns a result whose status is
-``failed`` (or ``skipped`` when the tool is disabled in the scan spec).
+Thiếu file thực thi (binary) là trường hợp được ghi nhận trong tài liệu, không bao giờ là ngoại lệ: adapter
+ghi lại việc không khả dụng vào ``errors`` và trả về một kết quả có trạng thái là
+``failed`` (hoặc ``skipped`` khi công cụ bị vô hiệu hóa trong scan spec).
 """
 
 from __future__ import annotations

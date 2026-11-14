@@ -1,9 +1,8 @@
-"""Map JSP files and their generated servlet coordinates.
+"""Ánh xạ các tệp JSP và tọa độ servlet được sinh ra từ chúng.
 
-Jasper precompilation (JSP -> .java) is the only way to get exact line
-numbers for JSP expressions. When it is unavailable, we record a coverage
-gap (ACC-04) and keep the original JSP coordinates instead of inventing
-generated-servlet coordinates.
+Biên dịch trước Jasper (JSP -> .java) là cách duy nhất để có được số dòng
+chính xác cho các biểu thức JSP. Khi không khả dụng, chúng tôi ghi nhận một khoảng trống
+độ phủ (ACC-04) và giữ tọa độ JSP ban đầu thay vì tự tạo ra tọa độ servlet được sinh.
 """
 
 from __future__ import annotations
@@ -15,7 +14,7 @@ from pathlib import Path
 
 @dataclass
 class JspMapping:
-    """One JSP file and its known entry points."""
+    """Một tệp JSP và các điểm vào đã biết của nó."""
 
     jsp_path: str
     jsp_line_count: int = 0
@@ -31,13 +30,13 @@ _JASPER_MARKER = "_jsp.java"
 
 
 def _jasper_output_for(jsp: Path, jasper_out: Path | None) -> Path | None:
-    """Find the Jasper-generated .java for a JSP, if the output tree exists."""
+    """Tìm tệp .java do Jasper sinh ra cho một JSP, nếu cây thư mục đầu ra tồn tại."""
     if jasper_out is None or not jasper_out.exists():
         return None
     rel = jsp.stem
     for cand in jasper_out.rglob(f"{rel}{_JASPER_MARKER}"):
         return cand
-    # Older Jasper layout: org/apache/jsp/<name>_jsp.java
+    # Bố cục Jasper cũ hơn: org/apache/jsp/<name>_jsp.java
     for cand in jasper_out.rglob(f"*{rel}*_jsp.java"):
         return cand
     return None
@@ -47,11 +46,11 @@ def index_jsp_files(
     snapshot: Path,
     jasper_output: Path | None = None,
 ) -> tuple[list[JspMapping], list[str]]:
-    """Index JSPs; return (mappings, coverage_gaps).
+    """Lập chỉ mục các JSP; trả về (mappings, coverage_gaps).
 
-    ``jasper_output`` is the precompiled output tree. When it is absent,
-    every JSP is recorded with a coverage gap note (ACC-04): generated
-    servlet coordinates are never invented.
+    ``jasper_output`` là cây thư mục đầu ra đã biên dịch trước. Khi nó vắng mặt,
+    mọi JSP được ghi lại với ghi chú khoảng trống độ phủ (ACC-04): tọa độ servlet
+    được sinh không bao giờ được tự ý bịa đặt.
     """
     snapshot = Path(snapshot)
     mappings: list[JspMapping] = []

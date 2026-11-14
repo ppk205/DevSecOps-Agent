@@ -1,15 +1,15 @@
-"""Resolve a user-supplied target into a scannable Git checkout.
+"""Phân giải mục tiêu do người dùng cung cấp thành một bản Git checkout có thể quét được.
 
-Users paste whatever they have: a local path, a GitHub URL, or a bare
-``owner/repo`` slug. This module turns that into a concrete checkout the
-rest of the pipeline can trust, so no pre-imported fixture is required.
+Người dùng dán bất cứ thứ gì họ có: đường dẫn cục bộ, URL GitHub hoặc slug
+``owner/repo`` đơn thuần. Module này chuyển đổi mục tiêu đó thành một bản checkout cụ thể mà
+phần còn lại của pipeline có thể tin cậy, do đó không cần fixture được nhập trước.
 
-Design constraints:
+Các ràng buộc thiết kế:
 
-- A scan must always be pinned to a real commit SHA — never a moving ref.
-- Clones are shallow and cached under a work directory so re-scans are cheap.
-- Existing checkouts are reused; nothing is re-cloned or force-reset.
-- Failures surface the underlying git stderr instead of a generic message.
+- Một lần quét luôn phải được ghim vào một SHA commit thực sự — không bao giờ dùng moving ref.
+- Các bản clone là shallow và được lưu cache trong thư mục làm việc để các lần quét lại có chi phí thấp.
+- Các bản checkout hiện có được tái sử dụng; không clone lại hay buộc reset.
+- Lỗi hiển thị stderr cơ bản của git thay vì một thông báo chung chung.
 """
 
 from __future__ import annotations
@@ -71,7 +71,7 @@ _REMOTE_RE = re.compile(r"^(https?://|git@|ssh://|git://)")
 
 
 def is_remote(value: str) -> bool:
-    """True when *value* looks like a repository reference, not a path."""
+    """True khi *value* có dạng một tham chiếu repository, không phải là một đường dẫn."""
     text = value.strip()
     if not text:
         return False
@@ -81,7 +81,7 @@ def is_remote(value: str) -> bool:
 
 
 def slug_from_url(value: str) -> str:
-    """Return the repository name without ``.git`` from any remote form."""
+    """Trả về tên repository không có ``.git`` từ bất kỳ dạng remote nào."""
     text = value.strip().rstrip("/")
     text = re.sub(r"\.git$", "", text, flags=re.IGNORECASE)
     name = re.split(r"[/:]", text)[-1]
@@ -89,7 +89,7 @@ def slug_from_url(value: str) -> str:
 
 
 def normalise_repo_url(value: str) -> str:
-    """Expand shorthand and normalise a remote to a clonable URL."""
+    """Mở rộng dạng viết tắt và chuẩn hóa một remote thành một URL có thể clone được."""
     text = value.strip()
     if not _REMOTE_RE.match(text):
         if not _SLUG_RE.match(text):
@@ -151,17 +151,17 @@ def resolve_source(
     commit: str = "",
     run: Callable[..., Any] | None = None,
 ) -> LocalSource | RemoteSource:
-    """Turn a user target into a concrete, commit-pinned checkout.
+    """Chuyển đổi một mục tiêu người dùng thành một bản checkout cụ thể được ghim commit.
 
     Parameters
     ----------
     value:
-        Local directory, remote URL, or ``owner/repo`` slug.
+        Thư mục cục bộ, URL từ xa, hoặc slug ``owner/repo``.
     workdir:
-        Cache directory for cloned repositories.
+        Thư mục bộ nhớ đệm cho các repository đã clone.
     commit:
-        Optional pinned commit. When omitted the remote's default branch HEAD
-        is used, and that resolved SHA is recorded.
+        Commit được ghim tùy chọn. Khi bị bỏ qua, HEAD nhánh mặc định của remote
+        sẽ được sử dụng và SHA đã phân giải đó được ghi lại.
     """
     runner = run or _default_run
     text = value.strip()

@@ -1,7 +1,7 @@
 /**
- * Client-side secret redaction for the Logs page.
- * Mirrors the server patterns in src/vulnscan/web/app.py — the server
- * redacts before responding, the SPA redacts again before render.
+ * Che giấu secret phía client cho trang Logs.
+ * Phản chiếu các mẫu phía server trong src/vulnscan/web/app.py — server
+ * che giấu trước khi phản hồi, SPA che giấu lại trước khi render.
  */
 
 const PATTERNS: [RegExp, string][] = [
@@ -15,18 +15,18 @@ const PATTERNS: [RegExp, string][] = [
   [/Bearer\s+[A-Za-z0-9\-._~+/]+=*/gi, "Bearer ***REDACTED***"],
 ];
 
-/** Redact likely secret material from a single string (client-side). */
+/** Che giấu nội dung có khả năng là secret khỏi một chuỗi đơn lẻ (phía client). */
 export function redactSecrets(text: string): string {
   let redacted = text;
   for (const [pattern, replacement] of PATTERNS) {
-    // Fresh global regexes carry lastIndex state — reset before each use.
+    // Regex global mới giữ trạng thái lastIndex — reset trước mỗi lần dùng.
     pattern.lastIndex = 0;
     redacted = redacted.replace(pattern, replacement);
   }
   return redacted;
 }
 
-/** Recursively redact strings inside a JSON-like payload (client-side). */
+/** Che giấu đệ quy các chuỗi bên trong payload dạng JSON (phía client). */
 export function redactValue<T>(value: T): T {
   if (typeof value === "string") return redactSecrets(value) as T;
   if (Array.isArray(value)) return value.map((item) => redactValue(item)) as T;

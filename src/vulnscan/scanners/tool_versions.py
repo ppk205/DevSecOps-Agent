@@ -1,4 +1,4 @@
-"""Lightweight helpers for probing tool versions and building argument lists."""
+"""Các helper gọn nhẹ để kiểm tra phiên bản công cụ và xây dựng danh sách đối số."""
 
 from __future__ import annotations
 
@@ -11,12 +11,12 @@ from .process import run_command
 
 
 def probe_version(binary: str) -> str | None:
-    """Try ``<binary> --version`` (or ``-version``) and return the first line.
+    """Thử ``<binary> --version`` (hoặc ``-version``) và trả về dòng đầu tiên.
 
-    Returns ``None`` when the binary is absent or does not respond. The
-    timeout is generous because the first invocation of a freshly installed
-    binary can take tens of seconds while the OS inspects the new executable;
-    warm calls come back in a few seconds.
+    Trả về ``None`` khi không có binary hoặc binary không phản hồi. Thời gian
+    timeout được thiết lập dư dả vì lần gọi đầu tiên của một binary mới cài đặt
+    có thể mất hàng chục giây trong khi OS kiểm tra file thực thi mới;
+    các lệnh gọi sau (warm call) sẽ phản hồi trong vài giây.
     """
     resolved = which(binary)
     if resolved is None:
@@ -29,17 +29,17 @@ def probe_version(binary: str) -> str | None:
 
 
 def java_target_classpath(spec: ScanSpecification) -> str | None:
-    """Return the compiled ``classes/`` directory path if present.
+    """Trả về đường dẫn thư mục ``classes/`` đã biên dịch nếu tồn tại.
 
-    SpotBugs requires compiled bytecode; this helper finds it under the
-    standard Maven layout rooted at ``<repo>/target/classes``.
+    SpotBugs yêu cầu bytecode đã biên dịch; helper này tìm thấy nó dưới
+    cấu trúc thư mục Maven tiêu chuẩn có gốc tại ``<repo>/target/classes``.
     """
     path = spec.metadata.get("build_artifacts", {}).get("classes_dir")
     return str(path) if path else None
 
 
 def classpath_from_options(tool_cfg: Any) -> str | None:
-    """Pull ``classpath`` from per-tool options, or return ``None``."""
+    """Lấy ``classpath`` từ các tùy chọn theo từng công cụ, hoặc trả về ``None``."""
     if tool_cfg is None:
         return None
     return getattr(tool_cfg, "options", {}).get("classpath")

@@ -1,11 +1,11 @@
-"""SpotBugs adapter — bytecode-based static analysis for Java.
+"""SpotBugs adapter — phân tích tĩnh dựa trên bytecode cho Java.
 
-SpotBugs requires a compiled classpath.  When the ``classes`` directory
-is not found, the adapter documents the absence in ``errors`` and returns
-a ``failed`` result rather than raising.
+SpotBugs yêu cầu classpath đã biên dịch. Khi thư mục ``classes``
+không được tìm thấy, adapter sẽ ghi nhận sự vắng mặt này vào ``errors`` và trả về
+kết quả ``failed`` thay vì ném ngoại lệ.
 
-Native XML output is parsed by :func:`parse_spotbugs_xml`; the ``run`` method
-shells out via ``_invoke``.
+Output XML gốc được parse bởi :func:`parse_spotbugs_xml`; phương thức ``run``
+gọi shell thông qua ``_invoke``.
 """
 
 from __future__ import annotations
@@ -34,7 +34,7 @@ from .base import AdapterCapability, ScannerAdapter
 from .platform import which
 from .tool_versions import probe_version
 
-# --- Severity map --------------------------------------------------------- #
+# --- Bảng ánh xạ Severity ------------------------------------------------- #
 
 _BUG_PRIORITY_MAP = {
     1: Severity.HIGH,
@@ -56,10 +56,10 @@ _CATEGORIES_MAP = {
 
 
 def _determine_severity(category: str, priority: int) -> Severity:
-    """Map SpotBugs category + priority to a contract Severity."""
+    """Ánh xạ category + priority của SpotBugs sang Severity của contract."""
     cat = _CATEGORIES_MAP.get(category.lower(), Severity.UNDETERMINED)
     pri = _BUG_PRIORITY_MAP.get(priority, Severity.UNDETERMINED)
-    # Highest of category and priority
+    # Mức cao nhất giữa category và priority
     order = [
         Severity.CRITICAL,
         Severity.HIGH,
@@ -73,7 +73,7 @@ def _determine_severity(category: str, priority: int) -> Severity:
 
 
 def _parse_line_number(source_lines: Any) -> int | None:
-    """Extract a single line number from SpotBugs ``SourceLine`` or ``Method``."""
+    """Trích xuất một số dòng đơn lẻ từ ``SourceLine`` hoặc ``Method`` của SpotBugs."""
     if source_lines is None:
         return None
     start = source_lines.get("start")
@@ -105,7 +105,7 @@ _SPOTBUGS_CWE_BY_CODE_PREFIX: tuple[tuple[str, CWECategory], ...] = (
 
 
 def _spotbugs_cwe(bug_id: str, category: str) -> CWECategory | None:
-    """Best-effort SpotBugs pattern/category to contract CWE bucket."""
+    """Ánh xạ nỗ lực tối đa mẫu/category của SpotBugs sang nhóm CWE của contract."""
     for prefix, cwe in _SPOTBUGS_CWE_BY_CODE_PREFIX:
         if bug_id.startswith(prefix):
             return cwe
@@ -125,7 +125,7 @@ def parse_spotbugs_xml(
     tool_version: str,
     source_snapshot: str,
 ) -> tuple[list[Observation], list[CoverageRecord]]:
-    """Parse SpotBugs XML into Observations and CoverageRecords."""
+    """Phân tích XML của SpotBugs thành các Observation và CoverageRecord."""
     from lxml import etree as lxml_etree
 
     root = lxml_etree.fromstring(
@@ -151,7 +151,7 @@ def parse_spotbugs_xml(
         long_msg_el = bug_instance.find("LongMessage")
         long_msg = long_msg_el.text if long_msg_el is not None else short_msg
 
-        # Location extraction: prefer Method > Class > SourceLine
+        # Trích xuất vị trí: ưu tiên Method > Class > SourceLine
         source_line_el = bug_instance.find("SourceLine")
         method_el = bug_instance.find("Method")
         class_el = bug_instance.find("Class")
@@ -167,7 +167,7 @@ def parse_spotbugs_xml(
             symbol = class_el.get("classname", "").split(".")[-1]
 
         if not file_path and class_el is not None:
-            # Convert classname to path
+            # Chuyển đổi classname thành đường dẫn
             cn = class_el.get("classname", "")
             file_path = cn.replace(".", "/") + ".java"
 
@@ -201,7 +201,7 @@ def parse_spotbugs_xml(
             )
         )
 
-    # Coverage: collect all files referenced by BugInstance sourcepath
+    # Coverage: thu thập tất cả các file được tham chiếu bởi sourcepath của BugInstance
     seen_files: set[str] = set()
     for bi in root.findall("BugInstance"):
         sl = bi.find("SourceLine")
@@ -232,7 +232,7 @@ def parse_spotbugs_xml(
 
 
 class SpotBugsAdapter(ScannerAdapter):
-    """SpotBugs bytecode adapter with XML parsing."""
+    """Adapter bytecode SpotBugs với tính năng phân tích cú pháp XML."""
 
     tool = ToolName.SPOTBUGS
     binary_name = "spotbugs"
@@ -254,7 +254,7 @@ class SpotBugsAdapter(ScannerAdapter):
         started = datetime.now(UTC)
         tool_cfg = self._tool_config(spec)
 
-        # Disabled in spec?
+        # Bị vô hiệu hóa trong spec?
         if tool_cfg and not tool_cfg.enabled:
             return self._skipped_result(spec, started, "disabled in scan spec")
 
@@ -262,12 +262,12 @@ class SpotBugsAdapter(ScannerAdapter):
         if not cap.available:
             return self._skipped_result(spec, started, cap.unavailable_message())
 
-        # SpotBugs needs compiled classes
+        # SpotBugs cần các class đã được biên dịch
         classes_dir = tool_cfg.options.get("classes_dir") if tool_cfg else None
         if classes_dir:
             classes_path = Path(workdir) / classes_dir
         else:
-            # Try Maven default target/classes
+            # Thử đường dẫn mặc định target/classes của Maven
             classes_path = Path(workdir) / "target" / "classes"
         if not classes_path.exists():
             return self._fatal(
@@ -289,7 +289,7 @@ class SpotBugsAdapter(ScannerAdapter):
                 note=f"classes directory not found: {classes_path} (run 'mvn compile' first)",
             )
 
-        # Build command
+        # Xây dựng lệnh
         argv = [
             self.binary_name,
             "-xml:withMessages",
@@ -305,8 +305,8 @@ class SpotBugsAdapter(ScannerAdapter):
 
         dependency_jars = sorted((Path(workdir) / "target/dependency").glob("*.jar"))
         if dependency_jars:
-            # 243+ jars exceed the Windows command-line limit: pass them via
-            # a file instead of inline -auxclasspath.
+            # Hơn 243 jar vượt quá giới hạn dòng lệnh của Windows: truyền chúng qua
+            # một file thay vì -auxclasspath nội dòng.
             auxclasspath_file = Path(workdir) / "target" / "auxclasspath.txt"
             auxclasspath_file.write_text(
                 os.linesep.join(str(p) for p in dependency_jars), encoding="utf-8"
@@ -315,7 +315,7 @@ class SpotBugsAdapter(ScannerAdapter):
         output_file = Path(workdir) / "target" / "spotbugs-report.xml"
         output_file.unlink(missing_ok=True)
 
-        # FindSpotBugs needs JAVA_HOME or a JRE on PATH
+        # FindSpotBugs cần JAVA_HOME hoặc một JRE trong PATH
         import os
 
         env = {}
@@ -353,10 +353,10 @@ class SpotBugsAdapter(ScannerAdapter):
                 spec, started, finished, result, note=f"failed to parse SpotBugs XML: {exc}"
             )
 
-        # Coverage: BugInstance entries only cover files WITH bugs. A clean
-        # compiled file was analyzed too — mark every inventory .java that
-        # has a compiled counterpart as analyzed so reconcile() does not
-        # flood errors with false "missing coverage".
+        # Coverage: Các mục BugInstance chỉ bao phủ các file CÓ bug. Một file
+        # đã biên dịch sạch cũng đã được phân tích — đánh dấu mọi file .java trong inventory
+        # có bản biên dịch tương ứng là analyzed để reconcile() không
+        # tràn ngập các lỗi giả "missing coverage".
         recorded = {c.unit_path for c in coverage_records}
         manifest = (spec.metadata or {}).get("manifest") or {}
         classes_dir = Path(workdir) / "target" / "classes"
@@ -364,8 +364,8 @@ class SpotBugsAdapter(ScannerAdapter):
             if name in recorded:
                 continue
             if not name.endswith(".java"):
-                # SpotBugs analyzes Java bytecode only — JS/CSS/resources are
-                # never its units. Record unsupported so reconcile() stays silent.
+                # SpotBugs chỉ phân tích bytecode Java — JS/CSS/tài nguyên không bao giờ
+                # là đối tượng của nó. Ghi nhận unsupported để reconcile() không báo lỗi.
                 coverage_records.append(
                     CoverageRecord(
                         run_id=spec.run_id or "unassigned",
@@ -412,9 +412,9 @@ class SpotBugsAdapter(ScannerAdapter):
                     )
                 )
             else:
-                # Source with no compiled class (e.g. build wrappers excluded
-                # from compilation): SpotBugs cannot analyze it. Record why
-                # instead of leaving a false "missing coverage".
+                # Mã nguồn không có class biên dịch (ví dụ: wrapper build bị loại trừ
+                # khỏi biên dịch): SpotBugs không thể phân tích được. Ghi nhận lý do
+                # thay vì để lại lỗi giả "missing coverage".
                 coverage_records.append(
                     CoverageRecord(
                         run_id=spec.run_id or "unassigned",

@@ -1,8 +1,8 @@
-"""Typed contracts for advisory decision backends such as Laya.
+"""Hợp đồng định kiểu (typed contracts) cho các decision backend tham vấn như Laya.
 
-Decision contracts are deliberately separate from provider/chat contracts.
-They carry probabilities and routing recommendations only; they never own a
-finding's final status or a CVSS vector.
+Các hợp đồng quyết định được cố ý tách biệt khỏi các hợp đồng provider/chat.
+Chúng chỉ mang theo xác suất và đề xuất định tuyến; chúng không bao giờ sở hữu
+trạng thái cuối cùng của finding hoặc vector CVSS.
 """
 
 from __future__ import annotations
@@ -18,7 +18,7 @@ from .enums import FindingStatus
 
 
 class DecisionType(str, Enum):
-    """Question types supported by the Laya decision protocol."""
+    """Các loại câu hỏi được hỗ trợ bởi giao thức quyết định Laya."""
 
     CHOICE = "choice"
     SCORE = "score"
@@ -26,7 +26,7 @@ class DecisionType(str, Enum):
 
 
 class DecisionStatus(str, Enum):
-    """Lifecycle of a decision-backend invocation."""
+    """Vòng đời của một lần gọi decision-backend."""
 
     COMPLETED = "completed"
     UNAVAILABLE = "unavailable"
@@ -35,7 +35,7 @@ class DecisionStatus(str, Enum):
 
 
 class DecisionQuestion(VersionedModel):
-    """One typed question sent to a decision backend."""
+    """Một câu hỏi được định kiểu gửi tới một decision backend."""
 
     name: str = Field(..., min_length=1, max_length=128)
     type: DecisionType
@@ -44,7 +44,7 @@ class DecisionQuestion(VersionedModel):
 
 
 class DecisionRequest(VersionedModel):
-    """Bounded, normalized evidence and questions for a decision backend."""
+    """Bằng chứng và câu hỏi có giới hạn, đã được chuẩn hóa cho một decision backend."""
 
     state: dict[str, Any]
     questions: dict[str, DecisionQuestion]
@@ -53,7 +53,7 @@ class DecisionRequest(VersionedModel):
 
 
 class DecisionAnswer(VersionedModel):
-    """Typed answer returned by a decision backend."""
+    """Câu trả lời được định kiểu trả về bởi một decision backend."""
 
     name: str
     type: DecisionType
@@ -66,7 +66,7 @@ class DecisionAnswer(VersionedModel):
 
 
 class DecisionResult(VersionedModel):
-    """Structured result and operational metadata for one decision call."""
+    """Kết quả có cấu trúc và metadata hoạt động cho một lệnh gọi quyết định."""
 
     status: DecisionStatus
     model_id: str
@@ -83,7 +83,7 @@ class DecisionResult(VersionedModel):
 
 
 class DecisionRoute(VersionedModel):
-    """Advisory route and its explicit status-ownership boundary."""
+    """Tuyến tham vấn và ranh giới sở hữu trạng thái tường minh của nó."""
 
     route: str = Field(..., min_length=1)
     confidence: float | None = Field(default=None, ge=0.0, le=1.0)

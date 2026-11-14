@@ -1,4 +1,4 @@
-"""Sanitize output at persistence and display boundaries."""
+"""Làm sạch dữ liệu đầu ra tại ranh giới lưu trữ và hiển thị."""
 
 from __future__ import annotations
 

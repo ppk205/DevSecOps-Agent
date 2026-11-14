@@ -1,8 +1,8 @@
-"""RunManifest — full provenance and reproducibility record for one scan run.
+"""RunManifest — bản ghi đầy đủ về nguồn gốc và khả năng tái lập cho một lần quét (scan run).
 
-Records input hashes, tool versions, model settings, timings, usage, failures,
-and artifact checksums.  Interrupted stages are recorded explicitly and
-retried as new attempts while previous artifacts are retained.
+Ghi lại hash đầu vào, phiên bản công cụ, thiết lập mô hình, thời gian thực thi,
+mức sử dụng, lỗi và checksum của artifact. Các giai đoạn bị gián đoạn được ghi
+nhận tường minh và được thử lại dưới dạng các lần thử mới trong khi vẫn giữ lại các artifact trước đó.
 """
 
 from __future__ import annotations
@@ -20,7 +20,7 @@ from .scan_spec import ScanSpecification
 
 
 class StageTiming(VersionedModel):
-    """Timing and outcome of one pipeline stage."""
+    """Thời gian thực thi và kết quả của một giai đoạn pipeline."""
 
     stage_name: str = Field(
         ...,
@@ -63,7 +63,7 @@ class StageTiming(VersionedModel):
 
 
 class ToolVersionRecord(VersionedModel):
-    """Version of a tool or container used during the run."""
+    """Phiên bản của một công cụ hoặc container được sử dụng trong lần chạy."""
 
     tool: ToolName = Field(
         ...,
@@ -92,7 +92,7 @@ class ToolVersionRecord(VersionedModel):
 
 
 class ModelSettings(VersionedModel):
-    """Snapshot of model settings used for a run (frozen before evaluation)."""
+    """Ảnh chụp nhanh các cài đặt mô hình được sử dụng cho một lần chạy (được đóng băng trước khi đánh giá)."""
 
     model_id: str = Field(
         ...,
@@ -130,10 +130,10 @@ class ModelSettings(VersionedModel):
 
 
 class RunManifest(VersionedModel):
-    """Complete provenance record for one scan run.
+    """Bản ghi nguồn gốc hoàn chỉnh cho một lần quét.
 
-    Persisted at run start and updated as stages complete; the final manifest
-    is what makes a run reproducible from archived artifacts.
+    Được lưu trữ khi bắt đầu chạy và cập nhật khi các giai đoạn hoàn thành; manifest
+    cuối cùng là thứ giúp một lần chạy có thể tái lập được từ các artifact đã lưu trữ.
     """
 
     run_id: str = Field(

@@ -1,4 +1,4 @@
-"""Small persisted projections for responsive finding lists (FR-71, QR-21)."""
+"""Các projection thu nhỏ được lưu trữ bền vững cho danh sách finding phản hồi nhanh (FR-71, QR-21)."""
 
 from __future__ import annotations
 

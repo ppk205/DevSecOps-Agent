@@ -1,7 +1,7 @@
-"""Evaluation metrics — precision, recall, F1, unresolved rate, verification coverage.
+"""Chỉ số đánh giá — precision, recall, F1, tỷ lệ chưa giải quyết, độ bao phủ xác minh.
 
-Reports per-CWE and aggregate results with numerators/denominators,
-separate Java/JSP coverage, and a separate dependency track.
+Báo cáo kết quả tổng hợp và theo từng CWE kèm tử số/mẫu số,
+độ bao phủ Java/JSP riêng biệt và một luồng theo dõi phụ thuộc riêng.
 """
 
 from __future__ import annotations
@@ -20,7 +20,7 @@ from vulnscan.contracts.validation import ValidationDecision
 
 @dataclass
 class MatchResult:
-    """A pairing between an evaluation case and a produced finding."""
+    """Một cặp ghép giữa một evaluation case và một finding được tạo ra."""
 
     case_id: str
     finding_id: str | None
@@ -31,13 +31,13 @@ class MatchResult:
 
 @dataclass
 class CWEResults:
-    """Per-CWE metric counts."""
+    """Số lượng chỉ số theo từng CWE."""
 
     cwe: str
-    tp: int = 0  # true positive: confirmed finding matched to expected vulnerable case
-    fp: int = 0  # false positive: confirmed finding with no matching expected case
-    fn: int = 0  # false negative: expected vulnerable case with no confirmed finding
-    tn: int = 0  # true negative: expected negative with no confirmed finding
+    tp: int = 0  # true positive: finding đã xác nhận khớp với case vulnerable kỳ vọng
+    fp: int = 0  # false positive: finding đã xác nhận không có case kỳ vọng tương ứng
+    fn: int = 0  # false negative: case vulnerable kỳ vọng nhưng không có finding đã xác nhận
+    tn: int = 0  # true negative: case negative kỳ vọng và không có finding đã xác nhận
     unresolved: int = 0
     verified: int = 0
     eligible_verification: int = 0
@@ -86,7 +86,7 @@ class CWEResults:
 
 @dataclass
 class AggregateResults:
-    """Combined results across all CWEs."""
+    """Kết quả kết hợp trên tất cả các CWE."""
 
     per_cwe: dict[str, CWEResults] = field(default_factory=dict)
     total_tp: int = 0
@@ -139,13 +139,13 @@ def match_findings_to_cases(
     cases: list[EvaluationCase],
     findings: list[Finding],
 ) -> list[MatchResult]:
-    """Pair evaluation cases with produced findings using matching criteria."""
+    """Ghép cặp các evaluation case với các finding được tạo ra bằng tiêu chí khớp."""
     results = []
     used_findings: set[str] = set()
 
     for case in cases:
         if case.expected_cwe_category is None:
-            # Negative case — no finding expected
+            # Case negative — không kỳ vọng finding nào
             results.append(
                 MatchResult(
                     case_id=case.case_id,
@@ -162,14 +162,14 @@ def match_findings_to_cases(
             if finding.finding_id in used_findings:
                 continue
 
-            # CWE match
+            # Khớp CWE
             if (
                 case.matching_criteria.match_by_cwe
                 and finding.cwe_category != case.expected_cwe_category
             ):
                 continue
 
-            # Location match
+            # Khớp vị trí
             if (
                 case.matching_criteria.match_by_location
                 and finding.observations
@@ -216,14 +216,14 @@ def compute_metrics(
     findings: list[Finding],
     decisions: list[ValidationDecision] | None = None,
 ) -> AggregateResults:
-    """Compute precision, recall, F1, unresolved rate, and verification coverage."""
+    """Tính toán precision, recall, F1, tỷ lệ chưa giải quyết và độ bao phủ xác minh."""
     decisions = decisions or []
     decision_map = {d.finding_id: d for d in decisions}
 
     matches = match_findings_to_cases(cases, findings)
     aggregate = AggregateResults()
 
-    # Group cases by expected CWE
+    # Nhóm các case theo CWE kỳ vọng
     cwe_cases: dict[str, list[EvaluationCase]] = defaultdict(list)
     for c in cases:
         if c.expected_cwe_category:
@@ -236,16 +236,16 @@ def compute_metrics(
             match = next((m for m in matches if m.case_id == case.case_id), None)
 
             if case.variant_relationship.value == "fixed":
-                # Fixed case — no finding expected
+                # Case đã sửa — không kỳ vọng finding nào
                 if match and match.matched:
-                    cwe_result.fp += 1  # False positive on fixed variant
+                    cwe_result.fp += 1  # False positive trên biến thể đã sửa
                 else:
                     cwe_result.tn += 1  # True negative
             elif case.variant_relationship.value == "vulnerable":
-                # Vulnerable case — finding expected
+                # Case vulnerable — kỳ vọng có finding
                 if match and match.matched:
                     cwe_result.tp += 1
-                    # Check if verified via validation decision
+                    # Kiểm tra xem đã xác minh qua quyết định xác thực chưa
                     if match.finding_id and match.finding_id in decision_map:
                         dec = decision_map[match.finding_id]
                         if dec.new_status == FindingStatus.CONFIRMED:
@@ -256,13 +256,13 @@ def compute_metrics(
                 else:
                     cwe_result.fn += 1
             elif case.variant_relationship.value == "negative":
-                # Negative case — no finding expected
+                # Case negative — không kỳ vọng finding nào
                 if match and match.matched:
                     cwe_result.fp += 1
                 else:
                     cwe_result.tn += 1
 
-            # Unresolved findings
+            # Các finding chưa giải quyết
             if match and match.finding_id and match.finding_id in decision_map:
                 dec = decision_map[match.finding_id]
                 if dec.new_status == FindingStatus.UNRESOLVED:
@@ -281,7 +281,7 @@ def compute_metrics(
 
 
 def save_metrics(results: AggregateResults, path: Path) -> None:
-    """Save metrics to a JSON file."""
+    """Lưu các chỉ số vào một file JSON."""
     path.write_text(
         json.dumps(results.to_dict(), indent=2),
         encoding="utf-8",
@@ -289,7 +289,7 @@ def save_metrics(results: AggregateResults, path: Path) -> None:
 
 
 def load_metrics(path: Path) -> dict[str, Any]:
-    """Load metrics from a JSON file."""
+    """Tải các chỉ số từ một file JSON."""
     payload = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(payload, dict):
         raise TypeError("metrics must be an object")

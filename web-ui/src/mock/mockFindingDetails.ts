@@ -10,7 +10,7 @@ import type {
 import { applyFindingFilters } from "../api/findingsQuery";
 import { MOCK_FINDINGS } from "./mockRun";
 
-/** Mock code excerpts per CWE (scripted fiction for mock mode only). */
+/** Đoạn trích mã mock theo từng CWE (dữ liệu mẫu theo kịch bản chỉ cho chế độ mock). */
 const SNIPPETS: Record<string, string[]> = {
   "CWE-89": [
     "String q = \"SELECT * FROM books WHERE title LIKE '%\" + query + \"%'\";",
@@ -92,7 +92,7 @@ const CVSS_BY_SEVERITY: Record<string, string> = {
   info: "CVSS:4.0/AV:P/AC:H/AT:P/PR:H/UI:P/VC:N/VI:N/VA:N",
 };
 
-/** Enriched table rows derived from the scripted 60-finding run. */
+/** Các dòng bảng nâng cao suy ra từ lượt chạy mẫu 60-finding theo kịch bản. */
 export const MOCK_FINDING_ITEMS: FindingListItem[] = MOCK_FINDINGS.map((f) => {
   const seed = hashSeed(f.id);
   const scanners = f.tool === "odc" ? ["owasp-dependency-check"] : [f.tool];
@@ -120,7 +120,7 @@ export const MOCK_FINDING_ITEMS: FindingListItem[] = MOCK_FINDINGS.map((f) => {
   };
 });
 
-/** Filtered mock findings (mirrors the live query params, paged). */
+/** Các mock finding đã lọc (phản chiếu query param trực tiếp, phân trang). */
 export function mockFilteredFindings(scanId: number, query: FindingsQuery) {
   const source = scanId === 7 ? MOCK_FINDING_ITEMS : [];
   const { total, items } = applyFindingFilters(source, {

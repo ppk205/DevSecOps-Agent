@@ -1,9 +1,9 @@
-"""Chat Completions HTTP client — provider-agnostic, BYOK.
+"""HTTP client cho Chat Completions — độc lập với provider, hỗ trợ BYOK.
 
-Supports any OpenAI-compatible ``/chat/completions`` endpoint (OpenAI,
-OpenRouter, OpenCode Zen, etc.).  Wire protocol is plain HTTP; no SDK
-dependency.  Keys never leave the process; they are passed via
-``Authorization: Bearer <key>`` headers only.
+Hỗ trợ mọi endpoint ``/chat/completions`` tương thích với OpenAI (OpenAI,
+OpenRouter, OpenCode Zen, v.v.). Giao thức truyền tải là HTTP thuần; không phụ thuộc
+vào SDK. Khóa API không bao giờ rời khỏi tiến trình; chúng chỉ được truyền qua
+header ``Authorization: Bearer <key>``.
 """
 
 from __future__ import annotations
@@ -30,7 +30,7 @@ class ChatMessage:
 
 @dataclass
 class ChatResponse:
-    """Parsed response from /chat/completions."""
+    """Phản hồi đã được phân tích cú pháp từ /chat/completions."""
 
     content: str = ""
     tool_calls: list[dict[str, Any]] = field(default_factory=list)
@@ -41,14 +41,14 @@ class ChatResponse:
 
 
 class ProviderClient:
-    """Stateless Chat Completions client with budget enforcement.
+    """Client Chat Completions phi trạng thái (stateless) có thực thi ngân sách.
 
     Parameters
     ----------
     profile:
-        Provider configuration (endpoint, model, timeout, etc.)
+        Cấu hình provider (endpoint, model, timeout, v.v.)
     budget:
-        Shared budget tracker.  If ``None``, no budget checks are performed.
+        Bộ theo dõi ngân sách dùng chung. Nếu là ``None``, sẽ không thực hiện kiểm tra ngân sách.
     """
 
     def __init__(
@@ -75,14 +75,14 @@ class ProviderClient:
         tools: list[dict[str, Any]] | None = None,
         tool_choice: str = "auto",
     ) -> ChatResponse:
-        """Send a chat completion request.
+        """Gửi một yêu cầu chat completion.
 
         Raises
         ------
         BudgetExhausted
-            If the request would exceed the budget ceiling.
+            Nếu yêu cầu vượt quá mức trần ngân sách.
         ProviderError
-            On HTTP or response-level errors.
+            Khi xảy ra lỗi HTTP hoặc lỗi ở cấp độ phản hồi.
         """
         use_model = (
             model
@@ -92,7 +92,7 @@ class ProviderClient:
         if not use_model:
             raise ValueError("No model specified and profile has no default_model or models.")
 
-        # Budget pre-check
+        # Kiểm tra trước ngân sách
         if self.budget:
             self.budget.check()
 
@@ -145,8 +145,8 @@ class ProviderClient:
 
         data = resp.json()
 
-        # Parse response (some reasoning gateways put the answer in
-        # `reasoning_content`/`reasoning` and leave `content` empty).
+        # Phân tích response (một số reasoning gateway đặt câu trả lời trong
+        # `reasoning_content`/`reasoning` và để trống `content`).
         choice = data.get("choices", [{}])[0]
         message = choice.get("message", {})
         content = message.get("content") or ""
@@ -164,7 +164,7 @@ class ProviderClient:
             raw=data,
         )
 
-        # Record usage
+        # Ghi nhận mức sử dụng
         if self.budget and chat_resp.usage:
             input_tokens = chat_resp.usage.get("prompt_tokens", 0)
             output_tokens = chat_resp.usage.get("completion_tokens", 0)
@@ -186,4 +186,4 @@ class ProviderClient:
 
 
 class ProviderError(Exception):
-    """Provider-level HTTP or response error."""
+    """Lỗi HTTP hoặc lỗi phản hồi ở cấp độ provider."""

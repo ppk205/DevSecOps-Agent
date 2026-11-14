@@ -23,7 +23,7 @@ function srcFiles(dir: string, out: string[] = []): string[] {
   for (const entry of readdirSync(dir)) {
     const full = join(dir, entry);
     if (statSync(full).isDirectory()) {
-      // Shipped code only: test files may name the patterns they forbid.
+      // Chỉ mã xuất xưởng: các file test có thể đặt tên các mẫu mà chúng nghiêm cấm.
       if (entry !== "__tests__") srcFiles(full, out);
     } else if (/\.(tsx?|css)$/.test(entry)) out.push(full);
   }
@@ -34,16 +34,16 @@ describe("Phase 6 responsive + motion", () => {
   it("live page ships mobile tabs and collapsing grids", async () => {
     const { container } = renderAt("/live");
     await screen.findByTestId("stage-intake", {}, { timeout: 8000 });
-    // Mobile-only tab strip for the 3-column layout collapse.
+    // Dải tab chỉ dành cho mobile khi thu gọn bố cục 3 cột.
     const mobileTabs = container.querySelector('[role="tablist"][aria-label="Live sections"]');
     expect(mobileTabs).not.toBeNull();
     expect(mobileTabs?.className).toContain("md:hidden");
-    // Stage rail collapses 8 -> 4 -> 2 columns.
+    // Thanh tiến trình stage thu gọn từ 8 -> 4 -> 2 cột.
     const rail = screen.getByTestId("stage-intake").closest('[role="list"]');
     expect(rail?.className).toContain("grid-cols-2");
     expect(rail?.className).toContain("sm:grid-cols-4");
     expect(rail?.className).toContain("lg:grid-cols-8");
-    // AI panel is hidden on mobile unless its tab is active.
+    // Panel AI bị ẩn trên mobile trừ khi tab của nó đang active.
     const aiSection = screen.getByText("AI agent panel").closest("section");
     expect(aiSection?.className).toContain("hidden");
     expect(aiSection?.className).toContain("md:block");
@@ -59,9 +59,9 @@ describe("Phase 6 responsive + motion", () => {
   it("topnav scrolls horizontally on narrow screens", () => {
     const { container } = renderAt("/");
     const nav = container.querySelector('nav[aria-label="Primary"]');
-    // The nav itself must stay overflow-visible so the bell dropdown floats
-    // without creating a navbar scrollbar; horizontal scrolling lives on the
-    // inner links container.
+    // Bản thân nav phải duy trì overflow-visible để dropdown của chuông nổi lên
+    // mà không tạo thanh cuộn cho navbar; cuộn ngang nằm trên
+    // container chứa các liên kết bên trong.
     expect(nav?.className).toContain("overflow-visible");
     const linksScroller = nav?.querySelector("div.overflow-x-auto");
     expect(linksScroller).not.toBeNull();
@@ -70,12 +70,12 @@ describe("Phase 6 responsive + motion", () => {
   it("motion budget: 150-250ms ease-out only, single sweep, reduced-motion honored", () => {
     const root = join(process.cwd(), "src");
     const texts = srcFiles(root).map((f) => readFileSync(f, "utf8"));
-    // No tailwind animate utilities, no shimmer/pulse keyframes anywhere.
+    // Không có tiện ích tailwind animate, không có keyframe shimmer/pulse ở bất kỳ đâu.
     for (const text of texts) {
       expect(text).not.toMatch(/animate-(spin|ping|pulse|bounce)/);
       expect(text.toLowerCase()).not.toContain("shimmer");
     }
-    // No duration-* outside the 150-250ms budget.
+    // Không có duration-* nào nằm ngoài giới hạn 150-250ms.
     const durations = new Set<string>();
     for (const text of texts) {
       for (const m of text.matchAll(/duration-(\d+)/g)) durations.add(m[1]);

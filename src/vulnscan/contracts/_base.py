@@ -1,9 +1,8 @@
-"""Common value-object base classes shared by every contract model.
+"""Các lớp cơ sở value-object phổ biến được dùng chung bởi mọi model contract.
 
-Kept dependency-light (stdlib only) so that importing the contract layer never
-pulls scanner SDKs or provider clients. All Pydantic models in this package
-inherit from :class:`VulnscanBaseModel`, which pins the project-wide serialization
-policy in one place.
+Được giữ ở mức ít phụ thuộc (chỉ dùng stdlib) để việc import tầng contract không bao giờ
+kéo theo các SDK của scanner hay client của provider. Tất cả các Pydantic model trong package này
+kế thừa từ :class:`VulnscanBaseModel`, nơi ghim chính sách tuần tự hóa trên toàn bộ dự án tại một chỗ duy nhất.
 """
 
 from __future__ import annotations
@@ -14,15 +13,14 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 class VulnscanBaseModel(BaseModel):
-    """Base for every contract model.
+    """Lớp cơ sở cho mọi model contract.
 
-    - ``extra="forbid"`` rejects unknown keys so a malformed payload from a
-      scanner or provider fails loudly instead of silently dropping data.
-    - ``populate_by_name`` lets consumers construct with either the field name
-      or its alias (useful when ingesting native tool JSON).
-    - ``use_enum_values`` is intentionally NOT enabled: consumers rely on the
-      enum members, and serialized output is still a plain string because every
-      enum subclasses ``str``.
+    - ``extra="forbid"`` từ chối các khóa lạ để payload sai định dạng từ
+      scanner hoặc provider sẽ báo lỗi ngay lập tức thay vì âm thầm loại bỏ dữ liệu.
+    - ``populate_by_name`` cho phép các nơi sử dụng khởi tạo bằng tên trường
+      hoặc alias của nó (rất hữu ích khi nạp JSON của các công cụ native).
+    - ``use_enum_values`` cố tình KHÔNG được bật: bên sử dụng dựa vào các thành viên
+      enum, và đầu ra sau khi tuần tự hóa vẫn là chuỗi thuần túy vì mọi enum đều kế thừa từ ``str``.
     """
 
     model_config = ConfigDict(
@@ -35,17 +33,17 @@ class VulnscanBaseModel(BaseModel):
     )
 
     def snapshot(self) -> dict[str, Any]:
-        """Return a plain, JSON-serializable copy of this record."""
+        """Trả về một bản sao thuần túy, có thể tuần tự hóa sang JSON của bản ghi này."""
         return self.model_dump(mode="json")
 
 
 class VersionedModel(VulnscanBaseModel):
-    """Marker mixin for records that carry an explicit schema version.
+    """Marker mixin cho các bản ghi có mang phiên bản schema tường minh.
 
-    Contracts evolve; every persisted and exported record keeps its
-    ``version`` so consumers can migrate instead of guessing. Where a model
-    represents an artifact rather than a schema shape, ``version`` holds the
-    artifact version (e.g. rule pack, policy, procedure).
+    Các contract có sự phát triển; mỗi bản ghi được lưu trữ và xuất khẩu đều giữ
+    ``version`` của nó để bên sử dụng có thể migrate thay vì đoán mò. Khi một model
+    đại diện cho một artifact thay vì hình dạng schema, ``version`` sẽ chứa
+    phiên bản artifact (ví dụ: rule pack, policy, procedure).
     """
 
     version: str = Field(

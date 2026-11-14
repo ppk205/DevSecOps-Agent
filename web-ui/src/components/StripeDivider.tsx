@@ -1,9 +1,9 @@
 interface StripeDividerProps {
-  /** 0..1 fraction of the M-gradient rail shown as complete. Omit for a plain stripe. */
+  /** Tỷ lệ 0..1 của thanh M-gradient hiển thị đã hoàn thành. Bỏ qua để có sọc đơn thuần. */
   progress?: number;
 }
 
-/** 4px M-stripe divider; with `progress`, a hairline-tracked completion rail. */
+/** Đường phân chia dải sọc M 4px; với `progress`, là thanh hoàn thành theo dõi đường mảnh. */
 export function StripeDivider({ progress }: StripeDividerProps) {
   if (progress === undefined) {
     return <div aria-hidden className="stripe-m w-full" />;

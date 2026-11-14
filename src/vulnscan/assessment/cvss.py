@@ -1,11 +1,11 @@
-"""CVSS v4.0 deterministic scorer.
+"""Bộ tính điểm xác định cho CVSS v4.0.
 
-Implements the CVSS v4.0 base scoring formula from the FIRST specification:
+Triển khai công thức tính điểm cơ sở CVSS v4.0 từ đặc tả của FIRST:
 https://www.first.org/cvss/v4.0/specification-document
 
-No external scoring library required — the formula is self-contained.
-Parses and validates vector strings, computes base score, derives
-qualitative severity, and checks that all required metrics are present.
+Không yêu cầu thư viện tính điểm bên ngoài — công thức hoàn toàn độc lập.
+Phân tích và xác thực chuỗi vector, tính base score, suy ra
+mức độ nghiêm trọng định tính, và kiểm tra tính đầy đủ của tất cả các metric bắt buộc.
 """
 
 from __future__ import annotations
@@ -14,7 +14,7 @@ import math
 from dataclasses import dataclass
 from enum import Enum
 
-# CVSS 4.0 metric value weights (Section 18)
+# Trọng số giá trị metric CVSS 4.0 (Mục 18)
 _AV = {"N": 0.85, "A": 0.62, "L": 0.55, "P": 0.20}
 _AC = {"L": 0.77, "H": 0.44}
 _AT = {"N": 0.85, "P": 0.62}
@@ -38,7 +38,7 @@ class Severity(str, Enum):
 
 @dataclass(frozen=True)
 class CVSSResult:
-    """Parsed and scored CVSS v4.0 vector."""
+    """Vector CVSS v4.0 đã được phân tích cú pháp và tính điểm."""
 
     vector: str
     base_score: float
@@ -61,9 +61,9 @@ def _severity_from_score(score: float) -> Severity:
 
 
 def parse_vector(vector: str) -> dict[str, str]:
-    """Parse a CVSS v4.0 vector string into a metric dict.
+    """Phân tích một chuỗi vector CVSS v4.0 thành dict metric.
 
-    Raises ValueError if the vector is malformed.
+    Ném ra ValueError nếu vector bị sai định dạng.
     """
     if not vector.startswith("CVSS:4.0/"):
         raise ValueError(
@@ -85,17 +85,17 @@ REQUIRED_BASE = ["AV", "AC", "AT", "PR", "UI", "VC", "VI", "VA"]
 
 
 def score(vector: str) -> CVSSResult:
-    """Parse, validate, and score a CVSS v4.0 vector string.
+    """Phân tích, xác thực và tính điểm cho chuỗi vector CVSS v4.0.
 
-    Returns a :class:`CVSSResult` with the computed score, qualitative
-    severity, parsed metrics, and list of missing required metrics.
+    Trả về một :class:`CVSSResult` với điểm số đã tính, mức độ nghiêm trọng
+    định tính, các metric đã phân tích cú pháp và danh sách các metric bắt buộc bị thiếu.
     """
     metrics = parse_vector(vector)
 
-    # Check required metrics
+    # Kiểm tra các metric bắt buộc
     missing = [m for m in REQUIRED_BASE if m not in metrics]
 
-    # If critical metrics are missing, score is 0
+    # Nếu thiếu các metric quan trọng, điểm số là 0
     critical_missing = [m for m in ["AV", "AC", "AT", "PR", "UI"] if m not in metrics]
     if critical_missing:
         return CVSSResult(
@@ -106,13 +106,13 @@ def score(vector: str) -> CVSSResult:
             missing=missing,
         )
 
-    # Get metric values with defaults for optional ones
+    # Lấy giá trị metric với các giá trị mặc định cho metric tùy chọn
     scope = metrics.get("S", "U")
     av = _AV.get(metrics["AV"], 0.0)
     ac = _AC.get(metrics["AC"], 0.0)
     at = _AT.get(metrics["AT"], 0.0)
 
-    # PR is scope-dependent
+    # PR phụ thuộc vào scope
     pr_val = metrics["PR"]
     if pr_val in _PR:
         entry = _PR[pr_val]
@@ -125,17 +125,17 @@ def score(vector: str) -> CVSSResult:
 
     ui = _UI.get(metrics["UI"], 0.0)
 
-    # Vulnerability subsystem impact metrics (Section 18.3)
+    # Các metric tác động lên hệ thống con chứa lỗ hổng (Mục 18.3)
     vc = _IMPACT.get(metrics.get("VC", "N"), 0.0)
     vi = _IMPACT.get(metrics.get("VI", "N"), 0.0)
     va = _IMPACT.get(metrics.get("VA", "N"), 0.0)
 
-    # Subsequent system impact metrics (Section 18.4)
+    # Các metric tác động lên hệ thống kế tiếp (Mục 18.4)
     sc = _IMPACT_SI_SA.get(metrics.get("SC", "N"), 0.0)
     si = _IMPACT_SI_SA.get(metrics.get("SI", "N"), 0.0)
     sa = _IMPACT_SI_SA.get(metrics.get("SA", "N"), 0.0)
 
-    # Step 1: Vulnerability subsystem (Section 18.3)
+    # Bước 1: Hệ thống con chứa lỗ hổng (Mục 18.3)
     iss_v = 1.0 - ((1.0 - vc) * (1.0 - vi) * (1.0 - va))
     if iss_v <= 0.0:
         impact_v = 0.0
@@ -143,7 +143,7 @@ def score(vector: str) -> CVSSResult:
         impact_v = 7.52 * (iss_v - 0.029) - 3.25 * (iss_v * 0.9731 - 0.02) ** 13
         impact_v = max(impact_v, 0.0)
 
-    # Step 2: Subsequent system (Section 18.4)
+    # Bước 2: Hệ thống kế tiếp (Mục 18.4)
     iss_s = 1.0 - ((1.0 - sc) * (1.0 - si) * (1.0 - sa))
     if iss_s <= 0.0:
         impact_s = 0.0
@@ -151,24 +151,24 @@ def score(vector: str) -> CVSSResult:
         impact_s = 7.52 * (iss_s - 0.029) - 3.25 * (iss_s * 0.9731 - 0.02) ** 13
         impact_s = max(impact_s, 0.0)
 
-    # Step 3: Exploitability (Section 18.5)
+    # Bước 3: Khả năng khai thác (Section 18.5)
     exploitability = 8.22 * av * ac * at * pr * ui
 
-    # Step 4: Base score (Section 18.6)
+    # Bước 4: Base score (Mục 18.6)
     if scope == "U":
-        # Unchanged: only vulnerability subsystem impact
+        # Không đổi (Unchanged): chỉ có tác động lên hệ thống con chứa lỗ hổng
         if impact_v <= 0:
             score_val = 0.0
         else:
             score_val = min(impact_v + exploitability, 10.0)
     else:
-        # Changed: combine both subsystems with 1.08 multiplier
+        # Thay đổi (Changed): kết hợp cả hai hệ thống con với hệ số nhân 1.08
         if impact_v <= 0 and impact_s <= 0:
             score_val = 0.0
         else:
             score_val = min(1.08 * (impact_v + impact_s + exploitability), 10.0)
 
-    # Round up to one decimal place per spec
+    # Làm tròn lên đến một chữ số thập phân theo đặc tả
     score_val = math.ceil(score_val * 10.0) / 10.0
 
     return CVSSResult(
@@ -181,7 +181,7 @@ def score(vector: str) -> CVSSResult:
 
 
 def validate(vector: str) -> list[str]:
-    """Validate a CVSS v4.0 vector. Returns list of error strings (empty = valid)."""
+    """Xác thực một vector CVSS v4.0. Trả về danh sách chuỗi lỗi (rỗng = hợp lệ)."""
     errors = []
     if not vector.startswith("CVSS:4.0/"):
         errors.append(f"Must start with 'CVSS:4.0/', got '{vector[:20]}'")
@@ -197,7 +197,7 @@ def validate(vector: str) -> list[str]:
         if m not in metrics:
             errors.append(f"Missing required metric: {m}")
 
-    # Validate metric values
+    # Xác thực các giá trị metric
     valid_av = {"N", "A", "L", "P"}
     valid_ac = {"L", "H"}
     valid_at = {"N", "P"}

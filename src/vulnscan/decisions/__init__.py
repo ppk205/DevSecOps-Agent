@@ -1,4 +1,4 @@
-"""Advisory decision backends and safe routing."""
+"""Các decision backend mang tính tham vấn và định tuyến an toàn."""
 
 from .base import DecisionBackend
 from .batching import DecisionCache, triage_many_batched

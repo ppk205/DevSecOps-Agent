@@ -1,4 +1,4 @@
-"""Bounded, cancellable JSON-lines child-process calls (IR-16, QR-21)."""
+"""Các lệnh gọi tiến trình con JSON-lines có giới hạn và có thể hủy bỏ (IR-16, QR-21)."""
 
 from __future__ import annotations
 
@@ -44,7 +44,7 @@ def terminate_tree(process: subprocess.Popen[bytes]) -> None:
 
 
 class JSONWorker:
-    """One owned worker, sequential requests, deadline covering pipe I/O too."""
+    """Một worker phụ thuộc, các yêu cầu tuần tự, deadline bao gồm cả I/O đường ống."""
 
     def __init__(self, command: Sequence[str]) -> None:
         self.command = list(command)

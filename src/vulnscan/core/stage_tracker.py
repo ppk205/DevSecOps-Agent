@@ -1,7 +1,7 @@
-"""Stage tracker — persists stage transitions so history survives restarts.
+"""Stage tracker — lưu giữ các chuyển đổi giai đoạn để lịch sử vẫn tồn tại sau khi khởi động lại.
 
-A partial or failed run must never look clean: a stage that did not reach
-COMPLETED is reported as PARTIAL (if it produced output) or FAILED.
+Một lần chạy bị phân tích một phần hoặc thất bại không bao giờ được trông như sạch: một giai
+đoạn không đạt tới COMPLETED sẽ được báo cáo là PARTIAL (nếu nó tạo ra đầu ra) hoặc FAILED.
 """
 
 from __future__ import annotations
@@ -18,7 +18,7 @@ def _utcnow() -> datetime:
 
 
 class StageTracker:
-    """Records stage lifecycle against the DB-backed run."""
+    """Ghi lại vòng đời giai đoạn đối với lần chạy được lưu trong DB."""
 
     def __init__(self, session: Session, run_id: int) -> None:
         self.session = session
@@ -61,7 +61,7 @@ class StageTracker:
         st.error_message = message or None
 
     def partial(self, stage_id: int, message: str = "") -> None:
-        """A stage that produced output but did not finish cleanly."""
+        """Một giai đoạn đã tạo ra đầu ra nhưng không kết thúc hoàn chỉnh."""
         st = self.session.get(StageORM, stage_id)
         if st is None:
             raise KeyError(f"unknown stage id {stage_id}")
@@ -78,7 +78,7 @@ class StageTracker:
         st.error_message = message or None
 
     def history(self) -> list[StageORM]:
-        """Full persisted history (survives process restart)."""
+        """Lịch sử lưu trữ bền vững đầy đủ (vẫn tồn tại sau khi tiến trình khởi động lại)."""
         return (
             self.session.query(StageORM)
             .filter(StageORM.run_id == self.run_id)

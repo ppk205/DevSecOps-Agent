@@ -94,9 +94,9 @@ func TestFR70HistoryActionsUseHighlightedRunWithoutOpeningIt(t *testing.T) {
 		m, api := readyWorkflow(t)
 		m = press(m, ctrl('1'))
 		m = press(m, tea.KeyPressMsg{Code: tea.KeyDown})
-		m = press(m, tea.KeyPressMsg{Code: tea.KeyEnter}) // Inspect A.
+		m = press(m, tea.KeyPressMsg{Code: tea.KeyEnter}) // Kiểm tra A.
 		m = press(m, ctrl('1'))
-		m = press(m, tea.KeyPressMsg{Code: tea.KeyUp}) // Highlight B.
+		m = press(m, tea.KeyPressMsg{Code: tea.KeyUp}) // Làm nổi bật B.
 		m = press(m, ctrl(action))
 		actual := api.retried
 		if action == 'o' {
@@ -119,10 +119,10 @@ func TestFR71QR21KeyboardWorkflowReviewInspectExport(t *testing.T) {
 	updated, _ := m.Update(tea.PasteMsg{Content: "-fixture"})
 	m = updated.(Model)
 	m = press(m, tea.KeyPressMsg{Code: tea.KeyTab}) // Profile.
-	m = press(m, tea.KeyPressMsg{Code: tea.KeyTab}) // Advanced.
+	m = press(m, tea.KeyPressMsg{Code: tea.KeyTab}) // Nâng cao.
 	m = press(m, tea.KeyPressMsg{Code: tea.KeyEnter})
 	for i := 0; i < 4; i++ {
-		m = press(m, tea.KeyPressMsg{Code: tea.KeyTab}) // Output directory.
+		m = press(m, tea.KeyPressMsg{Code: tea.KeyTab}) // Thư mục đầu ra.
 	}
 	m, _ = keyState(m, tea.KeyPressMsg{Code: tea.KeyEnter})
 	m = press(m, ctrl('u'))

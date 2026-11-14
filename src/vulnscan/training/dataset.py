@@ -1,4 +1,4 @@
-"""Leakage-resistant triage dataset export (FR-40, QR-05, QR-17)."""
+"""Xuất dataset phân loại (triage) chống rò rỉ dữ liệu (FR-40, QR-05, QR-17)."""
 
 from __future__ import annotations
 
@@ -84,13 +84,13 @@ def prepare(
         a, b = root("project:" + project), root("family:" + family)
         parent[b] = a
         state = finding_to_state(findings[key])
-        # Operational IDs cannot explain a decision and create cross-run leakage.
+        # Các ID vận hành không thể giải thích quyết định và gây rò rỉ dữ liệu giữa các lần chạy.
         state.pop("run_id", None)
         state.pop("finding_id", None)
         envelope = build_evidence_state(state)
         digest = str(envelope["state_hash"])
         if digest in seen_states:
-            # Identical model inputs cannot be distributed across splits.
+            # Các đầu vào model giống hệt nhau không thể phân bổ qua nhiều phần chia dữ liệu (split).
             a, b = root("project:" + project), root(seen_states[digest])
             parent[b] = a
         seen_states[digest] = "project:" + project

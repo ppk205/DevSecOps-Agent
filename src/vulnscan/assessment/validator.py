@@ -1,8 +1,8 @@
-"""Independent validator — consumes evidence and emits ValidationDecision.
+"""Bộ xác thực độc lập — tiếp nhận bằng chứng và phát ra ValidationDecision.
 
-Ownership boundary: only this module may move a finding into confirmed or
-rejected status.  AI assessments are proposals only and cannot directly
-mutate finding status.
+Ranh giới quyền sở hữu: chỉ module này mới có quyền chuyển một finding sang trạng thái
+confirmed hoặc rejected. Các đánh giá AI chỉ là đề xuất và không thể trực tiếp
+thay đổi trạng thái của finding.
 """
 
 from __future__ import annotations
@@ -20,16 +20,16 @@ from vulnscan.contracts.verification import VerificationObservation
 
 
 class IndependentValidator:
-    """Decide a finding's status from evidence and verification observations.
+    """Quyết định trạng thái của finding từ bằng chứng và các quan sát xác minh.
 
     Parameters
     ----------
     min_evidence_for_confirm:
-        Minimum number of evidence records with ``strong`` or ``moderate``
-        strength required to confirm a finding.
+        Số lượng bản ghi bằng chứng tối thiểu có độ mạnh ``strong`` hoặc ``moderate``
+        cần thiết để xác nhận một finding.
     min_verification_for_confirm:
-        Minimum verification observations with ``demonstrated`` outcome
-        required for confirm-by-verification.
+        Số lượng quan sát xác minh tối thiểu có kết quả ``demonstrated``
+        cần thiết để xác nhận thông qua xác minh.
     """
 
     def __init__(
@@ -48,17 +48,17 @@ class IndependentValidator:
         evidence: list[EvidenceRecord],
         verification: list[VerificationObservation] | None = None,
     ) -> ValidationDecision:
-        """Evaluate a finding and emit a validation decision.
+        """Đánh giá một finding và phát ra quyết định xác thực.
 
-        Decision logic:
-        - **Confirmed**: sufficient strong/moderate evidence AND/OR
-          demonstrated verification outcome.
-        - **Rejected**: strong counterevidence with explanation.
-        - **Unresolved**: insufficient or ambiguous evidence.
+        Logic quyết định:
+        - **Confirmed**: có đủ bằng chứng strong/moderate VÀ/HOẶC
+          kết quả xác minh kiểu demonstrated.
+        - **Rejected**: có bằng chứng phản bác mạnh kèm giải thích.
+        - **Unresolved**: bằng chứng không đủ hoặc mơ hồ.
         """
         verification = verification or []
 
-        # Count evidence strengths
+        # Đếm độ mạnh của bằng chứng
         strong_evidence = sum(
             1
             for e in evidence
@@ -66,7 +66,7 @@ class IndependentValidator:
         )
         weak_evidence = sum(1 for e in evidence if e.strength in (EvidenceStrength.WEAK,))
 
-        # Count verification outcomes
+        # Đếm kết quả xác minh
         demonstrated = sum(
             1
             for v in verification
@@ -87,7 +87,7 @@ class IndependentValidator:
             )
         )
 
-        # Identify counterevidence
+        # Xác định bằng chứng phản bác
         rejected_counterevidence = [
             e
             for e in evidence
@@ -97,7 +97,7 @@ class IndependentValidator:
 
         now = datetime.now(UTC)
 
-        # Decision tree
+        # Cây quyết định
         if rejected_counterevidence and strong_evidence < self._min_ev:
             new_status = FindingStatus.REJECTED
             strength = EvidenceStrength.STRONG

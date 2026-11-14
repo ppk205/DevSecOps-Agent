@@ -1,11 +1,11 @@
-"""Gitleaks adapter — secret detection in source and git history.
+"""Adapter Gitleaks — phát hiện thông tin bí mật (secret) trong mã nguồn và lịch sử git.
 
-Parses Gitleaks JSON output (``gitleaks detect --report-format json``).
-Missing binary → documented ``skipped``/``failed`` envelope, never an exception.
+Phân tích đầu ra JSON của Gitleaks (``gitleaks detect --report-format json``).
+Thiếu binary → envelope ``skipped``/``failed`` đã được ghi nhận trong tài liệu, không bao giờ là ngoại lệ.
 
-The adapter maps Gitleaks findings into the ``SECRETS`` CWE category
-(CWE-200/CWE-798 family) and ``Severity.HIGH`` for all hardcoded secrets
-unless a rule's severity suggests otherwise.
+Adapter ánh xạ các finding của Gitleaks vào danh mục CWE ``SECRETS``
+(nhóm CWE-200/CWE-798) và ``Severity.HIGH`` cho mọi secret bị hardcode
+trừ khi độ nghiêm trọng của rule chỉ ra mức khác.
 """
 
 from __future__ import annotations
@@ -48,7 +48,7 @@ _SEVERITY_MAP: dict[str, Severity] = {
 
 
 def _default_severity() -> Severity:
-    """Default: hardcoded secrets are high-risk unless the rule says otherwise."""
+    """Mặc định: các secret bị hardcode có mức rủi ro cao trừ khi rule quy định khác."""
     return Severity.HIGH
 
 
@@ -59,10 +59,10 @@ def parse_gitleaks_json(
     tool_version: str,
     source_snapshot: str,
 ) -> tuple[list[Observation], list[CoverageRecord]]:
-    """Parse Gitleaks JSON output.
+    """Phân tích đầu ra JSON của Gitleaks.
 
-    Handles both the single-key ``{"results": [...]}`` envelope and
-    the raw ``[...]`` array form.
+    Xử lý cả dạng envelope có một khóa ``{"results": [...]}`` lẫn
+    dạng mảng thô ``[...]``.
     """
     if isinstance(report, dict):
         findings = report.get("results", [])
@@ -118,7 +118,7 @@ def parse_gitleaks_json(
             )
         )
 
-    # Coverage: every file where a secret was found counts as analyzed
+    # Độ bao phủ: mỗi file phát hiện thấy secret đều được tính là đã phân tích
     seen_files: set[str] = set()
     for f in findings:
         fp = f.get("File") or f.get("file", "")
@@ -153,7 +153,7 @@ def parse_gitleaks_json(
 
 
 class GitleaksAdapter(ScannerAdapter):
-    """Gitleaks secret-detection adapter."""
+    """Adapter phát hiện secret của Gitleaks."""
 
     tool = ToolName.GITLEAKS
     binary_name = "gitleaks"

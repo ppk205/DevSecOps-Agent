@@ -26,7 +26,7 @@ interface FindingDetailViewProps {
   onToggleRaw: () => void;
 }
 
-/** Shared finding detail body: drawer and /findings/:id render this. */
+/** Phần thân chi tiết finding dùng chung: drawer và /findings/:id render phần này. */
 export function FindingDetailView({ detail, showRaw, onToggleRaw }: FindingDetailViewProps) {
   const en = useStrings();
   return (

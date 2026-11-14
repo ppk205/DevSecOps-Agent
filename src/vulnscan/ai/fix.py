@@ -1,9 +1,9 @@
-"""AI-generated fix proposals for findings.
+"""Đề xuất sửa đổi do AI tạo cho các finding.
 
-The model only writes a unified diff — it never touches source. Applying a
-proposal copies the affected files into an overlay directory under artifacts,
-patches the copy, and rescans the copy with the finding's rule to prove the
-finding is gone. The user's checkout is never modified.
+Mô hình chỉ viết một unified diff — nó không bao giờ chạm vào mã nguồn. Áp dụng một
+đề xuất sẽ sao chép các tệp bị ảnh hưởng vào thư mục overlay dưới artifacts,
+vá bản sao, và quét lại bản sao bằng rule của finding để chứng minh
+finding đã biến mất. Thư mục làm việc (checkout) của người dùng không bao giờ bị sửa đổi.
 """
 
 from __future__ import annotations
@@ -50,11 +50,11 @@ class FixProposal:
 
 
 def build_fix_prompt(finding: dict[str, Any], code_context: str = "") -> str:
-    """Render the user prompt for one finding dict (Finding dump).
+    """Kết xuất prompt người dùng cho một dict finding (bản kết xuất Finding).
 
-    ``code_context`` is wider surrounding source from the local checkout.
-    Without it the model reconstructs plausible-but-wrong context lines and
-    the strict applier rightly rejects the patch.
+    ``code_context`` là mã nguồn bao quanh rộng hơn từ checkout cục bộ.
+    Nếu không có nó, mô hình sẽ tái tạo các dòng ngữ cảnh nghe có vẻ hợp lý nhưng sai,
+    và bộ áp dụng bản vá nghiêm ngặt sẽ từ chối patch một cách chính xác.
     """
     section = ""
     if code_context.strip():
@@ -80,11 +80,11 @@ def build_fix_prompt(finding: dict[str, Any], code_context: str = "") -> str:
 
 
 def extract_diff(reply: str) -> str:
-    """Pull the ```diff block out of a model reply; empty string if none."""
+    """Trích xuất khối ```diff từ phản hồi của mô hình; chuỗi rỗng nếu không có."""
     match = re.search(r"```diff\s*(.*?)```", reply, re.DOTALL)
     if match:
         return match.group(1).strip() + "\n"
-    # Fallback: raw diff starting at the first --- a/ header.
+    # Phương án dự phòng: diff thô bắt đầu tại tiêu đề --- a/ đầu tiên.
     start = reply.find("--- a/")
     if start >= 0:
         return reply[start:].strip() + "\n"
@@ -98,7 +98,7 @@ def propose_fix(
     max_tokens: int = 2000,
     code_context: str = "",
 ) -> FixProposal:
-    """Ask the model for a unified diff fixing one finding."""
+    """Yêu cầu mô hình cung cấp unified diff để khắc phục một finding."""
     profile = load_profile(profile_id)
     client = ProviderClient(profile)
     response = client.chat(
@@ -123,11 +123,11 @@ def propose_fix(
 
 
 def apply_unified_diff(repo_root: Path, diff_text: str) -> list[str]:
-    """Apply a unified diff to files under repo_root (pure Python).
+    """Áp dụng unified diff cho các tệp dưới repo_root (thuần Python).
 
-    Only supports single-file `--- a/x` / `+++ b/x` hunks with context,
-    which is what the fix prompt requests. Raises ValueError on anything
-    unexpected instead of guessing.
+    Chỉ hỗ trợ các hunk tệp đơn `--- a/x` / `+++ b/x` có kèm ngữ cảnh,
+    đúng như những gì prompt sửa lỗi yêu cầu. Ném ra ValueError với bất kỳ điều gì
+    bất thường thay vì đoán mò.
     """
     lines = diff_text.splitlines()
     target: str | None = None
@@ -194,10 +194,10 @@ def verify_fixed(
     line: int | None,
     semgrep_bin: str = "semgrep",
 ) -> dict[str, Any]:
-    """Rescan the patched file with the bundled rules; the finding must be gone.
+    """Quét lại tệp đã vá bằng các rule đi kèm; finding phải biến mất.
 
-    Returns {fixed: bool, detail: str}. A refire of the same rule at the same
-    location means the patch did not fix it.
+    Trả về {fixed: bool, detail: str}. Việc cùng một rule kích hoạt lại tại cùng
+    vị trí đồng nghĩa với việc bản vá chưa khắc phục được nó.
     """
     import json as _json
 
@@ -248,7 +248,7 @@ def verify_fixed(
 
 
 def prepare_overlay(checkout: str, file_path: str, overlay_root: Path) -> Path:
-    """Copy the affected file into an overlay dir (never touches checkout)."""
+    """Sao chép tệp bị ảnh hưởng vào thư mục overlay (không bao giờ chạm vào checkout)."""
     src = Path(checkout) / file_path
     if ".." in Path(file_path).parts or not src.is_file():
         raise ValueError("Finding file is not inside the checkout")

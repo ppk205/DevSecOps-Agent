@@ -1,13 +1,13 @@
-"""Hunt recall vs deterministic native baseline (file + line ±3).
+"""Recall của hunt so với đường cơ sở native xác định (file + line ±3).
 
-Pure functions, no I/O: the live harness (``scripts/hunt_recall.py``) feeds
-native findings from :mod:`vulnscan.native_hunt` and hunt candidates from
-``hunt_all`` / ``hunt.json``; unit tests feed inline fixtures.
+Hàm thuần túy, không I/O: harness trực tiếp (``scripts/hunt_recall.py``) nạp
+các native finding từ :mod:`vulnscan.native_hunt` và các ứng viên hunt từ
+``hunt_all`` / ``hunt.json``; unit test nạp các fixture nội dòng.
 
-Match key mirrors the task spec: normalized posix path must be equal and
-absolute line distance ≤ 3. CWE is deliberately ignored — the question is
-whether the model looked at the right place, not whether it named the
-weakness correctly (that is what ``compare_hunt_vs_scanners`` checks).
+Khóa khớp phản ánh đúng đặc tả tác vụ: đường dẫn posix chuẩn hóa phải bằng nhau và
+khoảng cách dòng tuyệt đối ≤ 3. CWE được cố tình bỏ qua — câu hỏi là
+liệu mô hình có nhìn đúng vị trí hay không, chứ không phải liệu nó có đặt tên
+điểm yếu chính xác hay không (đó là điều ``compare_hunt_vs_scanners`` kiểm tra).
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ from typing import Any
 
 
 def norm_path(path: Any) -> str:
-    """Normalize to a comparable posix path (strip ``./`` prefixes)."""
+    """Chuẩn hóa thành đường dẫn posix có thể so sánh được (loại bỏ tiền tố ``./``)."""
     text = str(path or "").replace("\\", "/").strip()
     while text.startswith("./"):
         text = text[2:]
@@ -59,11 +59,11 @@ def match_candidates_to_native(
     *,
     tolerance: int = 3,
 ) -> dict[str, Any]:
-    """Match hunt candidates against native findings by (path, line±tol).
+    """Khớp các ứng viên hunt với các native finding theo (path, line±tol).
 
-    Each native finding matches at most one candidate (first wins, input
-    order kept). Returns matched/missed lists plus per-native-rule recall
-    when the native items carry ``rule_id``.
+    Mỗi native finding khớp tối đa với một ứng viên (ưu tiên mục đầu tiên, giữ nguyên
+    thứ tự đầu vào). Trả về danh sách matched/missed cùng với recall theo từng native rule
+    khi các mục native chứa ``rule_id``.
     """
     tol = max(0, int(tolerance))
     native_keys = [(_file_of(n), _line_of(n)) for n in (native or [])]
@@ -111,7 +111,7 @@ def match_candidates_to_native(
 
 
 def recall_report(match: dict[str, Any]) -> str:
-    """One-paragraph human summary of a :func:`match` result."""
+    """Tóm tắt ngắn một đoạn cho con người về kết quả :func:`match`."""
     return (
         f"recall {match['matched']}/{match['total_native']} "
         f"({match['recall'] * 100:.1f}%) vs native; "

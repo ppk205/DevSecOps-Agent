@@ -29,7 +29,7 @@ describe("Phase 2 pages (mock mode, standalone)", () => {
     expect(screen.getByText("Findings by severity")).toBeInTheDocument();
     expect(screen.getByText("Top CWEs")).toBeInTheDocument();
     expect(await screen.findByRole("list", { name: "Scanner health" }, { timeout: 5000 })).toBeInTheDocument();
-    expect(screen.getByText("semgrep")).toBeInTheDocument();
+    expect(screen.getByText("native-hunt")).toBeInTheDocument();
     expect(screen.getByText("How it works")).toBeInTheDocument();
     expect(screen.getByText("Scan history")).toBeInTheDocument();
     expect(screen.getByText("Ready to ship secure?")).toBeInTheDocument();
@@ -64,7 +64,7 @@ describe("Phase 2 pages (mock mode, standalone)", () => {
     expect(screen.getByText("Scanner tools")).toBeInTheDocument();
     expect(screen.getByText("Usage & budget")).toBeInTheDocument();
     expect(screen.getByText("General")).toBeInTheDocument();
-    // Masked last-4 from the fixture; the full secret never ships in mock data.
+    // 4 ký tự cuối đã che từ fixture; secret đầy đủ không bao giờ được gửi trong dữ liệu mock.
     expect(await screen.findByText("••••8901", {}, { timeout: 5000 })).toBeInTheDocument();
     expect(screen.queryByText(/sk-/)).not.toBeInTheDocument();
     expect(screen.getByPlaceholderText(/Paste a new key/)).toHaveAttribute("type", "password");

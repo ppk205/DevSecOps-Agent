@@ -1,4 +1,4 @@
-"""Versioned shared configuration (DR-10)."""
+"""Cấu hình dùng chung được đánh phiên bản (DR-10)."""
 
 from __future__ import annotations
 
@@ -12,14 +12,8 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_valida
 from vulnscan.contracts import ScanSpecification, ToolConfig, ToolName
 
 PROFILES = {
-    "fast": [ToolName.SEMGREP, ToolName.NATIVE_HUNT, ToolName.GITLEAKS],
-    "full": [
-        ToolName.SEMGREP,
-        ToolName.NATIVE_HUNT,
-        ToolName.GITLEAKS,
-        ToolName.SPOTBUGS,
-        ToolName.OWASP_DEPENDENCY_CHECK,
-    ],
+    "fast": [ToolName.NATIVE_HUNT],
+    "full": [ToolName.NATIVE_HUNT],
 }
 
 

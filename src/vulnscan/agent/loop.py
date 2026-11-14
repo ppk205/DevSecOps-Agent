@@ -1,11 +1,11 @@
-"""Bounded investigation loop — the agentic analysis core.
+"""Vòng lặp điều tra có giới hạn — cốt lõi phân tích theo cơ chế agentic.
 
-Limits:
-- Maximum 5 follow-up tool calls per finding (default, configurable).
-- Only registered tools from ``tools.TOOL_SCHEMAS`` may be invoked.
-- No provider credentials or evaluation labels in context.
-- Provider failure or budget exhaustion preserves baseline scanner findings.
-- Proposals are emitted for T05 validation; never final decisions.
+Giới hạn:
+- Tối đa 5 lượt gọi công cụ follow-up cho mỗi finding (mặc định, có thể cấu hình).
+- Chỉ các công cụ đã đăng ký từ ``tools.TOOL_SCHEMAS`` mới được phép gọi.
+- Không có thông tin xác thực provider hoặc nhãn đánh giá trong context.
+- Lỗi provider hoặc cạn kiệt ngân sách sẽ giữ nguyên các finding từ scanner cơ sở.
+- Các đề xuất được phát ra cho khâu xác thực T05; không bao giờ là quyết định cuối cùng.
 """
 
 from __future__ import annotations
@@ -30,11 +30,11 @@ ToolHandler = Callable[[dict[str, Any]], dict[str, Any]]
 
 
 def parse_verdict_text(text: str) -> tuple[str, float, str, bool]:
-    """Extract (status, confidence, rationale, explicit) from free text.
+    """Trích xuất (status, confidence, rationale, explicit) từ văn bản tự do.
 
-    ``explicit`` is True only when the text carries an unambiguous verdict
-    (JSON block or decisive keywords); otherwise the caller should treat
-    the assessment as hollow and escalate (single-shot fallback / human).
+    ``explicit`` là True chỉ khi văn bản chứa kết luận rõ ràng, không nhập nhằng
+    (khối JSON hoặc các từ khóa mang tính quyết định); nếu không, bên gọi nên coi
+    đánh giá này là rỗng và chuyển cấp xử lý (fallback sang single-shot / con người).
     """
     status = "unresolved"
     confidence = 0.5
@@ -83,16 +83,16 @@ def parse_verdict_text(text: str) -> tuple[str, float, str, bool]:
 
 
 class AgentLoop:
-    """Run the bounded investigation for a single finding.
+    """Chạy điều tra có giới hạn cho một finding đơn lẻ.
 
     Parameters
     ----------
     client:
-        Configured :class:`ProviderClient` with budget enforcement.
+        :class:`ProviderClient` đã được cấu hình với cơ chế thực thi ngân sách.
     tool_handlers:
-        Map of tool name → callable that executes it locally.
+        Bản đồ ánh xạ tên công cụ → callable thực thi công cụ đó cục bộ.
     max_followups:
-        Maximum tool-call rounds before the loop yields (default 5).
+        Số vòng gọi công cụ tối đa trước khi vòng lặp dừng (mặc định 5).
     """
 
     def __init__(
@@ -113,10 +113,10 @@ class AgentLoop:
         self.model_version = model_version
 
     def investigate(self, finding: Finding, context: dict[str, Any]) -> Assessment:
-        """Run the bounded loop for *finding* and return an Assessment proposal.
+        """Chạy vòng lặp có giới hạn cho *finding* và trả về đề xuất Assessment.
 
-        On provider failure or budget exhaustion the baseline scanner findings
-        are preserved and an ``unresolved`` assessment is returned.
+        Khi provider gặp sự cố hoặc cạn kiệt ngân sách, các finding từ scanner cơ sở
+        được bảo toàn và đánh giá ``unresolved`` sẽ được trả về.
         """
         try:
             return self._run_loop(finding, context)
@@ -197,7 +197,7 @@ class AgentLoop:
                 )
                 tool_calls_made += 1
 
-        # Exhausted follow-ups
+        # Đã dùng hết số lần follow-up
         now = datetime.now(UTC)
         return Assessment(
             assessment_id=f"assess-{finding.finding_id}-partial",
@@ -258,7 +258,7 @@ class AgentLoop:
         tool_calls: int,
         total_tokens: int,
     ) -> Assessment:
-        """Parse the final LLM response into an Assessment proposal."""
+        """Phân tích phản hồi cuối cùng của LLM thành một đề xuất Assessment."""
         proposed_status, confidence, rationale, explicit = parse_verdict_text(resp.content)
         _ = explicit
 

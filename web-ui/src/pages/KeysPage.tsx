@@ -291,7 +291,7 @@ export function KeysPage() {
         )}
       </Section>
 
-      {/* GENERAL */}
+      {/* CHUNG */}
       <Section title={en.apiKeys.general} body={en.apiKeys.generalBody}>
         <div className="grid gap-3 md:grid-cols-2">
           <label className="block">

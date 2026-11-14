@@ -1,4 +1,4 @@
-"""Shared persistent scan application service (FR-70..73, DR-09, IR-15)."""
+"""Dịch vụ ứng dụng quét lưu trữ bền vững dùng chung (FR-70..73, DR-09, IR-15)."""
 
 from __future__ import annotations
 
@@ -56,11 +56,11 @@ _TEST_SEGMENTS = frozenset({"test", "tests", "it", "e2e"})
 
 
 def _live_event_kind(stage: str, status: str) -> str:
-    """Map a pipeline stage to a scan_events kind (Phase 3 live feed).
+    """Ánh xạ một giai đoạn pipeline sang loại scan_events (luồng dữ liệu trực tiếp Giai đoạn 3).
 
-    ``stage`` rows always exist; the live event kind mirrors what the
-    operator sees: scanner work as ``log``, AI reasoning as ``ai_step``,
-    proposals as ``ai_proposal``, and checks as ``verification_result``.
+    Các hàng ``stage`` luôn tồn tại; loại sự kiện trực tiếp phản ánh những gì
+    người vận hành thấy: tác vụ scanner là ``log``, suy luận AI là ``ai_step``,
+    đề xuất là ``ai_proposal``, và kiểm tra là ``verification_result``.
     """
     if stage in {"model_hunt", "laya_batch_routing", "targeted_deep_analysis"}:
         return "ai_step"
@@ -74,14 +74,14 @@ def _live_event_kind(stage: str, status: str) -> str:
 
 
 def _is_scanned_source(name: str) -> bool:
-    """Production sources are attack surface; test sources are not.
+    """Mã nguồn sản xuất (production) là bề mặt tấn công; mã nguồn kiểm thử (test) thì không.
 
-    Test files stay in the immutable snapshot (``files``) — only the scan
-    inventory narrows, so nothing is silently dropped from evidence.
+    Các file kiểm thử vẫn nằm trong ảnh chụp nhanh bất biến (``files``) — chỉ có danh
+    mục quét bị thu hẹp, vì vậy không có gì bị âm thầm loại bỏ khỏi bằng chứng.
 
-    A repo may nest its project under a parent directory (``Comic/src/test/``)
-    or use a non-Maven layout, so detection is segment-based, not prefix-based:
-    any path segment that is a test marker excludes the file.
+    Một repo có thể lồng dự án của nó dưới một thư mục cha (``Comic/src/test/``)
+    hoặc sử dụng cấu trúc không phải Maven, vì vậy việc phát hiện dựa trên phân đoạn đường dẫn chứ không phải tiền tố:
+    bất kỳ phân đoạn nào là dấu hiệu kiểm thử đều sẽ loại trừ file đó.
     """
     if not name.endswith(tuple(WEB_SOURCE_EXTENSIONS)):
         return False
@@ -159,7 +159,7 @@ def reconcile(results: list[ScannerResult], manifest: dict[str, Any]) -> list[st
         if not result.is_complete:
             continue
         records = {c.unit_path.replace("\\", "/"): c for c in result.coverage_records}
-        # Dependency analysis covers dependency artifacts, not Java source units.
+        # Phân tích dependency bao gồm các artifact phụ thuộc, không phải các đơn vị mã nguồn Java.
         expected = (
             manifest["inventory"] if result.tool.value != "owasp-dependency-check" else ["pom.xml"]
         )
@@ -188,7 +188,7 @@ class ScanService:
             with self.lock:
                 self._recover_locked()
         except Timeout:
-            pass  # A live process owns the scan; it must not be marked interrupted.
+            pass  # Một tiến trình đang chạy sở hữu lần quét; nó không được đánh dấu là bị gián đoạn.
 
     def _recover_locked(self, exclude_public_id: str | None = None) -> None:
         with get_session(self.db_path) as session:
@@ -303,7 +303,7 @@ class ScanService:
             }
 
     def activity(self, identifier: int | str) -> dict[str, Any]:
-        """FR-71/DR-09: retained activity without loading full finding payloads."""
+        """FR-71/DR-09: hoạt động được giữ lại mà không cần tải toàn bộ payload của finding."""
         pk = self.resolve_id(identifier)
         with get_session(self.db_path) as session:
             names = ("gate", "exit_code", "errors", "reports", "summary_path")
@@ -497,8 +497,8 @@ class ScanService:
                 session.query(RunORM).filter_by(public_id=run_id).first() if public_id else None
             )
             if adopted is not None and adopted.status == "queued":
-                # API-queued run: adopt the placeholder row instead of
-                # creating a second one, so live polling keeps working.
+                # Lần chạy xếp hàng qua API: sử dụng hàng giữ chỗ thay vì
+                # tạo hàng thứ hai, để việc thăm dò (live polling) tiếp tục hoạt động.
                 row = adopted
                 row.target_id = target.id
                 row.status = "running"
@@ -592,7 +592,7 @@ class ScanService:
                     changed = True
                 if changed:
                     row.findings_revision += 1
-                # ---- Phase 3: append-only live event row (never breaks a scan)
+                # ---- Giai đoạn 3: hàng sự kiện trực tiếp chỉ thêm (không bao giờ làm gián đoạn lần quét)
                 try:
                     from sqlalchemy import func as _func
 
@@ -612,8 +612,8 @@ class ScanService:
                             created_at=datetime.now(UTC),
                         )
                     )
-                    # AI review completion also yields a proposal row so the
-                    # AI AGENT PANEL has a CVSS/claim feed without parsing.
+                    # Việc hoàn thành rà soát AI cũng tạo ra một hàng đề xuất để
+                    # AI AGENT PANEL có nguồn cấp dữ liệu CVSS/tuyên bố mà không cần phân tích cú pháp.
                     if stage == "targeted_deep_analysis" and status in {
                         "completed",
                         "partial",
@@ -668,9 +668,9 @@ class ScanService:
         }
         try:
             persist("intake", "running")
-            # Defaults for every stage below: the summary block after the
-            # try/except reads these even when intake fails early, so they
-            # must exist before any persist() that can raise.
+            # Giá trị mặc định cho từng giai đoạn bên dưới: khối tóm tắt sau khối
+            # try/except đọc các giá trị này ngay cả khi intake thất bại sớm, vì vậy chúng
+            # phải tồn tại trước bất kỳ lệnh persist() nào có thể gây lỗi.
             hunt_candidates = []
             hunt_out = {}
             hunt_status = "skipped"
@@ -697,8 +697,8 @@ class ScanService:
             execution_spec = spec.model_copy(
                 update={"repository_checkout_path": str(snapshot_root)}
             )
-            # SpotBugs needs bytecode: carry over compiled classes when the
-            # checkout already has them (build output of the same sources).
+            # SpotBugs cần bytecode: chuyển tiếp các lớp đã biên dịch khi bản
+            # checkout đã có sẵn chúng (kết quả build của cùng mã nguồn).
             checkout_classes = Path(checkout).resolve() / "target" / "classes"
             if checkout_classes.is_dir():
                 import shutil as _shutil
@@ -811,10 +811,10 @@ class ScanService:
                         from vulnscan.scanners.platform import which
 
                         if which("docker") is None:
-                            # No Docker on this host: run the adapter in-process
-                            # instead of the isolated container. ODC without an
-                            # NVD DB degrades to the OSV.dev fallback inside
-                            # its own adapter; nothing fails the scan.
+                            # Không có Docker trên máy chủ này: chạy adapter trực tiếp trong tiến trình
+                            # thay vì trong container cô lập. ODC không có
+                            # NVD DB sẽ hạ cấp xuống cơ chế dự phòng OSV.dev bên trong
+                            # chính adapter của nó; không làm thất bại lần quét.
                             if cfg.tool.value == "spotbugs":
                                 from vulnscan.infra.full_scan import ensure_maven_build
 
@@ -904,10 +904,10 @@ class ScanService:
                         )
                     )
                     results.append(result)
-                    # A scanner that reports internal errors (a ruleset that
-                    # failed to load, a tool that could not run) must not be
-                    # allowed to look like a clean repository: Semgrep exits 0
-                    # in that case, and the gate would pass on zero findings.
+                    # Một scanner báo cáo các lỗi nội bộ (một bộ quy tắc
+                    # tải thất bại, một công cụ không thể chạy) không được phép
+                    # hiển thị như một repository sạch: Semgrep trả về mã thoát 0
+                    # trong trường hợp đó, và cổng bảo mật sẽ cho qua khi không có finding nào.
                     for scan_error in result.errors:
                         errors.append(f"{cfg.tool.value}: {scan_error}")
                     findings = pipeline.build_findings(results, run_id)
@@ -915,9 +915,9 @@ class ScanService:
                 except Exception as exc:  # noqa: BLE001 ? application boundary preserves partial evidence
                     errors.append(f"{cfg.tool.value}: {type(exc).__name__}: {exc}")
                     persist(cfg.tool.value, "failed", errors[-1])
-            # Aggregate rail node: web runs pre-create a "scanners" placeholder
-            # row, so mark it from the per-tool outcomes instead of leaving it
-            # pending forever while semgrep/gitleaks show completed.
+            # Nút đường ray tổng hợp: các lượt chạy web tạo trước hàng giữ chỗ "scanners",
+            # vì vậy hãy cập nhật nó từ kết quả của từng công cụ thay vì để nó
+            # ở trạng thái pending mãi mãi trong khi semgrep/gitleaks hiển thị đã hoàn thành.
             tool_outcomes = [r.status.value for r in results]
             if len(tool_outcomes) < len(spec.tools):
                 tool_outcomes.append("failed")
@@ -933,7 +933,7 @@ class ScanService:
                 )
             if cancelled():
                 raise ScanCancelled()
-            # Detect modifications during scanning instead of claiming the original revision.
+            # Phát hiện các sửa đổi trong quá trình quét thay vì khẳng định phiên bản gốc.
             after = checkout_manifest(checkout, config, expected_commit, excluded=runtime)
             if after["commit"] != manifest["commit"] or after["files"] != manifest["files"]:
                 errors.append(
@@ -976,12 +976,12 @@ class ScanService:
                     f"model-only={counts.get('model_only', 0)} "
                     f"scanner-only={counts.get('scanner_only', 0)}",
                 )
-            # Hunt mode: agreed scanner findings carry provenance BOTH, the
-            # rest of the scanner findings carry SCANNER, and verified
-            # model-only candidates with readable source evidence are
-            # promoted to model-provenance findings so the gate, the AI lane,
-            # and the reports see them. Non-hunt mode stamps every scanner
-            # finding SCANNER.
+            # Chế độ hunt: các finding của scanner được đồng thuận sẽ mang nguồn gốc BOTH,
+            # phần còn lại của các finding từ scanner sẽ mang SCANNER, và các ứng viên
+            # chỉ từ mô hình (model-only) đã được xác minh với bằng chứng mã nguồn rõ ràng sẽ
+            # được nâng cấp thành các finding có nguồn gốc mô hình để cổng kiểm soát, nhánh AI,
+            # và các báo cáo có thể thấy chúng. Chế độ non-hunt sẽ gắn nhãn mọi finding từ scanner
+            # là SCANNER.
             from vulnscan.ai.promote import promote_model_only
 
             compared: dict[str, Any] = comparison

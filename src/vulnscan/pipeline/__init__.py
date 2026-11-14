@@ -1,4 +1,4 @@
-"""End-to-end scan pipeline."""
+"""Pipeline quét toàn trình (end-to-end)."""
 
 from .runner import (
     STAGE_DEEP_ANALYSIS,

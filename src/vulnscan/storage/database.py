@@ -1,4 +1,4 @@
-"""Path-keyed SQLite engines and additive migrations."""
+"""Các SQLite engine định danh theo đường dẫn và migration theo hướng bổ sung."""
 
 from __future__ import annotations
 
@@ -101,7 +101,7 @@ def migrate(engine: Engine) -> None:
                     (summary["finding_id"] or None, json.dumps(summary), search_text, pk),
                 )
             conn.exec_driver_sql("CREATE INDEX IF NOT EXISTS findings_run_id ON findings(run_id)")
-            # Historical duplicates are retained; reconciliation uses the oldest row.
+            # Các bản ghi trùng lặp trong lịch sử được giữ lại; quá trình đối soát dùng dòng cũ nhất.
             conn.exec_driver_sql(
                 "CREATE INDEX IF NOT EXISTS findings_identity ON findings(run_id, finding_id)"
             )

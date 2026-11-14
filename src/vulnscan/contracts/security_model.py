@@ -1,8 +1,8 @@
-"""SecurityModelRef — versioned application-specific security model for a CWE group (ACC-02, ACC-05).
+"""SecurityModelRef — mô hình bảo mật theo ứng dụng được đánh phiên bản cho một nhóm CWE (ACC-02, ACC-05).
 
-Each model covers request inputs, dangerous operations, helpers, sanitizers,
-authentication checks, and their applicability for a given CWE group.
-Regression fixture references anchor the model to testable examples.
+Mỗi mô hình bao gồm đầu vào request, các thao tác nguy hiểm, helper, hàm làm sạch (sanitizer),
+kiểm tra xác thực và khả năng áp dụng của chúng cho một nhóm CWE nhất định.
+Các tham chiếu fixture hồi quy gắn chặt mô hình với các ví dụ có thể kiểm thử được.
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ from .enums import CWECategory, ModelApplicability
 
 
 class RegressionFixtureRef(VersionedModel):
-    """Pointer to a single regression fixture used by or validating a model."""
+    """Con trỏ tới một fixture hồi quy đơn lẻ được sử dụng bởi hoặc để xác thực một mô hình."""
 
     fixture_id: str = Field(
         ...,
@@ -37,9 +37,9 @@ class RegressionFixtureRef(VersionedModel):
 
 
 class SecurityModelRef(VersionedModel):
-    """References a versioned security model for a CWE category.
+    """Tham chiếu đến một mô hình bảo mật được tạo phiên bản cho một danh mục CWE.
 
-    Models are frozen per evaluation run; changes require a new ``model_version``.
+    Các mô hình được đóng băng cho mỗi lần chạy đánh giá; các thay đổi yêu cầu một ``model_version`` mới.
     """
 
     model_id: str = Field(

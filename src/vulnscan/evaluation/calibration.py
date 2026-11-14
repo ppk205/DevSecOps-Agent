@@ -1,8 +1,8 @@
-"""Calibration and routing-quality metrics for advisory decisions.
+"""Các chỉ số hiệu chuẩn và chất lượng định tuyến cho các quyết định khuyến nghị.
 
-These are the numbers T09 must report. Nothing here reads a finding status: the
-advisory layer is scored against ground truth supplied by the caller, so a model
-answer can be graded without ever being trusted to set a status.
+Đây là các con số T09 phải báo cáo. Không có gì ở đây đọc finding status: tầng
+khuyến nghị được chấm điểm so với ground truth do bên gọi cung cấp, nhờ đó câu trả lời
+của model có thể được chấm điểm mà không bao giờ cần tin tưởng nó để đặt trạng thái.
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ CONFIDENCE_BINS = 10
 
 @dataclass(frozen=True)
 class Calibration:
-    """Expected Calibration Error and Brier score for one confidence series."""
+    """Expected Calibration Error và điểm Brier cho một chuỗi độ tin cậy."""
 
     n: int
     ece: float
@@ -25,8 +25,8 @@ class Calibration:
     accuracy: float
 
     def to_dict(self) -> dict[str, Any]:
-        # Every score is None when nothing was graded. A zero here would read
-        # as a measured result, which is the one thing T09 must not invent.
+        # Mọi điểm số là None khi không có gì được chấm điểm. Giá trị 0 ở đây sẽ bị hiểu
+        # như một kết quả đo lường được, điều duy nhất mà T09 không được phép tự tạo ra.
         if self.n == 0:
             return {
                 "n": 0,
@@ -46,7 +46,7 @@ class Calibration:
 
 @dataclass(frozen=True)
 class ReliabilityBin:
-    """One reliability-diagram bin: predicted vs observed correctness."""
+    """Một bin biểu đồ độ tin cậy: độ chính xác dự đoán so với quan sát được."""
 
     lo: float
     hi: float
@@ -69,11 +69,11 @@ def compute_calibration(
     correct: list[bool],
     bins: int = CONFIDENCE_BINS,
 ) -> Calibration:
-    """ECE and Brier score over equal-width confidence bins.
+    """ECE và điểm Brier trên các bin độ tin cậy có độ rộng bằng nhau.
 
-    ``correct`` records whether the outcome the model predicted for an item
-    actually occurred; it is supplied by the evaluator, never inferred from a
-    model answer.
+    ``correct`` ghi lại liệu kết quả mà model dự đoán cho một mục
+    có thực sự xảy ra hay không; nó do evaluator cung cấp, không bao giờ được suy diễn từ
+    câu trả lời của model.
     """
     if len(confidences) != len(correct):
         raise ValueError("confidences and correct must be the same length")
@@ -120,7 +120,7 @@ def reliability_diagram(
     correct: list[bool],
     bins: int = CONFIDENCE_BINS,
 ) -> list[dict[str, Any]]:
-    """Per-bin predicted-vs-observed accuracy for a reliability diagram."""
+    """Độ chính xác dự đoán so với quan sát theo từng bin cho biểu đồ độ tin cậy."""
     if len(confidences) != len(correct):
         raise ValueError("confidences and correct must be the same length")
 
@@ -149,7 +149,7 @@ def reliability_diagram(
 
 @dataclass
 class RoutingReport:
-    """Route distribution, escalation quality, and per-slice breakdowns."""
+    """Phân phối route, chất lượng chuyển cấp và phân tích chi tiết theo từng slice."""
 
     total: int
     route_counts: dict[str, int] = field(default_factory=dict)
@@ -164,7 +164,7 @@ class RoutingReport:
 
     @property
     def route_accuracy(self) -> float | None:
-        """``None`` when nothing was scored — zero scored is not 0% accuracy."""
+        """``None`` khi không có gì được chấm điểm — không có mục chấm điểm không phải là độ chính xác 0%."""
         return self.correct_routes / self.scored_routes if self.scored_routes else None
 
     @property
@@ -192,7 +192,7 @@ class RoutingReport:
 
 
 def _slice_stats(entries: list[tuple[bool, bool]]) -> dict[str, Any]:
-    """Correct count and mean for a slice, tolerating an empty slice."""
+    """Số lượng đúng và giá trị trung bình cho một slice, chấp nhận slice rỗng."""
     if not entries:
         return {"n": 0, "correct": 0, "accuracy": 0.0}
     correct = sum(1 for ok, _ in entries if ok)
@@ -207,13 +207,13 @@ def build_routing_report(
     rows: list[dict[str, Any]],
     expected_route_key: str = "expected_route",
 ) -> RoutingReport:
-    """Grade advisory routes against caller-supplied expectations.
+    """Chấm điểm các route khuyến nghị so với kỳ vọng do bên gọi cung cấp.
 
-    Each row needs ``route``, ``cwe`` and ``language``; rows carrying
-    ``expected_route`` are scored, the rest only counted. ``True`` in
-    ``expected_route`` means the finding was worth a human, so any escalation
-    to ``human_review`` counts as correct; missed and unnecessary escalations
-    are counted separately.
+    Mỗi hàng cần ``route``, ``cwe`` và ``language``; các hàng chứa
+    ``expected_route`` sẽ được chấm điểm, phần còn lại chỉ được đếm. ``True`` trong
+    ``expected_route`` nghĩa là finding đáng để con người xem xét, vì vậy bất kỳ sự chuyển cấp nào
+    lên ``human_review`` đều được tính là đúng; các trường hợp bỏ sót hoặc chuyển cấp không cần thiết
+    được đếm riêng biệt.
     """
     report = RoutingReport(total=len(rows))
 
@@ -232,8 +232,8 @@ def build_routing_report(
             continue
 
         if isinstance(expected, bool):
-            # Boolean expectation: was this finding worth a human? Then the
-            # only thing to grade is whether it escalated.
+            # Kỳ vọng dạng boolean: finding này có đáng để con người xem xét không? Khi đó
+            # điều duy nhất cần chấm điểm là liệu nó có được chuyển cấp hay không.
             should_escalate = expected
             escalated = route == "human_review"
             correct = escalated == should_escalate
@@ -242,8 +242,8 @@ def build_routing_report(
             elif escalated and not should_escalate:
                 report.false_escalations += 1
         else:
-            # A named lane is graded as an exact match, so a correctly routed
-            # cross_file_analysis must not count as a miss for not escalating.
+            # Một lane có tên cụ thể được chấm điểm theo khớp chính xác, vì vậy một
+            # cross_file_analysis được định tuyến đúng không được tính là bỏ sót do không chuyển cấp.
             should_escalate = route == str(expected)
             correct = route == str(expected)
             if expected != "human_review" and route == "human_review":

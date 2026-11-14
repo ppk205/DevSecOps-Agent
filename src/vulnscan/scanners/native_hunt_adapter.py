@@ -1,10 +1,10 @@
-"""Native-hunt adapter — our own regex+taint engine as a first-class scanner.
+"""Adapter native-hunt — regex+taint engine nội bộ đóng vai trò như một scanner hạng nhất.
 
-Runs :mod:`vulnscan.native_hunt` (no external binary) over the snapshot and
-maps its findings to observations. This is the in-house "tool hunt" lane:
-model hunt explores, native hunt verifies with deterministic rules, and
-the Laya router + validator adjudicate. Semgrep/SpotBugs remain available
-as baseline oracles, not as the primary evidence source.
+Chạy :mod:`vulnscan.native_hunt` (không cần binary bên ngoài) trên snapshot và
+ánh xạ các finding của nó thành observation. Đây là nhánh "tool hunt" nội bộ:
+model hunt khám phá, native hunt xác minh bằng các rule tất định, và
+router Laya + validator sẽ phân xử. Semgrep/SpotBugs vẫn khả dụng
+với vai trò oracle đối chứng cơ sở, chứ không phải nguồn bằng chứng chính.
 """
 
 from __future__ import annotations
@@ -63,7 +63,7 @@ def _language_for(path: str) -> LanguageKind:
 
 
 class NativeHuntAdapter(ScannerAdapter):
-    """In-house pattern+taint scanner. No binary, always available."""
+    """Scanner pattern+taint nội bộ. Không cần binary, luôn luôn khả dụng."""
 
     tool = ToolName.NATIVE_HUNT
     binary_name = "native-hunt"

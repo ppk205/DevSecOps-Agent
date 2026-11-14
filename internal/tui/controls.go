@@ -243,9 +243,9 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 	}
 	if key == "ctrl+k" && !m.keyInput {
 		if m.tab == 1 || m.keysName.Focused() || m.keysValue.Focused() {
-		// Save one API key to the project-local .env. Only the variable
-		// NAME is ever shown or listed again; the value is passed through
-		// once and dropped (EchoPassword on the value field).
+		// Lưu một API key vào file .env cục bộ dự án. Chỉ TÊN
+		// biến được hiển thị hoặc liệt kê lại; giá trị được truyền qua
+		// một lần và bị hủy bỏ (EchoPassword trên trường giá trị).
 		name := strings.TrimSpace(m.keysName.Value())
 		if name == "" {
 			m.envStatus = "Type a VARIABLE_NAME first."
@@ -266,7 +266,7 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 			return loaded{kind: "keys", value: names, err: err}
 		}
 	}
-	// Elsewhere Ctrl+K keeps its newer role: open the action menu (FR71).
+	// Ở nơi khác, Ctrl+K giữ vai trò mới hơn: mở action menu (FR71).
 	m.menu, m.menuCursor = true, 0
 	return m, nil
 	}
@@ -356,7 +356,7 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 	if key == "esc" {
 		switch {
 		case m.keyInput:
-			// Leaving key entry keeps whatever is typed; Ctrl+K saves it.
+			// Thoát khỏi ô nhập key giữ nguyên những gì đã gõ; Ctrl+K sẽ lưu lại.
 			m.keyInput = false
 			if m.keysFocus == 0 {
 				m.keysValue.Blur()
@@ -418,7 +418,7 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 	}
 	if m.tab == 1 || m.tab == 4 {
 		if key == "tab" && m.keyInput {
-			// Inside API-key entry: Tab moves name -> value -> name.
+			// Bên trong ô nhập API key: Tab di chuyển name -> value -> name.
 			m.keysFocus = (m.keysFocus + 1) % 2
 			if m.keysFocus == 0 {
 				m.keysValue.Blur()
@@ -541,7 +541,7 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 }
 func (m Model) handleInput(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if m.keyInput {
-		// Typing an API key: name field first, value (hidden) after.
+		// Gõ API key: trường name trước, value (ẩn) sau.
 		var cmd tea.Cmd
 		if m.keysFocus == 0 {
 			m.keysName, cmd = m.keysName.Update(msg)

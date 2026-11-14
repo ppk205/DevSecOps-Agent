@@ -1,4 +1,4 @@
-"""Finding normalization: ScannerResult -> validated Observations -> grouped Findings."""
+"""Chuẩn hóa finding: ScannerResult -> Observations đã xác thực -> Findings đã nhóm."""
 
 from .dedup import deduplicate_findings
 from .grouping import group_findings

@@ -1,4 +1,4 @@
-"""Shared security gate: execution and coverage failures take precedence."""
+"""Cổng bảo mật dùng chung: các lỗi thực thi và độ bao phủ được ưu tiên xử lý trước."""
 
 from __future__ import annotations
 

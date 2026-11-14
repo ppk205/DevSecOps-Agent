@@ -12,8 +12,8 @@ interface TabsProps {
 }
 
 /**
- * APG tablist arrow-key behavior, shared by Tabs and the inline
- * tablists (live mobile tabs, findings origin tabs).
+ * Hành vi phím mũi tên theo chuẩn APG tablist, dùng chung giữa Tabs và các
+ * danh sách tab nội tuyến (tab mobile trực tiếp, tab nguồn gốc findings).
  */
 export function onTabListKeyDown(
   e: KeyboardEvent<HTMLElement>,

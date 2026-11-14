@@ -1,14 +1,14 @@
-"""Complete public export list for the vulnscan contracts package.
+"""Danh sách export công khai hoàn chỉnh cho package vulnscan contracts.
 
-Single source of truth: ``__init__.py`` imports from here, and downstream
-modules import from ``vulnscan.contracts`` rather than reaching into individual
-files.  Evaluator-only models are exported but must never be exposed through
-inference contracts or scanner/agent input mounts.
+Nguồn chân lý duy nhất: ``__init__.py`` import từ đây, và các module
+hạ nguồn import từ ``vulnscan.contracts`` thay vì truy cập trực tiếp vào từng tệp riêng lẻ.
+Các model chỉ dành cho evaluator được export nhưng tuyệt đối không bao giờ được lộ ra qua
+các contract suy luận hoặc các điểm gắn kết đầu vào của scanner/agent.
 """
 
 from __future__ import annotations
 
-# Base classes and Field helper
+# Các lớp cơ sở và hàm trợ giúp Field
 from ._base import Field, VersionedModel, VulnscanBaseModel
 from .artifact import ArtifactReference
 from .assessment import Assessment, CVSSAssessment
@@ -20,7 +20,7 @@ from .context_evidence import (
     JSPContext,
 )
 
-# Accuracy contracts (ACC-01 .. ACC-07)
+# Các contract về độ chính xác (ACC-01 .. ACC-07)
 from .coverage import CoverageRecord
 from .decision import (
     DecisionAnswer,
@@ -33,7 +33,7 @@ from .decision import (
 )
 
 # ruff: noqa: RUF022  (semantic grouping intentionally overrides alphabetical __all__)
-# Enums (shared vocabulary across every module)
+# Các Enum (từ vựng dùng chung giữa mọi module)
 from .enums import (
     WEB_SOURCE_EXTENSIONS,
     CoverageUnitStatus,
@@ -61,11 +61,11 @@ from .enums import (
     language_from_extension,
 )
 
-# Evaluator-only records (ACC-05..07) — never exposed to scanners or agents
+# Các bản ghi chỉ dành cho evaluator (ACC-05..07) — không bao giờ để lộ cho scanner hoặc agent
 from .evaluation import EvaluationCase, MatchingCriteria, ReviewJudgment
 from .finding import Finding, FindingGroup, Observation, SourceCoordinate
 
-# Providers, artifacts, and reporting
+# Các provider, artifact và báo cáo
 from .provider import ProviderProfile, ProviderUsage
 from .report import (
     FindingCounts,
@@ -81,7 +81,7 @@ from .run_manifest import (
     ToolVersionRecord,
 )
 
-# Core pipeline models
+# Các model cốt lõi của pipeline
 from .scan_spec import ScanSpecification, ToolConfig
 from .scanner_result import ScannerResult
 from .security_model import RegressionFixtureRef, SecurityModelRef
@@ -93,7 +93,7 @@ __all__ = [
     "Field",
     "VersionedModel",
     "VulnscanBaseModel",
-    # Enums
+    # Các Enum
     "CoverageUnitStatus",
     "CWECategory",
     "EvidenceKind",
@@ -118,7 +118,7 @@ __all__ = [
     "ToolName",
     "VariantRelationship",
     "VerificationOutcome",
-    # Core pipeline
+    # Pipeline cốt lõi
     "ScanSpecification",
     "ToolConfig",
     "ScannerResult",
@@ -134,7 +134,7 @@ __all__ = [
     "StageTiming",
     "ModelSettings",
     "RunManifest",
-    # Accuracy contracts
+    # Các contract về độ chính xác
     "CoverageRecord",
     "RegressionFixtureRef",
     "SecurityModelRef",
@@ -152,11 +152,11 @@ __all__ = [
     "DecisionResult",
     "DecisionRoute",
     "VerificationObservation",
-    # Evaluator-only
+    # Chỉ dành cho evaluator
     "MatchingCriteria",
     "ReviewJudgment",
     "EvaluationCase",
-    # Providers, artifacts, reporting
+    # Các provider, artifact, báo cáo
     "ProviderProfile",
     "ProviderUsage",
     "ArtifactReference",

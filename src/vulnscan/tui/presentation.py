@@ -1,4 +1,4 @@
-"""Readable terminal summaries using retained evidence only (FR-71, QR-01/16)."""
+"""Bản tóm tắt terminal dễ đọc chỉ sử dụng bằng chứng được giữ lại (FR-71, QR-01/16)."""
 
 from __future__ import annotations
 

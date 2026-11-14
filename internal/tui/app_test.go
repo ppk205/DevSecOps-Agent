@@ -69,7 +69,7 @@ func TestQR21NavigationDoesNotCallServices(t *testing.T) {
 	if m.tab != 1 || api.calls != 0 {
 		t.Fatal("navigation performed synchronous service work")
 	}
-	// Configuration-file I/O must also remain inside the command.
+	// I/O file cấu hình cũng phải nằm bên trong lệnh.
 	m.inputs[2].SetValue("missing-configuration-file.json")
 	updated, cmd := m.Update(tea.KeyPressMsg{Code: 'e', Mod: tea.ModCtrl})
 	m = updated.(Model)
@@ -153,9 +153,9 @@ func TestFR71EmptyFilterAndClipboard(t *testing.T) {
 	}
 }
 func TestScanSendsReviewedTargetNotEditedFields(t *testing.T) {
-	// begin() must scan the reviewed snapshot, not the live form field.
-	// Regression: Ctrl+E reviewed checkout A, user edited the form to B,
-	// Ctrl+S guard blocks until re-review; restoring A scans A.
+	// begin() phải quét snapshot đã review, không phải trường form trực tiếp.
+	// Hồi quy: Ctrl+E đã review checkout A, người dùng sửa form thành B,
+	// Guard Ctrl+S chặn lại cho đến khi re-review; khôi phục A sẽ quét A.
 	reviewed := service.Config{Profile: "fast"}
 	m := New(&fakeAPI{})
 	m.ready = true
@@ -210,7 +210,7 @@ func TestKeysSaveNeverRevealsValues(t *testing.T) {
 	m := New(&fakeAPI{})
 	m.ready = true
 	m.tab = 1
-	// Names-only listing: the value field must not leak into names/status.
+	// Danh sách chỉ tên: trường giá trị không được rò rỉ vào names/status.
 	updated, _ := m.Update(loaded{kind: "keys", value: []string{"MISTRAL_API_KEY"}})
 	m = updated.(Model)
 	if len(m.envNames) != 1 || m.envNames[0] != "MISTRAL_API_KEY" {
@@ -221,7 +221,7 @@ func TestKeysSaveNeverRevealsValues(t *testing.T) {
 			t.Fatal("stored listing leaked a secret value")
 		}
 	}
-	// Saving clears the value input immediately (pass-through, then drop).
+	// Lưu sẽ xóa ngay input giá trị (truyền qua, sau đó hủy bỏ).
 	m.tab = 1
 	m.keysName.SetValue("provider_api_key")
 	m.keysValue.SetValue("sensitivesecret")
@@ -233,7 +233,7 @@ func TestKeysSaveNeverRevealsValues(t *testing.T) {
 	if m.keysValue.Value() != "" {
 		t.Fatal("value field was not cleared on save")
 	}
-	// Key entry focuses name first; Tab cycles name -> value.
+	// Nhập key sẽ focus vào name trước; Tab chuyển vòng quanh name -> value.
 	m.keysName.SetValue("")
 	updated, _ = m.Update(tea.KeyPressMsg{Code: 'k', Mod: tea.ModCtrl})
 	m = updated.(Model)

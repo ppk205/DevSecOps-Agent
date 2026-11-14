@@ -1,4 +1,4 @@
-"""Laya-only child runtime. Its stdout is exclusively versioned JSON-lines."""
+"""Runtime con chỉ dành cho Laya. stdout của nó hoàn toàn là các dòng JSON có phiên bản."""
 
 from __future__ import annotations
 
@@ -14,9 +14,9 @@ from vulnscan.core.stdio_worker import MAX_MESSAGE_BYTES, PROTOCOL_VERSION
 
 
 def _resolve_device(requested: str) -> str:
-    """Pick a torch device, degrading gracefully to CPU.
+    """Chọn một thiết bị torch, tự động chuyển xuống CPU khi cần.
 
-    Pure helper so tests can pin the matrix without loading a model.
+    Hàm helper thuần túy để các bài test có thể ghim ma trận mà không cần tải model.
     """
     try:
         import torch
@@ -43,10 +43,10 @@ def load_checkpoint(model_id: str, revision: str | None, device: str) -> tuple[A
         hub = importlib.import_module("huggingface_hub")
         root = Path(hub.snapshot_download(repo_id=model_id, revision=revision))
         identity = root.name
-    # Laya ~0.4B (ModernBERT-large + heads). Honor a CUDA request when the
-    # worker venv actually has CUDA; the trained 842MB checkpoint fits a
-    # 4GB laptop GPU (0.9s/predict proven live), the 3.7GB base did not.
-    # Any load failure (OOM included) degrades to CPU, never kills a scan.
+    # Laya ~0.4B (ModernBERT-large + heads). Tôn trọng yêu cầu CUDA khi
+    # venv của worker thực sự có CUDA; checkpoint 842MB đã huấn luyện vừa vặn với
+    # GPU laptop 4GB (đã chứng minh chạy thực tế 0.9s/dự đoán), còn bản base 3.7GB thì không.
+    # Mọi lỗi tải (bao gồm cả OOM) đều chuyển xuống CPU, không bao giờ làm dừng lượt quét.
     want = _resolve_device(device)
     try:
         agent = laya.load(str(root), device=want)

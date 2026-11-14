@@ -1,9 +1,9 @@
-"""Phase 2 helpers: tools, settings, keys, usage, scans (thin over services).
+"""Các helper Phase 2: tools, settings, keys, usage, scans (lớp mỏng trên services).
 
-Keys are stored ONLY via the project-local ``.env`` mechanism
-(:class:`vulnscan.infra.envfile.EnvFile`) plus ``.providers/*.json`` profiles
-(:mod:`vulnscan.providers.profile_store`). Secrets are never returned —
-only a masked ``••••`` + last-4 display string.
+Khóa CHỈ được lưu qua cơ chế ``.env`` cục bộ của dự án
+(:class:`vulnscan.infra.envfile.EnvFile`) cùng với profile ``.providers/*.json``
+(:mod:`vulnscan.providers.profile_store`). Secret không bao giờ được trả về —
+chỉ trả về chuỗi hiển thị đã che ``••••`` + 4 ký tự cuối.
 """
 
 from __future__ import annotations
@@ -84,7 +84,7 @@ def _validate_general_settings(values: dict[str, Any]) -> None:
 
 
 def mask_key(value: str) -> str:
-    """Masked display: ``••••`` + last-4. Never the secret itself."""
+    """Hiển thị dạng che: ``••••`` + 4 ký tự cuối. Không bao giờ là chính secret."""
     if not value or not value.strip():
         return ""
     stripped = value.strip()
@@ -121,48 +121,27 @@ def unset_key(env_name: str, env: EnvFile | None = None) -> bool:
 
 
 def probe_tools(with_versions: bool = False) -> list[dict[str, Any]]:
-    """Fast tool health: ``which`` on PATH; versions only when asked."""
+    """Kiểm tra nhanh tình trạng công cụ: hiện tại pipeline chỉ dùng ``native-hunt`` tích hợp sẵn."""
     from vulnscan.scanners.base import AdapterRegistry
-    from vulnscan.scanners.platform import which
 
     registry = AdapterRegistry.default()
-    order = ["semgrep", "gitleaks", "spotbugs", "owasp-dependency-check"]
-    out: list[dict[str, Any]] = []
-    for name in order:
-        adapter = registry.get(name)
-        if adapter is None:
-            continue
-        binary = adapter.binary_name
-        resolved = which(binary)
-        version: str | None = None
-        if resolved is not None and with_versions:
-            try:
-                from vulnscan.scanners.tool_versions import probe_version
-
-                version = probe_version(binary)
-            except OSError:
-                version = None
-        out.append(
-            {
-                "tool": name,
-                "binary": binary,
-                "path": resolved,
-                "available": resolved is not None,
-                "version": version,
-                "hint": None
-                if resolved
-                else (
-                    "Install dependency-check on PATH; OSV.dev covers manifests meanwhile"
-                    if name == "owasp-dependency-check"
-                    else f"Install {binary} on PATH"
-                ),
-            }
-        )
-    return out
+    adapter = registry.get("native-hunt")
+    if adapter is None:
+        return []
+    return [
+        {
+            "tool": "native-hunt",
+            "binary": adapter.binary_name,
+            "path": "built-in",
+            "available": True,
+            "version": adapter.adapter_version if with_versions else "built-in",
+            "hint": None,
+        }
+    ]
 
 
 def aggregate_usage(runs: list[dict[str, Any]]) -> dict[str, Any]:
-    """Sum ``ai_usage`` summaries persisted in run result blobs."""
+    """Tính tổng các tóm tắt ``ai_usage`` được lưu trong các blob kết quả lượt chạy."""
     total_spent = 0.0
     by_provider: dict[str, float] = {}
     for snapshot in runs:

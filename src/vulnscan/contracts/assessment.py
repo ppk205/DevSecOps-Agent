@@ -1,9 +1,9 @@
-"""Assessment — the AI-proposed conclusion for a finding (never mutates status).
+"""Assessment — kết luận do AI đề xuất cho một finding (không bao giờ thay đổi trạng thái).
 
-The bounded agent or non-agentic model writes one of these per finding.  It is
-a *proposal*: only :class:`~vulnscan.contracts.validation.ValidationDecision`
-may move a finding to confirmed or rejected.  CVSS v4.0 vectors are recorded
-verbatim and validated independently.
+Agent có giới hạn hoặc mô hình non-agentic tạo một bản ghi này cho mỗi finding. Đây là
+một *đề xuất*: chỉ :class:`~vulnscan.contracts.validation.ValidationDecision`
+mới có quyền chuyển một finding sang confirmed hoặc rejected. Các vector CVSS v4.0 được ghi lại
+nguyên văn và được xác thực độc lập.
 """
 
 from __future__ import annotations
@@ -18,10 +18,10 @@ from .enums import CWECategory, EvidenceStrength, Severity, VerificationOutcome
 
 
 class CVSSAssessment(VersionedModel):
-    """CVSS v4.0 scoring payload for a finding.
+    """Payload tính điểm CVSS v4.0 cho một finding.
 
-    Only officially-defined vectors are stored; no numeric equivalents are
-    invented for native scanner severities.
+    Chỉ lưu trữ các vector được định nghĩa chính thức; không tự tạo ra các
+    giá trị số tương đương cho mức độ nghiêm trọng gốc của scanner.
     """
 
     vector: str = Field(
@@ -58,10 +58,10 @@ class CVSSAssessment(VersionedModel):
 
 
 class Assessment(VersionedModel):
-    """Proposed assessment for one finding, produced by a provider-backed model.
+    """Đánh giá đề xuất cho một finding, được tạo bởi mô hình dựa trên provider.
 
-    ``proposed_status`` is advisory only; the finding's real status changes
-    only through validation.
+    ``proposed_status`` chỉ mang tính chất tham vấn; trạng thái thực của
+    finding chỉ thay đổi thông qua validation.
     """
 
     assessment_id: str = Field(

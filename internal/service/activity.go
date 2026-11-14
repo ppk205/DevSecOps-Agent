@@ -7,8 +7,8 @@ import (
 	"devsecops-agent/internal/bridge"
 )
 
-// RunActivity reads retained diagnostics without fetching evidence-heavy findings.
-// FR-71, DR-09 and IR-16 require history to identify its own run and events.
+// RunActivity đọc các chẩn đoán được giữ lại mà không cần tải các finding nặng về bằng chứng.
+// FR-71, DR-09 và IR-16 yêu cầu lịch sử phải nhận diện lượt chạy và sự kiện của chính nó.
 type RunActivity struct {
 	RunSummary
 	Events []bridge.Event `json:"events"`

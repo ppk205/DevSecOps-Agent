@@ -18,9 +18,9 @@ function initialLang(): Lang {
 }
 
 /**
- * Language state: EN/VI toggle persisted to localStorage.
- * `document.documentElement.lang` follows the toggle for AT/SEO.
- * Without a provider (unit tests), everything falls back to EN.
+ * Trạng thái ngôn ngữ: chuyển đổi EN/VI được lưu vào localStorage.
+ * `document.documentElement.lang` đi theo chuyển đổi này phục vụ AT/SEO.
+ * Khi không có provider (unit test), mọi thứ chuyển về dự phòng EN.
  */
 const LangCtx = createContext<{ lang: Lang; setLang: (l: Lang) => void }>({
   lang: "en",
@@ -34,7 +34,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     try {
       window.localStorage.setItem(LANG_KEY, next);
     } catch {
-      // Private mode etc. — language still applies for the session.
+      // Chế độ riêng tư v.v. — ngôn ngữ vẫn được áp dụng cho phiên.
     }
   }, []);
   useEffect(() => {
@@ -47,7 +47,7 @@ export function useLang(): { lang: Lang; setLang: (l: Lang) => void } {
   return useContext(LangCtx);
 }
 
-/** Reactive dictionary: re-renders the caller on EN↔VI toggle. */
+/** Từ điển phản ứng (reactive): re-render nơi gọi khi chuyển đổi EN↔VI. */
 export function useStrings(): Strings {
   const { lang } = useContext(LangCtx);
   return DICTS[lang] ?? en;

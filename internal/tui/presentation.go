@@ -130,7 +130,7 @@ func resultText(result map[string]any) []string {
 	return lines
 }
 
-// Directory reads run inside a tea.Cmd, never in the UI update or view.
+// Đọc thư mục chạy bên trong một tea.Cmd, không bao giờ chạy trong update hoặc view của UI.
 func completePath(value string) pathCompletion {
 	directory, prefix := filepath.Split(value)
 	if directory == "" {

@@ -1,7 +1,7 @@
-"""Project-specific Laya training with separate validation/calibration/test data.
+"""Huấn luyện Laya đặc thù cho dự án với dữ liệu validation/calibration/test tách biệt.
 
-The model sequence and scoring primitives follow the Apache-2.0 Laya 0.3.20
-training API. GPU modules are imported only for an explicit training run.
+Chuỗi mô hình và các hàm chấm điểm tuân theo API huấn luyện Laya 0.3.20 bản quyền
+Apache-2.0. Các module GPU chỉ được import khi thực hiện lượt chạy huấn luyện rõ ràng.
 """
 
 from __future__ import annotations
@@ -267,8 +267,8 @@ def train(
             )
             with torch.autocast("cuda", dtype=torch.float16):
                 logits, actions = forward(wrapped, batch)
-            # Proper-score policy gradient over four noisy distributions, with
-            # cross-entropy guidance as in the upstream RLCD training recipe.
+            # Policy gradient dùng proper-score trên bốn phân phối nhiễu, kèm
+            # hướng dẫn cross-entropy như trong công thức huấn luyện RLCD thượng nguồn.
             mask, target = batch["mask"], batch["target"]
             sigma = 0.4 + (0.1 - 0.4) * epoch / max(1, args.epochs - 1)
             noise = torch.randn((4,) + logits.shape, device=device) * sigma * mask

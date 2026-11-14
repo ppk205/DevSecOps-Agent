@@ -1,4 +1,4 @@
-"""Protocol for optional local decision backends."""
+"""Protocol cho các decision backend cục bộ tùy chọn."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from vulnscan.contracts.decision import DecisionRequest, DecisionResult
 
 
 class DecisionBackend(Protocol):
-    """Small typed-decision interface; deliberately not a chat provider."""
+    """Giao diện quyết định được định kiểu nhỏ gọn; cố ý không phải là một chat provider."""
 
     def predict(self, request: DecisionRequest) -> DecisionResult:
-        """Return a structured advisory decision without raising for model failure."""
+        """Trả về một quyết định tham vấn có cấu trúc mà không ném ngoại lệ khi mô hình gặp lỗi."""

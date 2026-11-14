@@ -50,7 +50,7 @@ describe("Logs page (mock mode)", () => {
     expect(await screen.findByLabelText("Level", {}, { timeout: 5000 })).toBeInTheDocument();
     expect(await screen.findByLabelText("Source", {}, { timeout: 5000 })).toBeInTheDocument();
     expect(await screen.findByLabelText("Search (regex)", {}, { timeout: 5000 })).toBeInTheDocument();
-    // Streamed mock lines arrive staggered; the rail replays 10 lines.
+    // Các dòng log mock stream đến so le nhau; thanh tiến trình phát lại 10 dòng.
     expect(await screen.findByText(/checkout verified at 9f3ac41/, {}, { timeout: 8000 })).toBeInTheDocument();
     expect(await screen.findByText("Pause", {}, { timeout: 5000 })).toBeInTheDocument();
     expect(await screen.findByText("Copy", {}, { timeout: 5000 })).toBeInTheDocument();

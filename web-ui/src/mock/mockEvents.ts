@@ -1,6 +1,6 @@
 import type { ScanEvent } from "../api/types";
 
-/** Scripted event rail for the mock run — stage transitions + log lines. */
+/** Thanh tiến trình sự kiện dạng kịch bản cho lượt chạy mock — chuyển đổi giai đoạn + các dòng log. */
 export const MOCK_EVENTS: ScanEvent[] = [
   { seq: 0, kind: "stage", stage: "intake", message: "intake → running", created_at: "2026-11-01T09:00:02+07:00" },
   { seq: 1, kind: "log", stage: "intake", message: "checkout verified at 9f3ac41", created_at: "2026-11-01T09:00:05+07:00" },

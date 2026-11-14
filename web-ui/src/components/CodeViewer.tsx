@@ -8,8 +8,8 @@ interface CodeViewerProps {
 }
 
 /**
- * Evidence code viewer. Source renders as plain text only (React-escaped,
- * never innerHTML) so untrusted scanner snippets cannot inject markup.
+ * Trình xem mã bằng chứng. Mã nguồn chỉ hiển thị dưới dạng văn bản thuần (React-escaped,
+ * không bao giờ dùng innerHTML) để các đoạn trích từ scanner không đáng tin cậy không thể chèn markup.
  */
 export function CodeViewer({ blocks, taintPath }: CodeViewerProps) {
   const en = useStrings();

@@ -4,11 +4,11 @@ import { ackNotification, fetchNotifications } from "../api/client";
 import { useStrings } from "../i18n/lang";
 
 /**
- * Task 4: header bell with unread-count polling + dropdown panel with ack.
- * Polls GET /api/notifications every 15s; ack uses the postJson CSRF path.
- * The panel is absolutely positioned inside this relative wrapper; the navbar
- * itself must stay overflow-visible so opening the bell never creates a
- * navbar scrollbar. Closes on outside click / Escape.
+ * Task 4: chuông ở header với poll số lượng chưa đọc + panel dropdown có xác nhận (ack).
+ * Poll GET /api/notifications mỗi 15 giây; ack sử dụng đường dẫn CSRF postJson.
+ * Panel được định vị tuyệt đối bên trong wrapper tương đối này; chính navbar
+ * phải duy trì overflow-visible để việc mở chuông không bao giờ tạo
+ * thanh cuộn trên navbar. Đóng khi nhấp bên ngoài / Escape.
  */
 export function NotificationsBell() {
   const t = useStrings();

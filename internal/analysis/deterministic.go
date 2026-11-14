@@ -1,4 +1,4 @@
-// Package analysis preserves the established finding and gate contracts.
+// Package analysis duy trì các giao ước finding và gate đã thiết lập.
 package analysis
 
 import (
@@ -106,7 +106,7 @@ func Group(observations []Object, runID, stamp string) ([]Object, error) {
 			"cwe_category": cwe, "severity": severity, "status": "unprocessed", "observations": observations, "groups": []Object{group},
 			"evidence_strength": strength, "evidence_refs": refs, "created_at": stamp, "updated_at": stamp,
 			"metadata": Object{"grouping_key": []any{location["file_path"], location["line_start"], first["cwe_category"]}}})
-		// Python's grouping key uses the empty string for missing CWEs.
+		// Khóa nhóm của Python sử dụng chuỗi rỗng cho các CWE bị thiếu.
 		object(findings[len(findings)-1]["metadata"])["grouping_key"] = []any{location["file_path"], location["line_start"], text(first["cwe_category"])}
 	}
 	return findings, nil

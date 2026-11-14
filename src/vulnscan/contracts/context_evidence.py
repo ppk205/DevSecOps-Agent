@@ -1,8 +1,8 @@
-"""ContextEvidence — per-finding source-map context assembled during analysis (ACC-01–04).
+"""ContextEvidence — ngữ cảnh source-map cho từng finding được tổng hợp trong quá trình phân tích (ACC-01–04).
 
-Captures route, filters, callers, sinks, dataflow paths, ambiguous resolutions,
-and JSP output context.  Ambiguous call resolution remains explicit so the
-reader knows when a path is uncertain.
+Thu thập route, filter, caller, sink, đường dẫn luồng dữ liệu, phân giải không rõ ràng,
+và ngữ cảnh đầu ra JSP. Việc phân giải lời gọi không rõ ràng được ghi lại tường minh
+để người đọc biết khi nào một đường dẫn là không chắc chắn.
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ from .enums import CWECategory, ExtractionMode, LanguageKind
 
 
 class DataflowPath(VersionedModel):
-    """One source-to-sink dataflow path, including its provenance."""
+    """Một đường dẫn luồng dữ liệu từ source đến sink, bao gồm nguồn gốc (provenance) của nó."""
 
     path_id: str = Field(
         ...,
@@ -59,9 +59,9 @@ class DataflowPath(VersionedModel):
 
 
 class AmbiguousResolution(VersionedModel):
-    """Records an unresolved or uncertain call resolution.
+    """Ghi lại một phân giải lời gọi chưa được giải quyết hoặc không chắc chắn.
 
-    Preserved explicitly rather than silently dropped.
+    Được lưu giữ tường minh thay vì âm thầm loại bỏ.
     """
 
     location: str = Field(
@@ -83,10 +83,10 @@ class AmbiguousResolution(VersionedModel):
 
 
 class JSPContext(VersionedModel):
-    """JSP-specific output context (ACC-04).
+    """Ngữ cảnh đầu ra dành riêng cho JSP (ACC-04).
 
-    Tracks HTML text, attributes, URLs, and JavaScript contexts where
-    expressions are embedded.
+    Theo dõi văn bản HTML, thuộc tính, URL và ngữ cảnh JavaScript nơi các
+    biểu thức được nhúng.
     """
 
     jsp_file: str = Field(
@@ -122,10 +122,10 @@ class JSPContext(VersionedModel):
 
 
 class ContextEvidence(VersionedModel):
-    """Full context evidence record for one finding or observation.
+    """Bản ghi bằng chứng ngữ cảnh đầy đủ cho một finding hoặc observation.
 
-    Each finding carries its own ContextEvidence; records are never shared
-    across findings even when they overlap.
+    Mỗi finding mang ContextEvidence riêng; các bản ghi không bao giờ được chia
+    sẻ giữa các finding ngay cả khi chúng chồng chéo nhau.
     """
 
     evidence_id: str = Field(

@@ -1,10 +1,9 @@
-"""VerificationObservation — one observation from the verification procedure (ACC-06).
+"""VerificationObservation — một quan sát từ quy trình xác minh (ACC-06).
 
-Distinct from the final finding decision.  The same reviewed procedure is
-applied to vulnerable and fixed variants, including legitimate-functionality
-checks and a defined security property per applicable CWE.  Execution
-observations distinguish demonstrated vulnerability, blocked behavior, harness
-failure, and inconclusive results.
+Khác biệt với quyết định finding cuối cùng. Cùng một quy trình đã được rà soát
+được áp dụng cho cả biến thể có lỗ hổng và biến thể đã sửa, bao gồm các kiểm tra
+chức năng hợp lệ và thuộc tính bảo mật xác định theo từng CWE áp dụng. Các quan sát
+thực thi phân biệt rõ lỗ hổng đã được chứng minh, hành vi bị chặn, lỗi harness, và kết quả không kết luận được.
 """
 
 from __future__ import annotations
@@ -20,10 +19,10 @@ from .enums import EvidenceKind, VerificationOutcome
 
 
 class VerificationObservation(VersionedModel):
-    """Result of applying one verification step to one variant.
+    """Kết quả của việc áp dụng một bước xác minh cho một biến thể.
 
-    Never mutates a finding directly; the validator consumes a set of these and
-    then emits a :class:`~vulnscan.contracts.validation.ValidationDecision`.
+    Không bao giờ trực tiếp thay đổi finding; validator tiếp nhận một tập hợp các kết
+    quả này và sau đó phát ra một :class:`~vulnscan.contracts.validation.ValidationDecision`.
     """
 
     verification_observation_id: str = Field(

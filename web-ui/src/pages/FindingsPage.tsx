@@ -45,8 +45,8 @@ function AiDelta({ item }: { item: FindingListItem }) {
 }
 
 /**
- * Hunt provenance for one row. Reads the backend's provenance field plus
- * likely metadata.origin aliases; tolerant of everything missing (scanner).
+ * Nguồn gốc hunt cho một dòng. Đọc trường provenance của backend kèm theo
+ * các alias metadata.origin có thể có; chấp nhận việc thiếu tất cả (scanner).
  */
 function provenanceOf(item: FindingListItem): FindingProvenance {
   const raw = item as unknown as Record<string, unknown>;

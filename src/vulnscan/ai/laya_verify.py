@@ -1,16 +1,16 @@
-"""Laya verification of model-hunted candidates.
+"""Xác minh Laya đối với các ứng viên do mô hình săn tìm.
 
-Each hunted candidate becomes one ``DecisionRequest`` (candidate metadata +
-a jailed 30-line source excerpt) sharing the frozen triage question set, and
-the batch goes through ``LayaDecisionBackend.predict_many``. Results are
-attached back onto copies of the candidates as advisory-only fields::
+Mỗi ứng viên săn tìm trở thành một ``DecisionRequest`` (metadata ứng viên +
+trích đoạn mã nguồn 30 dòng bị cô lập) dùng chung bộ câu hỏi triage đóng băng, và
+mẻ dữ liệu đi qua ``LayaDecisionBackend.predict_many``. Kết quả được đính kèm
+ngược lại vào các bản sao của ứng viên dưới dạng các trường chỉ mang tính cố vấn::
 
     {laya_route, laya_confidence, laya_status}
 
-Laya is advisory here, exactly as in the shadow triage stage: it records a
-route, never a finding status (status moves only via IndependentValidator).
-When Laya is unavailable every item gets ``{"laya_status": "skipped"}``.
-This function never raises.
+Laya ở đây chỉ đóng vai trò cố vấn, tương tự như trong giai đoạn shadow triage: nó ghi nhận
+một tuyến, không bao giờ quyết định trạng thái finding (trạng thái chỉ thay đổi qua IndependentValidator).
+Khi Laya không khả dụng, mọi mục sẽ nhận ``{"laya_status": "skipped"}``.
+Hàm này không bao giờ ném ngoại lệ.
 """
 
 from __future__ import annotations
@@ -43,19 +43,19 @@ def laya_verify_candidates(
     snapshot_root: str,
     laya_config: LayaDecisionBackend | Any | None = None,
 ) -> list[dict[str, Any]]:
-    """Verify hunted candidates with Laya; attach route/confidence/status.
+    """Xác minh các ứng viên săn tìm với Laya; đính kèm route/confidence/status.
 
     Args:
-        candidates: hunt output items (title, file, line, cwe, severity,
+        candidates: các mục đầu ra săn tìm (title, file, line, cwe, severity,
             rationale, evidence).
-        snapshot_root: immutable scan snapshot for jailed excerpts.
-        laya_config: a ``LayaDecisionBackend`` to reuse, or None to build
-            the default backend. Any other value is ignored (default used).
+        snapshot_root: snapshot quét bất biến cho các trích đoạn bị cô lập.
+        laya_config: một ``LayaDecisionBackend`` để tái sử dụng, hoặc None để xây dựng
+            backend mặc định. Bất kỳ giá trị nào khác đều bị bỏ qua (sử dụng mặc định).
 
     Returns:
-        New dicts (inputs untouched) with ``laya_route``,
-        ``laya_confidence`` and ``laya_status`` attached. Laya failure
-        (or construction failure) marks every item ``skipped``.
+        Các dict mới (không thay đổi đầu vào) được đính kèm ``laya_route``,
+        ``laya_confidence`` và ``laya_status``. Sự cố Laya
+        (hoặc sự cố khởi tạo) sẽ đánh dấu mọi mục là ``skipped``.
     """
     if not candidates:
         return []

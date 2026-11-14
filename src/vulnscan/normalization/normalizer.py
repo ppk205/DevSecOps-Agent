@@ -1,7 +1,7 @@
-"""Normalizer: ScannerResult -> list[Observation].
+"""Bộ chuẩn hóa: ScannerResult -> list[Observation].
 
-Validates each observation against contracts (invalid CWE, missing location).
-Never invents coordinates. Pure: operates on already-fetched data.
+Xác thực từng observation theo các ràng buộc contract (CWE không hợp lệ, thiếu vị trí).
+Không bao giờ tự tạo tọa độ. Hàm thuần túy (pure): hoạt động trên dữ liệu đã được nạp sẵn.
 """
 
 from __future__ import annotations
@@ -10,10 +10,10 @@ from vulnscan.contracts import CWECategory, Observation, ScannerResult
 
 
 def normalize_result(result: ScannerResult) -> list[Observation]:
-    """Extract and validate observations from a scanner result.
+    """Trích xuất và xác thực các observation từ một scanner result.
 
-    Invalid observations (bad CWE, missing coordinates) are dropped — they
-    never reach the grouping stage.
+    Các observation không hợp lệ (sai CWE, thiếu tọa độ) sẽ bị loại bỏ — chúng
+    không bao giờ đi tới giai đoạn nhóm.
     """
     valid: list[Observation] = []
     for obs in result.observations:
@@ -26,12 +26,12 @@ def normalize_result(result: ScannerResult) -> list[Observation]:
 
 
 def _is_valid_cwe(obs: Observation) -> bool:
-    """A CWE must be a member of the CWECategory enum (or absent)."""
+    """CWE phải là một thành viên của enum CWECategory (hoặc không có)."""
     if obs.cwe_category is None:
-        return True  # dependency findings may lack an explicit CWE
+        return True  # các finding về dependency có thể thiếu một CWE rõ ràng
     return isinstance(obs.cwe_category, CWECategory)
 
 
 def _has_location(obs: Observation) -> bool:
-    """Every observation must carry a source coordinate with a file path."""
+    """Mỗi observation phải mang một tọa độ source kèm theo đường dẫn file."""
     return obs.location is not None and bool(obs.location.file_path)

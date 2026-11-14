@@ -4,7 +4,7 @@ interface SpecCellProps {
   mono?: boolean;
 }
 
-/** Label-over-value spec cell for run metadata grids. */
+/** Ô thông số với nhãn nằm trên giá trị cho lưới metadata của lượt chạy. */
 export function SpecCell({ label, value, mono = false }: SpecCellProps) {
   return (
     <div className="border-l-2 border-hairline pl-3">

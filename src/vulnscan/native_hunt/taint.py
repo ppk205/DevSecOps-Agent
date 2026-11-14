@@ -1,21 +1,21 @@
-"""Rule model and loader for the native taint-hunt engine.
+"""Mô hình rule và bộ nạp cho native taint-hunt engine.
 
-Two pack shapes are accepted (both live in ``rules/<family>.json``):
+Chấp nhận hai định dạng gói quy tắc (đều nằm trong ``rules/<family>.json``):
 
-* Taint shape — a JSON list of objects with ``sources``, ``sinks`` and
+* Định dạng Taint — danh sách JSON gồm các đối tượng có ``sources``, ``sinks`` và
   ``sanitizers`` (``[{"id": ..., "cwe": ..., "attack": ..., "severity":
   ..., "sources": [<regex>], "sinks": [<regex>], "sanitizers":
-  [{"pattern": <regex>, "prevent": [<attack>, ...]}]}]``). The engine
-  tracks ``sources`` through assignments into ``sinks``.
-* Port shape — ``{"language": ..., "rules": [...]}`` where each rule
-  carries sink ``patterns`` (ports of the Semgrep YAML packs). These get
-  the family's default source/sanitizer sets below, so they participate
-  in taint flow; a rule with no source model still reports sink matches
-  as ``Weak`` findings.
+  [{"pattern": <regex>, "prevent": [<attack>, ...]}]}]``). Engine
+  theo dõi ``sources`` thông qua các phép gán đi vào ``sinks``.
+* Định dạng Port — ``{"language": ..., "rules": [...]}`` trong đó mỗi rule
+  mang các ``patterns`` của sink (các bản port từ bộ quy tắc Semgrep YAML). Chúng nhận
+  tập hợp source/sanitizer mặc định của family ở bên dưới để tham gia
+  vào luồng taint; rule không có mô hình source vẫn báo cáo các kết quả khớp sink
+  dưới dạng finding ``Weak``.
 
-``attack`` names the capability a finding reports; a sanitizer only
-cleanses lines for the attacks listed in its ``prevent`` set, so an XSS
-escaper never silences a SQL-injection rule.
+``attack`` đặt tên cho khả năng tấn công mà một finding báo cáo; một sanitizer chỉ
+làm sạch các dòng đối với các cuộc tấn công được liệt kê trong tập ``prevent`` của nó, do đó một hàm escape XSS
+sẽ không bao giờ làm vô hiệu hóa một rule SQL-injection.
 """
 
 from __future__ import annotations
@@ -28,7 +28,7 @@ from typing import Any
 
 RULES_DIR = Path(__file__).resolve().parent / "rules"
 
-#: Default source regexes applied to ported (sink-only) rules per family.
+#: Regex source mặc định áp dụng cho các rule được port (chỉ có sink) theo từng family.
 _FAMILY_SOURCES: dict[str, list[str]] = {
     "python": [r"request\.(args|form|values|json|data|GET|POST)", r"\binput\s*\("],
     "javascript": [r"req\.(query|body|params)", r"location\.(search|hash)", r"document\.URL", r"event\.data", r"window\.name"],
@@ -80,7 +80,7 @@ _FAMILY_SOURCES: dict[str, list[str]] = {
     "generic": [r"\brequest\b", r"\binput\s*\(", r"\bargv\b"],
 }
 
-#: Default sanitizers (pattern, prevented attacks) for ported rules.
+#: Các sanitizer mặc định (pattern, prevented attacks) cho những rule được port.
 _FAMILY_SANITIZERS: dict[tuple[str, str], list[tuple[str, list[str]]]] = {
     ("python", "xss"): [(r"escape\s*\(", ["xss"])],
     ("python", "command_injection"): [(r"shlex\.quote\s*\(", ["command_injection"])],
@@ -105,7 +105,7 @@ _FAMILY_SANITIZERS: dict[tuple[str, str], list[tuple[str, list[str]]]] = {
 
 @dataclass
 class Sanitizer:
-    """One cleansing pattern; only kills flow for the listed attacks."""
+    """Một pattern làm sạch; chỉ triệt tiêu luồng cho các cuộc tấn công được liệt kê."""
 
     pattern: str
     prevent: list[str] = field(default_factory=list)
@@ -113,7 +113,7 @@ class Sanitizer:
 
 @dataclass
 class Rule:
-    """One taint rule with precompiled regexes (compiled in post-init)."""
+    """Một taint rule với các regex được biên dịch trước (biên dịch trong post-init)."""
 
     id: str
     cwe: str = ""
@@ -125,17 +125,17 @@ class Rule:
     sanitizers: list[Sanitizer] = field(default_factory=list)
     message: str = ""
     source_ref: str = ""
-    # Resource-leak check (OBL family): rule carries no patterns; the engine
-    # flags `new <ResourceType>(...)` / getConnection assignments whose
-    # variable never gets `.close()` later in the file (try-with-resources
-    # assignments excluded — they close implicitly).
+    # Kiểm tra rò rỉ tài nguyên (nhóm OBL): rule không mang pattern nào; engine
+    # đánh dấu các phép gán `new <ResourceType>(...)` / getConnection mà
+    # biến của nó không bao giờ được gọi `.close()` phía sau trong file (các phép gán
+    # try-with-resources được loại trừ — chúng đóng ngầm định).
     resource_check: bool = False
-    # taint: sink fires only with tainted data; search: pattern alone is
-    # Weak evidence. Ported from the Semgrep rule's own mode; hand-built
-    # rules default by shape (sources present = taint).
+    # taint: sink chỉ kích hoạt với dữ liệu bị taint; search: chỉ riêng pattern là
+    # bằng chứng Weak. Được port từ chế độ riêng của rule Semgrep; các rule
+    # tự xây dựng mặc định theo cấu trúc (có sources = taint).
     mode: str = ""
-    # True when sources were filled from family defaults (ported
-    # pattern-only rules): sink matches fire Weak without taint evidence.
+    # True khi sources được điền từ giá trị mặc định của family (các rule
+    # chỉ có pattern được port): các khớp sink kích hoạt Weak khi thiếu bằng chứng taint.
     pattern_only: bool = False
     source_res: list[re.Pattern[str]] = field(init=False, repr=False, compare=False)
     sink_res: list[re.Pattern[str]] = field(init=False, repr=False, compare=False)
@@ -247,12 +247,12 @@ def _parse_rule(item: Any, path: Path, family: str, ported: bool) -> Rule:
 
 
 def load_rules(family: str) -> list[Rule]:
-    """Load the rule pack for *family* (e.g. ``"python"``).
+    """Tải bộ rule cho *family* (ví dụ: ``"python"``).
 
-    Accepts the taint shape (JSON list) and the ported shape
-    (``{"language": ..., "rules": [...]}`` with sink ``patterns``).
-    Returns an empty list when no pack exists; raises :class:`ValueError`
-    when the pack file is present but malformed. Case-insensitive.
+    Chấp nhận định dạng taint (danh sách JSON) và định dạng ported
+    (``{"language": ..., "rules": [...]}`` với sink ``patterns``).
+    Trả về danh sách rỗng khi không có bộ rule nào; ném :class:`ValueError`
+    khi file bộ rule tồn tại nhưng sai định dạng. Không phân biệt chữ hoa chữ thường.
     """
     name = family.strip().lower()
     path = RULES_DIR / f"{name}.json"

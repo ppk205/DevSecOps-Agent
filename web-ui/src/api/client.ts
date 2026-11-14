@@ -2,7 +2,7 @@ import { isMock, mockApi } from "../mock/mockClient";
 
 const BASE: string = (import.meta.env.VITE_API_BASE as string | undefined) ?? "";
 
-/** Thin fetch wrapper: mock layer when VITE_MOCK=1, FastAPI otherwise. */
+/** Lớp bọc fetch mỏng: tầng mock khi VITE_MOCK=1, ngược lại dùng FastAPI. */
 async function get<T>(path: string): Promise<T> {
   const response = await fetch(`${BASE}${path}`, {
     headers: { "X-Contract-Version": "1" },

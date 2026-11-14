@@ -5,7 +5,7 @@ import { fetchFindingDetail } from "../api/client";
 import { FindingDetailView } from "../components/FindingDetailView";
 import { useStrings } from "../i18n/lang";
 
-/** Deep-linkable full page for one finding (the drawer is the quick view). */
+/** Trang đầy đủ có thể deep-link cho một finding (drawer là chế độ xem nhanh). */
 export function FindingDetailPage() {
   const en = useStrings();
   const { id } = useParams<{ id: string }>();

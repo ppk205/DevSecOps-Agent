@@ -1,8 +1,9 @@
-"""CoverageRecord — per-unit analysis coverage for one tool (ACC-01, ACC-04, ACC-07).
+"""CoverageRecord — độ bao phủ phân tích theo từng đơn vị cho một công cụ (ACC-01, ACC-04, ACC-07).
 
-Records which files were eligible and analyzed, and which were partial, failed,
-unsupported, or skipped.  Skipped units can never appear successfully analyzed.
-Java and JSP coverage reconcile separately against the input inventory.
+Ghi lại các file nào đủ điều kiện và đã được phân tích, cùng các file bị phân tích một
+phần, thất bại, không hỗ trợ, hoặc bị bỏ qua. Các đơn vị bị bỏ qua không bao giờ có thể
+hiển thị là đã phân tích thành công. Độ bao phủ Java và JSP được đối chiếu riêng biệt
+với danh mục đầu vào.
 """
 
 from __future__ import annotations
@@ -24,7 +25,7 @@ from .enums import (
 
 
 class CoverageRecord(VersionedModel):
-    """Coverage of one analysis unit by one tool."""
+    """Độ bao phủ của một đơn vị phân tích bởi một công cụ."""
 
     run_id: str = Field(
         ...,

@@ -1,4 +1,4 @@
-"""Lazy, failure-safe adapter for the local Laya decision model."""
+"""Adapter an toàn trước sự cố, tải trễ cho mô hình quyết định Laya cục bộ."""
 
 from __future__ import annotations
 
@@ -114,11 +114,11 @@ def _parse_answer(name: str, raw: Any, question: DecisionQuestion) -> DecisionAn
 
 
 class LayaDecisionBackend:
-    """Adapter around ``laya.load(...).predict(...)``.
+    """Adapter bao bọc ``laya.load(...).predict(...)``.
 
-    The adapter is intentionally injectable so unit tests never download a
-    model. In production it lazy-loads the optional package once and converts
-    failures into structured results.
+    Adapter được cố ý thiết kế để có thể inject được nhằm giúp unit test không bao giờ tải
+    mô hình xuống. Trong môi trường production, nó tải trễ gói tùy chọn một lần
+    và chuyển đổi các lỗi thành kết quả có cấu trúc.
     """
 
     def __init__(

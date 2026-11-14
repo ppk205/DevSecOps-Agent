@@ -1,8 +1,8 @@
-"""SQLAlchemy ORM models for the DevSecOps-Agent persistence layer.
+"""Các model SQLAlchemy ORM cho tầng lưu trữ của DevSecOps-Agent.
 
-Maps core entities to SQLite tables. Contract payloads (ScanSpecification,
-RunManifest, findings, assessments, coverage records) are stored as JSON blobs
-so the ORM stays decoupled from contract evolution.
+Ánh xạ các thực thể cốt lõi sang bảng SQLite. Payload của contract (ScanSpecification,
+RunManifest, finding, assessment, bản ghi coverage) được lưu dưới dạng blob JSON
+để ORM không bị phụ thuộc vào sự phát triển của contract.
 """
 
 from __future__ import annotations
@@ -16,11 +16,11 @@ from sqlalchemy.types import TypeDecorator
 
 
 class Base(DeclarativeBase):
-    """Shared declarative base for all ORM models."""
+    """Lớp declarative base dùng chung cho tất cả các model ORM."""
 
 
 class UTCDateTime(TypeDecorator[datetime]):
-    """Store explicit UTC offsets; read legacy UTC-naive SQLite values safely."""
+    """Lưu độ lệch UTC rõ ràng; đọc an toàn các giá trị SQLite không có múi giờ (UTC-naive) cũ."""
 
     impl = String
     cache_ok = True
@@ -44,7 +44,7 @@ def _utcnow() -> datetime:
 
 
 class TargetORM(Base):
-    """A registered target repository."""
+    """Một repository mục tiêu đã đăng ký."""
 
     __tablename__ = "targets"
 
@@ -57,7 +57,9 @@ class TargetORM(Base):
 
 
 class RunORM(Base):
-    """One scan run — links to a target and tracks overall status."""
+    """Một lượt chạy scan — liên kết tới một mục tiêu và theo dõi trạng thái tổng thể."""
+
+
 
     __tablename__ = "runs"
 
@@ -83,7 +85,7 @@ class RunORM(Base):
 
 
 class StageORM(Base):
-    """A lifecycle stage within a run."""
+    """Một giai đoạn vòng đời (lifecycle stage) trong một lượt chạy."""
 
     __tablename__ = "stages"
 
@@ -100,7 +102,7 @@ class StageORM(Base):
 
 
 class FindingORM(Base):
-    """A grouped finding (serialized Finding contract blob)."""
+    """Một finding đã gom nhóm (blob contract Finding đã tuần tự hóa)."""
 
     __tablename__ = "findings"
 
@@ -116,11 +118,11 @@ class FindingORM(Base):
 
 
 class ScanEventORM(Base):
-    """A persisted pipeline/log event for one scan run (Phase 1 skeleton).
+    """Một sự kiện pipeline/log được lưu trữ cho một lượt chạy scan (khung Phase 1).
 
-    Kinds: ``log`` | ``stage`` | ``ai_step`` | ``ai_proposal`` |
-    ``verification_result``. Ordering key is (run_id, seq); ``payload_json``
-    holds the optional structured payload. Rows are append-only.
+    Các loại: ``log`` | ``stage`` | ``ai_step`` | ``ai_proposal`` |
+    ``verification_result``. Khóa sắp xếp là (run_id, seq); ``payload_json``
+    chứa payload có cấu trúc tùy chọn. Các hàng chỉ cho phép ghi nối tiếp (append-only).
     """
 
     __tablename__ = "scan_events"
@@ -138,12 +140,12 @@ class ScanEventORM(Base):
 
 
 class FixProposalORM(Base):
-    """An AI-generated fix proposal for one finding.
+    """Một đề xuất sửa lỗi do AI tạo ra cho một finding.
 
-    The model only writes the unified diff — it never touches source.
-    ``status``: proposed → applied → verified (or failed). ``overlay_path``
-    points at the patched copy under artifacts (never the user checkout).
-    ``verification_json`` records the rescan proof (rule refired or not).
+    Model chỉ tạo unified diff — không bao giờ chạm vào mã nguồn gốc.
+    ``status``: proposed → applied → verified (hoặc failed). ``overlay_path``
+    trỏ tới bản sao đã vá nằm trong thư mục artifacts (không bao giờ là checkout của người dùng).
+    ``verification_json`` ghi nhận bằng chứng rescan (rule có kích hoạt lại hay không).
     """
 
     __tablename__ = "fix_proposals"
@@ -163,11 +165,11 @@ class FixProposalORM(Base):
 
 
 class NotificationORM(Base):
-    """A user-facing notification for one scan run.
+    """Một thông báo hướng tới người dùng cho một lượt chạy scan.
 
-    Kinds: ``scan_completed`` | ``gate_failed``. Rows are created once per
-    (run_id, kind) by ``record_scan_notification`` and acknowledged via
-    ``POST /api/notifications/{id}/ack`` (sets ``is_read``).
+    Các loại: ``scan_completed`` | ``gate_failed``. Các hàng được tạo một lần cho mỗi
+    (run_id, kind) bởi ``record_scan_notification`` và được xác nhận qua
+    ``POST /api/notifications/{id}/ack`` (thiết lập ``is_read``).
     """
 
     __tablename__ = "notifications"

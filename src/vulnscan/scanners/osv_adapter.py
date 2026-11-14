@@ -1,16 +1,16 @@
-"""OSV.dev adapter — dependency CVE lookup replacing flaky NVD downloads.
+"""Adapter OSV.dev — tra cứu CVE của dependency thay thế việc tải NVD thiếu ổn định.
 
-Parses dependency manifests from the checkout (``pom.xml``, ``package-lock.json``,
-``requirements.txt``), batches them into ``POST https://api.osv.dev/v1/querybatch``
-(timeout 30s), and maps CVEs to observations (``rule_id`` ``osv-<id>``).
+Phân tích các manifest của dependency từ mã nguồn (``pom.xml``, ``package-lock.json``,
+``requirements.txt``), gom nhóm chúng gửi tới ``POST https://api.osv.dev/v1/querybatch``
+(thời gian chờ 30 giây), và ánh xạ các CVE thành observation (``rule_id`` ``osv-<id>``).
 
-Network failure is an *offline-degraded* condition, never an exception: the
-adapter returns a ``skipped`` :class:`ScannerResult` with the reason recorded.
-No local binary is required, so :meth:`capabilities` always reports available
-(the scan spec can still disable the tool).
+Lỗi mạng là điều kiện *giảm cấp khi offline*, không bao giờ là một ngoại lệ:
+adapter trả về một :class:`ScannerResult` với trạng thái ``skipped`` cùng lý do được ghi nhận.
+Không yêu cầu binary cục bộ, do đó :meth:`capabilities` luôn báo cáo khả dụng
+(scan spec vẫn có thể vô hiệu hóa công cụ này).
 
-The adapter reuses the :attr:`ToolName.OWASP_DEPENDENCY_CHECK` tool slot (there
-is no OSV member in the contract enum) and sets ``tool_version='osv.dev'``.
+Adapter tái sử dụng vị trí công cụ :attr:`ToolName.OWASP_DEPENDENCY_CHECK` (không
+có thành viên OSV trong enum của contract) và đặt ``tool_version='osv.dev'``.
 """
 
 from __future__ import annotations
@@ -52,12 +52,12 @@ _REQUIREMENT_PIN = re.compile(r"^\s*([A-Za-z0-9_.\-]+(?:\[[^\]]+\])?)\s*==\s*([^
 
 @dataclass(frozen=True)
 class OsvPackage:
-    """One pinned dependency resolved from a manifest file."""
+    """Một dependency đã ghim được resolve từ file manifest."""
 
     ecosystem: str
     name: str
     version: str
-    manifest: str  # checkout-relative POSIX path of the manifest file
+    manifest: str  # đường dẫn POSIX tương đối so với thư mục checkout của file manifest
 
 
 def _local(tag: str) -> str:
@@ -65,10 +65,10 @@ def _local(tag: str) -> str:
 
 
 def parse_pom_xml(text: str, *, manifest: str) -> list[OsvPackage]:
-    """Parse Maven ``pom.xml`` dependencies into OSV packages (ecosystem Maven)."""
-    # stdlib ElementTree does not fetch external entities, but internal
-    # ``<!ENTITY`` expansions (billion laughs) come from the scanned repo
-    # itself, so refuse entity declarations outright before parsing.
+    """Phân tích các dependency trong ``pom.xml`` của Maven thành các package OSV (ecosystem Maven)."""
+    # Thư viện chuẩn ElementTree không lấy các thực thể bên ngoài, nhưng các phép mở rộng
+    # ``<!ENTITY`` nội bộ (billion laughs) đến từ chính repository được quét,
+    # vì vậy từ chối thẳng thừng các khai báo entity trước khi phân tích cú pháp.
     if "<!ENTITY" in text.upper():
         return []
     try:
@@ -95,12 +95,12 @@ def parse_pom_xml(text: str, *, manifest: str) -> list[OsvPackage]:
 
 
 def _package_lock_name(key: str) -> str:
-    # npm v7+ keys look like "node_modules/a" (nested: "node_modules/a/node_modules/b").
+    # các khóa npm v7+ có dạng "node_modules/a" (lồng nhau: "node_modules/a/node_modules/b").
     return key.split("node_modules/")[-1] if "node_modules/" in key else key
 
 
 def parse_package_lock(data: dict[str, Any], *, manifest: str) -> list[OsvPackage]:
-    """Parse ``package-lock.json`` (v7+ ``packages`` or legacy ``dependencies``)."""
+    """Phân tích ``package-lock.json`` (``packages`` từ v7+ hoặc ``dependencies`` cũ)."""
     packages: list[OsvPackage] = []
     nested = data.get("packages")
     if isinstance(nested, dict):
@@ -134,7 +134,7 @@ def parse_package_lock(data: dict[str, Any], *, manifest: str) -> list[OsvPackag
 
 
 def parse_requirements_txt(text: str, *, manifest: str) -> list[OsvPackage]:
-    """Parse ``requirements.txt`` ``name==version`` pins (ecosystem PyPI)."""
+    """Phân tích các ghim ``name==version`` trong ``requirements.txt`` (ecosystem PyPI)."""
     packages: list[OsvPackage] = []
     for raw_line in text.splitlines():
         line = raw_line.split("#", 1)[0].split(";", 1)[0].strip().strip("\"'")
@@ -154,11 +154,11 @@ def parse_requirements_txt(text: str, *, manifest: str) -> list[OsvPackage]:
 
 
 def collect_packages(workdir: str | Path) -> tuple[list[OsvPackage], list[str]]:
-    """Collect pinned packages from every manifest under *workdir*.
+    """Thu thập các package đã ghim từ mọi manifest dưới *workdir*.
 
-    Returns ``(packages, manifests)`` where ``manifests`` are the
-    checkout-relative POSIX paths of manifest files found (even unparsable
-    ones). Packages are deduplicated and sorted for deterministic queries.
+    Trả về ``(packages, manifests)`` trong đó ``manifests`` là các đường dẫn
+    POSIX tương đối so với checkout của các file manifest tìm thấy (kể cả file
+    không thể parse). Các package được khử trùng lặp và sắp xếp để truy vấn tất định.
     """
     root = Path(workdir)
     packages: list[OsvPackage] = []
@@ -225,7 +225,7 @@ def _cvss_to_severity(score: float | None) -> Severity | None:
 
 
 def _severity_from_vuln(vuln: dict[str, Any]) -> tuple[Severity, str | None]:
-    """Map an OSV vuln entry to contract Severity (default HIGH when no CVSS)."""
+    """Ánh xạ một mục vuln OSV sang Severity của contract (mặc định HIGH khi không có CVSS)."""
     best: float | None = None
     named: Severity | None = None
 
@@ -280,8 +280,8 @@ def map_osv_response(
     tool_version: str,
     source_snapshot: str,
 ) -> list[Observation]:
-    """Map an OSV ``querybatch`` response to observations aligned with *queries*."""
-    del source_snapshot  # manifest path is the location; snapshot lives on coverage.
+    """Ánh xạ response ``querybatch`` của OSV thành các observation căn chỉnh theo *queries*."""
+    del source_snapshot  # đường dẫn manifest là vị trí; snapshot nằm trong độ bao phủ.
     now = datetime.now(UTC)
     observations: list[Observation] = []
     results = response.get("results", [])
@@ -332,7 +332,7 @@ def query_osv(
     timeout: float = REQUEST_TIMEOUT,
     batch_size: int = BATCH_SIZE,
 ) -> list[dict[str, Any]]:
-    """POST *packages* to OSV ``querybatch``; returns per-query result entries."""
+    """POST *packages* tới ``querybatch`` của OSV; trả về các mục kết quả theo từng truy vấn."""
     entries: list[dict[str, Any]] = []
     for start in range(0, len(packages), batch_size):
         chunk = packages[start : start + batch_size]
@@ -385,7 +385,7 @@ def _coverage_for_manifests(
 
 
 class OSVAdapter(ScannerAdapter):
-    """OSV.dev dependency-CVE lookup (dependency track, no local binary)."""
+    """Tra cứu dependency-CVE trên OSV.dev (luồng dependency, không dùng binary cục bộ)."""
 
     tool = ToolName.OWASP_DEPENDENCY_CHECK
     binary_name = "osv.dev"
@@ -454,7 +454,7 @@ class OSVAdapter(ScannerAdapter):
         try:
             entries = query_osv(packages)
         except (httpx.HTTPError, OSError, TimeoutError, ValueError) as exc:
-            # offline or API failure -> degraded, never raise
+            # lỗi offline hoặc lỗi API -> giảm cấp, không bao giờ ném ngoại lệ
             return self._skipped_offline(spec, started, f"osv.dev unreachable: {exc}")
 
         finished = datetime.now(UTC)

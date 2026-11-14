@@ -1,15 +1,15 @@
-"""Project-local ``.env`` management for API keys and provider settings.
+"""Quản lý file ``.env`` cục bộ của dự án cho API key và cài đặt provider.
 
-Keys stay in the process environment (never embedded in reports or model
-transcripts). This helper persists them to a gitignored ``.env`` file so a
-first-time user can save a key once instead of exporting it every shell.
+Các key nằm trong môi trường tiến trình (không bao giờ nhúng vào báo cáo hoặc bản ghi
+tra cứu của model). Helper này lưu chúng vào một file ``.env`` được gitignore để
+người dùng lần đầu có thể lưu key một lần thay vì phải export ở mỗi phiên shell.
 
-Security notes:
+Ghi chú bảo mật:
 
-- The ``.env`` file is created with owner-only permissions (0600 on POSIX).
-- Values are never logged; :func:`mask_secret` renders a safe placeholder.
-- Existing process-environment values always win over the file, so CI
-  secret injection keeps working.
+- File ``.env`` được tạo với quyền chỉ dành cho chủ sở hữu (0600 trên POSIX).
+- Các giá trị không bao giờ được log; :func:`mask_secret` hiển thị placeholder an toàn.
+- Các giá trị môi trường tiến trình hiện có luôn được ưu tiên hơn file, nhờ đó việc chèn
+  secret trong CI tiếp tục hoạt động bình thường.
 """
 
 from __future__ import annotations
@@ -21,17 +21,17 @@ _ENV_FILENAME = ".env"
 
 
 def mask_secret(value: str) -> str:
-    """Return a display-safe placeholder that never contains the value."""
+    """Trả về placeholder hiển thị an toàn không bao giờ chứa giá trị thực."""
     if not value:
         return ""
     return "•••••••• (saved)"
 
 
 def find_project_root(start: Path | str | None = None) -> Path:
-    """Walk up from *start* to the directory holding ``pyproject.toml``.
+    """Duyệt ngược từ *start* lên thư mục chứa ``pyproject.toml``.
 
-    Falls back to the current working directory when no marker is found
-    (e.g. a portable install without the repo layout).
+    Dự phòng bằng thư mục làm việc hiện tại khi không tìm thấy tệp đánh dấu
+    (ví dụ: bản cài đặt portable không theo cấu trúc repo).
     """
     current = Path(start or Path.cwd()).resolve()
     for candidate in (current, *current.parents):
@@ -41,10 +41,10 @@ def find_project_root(start: Path | str | None = None) -> Path:
 
 
 class EnvFile:
-    """Minimal ``KEY=value`` reader/writer for the project ``.env`` file.
+    """Trình đọc/ghi định dạng ``KEY=value`` tối giản cho file ``.env`` của dự án.
 
-    Only the flat ``KEY=value`` shape is managed; comments and blank lines
-    are preserved verbatim. Values with spaces or ``#`` are double-quoted.
+    Chỉ cấu trúc phẳng ``KEY=value`` được quản lý; các chú thích và dòng trống
+    được giữ nguyên vẹn. Các giá trị có khoảng trắng hoặc ký tự ``#`` được đặt trong dấu ngoặc kép.
     """
 
     def __init__(self, path: Path | str | None = None) -> None:
@@ -92,7 +92,7 @@ class EnvFile:
         return self.path
 
     def load_into_environ(self) -> list[str]:
-        """Copy stored keys into ``os.environ`` without overriding it."""
+        """Sao chép các key đã lưu vào ``os.environ`` mà không ghi đè nó."""
         loaded: list[str] = []
         for key, value in self._read_pairs():
             if key and value and key not in os.environ:
@@ -100,7 +100,7 @@ class EnvFile:
                 loaded.append(key)
         return loaded
 
-    # -- internals ------------------------------------------------------
+    # -- các hàm nội bộ -------------------------------------------------
 
     def _read_lines(self) -> list[str]:
         if not self.path.is_file():

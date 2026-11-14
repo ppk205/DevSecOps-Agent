@@ -1,10 +1,10 @@
-"""Native regex taint-hunt engine: taint flow without Semgrep or a model.
+"""Engine tìm kiếm vết bẩn (taint-hunt) regex thuần: luồng vết bẩn không dùng Semgrep hoặc model.
 
-Rule packs live in ``rules/<family>.json`` in two shapes: the port shape
-(``{"language": ..., "rules": [...]}`` with sink ``patterns`` ported from
-``src/vulnscan/scanners/rules/*.yml``, given family default
-sources/sanitizers) and the taint shape (a JSON list with
-``sources``/``sinks``/``sanitizers``). See
+Các rule pack nằm trong ``rules/<family>.json`` theo hai cấu trúc: dạng cổng chuyển
+(``{"language": ..., "rules": [...]}`` với sink ``patterns`` được chuyển từ
+``src/vulnscan/scanners/rules/*.yml``, sử dụng sources/sanitizers mặc định
+của họ đó) và dạng taint (danh sách JSON chứa
+``sources``/``sinks``/``sanitizers``). Xem
 :mod:`vulnscan.native_hunt.taint`.
 """
 

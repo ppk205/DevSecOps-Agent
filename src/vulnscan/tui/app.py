@@ -1,4 +1,4 @@
-"""Keyboard-accessible persistent scan workspace (FR-71, QR-21)."""
+"""Không gian làm việc quét liên tục hỗ trợ điều hướng bàn phím (FR-71, QR-21)."""
 
 from __future__ import annotations
 
@@ -53,7 +53,7 @@ ReviewSignature = tuple[str, str, str | None, dict[str, Any], str, str]
 
 
 class DetailPane(VerticalScroll):
-    """An explicitly focused review/evidence reader with visible keyboard hints."""
+    """Trình đọc bằng chứng/đánh giá được focus rõ ràng với gợi ý phím tắt trực quan."""
 
     BINDINGS: ClassVar = [
         Binding("pageup", "page_up", "Scroll up"),
@@ -365,7 +365,7 @@ class ScanApp(App[None]):
         self.call_after_refresh(self.enable_edits)
 
     def _post_ui(self, callback: Callable[..., Any], *args: Any, **kwargs: Any) -> None:
-        """Deliver worker updates through the UI queue while its screen exists."""
+        """Chuyển tiếp cập nhật từ worker qua hàng đợi UI trong khi màn hình của nó còn tồn tại."""
         self.post_message(self.UiUpdate(callback, args, kwargs))
 
     def on_scan_app_ui_update(self, message: UiUpdate) -> None:
@@ -534,9 +534,9 @@ class ScanApp(App[None]):
         self._post_ui(self.apply_keys_list, names)
 
     def apply_keys_list(self, names: list[str]) -> None:
-        # Runs on the UI thread via call_from_thread. The worker that calls this
-        # can outlive the screen (app closing, test teardown), and a worker
-        # exception takes the whole app down with it — so never query blindly.
+        # Chạy trên UI thread qua call_from_thread. Worker gọi hàm này
+        # có thể sống lâu hơn màn hình (khi app đang đóng, teardown test), và exception từ worker
+        # sẽ làm sập toàn bộ ứng dụng — vì vậy không bao giờ truy vấn một cách mù quáng.
         target = self._keys_widget()
         if target is None:
             return
@@ -545,7 +545,7 @@ class ScanApp(App[None]):
         )
 
     def _keys_widget(self) -> Static | None:
-        """Return the keys list widget, or None when the screen is gone."""
+        """Trả về widget danh sách khóa, hoặc None khi màn hình không còn."""
         if not self.screen_stack:
             return None
         try:
@@ -569,7 +569,7 @@ class ScanApp(App[None]):
             status.update(message)
 
     def _keys_status_widget(self) -> Static | None:
-        """Return the keys status widget, or None when the screen is gone."""
+        """Trả về widget trạng thái khóa, hoặc None khi màn hình không còn."""
         if not self.screen_stack:
             return None
         try:
@@ -581,8 +581,8 @@ class ScanApp(App[None]):
         if not self.screen_stack:
             return
         screen = self.screen_stack[0]
-        # Clear the secret from the form only if the user has not started
-        # typing a different key while the worker was running.
+        # Chỉ xóa secret khỏi biểu mẫu nếu người dùng chưa bắt đầu
+        # nhập một khóa khác trong khi worker đang chạy.
         try:
             if (
                 screen.query_one("#key-name", Input).value == name

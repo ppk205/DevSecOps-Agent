@@ -1,8 +1,8 @@
-"""ScanSpecification — the immutable input contract for a scan run.
+"""ScanSpecification — hợp đồng đầu vào bất biến cho một lần quét.
 
-Every downstream module (intake, scanners, normalization, assessment,
-validation, reporting) reads its configuration from this single record.
-Changes to a scan spec after creation require a new run.
+Mọi module phía sau (intake, scanner, normalization, assessment, validation,
+reporting) đều đọc cấu hình của nó từ bản ghi duy nhất này. Mọi thay đổi đối
+với scan spec sau khi tạo đều yêu cầu một lần chạy mới.
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ from .enums import ToolName
 
 
 class ToolConfig(VersionedModel):
-    """Per-tool configuration embedded inside a scan specification."""
+    """Cấu hình cho từng công cụ được nhúng bên trong một scan specification."""
 
     tool: ToolName = Field(
         ...,
@@ -38,10 +38,10 @@ class ToolConfig(VersionedModel):
 
 
 class ScanSpecification(VersionedModel):
-    """Describes everything needed to reproduce a scan run.
+    """Mô tả mọi thứ cần thiết để tái lập một lần quét.
 
-    Once a run is queued the spec is frozen; the runner persists a snapshot
-    with the :class:`RunManifest` so the exact input is recoverable.
+    Khi một lần chạy được đưa vào hàng đợi, spec sẽ bị đóng băng; runner lưu trữ
+    một ảnh chụp nhanh cùng với :class:`RunManifest` để có thể phục hồi chính xác dữ liệu đầu vào.
     """
 
     run_id: str | None = Field(
@@ -60,7 +60,7 @@ class ScanSpecification(VersionedModel):
     @field_validator("target_commit_sha")
     @classmethod
     def _reject_moving_target(cls, v: str) -> str:
-        """A scan must be reproducible, so a moving ref is not a valid pin."""
+        """Một lần quét phải có tính tái lập, vì vậy moving ref không phải là một mã ghim (pin) hợp lệ."""
         if v.strip().upper() in {"HEAD", "MAIN", "MASTER", "TRUNK"}:
             raise ValueError(
                 f"target_commit_sha must be a pinned commit SHA, not a moving branch ref ({v!r})"
@@ -90,11 +90,7 @@ class ScanSpecification(VersionedModel):
     )
     tools: list[ToolConfig] = Field(
         default_factory=lambda: [
-            ToolConfig(tool=ToolName.SEMGREP),
-            ToolConfig(tool=ToolName.SPOTBUGS, enabled=False),
-            ToolConfig(tool=ToolName.OWASP_DEPENDENCY_CHECK, enabled=False),
-            ToolConfig(tool=ToolName.GITLEAKS, enabled=False),
-            ToolConfig(tool=ToolName.CODEQL, enabled=False),
+            ToolConfig(tool=ToolName.NATIVE_HUNT),
         ],
         description="Tool configurations for this run.",
     )

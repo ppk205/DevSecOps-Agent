@@ -22,7 +22,7 @@ export function App() {
         <Route path="reports" element={<ReportsPage />} />
         <Route path="logs" element={<LogsPage />} />
         <Route path="keys" element={<KeysPage />} />
-        {/* Hidden styleguide — reachable directly, absent from nav. */}
+        {/* Styleguide ẩn — có thể truy cập trực tiếp, không có trong nav. */}
         <Route path="styleguide" element={<StyleguidePage />} />
         <Route path="*" element={<PlaceholderPage title="Not found" subtitle="No route matches this path." />} />
       </Route>

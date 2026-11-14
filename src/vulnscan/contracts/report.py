@@ -1,7 +1,7 @@
-"""ReportExport and SARIFReport — report contracts shared by backend, UI, and evaluator.
+"""ReportExport và SARIFReport — các hợp đồng báo cáo dùng chung bởi backend, UI và evaluator.
 
-Exports SARIF 2.1.0, JSON, and human-readable HTML/Markdown.  Confirmed,
-rejected, unresolved, and unprocessed counts are kept distinct everywhere.
+Xuất SARIF 2.1.0, JSON và HTML/Markdown dễ đọc cho con người. Số lượng các mục
+confirmed, rejected, unresolved và unprocessed được giữ tách biệt ở mọi nơi.
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ from .enums import ExportFormat, Severity
 
 
 class FindingCounts(VersionedModel):
-    """Count buckets that must stay distinct in every report."""
+    """Các nhóm đếm số lượng (count buckets) phải được giữ tách biệt trong mọi báo cáo."""
 
     total: int = Field(default=0, description="All findings.", ge=0)
     confirmed: int = Field(default=0, description="Validated as real.", ge=0)
@@ -26,12 +26,12 @@ class FindingCounts(VersionedModel):
     unprocessed: int = Field(default=0, description="Not yet triaged or assessed.", ge=0)
 
     def validate_counts(self) -> bool:
-        """True if the status buckets partition the total."""
+        """True nếu các nhóm trạng thái phân chia chính xác tổng số."""
         return self.confirmed + self.rejected + self.unresolved + self.unprocessed == self.total
 
 
 class ReportExport(VersionedModel):
-    """One exported report artifact with its summary metadata."""
+    """Một artifact báo cáo đã xuất kèm theo metadata tóm tắt của nó."""
 
     export_id: str = Field(
         ...,
@@ -71,12 +71,12 @@ class ReportExport(VersionedModel):
     )
 
     def validate_consistency(self) -> bool:
-        """True if internal consistency checks pass."""
+        """True nếu các kiểm tra tính nhất quán nội bộ thành công."""
         return self.counts.validate_counts()
 
 
 class SarifLocation(VersionedModel):
-    """A SARIF 2.1.0 physical location."""
+    """Một vị trí vật lý SARIF 2.1.0."""
 
     file_path: str = Field(..., description="Repository-relative file path.")
     line_start: int | None = Field(default=None, description="1-based start line.", ge=1)
@@ -87,7 +87,7 @@ class SarifLocation(VersionedModel):
 
 
 class SarifResult(VersionedModel):
-    """One SARIF 2.1.0 result entry."""
+    """Một mục kết quả SARIF 2.1.0."""
 
     rule_id: str = Field(..., description="Rule identifier.")
     rule_name: str | None = Field(default=None, description="Human-readable rule name.")
@@ -109,10 +109,10 @@ class SarifResult(VersionedModel):
 
 
 class SarifReport(VersionedModel):
-    """SARIF 2.1.0 log-file envelope.
+    """Lớp vỏ (envelope) tệp log SARIF 2.1.0.
 
-    Field names mirror the SARIF spec so the serialized object can be written
-    to disk with minimal transformation.
+    Tên các trường phản ánh đặc tả SARIF để đối tượng đã tuần tự hóa có thể
+    được ghi vào đĩa với sự chuyển đổi tối thiểu.
     """
 
     version: str = Field(
@@ -139,7 +139,7 @@ class SarifReport(VersionedModel):
     )
 
     def to_sarif_dict(self) -> dict[str, Any]:
-        """Return a SARIF 2.1.0 log object using standard wire-property names."""
+        """Trả về một đối tượng log SARIF 2.1.0 sử dụng các tên thuộc tính truyền tải tiêu chuẩn."""
         levels = {
             Severity.CRITICAL: "error",
             Severity.HIGH: "error",

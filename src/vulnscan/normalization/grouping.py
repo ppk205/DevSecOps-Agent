@@ -1,8 +1,8 @@
-"""Conservative grouping of observations into findings.
+"""Nhóm các observation thành finding một cách thận trọng.
 
-Grouping key: (file_path, line_start, cwe_category). Same-CWE findings at
-*different* sites stay distinct. All contributing observations are preserved
-on the resulting Finding. Grouping never invents coordinates or CWEs.
+Khóa nhóm: (file_path, line_start, cwe_category). Các finding có cùng CWE ở
+vị trí *khác nhau* vẫn được giữ tách biệt. Tất cả observation đóng góp đều được bảo toàn
+trên Finding kết quả. Quá trình nhóm không bao giờ tự tạo tọa độ hoặc CWE.
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ from vulnscan.contracts import (
 
 
 def _group_key(obs: Observation) -> tuple[str, int, str]:
-    """(file_path, line_start, cwe) — the minimal stable grouping key."""
+    """(file_path, line_start, cwe) — khóa nhóm ổn định tối thiểu."""
     loc = obs.location
     file_path = loc.file_path if loc else ""
     line_start = loc.line_start if loc else 0
@@ -32,7 +32,7 @@ def _group_key(obs: Observation) -> tuple[str, int, str]:
 
 
 def _highest_severity(observations: list[Observation]) -> Severity:
-    """The most severe observation in the group (undetermined if empty)."""
+    """Observation nghiêm trọng nhất trong nhóm (undetermined nếu rỗng)."""
     order = {
         Severity.UNDETERMINED: 0,
         Severity.INFO: 1,
@@ -47,7 +47,7 @@ def _highest_severity(observations: list[Observation]) -> Severity:
 
 
 def _fingerprint(key: tuple[str, int, str], observations: list[Observation]) -> str:
-    """Stable SHA-256 fingerprint: location + cwe + sorted rule ids."""
+    """Fingerprint SHA-256 ổn định: location + cwe + sorted rule ids."""
     h = hashlib.sha256()
     h.update("|".join(str(x) for x in key).encode("utf-8"))
     for rule_id in sorted(o.rule_id for o in observations):
@@ -69,11 +69,11 @@ def group_findings(
     observations: list[Observation],
     run_id: str = "",
 ) -> list[Finding]:
-    """Group observations by (file, line, cwe) into Finding objects.
+    """Nhóm các observation theo (file, line, cwe) thành các đối tượng Finding.
 
-    Observations that share a key are merged into one Finding. Provenance is
-    preserved: every contributing observation is kept, and a FindingGroup
-    records which tool + observations produced it.
+    Các observation có chung một khóa sẽ được gộp thành một Finding. Nguồn gốc
+    được bảo toàn: mọi observation đóng góp đều được giữ lại, và FindingGroup
+    sẽ ghi lại công cụ + observation nào đã tạo ra nó.
     """
     groups: dict[tuple[str, int, str], list[Observation]] = defaultdict(list)
     for obs in observations:
@@ -92,8 +92,8 @@ def group_findings(
             fingerprint=fp,
             title=_title_for(key, obs_list),
             description=obs_list[0].message,
-            # A finding always carries a category; unclassified is a real value,
-            # never a missing field.
+            # Một finding luôn mang một category; unclassified là một giá trị thực tế,
+            # không bao giờ là một trường bị thiếu.
             cwe_category=cwe or CWECategory.UNCLASSIFIED,
             severity=_highest_severity(obs_list),
             status=FindingStatus.UNPROCESSED,
@@ -121,7 +121,7 @@ def group_findings(
         ]
         findings.append(finding)
 
-    # A finding confirmed by more than one distinct tool has stronger evidence.
+    # Một finding được xác nhận bởi nhiều công cụ riêng biệt sẽ có bằng chứng mạnh hơn.
     tool_sets = {f.finding_id: {t.value for t in f.groups[0].tool_names} for f in findings}
     for f in findings:
         if len(tool_sets[f.finding_id]) > 1:

@@ -1,12 +1,12 @@
-"""EvaluationCase — evaluator-only case record (ACC-05–07).
+"""EvaluationCase — bản ghi ca chỉ dành riêng cho evaluator (ACC-05–07).
 
-Expected labels, fixed-variant references, split membership, and evaluation
-judgments belong ONLY to the evaluator.  Scanners and agents analyze each
-variant independently; the runner receives an opaque variant and reviewed
-procedure, and the evaluator pairs observations afterwards.
+Các nhãn dự kiến, tham chiếu biến thể đã sửa, tư cách thành viên phân chia tập dữ liệu,
+và các phán đoán đánh giá CHỈ thuộc về evaluator. Scanner và agent phân tích từng biến
+thể một cách độc lập; runner nhận một biến thể ẩn danh và quy trình đã được rà soát,
+sau đó evaluator sẽ ghép cặp các observation.
 
-These records must never be exposed through the inference contracts or mounts
-— hiding them only in prompts is insufficient.
+Các bản ghi này không bao giờ được lộ ra qua các hợp đồng suy luận hoặc điểm gắn kết (mounts)
+— việc chỉ ẩn chúng trong prompt là không đủ.
 """
 
 from __future__ import annotations
@@ -26,7 +26,7 @@ from .enums import (
 
 
 class MatchingCriteria(VersionedModel):
-    """Rules for pairing an evaluation case with a produced finding."""
+    """Các quy tắc để ghép cặp một ca đánh giá với một finding được tạo ra."""
 
     match_by_fingerprint: bool = Field(
         default=True,
@@ -56,7 +56,7 @@ class MatchingCriteria(VersionedModel):
 
 
 class ReviewJudgment(VersionedModel):
-    """One human review judgment on a case or label dispute."""
+    """Một phán đoán rà soát của con người về một trường hợp hoặc tranh chấp nhãn."""
 
     reviewer: str = Field(
         ...,
@@ -77,11 +77,11 @@ class ReviewJudgment(VersionedModel):
 
 
 class EvaluationCase(VersionedModel):
-    """One case in the evaluation dataset.  Evaluator-only.
+    """Một ca trong tập dữ liệu đánh giá. Chỉ dành cho evaluator.
 
-    Case families keep related variants together; renaming or relocating a
-    flow creates a correlated regression variant, not a new independent
-    research example.
+    Các case family giữ các biến thể liên quan lại với nhau; việc đổi tên hoặc
+    chuyển vị trí một luồng sẽ tạo ra một biến thể hồi quy tương quan, chứ không
+    phải một ví dụ nghiên cứu độc lập mới.
     """
 
     case_id: str = Field(

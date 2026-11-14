@@ -1,6 +1,6 @@
 import type { Strings } from "./en";
 
-/** VI strings dictionary — mirrors `en` key-for-key (checked by test). */
+/** Từ điển chuỗi VI — đối ứng từng key với `en` (được kiểm tra bằng test). */
 export const vi: Strings = {
   app: {
     name: "PIT WALL",
@@ -90,9 +90,9 @@ export const vi: Strings = {
     recentTargets: "Mục tiêu gần đây",
     profile: "Cấu hình quét",
     fast: "NHANH",
-    fastDetail: "Semgrep + Gitleaks · vài phút",
+    fastDetail: "native-hunt · vài phút",
     deep: "SÂU",
-    deepDetail: "Semgrep + Gitleaks + SpotBugs + ODC · chậm hơn, cần Java + dữ liệu NVD",
+    deepDetail: "native-hunt · quét sâu",
     scanners: "Scanner",
     aiReview: "Đánh giá AI",
     aiOff: "Tắt — đơn định",
@@ -140,7 +140,7 @@ export const vi: Strings = {
     deleteKey: "Xóa",
     noKeys: "Chưa có cấu hình nhà cung cấp nào. Lưu khóa để tạo.",
     scanners: "Công cụ scanner",
-    scannersBody: "Nhị phân resolved trên PATH. DETECT kiểm tra lại sự hiện diện; VERIFY còn thăm dò phiên bản.",
+    scannersBody: "Scanner nội bộ tích hợp sẵn (native-hunt). DETECT kiểm tra lại trạng thái; VERIFY thăm dò phiên bản.",
     detect: "Phát hiện",
     verify: "Xác minh",
     usage: "Mức dùng & ngân sách",

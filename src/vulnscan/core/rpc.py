@@ -1,7 +1,7 @@
-"""Owned application service over JSON-lines for the Go interface (IR-16).
+"""Dịch vụ ứng dụng phụ thuộc qua JSON-lines cho giao diện Go (IR-16).
 
-EOF cancels active work and waits for evidence persistence. This is a child
-service, never a detached daemon. Stdout contains protocol records only.
+EOF sẽ hủy công việc đang hoạt động và chờ lưu trữ bằng chứng bền vững. Đây là một
+dịch vụ con, không bao giờ là daemon tách rời. Stdout chỉ chứa các bản ghi giao thức.
 """
 
 from __future__ import annotations
@@ -231,16 +231,16 @@ class ServiceRPC:
                 for adapter in self.service.registry.adapters.values()
             ]
         if method == "env_list":
-            # Keys management: return ONLY variable names — values never
-            # cross the RPC boundary (project .env, gitignored).
+            # Quản lý khóa: CHỈ trả về tên biến — các giá trị không bao giờ
+            # vượt qua ranh giới RPC (tệp .env của dự án, nằm trong gitignore).
             from vulnscan.infra.envfile import EnvFile
 
             env = EnvFile()
             return {"names": env.names(), "path": str(env.path)}
         if method == "env_set":
-            # Save a secret to the project-local .env (permissions 0600).
-            # The raw value is accepted here but NEVER returned or logged;
-            # callers must pass it through and drop their copy afterwards.
+            # Lưu một secret vào tệp .env cục bộ của dự án (quyền 0600).
+            # Giá trị thô được chấp nhận ở đây nhưng KHÔNG BAO GIỜ được trả về hoặc ghi log;
+            # các bên gọi phải chuyển tiếp nó và hủy bản sao của mình sau đó.
             from vulnscan.infra.envfile import EnvFile
 
             name = str(params.get("name", "")).strip()
@@ -294,7 +294,7 @@ class ServiceRPC:
         raise ValueError("unsupported service method")
 
     def serve(self) -> None:
-        # Redirect vendor prints process-wide; protocol sends use the original buffer.
+        # Chuyển hướng các lệnh in của bên thứ ba trên toàn tiến trình; việc gửi giao thức sử dụng buffer ban đầu.
         with redirect_stdout(sys.stderr):
             try:
                 while True:

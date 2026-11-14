@@ -16,7 +16,7 @@ import { mockLiveEventsHistory, mockLiveFindings, mockLiveScan } from "./mockLiv
 import { MOCK_GENERAL, MOCK_KEYS, MOCK_TOOLS, MOCK_USAGE } from "./mockPhase2";
 import { mockCompare, mockLogs, mockReports } from "./mockReportsLogs";
 
-/** True when the bundle runs without a backend (VITE_MOCK=1 / --mode mock). */
+/** True khi bundle chạy không có backend (VITE_MOCK=1 / --mode mock). */
 export const isMock: boolean = (import.meta.env.VITE_MOCK ?? "") === "1";
 
 function delay<T>(value: T, ms = 120): Promise<T> {

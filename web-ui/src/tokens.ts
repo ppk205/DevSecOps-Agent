@@ -1,4 +1,4 @@
-/** PIT WALL design tokens — BMW M dark. No BMW logos/wordmark anywhere. */
+/** Các design token của PIT WALL — phong cách BMW M tối. Không có logo/wordmark BMW ở bất kỳ đâu. */
 export const tokens = {
   color: {
     canvas: "#000000",
@@ -9,7 +9,7 @@ export const tokens = {
     hairline: "#3c3c3c",
     ink: "#ffffff",
     body: "#bbbbbb",
-    // WCAG AA on canvas/soft/card/elevated (4.74:1 worst case on #262626).
+    // Đạt WCAG AA trên canvas/soft/card/elevated (4.74:1 trường hợp tệ nhất trên #262626).
     muted: "#909090",
     mBlueLight: "#0066b1",
     mBlueDark: "#1c69d4",

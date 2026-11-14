@@ -1,4 +1,4 @@
-"""Policy layer that turns advisory Laya answers into safe next-step routes."""
+"""Lớp chính sách chuyển các câu trả lời khuyến nghị của Laya thành các route bước tiếp theo an toàn."""
 
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ from vulnscan.decisions.protocol import (
 
 _ROUTE_ANSWER = "recommended_action"
 
-# Lanes that cost real analyst time, so they must be earned, not guessed.
+# Các lane làm tiêu tốn thời gian thực của chuyên viên phân tích, vì vậy chúng phải đạt yêu cầu chứ không được phỏng đoán.
 _SPECIALISED_LANES = frozenset(
     {
         "fast_verification",
@@ -30,8 +30,8 @@ _SPECIALISED_LANES = frozenset(
     }
 )
 
-# A lane is only trusted when the model is clearly on top. Below these the
-# probabilities are near-flat and the choice is noise.
+# Một lane chỉ được tin cậy khi model thể hiện vượt trội rõ ràng. Dưới các mức này,
+# xác suất gần như ngang nhau và sự lựa chọn chỉ là nhiễu.
 DOMINANT_PROBABILITY: Final[float] = 0.55
 DOMINANT_MARGIN: Final[float] = 0.20
 
@@ -49,7 +49,7 @@ _ROUTE_NAMES = {
 
 
 def _top_two(probabilities: dict[str, float]) -> tuple[float | None, float | None]:
-    """Return the two highest lane probabilities, highest first."""
+    """Trả về hai xác suất lane cao nhất, giá trị cao nhất đứng trước."""
     values = sorted((p for p in probabilities.values()), reverse=True)
     if not values:
         return None, None
@@ -57,7 +57,7 @@ def _top_two(probabilities: dict[str, float]) -> tuple[float | None, float | Non
 
 
 class DecisionRouter:
-    """Apply deterministic route policy without mutating finding status."""
+    """Áp dụng chính sách route tất định mà không thay đổi finding status."""
 
     def __init__(
         self,

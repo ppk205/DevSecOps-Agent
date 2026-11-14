@@ -1,8 +1,8 @@
-"""Observation, Finding, and FindingGroup — the core detection and consolidation models.
+"""Observation, Finding, và FindingGroup — các mô hình phát hiện và hợp nhất cốt lõi.
 
-Deduplication is conservative: location, weakness, and source/sink evidence
-must all match.  Observations are never merged solely because CWE labels match;
-all contributing observations are preserved on the resulting Finding.
+Khử trùng lặp mang tính thận trọng: vị trí, điểm yếu, và bằng chứng source/sink đều
+phải khớp nhau. Các observation không bao giờ được gộp chỉ vì nhãn CWE trùng khớp;
+tất cả các observation đóng góp đều được giữ lại trên Finding kết quả.
 """
 
 from __future__ import annotations
@@ -25,7 +25,7 @@ from .enums import (
 
 
 class SourceCoordinate(VersionedModel):
-    """A location in source code, robust across normalization and export."""
+    """Một vị trí trong mã nguồn, bền vững qua quá trình chuẩn hóa và xuất dữ liệu."""
 
     file_path: str = Field(
         ...,
@@ -65,7 +65,7 @@ class SourceCoordinate(VersionedModel):
     )
 
     def as_string(self) -> str:
-        """Canonical one-line form, e.g. 'Foo.java:42:10'."""
+        """Dạng một dòng chuẩn hóa (canonical), ví dụ: 'Foo.java:42:10'."""
         out = f"{self.file_path}:{self.line_start}"
         if self.column_start is not None:
             out += f":{self.column_start}"
@@ -73,9 +73,9 @@ class SourceCoordinate(VersionedModel):
 
 
 class Observation(VersionedModel):
-    """One raw finding as emitted by a single scanner.
+    """Một finding thô được phát ra bởi một scanner đơn lẻ.
 
-    Observations are immutable once persisted; consolidation works on copies.
+    Các observation là bất biến sau khi được lưu; việc hợp nhất thao tác trên các bản sao.
     """
 
     observation_id: str = Field(
@@ -146,15 +146,15 @@ class Observation(VersionedModel):
     )
 
     def fingerprint(self) -> str:
-        """Stable per-observation identity: tool + rule + location + dependency."""
+        """Định danh ổn định cho từng observation: tool + rule + location + dependency."""
         return f"{self.tool.value}|{self.rule_id}|{self.location.as_string()}|{self.dependency_identity or ''}"
 
 
 class FindingGroup(VersionedModel):
-    """A group of observations consolidated into one finding.
+    """Một nhóm các observation được hợp nhất thành một finding.
 
-    Grouping requires matching location, weakness, and source/sink evidence —
-    never CWE labels alone.
+    Việc nhóm yêu cầu phải khớp vị trí, điểm yếu và bằng chứng source/sink —
+    không bao giờ chỉ dựa vào nhãn CWE.
     """
 
     group_id: str = Field(
@@ -196,10 +196,10 @@ class FindingGroup(VersionedModel):
 
 
 class Finding(VersionedModel):
-    """A consolidated, human-visible finding.
+    """Một finding đã hợp nhất, hiển thị cho người dùng.
 
-    ``status`` moves only via :class:`~vulnscan.contracts.validation.ValidationDecision`;
-    an AI assessment may not write CONFIRMED or REJECTED directly.
+    ``status`` chỉ thay đổi thông qua :class:`~vulnscan.contracts.validation.ValidationDecision`;
+    đánh giá AI không được ghi trực tiếp CONFIRMED hoặc REJECTED.
     """
 
     finding_id: str = Field(

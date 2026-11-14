@@ -106,7 +106,7 @@ describe("NotificationsBell", () => {
     fireEvent.click(screen.getByTestId("notifications-bell"));
     expect(await screen.findByTestId("notifications-panel")).toBeInTheDocument();
     expect(screen.getByTestId("notification-1")).toHaveTextContent("Scan #7 completed");
-    // Read notification has no ack button; unread one does.
+    // Thông báo đã đọc không có nút ack; thông báo chưa đọc thì có.
     expect(screen.queryByTestId("notification-ack-2")).not.toBeInTheDocument();
     fireEvent.click(screen.getByTestId("notification-ack-1"));
     await waitFor(() => expect(mockedAck).toHaveBeenCalledWith(1));

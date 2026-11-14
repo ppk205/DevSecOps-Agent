@@ -1,7 +1,7 @@
-"""Fake scanner adapter for platform tests (no real tool required).
+"""Adapter scanner giả lập phục vụ kiểm thử nền tảng (không yêu cầu công cụ thực tế).
 
-Returns a canned ScannerResult so the job lifecycle can be exercised
-end-to-end without Semgrep/SpotBugs installed.
+Trả về một ScannerResult dựng sẵn để có thể kiểm thử toàn trình vòng đời của job
+mà không cần cài đặt Semgrep/SpotBugs.
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ from .base import AdapterCapability, ScannerAdapter
 
 
 class FakeScannerAdapter(ScannerAdapter):
-    """Deterministic canned results."""
+    """Các kết quả dựng sẵn có tính tất định."""
 
     tool = ToolName.SEMGREP
     binary_name = "fake-scanner"

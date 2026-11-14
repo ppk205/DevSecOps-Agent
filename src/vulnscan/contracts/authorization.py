@@ -1,8 +1,8 @@
-"""AuthorizationPolicyRef — declared authorization policy for target roles (ACC-03).
+"""AuthorizationPolicyRef — chính sách phân quyền được khai báo cho các role đích (ACC-03).
 
-Both students independently review intended permissions; observed implementation
-cannot define its own correctness.  Missing or disputed policy leaves affected
-findings unresolved.
+Cả hai sinh viên đều độc lập rà soát các quyền dự kiến; việc triển khai được quan
+sát không thể tự xác định tính đúng đắn của nó. Chính sách bị thiếu hoặc đang tranh
+chấp sẽ khiến các finding bị ảnh hưởng ở trạng thái chưa giải quyết (unresolved).
 """
 
 from __future__ import annotations
@@ -20,7 +20,7 @@ from .enums import (
 
 
 class MappedRoute(VersionedModel):
-    """A route or enforcement point mapped to an authorization-policy entry."""
+    """Một route hoặc điểm thực thi (enforcement point) được ánh xạ tới một mục authorization-policy."""
 
     http_method: str = Field(
         ...,
@@ -41,10 +41,10 @@ class MappedRoute(VersionedModel):
 
 
 class AuthorizationPolicyRef(VersionedModel):
-    """One entry in the declared authorization policy.
+    """Một mục trong chính sách phân quyền được khai báo.
 
-    Each entry states what a given role is allowed (or assumed) to do on a
-    specific resource type, optionally scoped by an ownership condition.
+    Mỗi mục nêu rõ một role cụ thể được phép (hoặc giả định) làm gì trên một
+    loại tài nguyên cụ thể, tùy ý giới hạn theo điều kiện sở hữu.
     """
 
     policy_id: str = Field(

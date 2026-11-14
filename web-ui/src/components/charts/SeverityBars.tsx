@@ -6,15 +6,15 @@ export interface BarDatum {
   severity: Severity;
 }
 
-/** Hand-drawn SVG bar strip — e.g. findings per severity. No chart library. */
+/** Dải thanh SVG tự vẽ — ví dụ findings theo mức độ nghiêm trọng. Không dùng thư viện biểu đồ. */
 export function SeverityBars({ data }: { data: BarDatum[] }) {
   const max = Math.max(...data.map((d) => d.value), 1);
   const barH = 26;
   const gap = 10;
   const height = data.length * (barH + gap);
   const width = 420;
-  // Long labels (e.g. CWE-UNCLASSIFIED) overflowed the fixed 110px gutter
-  // and the bar painted over the tail. Size the gutter from the longest label.
+  // Các nhãn dài (ví dụ: CWE-UNCLASSIFIED) bị tràn khỏi lề cố định 110px
+  // và thanh đã vẽ đè lên phần đuôi. Kích thước lề được tính theo nhãn dài nhất.
   const labelW = Math.min(
     210,
     Math.max(110, ...data.map((d) => d.label.length * 7 + 16)),

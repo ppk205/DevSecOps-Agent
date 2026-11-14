@@ -7,7 +7,7 @@ import type {
 } from "../api/types";
 import { MOCK_FINDINGS } from "./mockRun";
 
-/** Scripted 8-node live run (mock mode): a running scan at ~70% rail. */
+/** Lượt chạy trực tiếp 8 node theo kịch bản (chế độ mock): một lượt quét đang chạy ở mức ~70% thanh tiến trình. */
 const NOW = "2026-11-01T09:08:30+07:00";
 
 const STAGE_STATUS: { name: string; status: StageSummary["status"]; message: string }[] = [
@@ -38,7 +38,7 @@ export function mockLiveCounts(): Counts {
   return { total: 41, confirmed: 12, rejected: 5, unresolved: 14, unprocessed: 10 };
 }
 
-/** 26-event scripted rail across the 8 nodes (stage/log/ai/verification). */
+/** Thanh tiến trình 26 sự kiện theo kịch bản qua 8 node (stage/log/ai/verification). */
 export const MOCK_LIVE_EVENTS: ScanEvent[] = [
   { seq: 0, kind: "stage", stage: "intake", message: "intake → running", created_at: "2026-11-01T09:00:02+07:00" },
   { seq: 1, kind: "log", stage: "intake", message: "checkout verified at 9f3ac41", created_at: "2026-11-01T09:00:05+07:00" },
@@ -113,7 +113,7 @@ export const MOCK_LIVE_DECISIONS: LiveDecision[] = [
   { finding_id: "mock-f-017", previous_status: "unprocessed", new_status: "rejected", outcome: "blocked" },
 ];
 
-/** Scripted live scan detail for the mock live page (running at 41/60). */
+/** Chi tiết lượt quét trực tiếp theo kịch bản cho trang mock live (đang chạy ở mức 41/60). */
 export function mockLiveScan(scanId: number): LiveScanDetail {
   const counts = mockLiveCounts();
   return {
@@ -138,12 +138,12 @@ export function mockLiveScan(scanId: number): LiveScanDetail {
   };
 }
 
-/** Findings slice backing the mock live results feed (confirmed first). */
+/** Lát cắt findings làm nền tảng cho feed kết quả mock trực tiếp (confirmed trước). */
 export function mockLiveFindings() {
   return MOCK_FINDINGS.slice(0, 12);
 }
 
-/** Events history payload backing the mock live stream + replay. */
+/** Payload lịch sử sự kiện làm nền tảng cho stream mock trực tiếp + phát lại. */
 export function mockLiveEventsHistory(scanId: number) {
   return { run_id: scanId, events: MOCK_LIVE_EVENTS, next_cursor: MOCK_LIVE_EVENTS.length };
 }

@@ -1,8 +1,8 @@
-"""Render the 29 advisory-routed findings as a reviewable adjudication sheet.
+"""Hiển thị 29 finding đã định tuyến khuyến nghị dưới dạng bảng phán quyết có thể xem xét.
 
-Each row carries the exact source line Laya saw, so a human can label
-``expected_route`` by reading code rather than by guessing from a rule name.
-This tool renders; it never labels. Only a person adjudicates.
+Mỗi dòng chứa chính xác dòng mã nguồn mà Laya đã thấy, nhờ đó con người có thể gắn nhãn
+``expected_route`` bằng cách đọc code thay vì phỏng đoán từ tên rule.
+Công cụ này chỉ hiển thị; nó không bao giờ gắn nhãn. Chỉ con người mới có quyền phán quyết.
 """
 
 from __future__ import annotations
@@ -15,10 +15,10 @@ CONTEXT_LINES = 6
 
 
 def _repo_path(file_path: str, repo_root: Path) -> Path | None:
-    """Resolve an absolute scan path back into the checkout, if it is there.
+    """Phân giải đường dẫn quét tuyệt đối trở lại thư mục checkout, nếu nó tồn tại ở đó.
 
-    A scan records absolute paths from whichever machine ran the scanner, so
-    the checkout prefix has to be stripped before the path can be re-resolved.
+    Một lượt quét sẽ ghi lại đường dẫn tuyệt đối từ bất kỳ máy nào đã chạy scanner, do đó
+    phần tiền tố checkout phải được loại bỏ trước khi đường dẫn có thể được phân giải lại.
     """
     if not file_path:
         return None
@@ -44,7 +44,7 @@ def _repo_path(file_path: str, repo_root: Path) -> Path | None:
 def _source_excerpt(
     file_path: str, line_start: int | None, repo_root: Path, context: int = CONTEXT_LINES
 ) -> str | None:
-    """The scanned line plus a little context, or None if unreachable."""
+    """Dòng đã quét kèm một chút ngữ cảnh, hoặc None nếu không thể truy cập."""
     path = _repo_path(file_path, repo_root)
     if path is None or not line_start:
         return None
@@ -66,7 +66,7 @@ def build_sheet(
     repo_root: Path,
     confidence_key: str = "recommended_action",
 ) -> list[dict[str, Any]]:
-    """One reviewable entry per finding, ordered by route then CWE."""
+    """Một mục có thể xem xét cho mỗi finding, được sắp xếp theo route rồi đến CWE."""
     payloads = scan.get("advisory_routing", {}).get("payloads", [])
     findings = {f["finding_id"]: f for f in scan.get("findings", [])}
 
@@ -107,7 +107,7 @@ def build_sheet(
 
 
 def render_text(rows: Sequence[dict[str, Any]], limit: int | None = None) -> str:
-    """Human-readable adjudication sheet."""
+    """Bảng phán quyết cho con người đọc."""
     out: list[str] = []
     shown = rows if limit is None else rows[:limit]
 

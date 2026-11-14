@@ -1,6 +1,6 @@
-"""End-to-end scan pipeline.
+"""Pipeline quét toàn trình (end-to-end).
 
-Architecture (authoritative order, matching the approved design):
+Kiến trúc (thứ tự chuẩn hóa, khớp với thiết kế đã phê duyệt):
 
 ```text
 Deterministic evidence
@@ -14,12 +14,12 @@ Independent validation
 Human decision support   (report + dashboard)
 ```
 
-Guarantees enforced here:
+Các bảo đảm được thực thi tại đây:
 
-* scanner failures are recorded, never raised
-* Laya is advisory: it cannot write a finding status
-* ``IndependentValidator`` is the only writer of final status
-* the baseline completes even when Laya, AI providers, or Docker are missing
+* các lỗi scanner được ghi nhận, không bao giờ ném ngoại lệ
+* Laya chỉ mang tính tư vấn: nó không thể ghi trạng thái finding
+* ``IndependentValidator`` là bên duy nhất có quyền ghi trạng thái cuối cùng
+* baseline luôn hoàn thành ngay cả khi thiếu Laya, các nhà cung cấp AI, hoặc Docker
 """
 
 from __future__ import annotations
@@ -65,12 +65,12 @@ def _utcnow() -> datetime:
 
 
 def _evidence_status(results: Sequence[ScannerResult], errors: Sequence[str]) -> str:
-    """Honest evidence-stage status: never call a failed scanner stage 'completed'.
+    """Trạng thái trung thực của giai đoạn bằng chứng: không bao giờ gọi giai đoạn scanner thất bại là 'completed'.
 
-    * no scanner ran at all -> failed
-    * every scanner failed or was skipped, and nothing was produced -> failed
-    * some scanners worked but others reported errors -> partial
-    * every enabled scanner completed cleanly -> completed
+    * không có scanner nào chạy -> failed
+    * mọi scanner đều thất bại hoặc bị bỏ qua, và không có gì được tạo ra -> failed
+    * một số scanner hoạt động nhưng số khác báo lỗi -> partial
+    * mọi scanner được kích hoạt đều hoàn thành thành công -> completed
     """
     if not results:
         return "failed"
@@ -83,7 +83,7 @@ def _evidence_status(results: Sequence[ScannerResult], errors: Sequence[str]) ->
 
 @dataclass
 class StageRecord:
-    """One pipeline stage outcome; partial is reported honestly."""
+    """Kết quả của một giai đoạn trong pipeline; partial được báo cáo một cách trung thực."""
 
     name: str
     status: str
@@ -103,7 +103,7 @@ class StageRecord:
 
 @dataclass
 class PipelineResult:
-    """Everything a run produced, including honest coverage of failures."""
+    """Toàn bộ kết quả một lượt chạy tạo ra, bao gồm thông tin độ bao phủ trung thực về các lỗi."""
 
     run_id: str
     spec: ScanSpecification
@@ -141,7 +141,7 @@ class PipelineResult:
 
 
 class ScanPipeline:
-    """Deterministic-first pipeline with optional Laya and AI stages."""
+    """Pipeline ưu tiên tính tất định với các giai đoạn Laya và AI tùy chọn."""
 
     def __init__(
         self,
@@ -152,7 +152,7 @@ class ScanPipeline:
         output_dir: str | Path | None = None,
         agent: Any = None,
     ) -> None:
-        # Pydantic already validated the spec at construction time.
+        # Pydantic đã xác thực spec tại thời điểm khởi tạo.
         self.spec = spec
         self.registry = registry or AdapterRegistry.default()
         self.laya_config = laya_config or LayaConfig()
@@ -161,10 +161,10 @@ class ScanPipeline:
         self.cache = DecisionCache()
 
     # ------------------------------------------------------------------ #
-    # Stage 1 — deterministic evidence
+    # Giai đoạn 1 — bằng chứng tất định (deterministic evidence)
     # ------------------------------------------------------------------ #
     def run_scanners(self) -> tuple[list[ScannerResult], StageRecord]:
-        """Execute enabled scanners. A missing tool is data, not an exception."""
+        """Thực thi các scanner được bật. Công cụ bị thiếu là dữ liệu, không phải ngoại lệ."""
         workdir = self.spec.repository_checkout_path or "."
         results: list[ScannerResult] = []
         errors: list[str] = []
@@ -177,7 +177,7 @@ class ScanPipeline:
                 continue
             try:
                 result = adapter.run(self.spec, workdir=workdir)
-            except Exception as exc:  # adapter boundary: record, never propagate
+            except Exception as exc:  # ranh giới adapter: ghi nhận, không bao giờ lan truyền ngoại lệ
                 _LOGGER.exception("scanner %s raised", cfg.tool.value)
                 errors.append(f"{cfg.tool.value}: adapter error {type(exc).__name__}: {exc}")
                 continue
@@ -193,7 +193,7 @@ class ScanPipeline:
 
     @staticmethod
     def build_findings(results: Sequence[ScannerResult], run_id: str) -> list[Finding]:
-        """Normalize, group, and dedupe observations into human-visible findings."""
+        """Chuẩn hóa, nhóm và khử trùng lặp các observation thành các finding người dùng có thể xem được."""
         observations = []
         for result in results:
             observations.extend(normalize_result(result))
@@ -209,10 +209,10 @@ class ScanPipeline:
         return deduplicate_findings(grouped)
 
     # ------------------------------------------------------------------ #
-    # Stage 2 — Laya advisory batch routing
+    # Giai đoạn 2 — định tuyến theo lô mang tính tư vấn của Laya
     # ------------------------------------------------------------------ #
     def run_routing(self, findings: Sequence[Finding]) -> tuple[list[dict[str, Any]], StageRecord]:
-        """Advisory routing only. Never mutates finding status."""
+        """Chỉ định tuyến mang tính tư vấn. Không bao giờ thay đổi trạng thái finding."""
         if not self.laya_config.enabled:
             return [], StageRecord(
                 name=STAGE_ROUTING,
@@ -249,7 +249,7 @@ class ScanPipeline:
                 cache=self.cache if self.laya_config.cache_enabled else None,
                 max_input_tokens=self.laya_config.max_input_tokens,
             )
-        except Exception as exc:  # routing is an optimisation, never a gate
+        except Exception as exc:  # định tuyến là một bước tối ưu hóa, không bao giờ là cổng chặn (gate)
             _LOGGER.exception("laya routing failed")
             return [], StageRecord(
                 name=STAGE_ROUTING,
@@ -271,15 +271,15 @@ class ScanPipeline:
         )
 
     # ------------------------------------------------------------------ #
-    # Stage 3 — targeted deep analysis (optional)
+    # Giai đoạn 3 — phân tích sâu có mục tiêu (tùy chọn)
     # ------------------------------------------------------------------ #
     def run_deep_analysis(
         self, findings: Sequence[Finding], routing: Sequence[dict[str, Any]]
     ) -> tuple[StageRecord, list[dict[str, Any]], list[dict[str, Any]]]:
-        """Investigate routed findings when an agent exists; never raises.
+        """Điều tra các finding đã được định tuyến khi có agent; không bao giờ ném ngoại lệ.
 
-        Returns (stage, assessments, decisions). Without an agent the stage
-        is skipped and the deterministic baseline stands.
+        Trả về (stage, assessments, decisions). Khi không có agent, giai đoạn này
+        sẽ được bỏ qua và baseline tất định vẫn được giữ nguyên.
         """
         from vulnscan.ai.review import build_tool_handlers, evidence_for, pick_review_targets
         from vulnscan.assessment.validator import IndependentValidator
@@ -349,10 +349,10 @@ class ScanPipeline:
         )
 
     # ------------------------------------------------------------------ #
-    # Orchestration
+    # Điều phối (Orchestration)
     # ------------------------------------------------------------------ #
     def run(self) -> PipelineResult:
-        """Execute the full pipeline. Deterministic stages always complete."""
+        """Thực thi toàn bộ pipeline. Các giai đoạn tất định luôn luôn hoàn thành."""
         run_id = self.spec.run_id or f"run-{int(_utcnow().timestamp())}"
 
         results, evidence_stage = self.run_scanners()
@@ -360,8 +360,8 @@ class ScanPipeline:
         routing, routing_stage = self.run_routing(findings)
         deep_stage, assessments, decisions = self.run_deep_analysis(findings, routing)
 
-        # Validation is mechanical: with no assessment/verification input every
-        # finding stays UNPROCESSED and final status remains validator-owned.
+        # Việc xác thực diễn ra hoàn toàn cơ học: nếu không có đầu vào assessment/verification thì mọi
+        # finding vẫn ở trạng thái UNPROCESSED và trạng thái cuối cùng do validator quyết định.
         validation_stage = StageRecord(
             name=STAGE_VALIDATION,
             status="skipped",

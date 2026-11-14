@@ -1,8 +1,8 @@
-"""Phase 2 JSON surface (PIT WALL Home / New Scan / Keys).
+"""Bề mặt JSON Phase 2 (PIT WALL Home / New Scan / Keys).
 
-Thin over existing services: tools via adapter ``which`` probes, keys via
-project-local ``.env`` + ``.providers/*.json``, usage vs the USD 50 ceiling.
-Mounted from :func:`vulnscan.web.app.create_app` via :func:`register_phase2`.
+Lớp mỏng trên các service hiện có: tools thông qua đầu dò adapter ``which``, keys qua
+``.env`` cục bộ dự án + ``.providers/*.json``, usage so với mức trần 50 USD.
+Được gắn kết từ :func:`vulnscan.web.app.create_app` thông qua :func:`register_phase2`.
 """
 
 from __future__ import annotations
@@ -215,11 +215,11 @@ def api_key_put(profile: str, body: KeyPutIn) -> dict[str, Any]:
         if body.default_model is not None
         else (existing.default_model if existing else None)
     )
-    # Preserve custom headers (e.g. opencode session routing) — a key-only
-    # update must not wipe profile transport settings.
+    # Giữ lại các custom header (ví dụ định tuyến phiên opencode) — việc chỉ cập nhật
+    # key không được xóa các thiết lập transport của profile.
     headers = dict(existing.headers) if existing and existing.headers else {}
     metadata = dict(existing.metadata) if existing and existing.metadata else {}
-    # Key stays in process env / project .env only — never on the profile JSON.
+    # Key chỉ nằm trong env của tiến trình / .env dự án — không bao giờ nằm trên JSON profile.
     EnvFile().set(api_key_env, raw)
     saved = ProviderProfile(
         id=slug,
@@ -425,10 +425,10 @@ def api_scans_create(
 def _execute_web_scan(
     db_path: str, output_dir: str, public_id: str, params: dict[str, Any]
 ) -> None:
-    """Run the real pipeline in the background, adopting the queued row.
+    """Chạy pipeline thực sự trong chế độ nền, tiếp nhận dòng trong hàng đợi.
 
-    Failures are recorded on the run (never silent): the live page polls
-    the same run id and shows the error instead of spinning forever.
+    Lỗi được ghi lại trên lượt chạy (không bao giờ im lặng): trang trực tiếp poll
+    cùng run id và hiển thị lỗi thay vì quay vô tận.
     """
     from vulnscan.core.config import resolve_config
     from vulnscan.core.scan_service import ScanService
@@ -458,8 +458,8 @@ def _execute_web_scan(
         mode = (params.get("mode") or "hunt").strip()
         if mode not in ("deterministic", "hunt"):
             raise ValueError(f"Unknown scan mode: {mode}")
-        # Hunt without an explicit provider auto-resolves the default keyed
-        # profile inside the service; without any key it skips with a reason.
+        # Hunt không có provider rõ ràng sẽ tự động phân giải profile mặc định có key
+        # bên trong service; nếu không có key nào thì sẽ bỏ qua kèm lý do.
         config = resolve_config(
             params.get("profile") or "fast",
             None,
@@ -496,7 +496,7 @@ def _execute_web_scan(
 
 
 def register_phase2(app: Any, db_engine: Any) -> None:
-    """Mount the Phase 2 router and expose the engine for request sessions."""
+    """Gắn router Phase 2 và cung cấp engine cho các phiên request."""
     app.state.db_engine = db_engine
     app.include_router(router)
     _ = (BUDGET_TOTAL_USD, EnvFile, os.environ, Path, time)

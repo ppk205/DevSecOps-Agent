@@ -141,10 +141,10 @@ func (m Model) formView() string {
 		lines = append(lines, "", "Export target: "+m.runLabel(m.target()))
 	}
 	if m.tab == 1 {
-		// API keys (values never shown): entry lives on the Workspace tab
-		// next to the scan configuration it authorizes. Ctrl+K saves from
-		// here (or whenever a key entry is in progress); elsewhere Ctrl+K
-		// keeps its newer role as the action menu (see FR71).
+		// API key (không bao giờ hiện giá trị): mục nhập nằm trên tab Workspace
+		// cạnh cấu hình quét mà nó ủy quyền. Ctrl+K lưu từ
+		// đây (hoặc bất kỳ khi nào đang nhập key); ở nơi khác Ctrl+K
+		// giữ vai trò mới hơn là action menu (xem FR71).
 		status := m.envStatus
 		if status == "" {
 			status = "Loading saved keys…"

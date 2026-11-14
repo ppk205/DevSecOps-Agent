@@ -123,7 +123,7 @@ async def test_qr21_quit_modal_stay_and_cancel(service, checkout, tmp_path, monk
 
     from vulnscan.scanners.process import run_command
 
-    adapter = service.registry.get("semgrep")
+    adapter = service.registry.get("native-hunt")
     original = adapter.run
 
     def slow(*args, **kwargs):
@@ -166,7 +166,7 @@ async def test_qr21_worker_shutdown_terminates_scanner(service, checkout, tmp_pa
     from vulnscan.core.config import ScanConfig
     from vulnscan.scanners.process import run_command
 
-    adapter = service.registry.get("semgrep")
+    adapter = service.registry.get("native-hunt")
     original = adapter.run
 
     def slow(*args, **kwargs):
