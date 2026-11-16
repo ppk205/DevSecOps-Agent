@@ -1,9 +1,9 @@
-"""Conservative deduplication of findings.
+"""Khử trùng lặp finding một cách thận trọng (conservative).
 
-Dedup key: the finding fingerprint (location + cwe + sorted rule ids).
-Never merge solely because CWE labels match — location and rule evidence
-must agree. All contributing observations from every duplicate are folded
-into the surviving finding so nothing is lost.
+Khóa khử trùng lặp: vân tay (fingerprint) của finding (location + cwe + sorted rule ids).
+Không bao giờ gộp chỉ vì nhãn CWE trùng nhau — bằng chứng về vị trí và rule
+phải khớp nhau. Mọi observation đóng góp từ mỗi bản trùng lặp đều được gộp
+vào finding còn lại để không làm mất thông tin nào.
 """
 
 from __future__ import annotations
@@ -12,10 +12,10 @@ from vulnscan.contracts import Finding
 
 
 def deduplicate_findings(findings: list[Finding]) -> list[Finding]:
-    """Remove exact duplicates by fingerprint, folding observations in.
+    """Loại bỏ các bản trùng lặp chính xác theo fingerprint, gộp các observation vào.
 
-    Two findings with the same CWE but different fingerprints (different
-    locations or rule evidence) are kept separate.
+    Hai finding có cùng CWE nhưng khác fingerprint (khác vị trí
+    hoặc bằng chứng rule) sẽ được giữ riêng biệt.
     """
     seen: dict[str, Finding] = {}
     order: list[str] = []
@@ -23,7 +23,7 @@ def deduplicate_findings(findings: list[Finding]) -> list[Finding]:
     for f in findings:
         fp = f.fingerprint
         if fp in seen:
-            # Preserve provenance: fold the duplicate's observations in.
+            # Bảo toàn nguồn gốc (provenance): gộp các observation của bản trùng lặp vào.
             keeper = seen[fp]
             ids = {o.observation_id for o in keeper.observations}
             for obs in f.observations:

@@ -1,1 +1,1 @@
-"""FastAPI application factory and dependency setup."""
+"""Factory tạo ứng dụng FastAPI và thiết lập dependency."""

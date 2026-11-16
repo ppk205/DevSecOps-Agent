@@ -1,7 +1,7 @@
-"""ValidationDecision and EvidenceRecord — independent validation ownership.
+"""ValidationDecision và EvidenceRecord — quyền sở hữu validation độc lập.
 
-An AI assessment may never directly mutate a finding's status into confirmed
-or rejected; only this contract can.
+Đánh giá của AI không bao giờ được thay đổi trực tiếp trạng thái của một finding thành
+confirmed hoặc rejected; chỉ hợp đồng này mới có thể.
 """
 
 from __future__ import annotations
@@ -21,7 +21,7 @@ from .enums import (
 
 
 class EvidenceRecord(VersionedModel):
-    """A single piece of evidence supporting or contradicting a finding."""
+    """Một bằng chứng đơn lẻ ủng hộ hoặc mâu thuẫn với một finding."""
 
     evidence_id: str = Field(
         ...,
@@ -66,11 +66,11 @@ class EvidenceRecord(VersionedModel):
 
 
 class ValidationDecision(VersionedModel):
-    """Independent validation decision that can mutate a finding's status.
+    """Quyết định validation độc lập có thể thay đổi trạng thái của một finding.
 
-    This is the ONLY model that can move a finding to confirmed or rejected.
-    An AI proposal uses :class:`Assessment`; it writes here only after
-    independent verification.
+    Đây là mô hình DUY NHẤT có thể chuyển một finding sang confirmed hoặc rejected.
+    Đề xuất của AI sử dụng :class:`Assessment`; nó chỉ ghi vào đây sau khi
+    đã được xác minh độc lập.
     """
 
     decision_id: str = Field(

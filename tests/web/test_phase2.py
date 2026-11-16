@@ -42,7 +42,7 @@ class TestTools:
         assert response.headers["X-Contract-Version"] == "1"
         tools = response.json()["tools"]
         names = {t["tool"] for t in tools}
-        assert {"semgrep", "gitleaks", "spotbugs", "owasp-dependency-check"} <= names
+        assert names == {"native-hunt"}
         for item in tools:
             assert set(item) >= {"tool", "binary", "available", "path", "hint"}
 
@@ -435,6 +435,9 @@ class TestScans:
         leaks = _FakeAdapter()
         leaks.tool = ToolName.GITLEAKS
         registry.register(leaks)
+        native = _FakeAdapter()
+        native.tool = ToolName.NATIVE_HUNT
+        registry.register(native)
         db = str(tmp_path / "adopt.db")
         migrate(create_engine(f"sqlite:///{db}"))
         with get_session(db) as session:

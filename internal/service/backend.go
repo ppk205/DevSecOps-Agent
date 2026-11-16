@@ -10,8 +10,8 @@ import (
 	"devsecops-agent/internal/bridge"
 )
 
-// Backend keeps one scan execution owner. Reads, filtering, and configuration
-// are native Go; audited scanner and report implementations remain in Python.
+// Backend giữ một owner thực thi lượt quét. Đọc, lọc và cấu hình
+// là Go gốc; các bản triển khai scanner và report đã kiểm toán vẫn nằm ở Python.
 type Backend struct {
 	Client  *bridge.Client
 	Store   *Store
@@ -135,8 +135,8 @@ func (b *Backend) EnvList(ctx context.Context) ([]string, error) {
 	return result.Names, nil
 }
 
-// EnvSet saves one secret to the project-local .env.
-// The value is passed through once and never logged or returned.
+// EnvSet lưu một secret vào file .env cục bộ của dự án.
+// Giá trị được truyền qua một lần và không bao giờ được ghi log hay trả về.
 func (b *Backend) EnvSet(ctx context.Context, name, value string) error {
 	var result map[string]any
 	return b.Client.Call(ctx, "env_set", map[string]any{"name": name, "value": value}, &result, nil)

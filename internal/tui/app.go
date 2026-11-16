@@ -1,4 +1,4 @@
-// Package tui implements the responsive terminal workspace (FR-71, QR-21).
+// Package tui triển khai không gian làm việc terminal thích ứng (FR-71, QR-21).
 package tui
 
 import (
@@ -58,10 +58,10 @@ type reviewResult struct {
 	result    map[string]any
 }
 
-// reviewedTarget returns the checkout target captured at review time.
-// The Ctrl+S guard already forces signature equality, so begin() must scan
-// the reviewed snapshot — never the live form field, which the user may
-// have edited after Ctrl+E.
+// reviewedTarget trả về target checkout được ghi lại tại thời điểm review.
+// Guard Ctrl+S đã bắt buộc chữ ký bằng nhau, vì vậy begin() phải quét
+// snapshot đã được review — không bao giờ quét trường form trực tiếp mà người dùng
+// có thể đã chỉnh sửa sau Ctrl+E.
 func (m *Model) reviewedTarget() string {
 	if m.reviewed == nil {
 		return ""
@@ -185,7 +185,7 @@ func (m Model) Init() tea.Cmd {
 	return tea.Batch(tick(), func() tea.Msg { return loaded{kind: "init", err: m.api.Init(context.Background())} })
 }
 
-// keysCmd lists stored API-key names ONLY — values never cross this boundary.
+// keysCmd CHỈ liệt kê tên các API key đã lưu — giá trị không bao giờ vượt qua ranh giới này.
 func (m *Model) keysCmd() tea.Cmd {
 	return func() tea.Msg {
 		names, err := m.api.EnvList(context.Background())

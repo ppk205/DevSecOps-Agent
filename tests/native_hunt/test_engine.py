@@ -133,14 +133,12 @@ def test_typed_declaration_taints_var_not_type(tmp_path) -> None:
 
     target = tmp_path / "T.java"
     target.write_text(
-        "String user = req.getParameter(\"u\");\n"
-        "ResultSet rs = st.executeQuery(\"SELECT '\" + user + \"'\");\n",
+        'String user = req.getParameter("u");\n'
+        'ResultSet rs = st.executeQuery("SELECT \'" + user + "\'");\n',
         encoding="utf-8",
     )
     findings = scan_file(target, load_rules("java"))
-    assert any(
-        f.rule_id == "java-sql-concatenation" and f.line == 2 for f in findings
-    )
+    assert any(f.rule_id == "java-sql-concatenation" and f.line == 2 for f in findings)
 
 
 def test_minified_and_longline_files_skipped(tmp_path) -> None:
@@ -163,20 +161,18 @@ def test_entry_param_and_call_propagation(tmp_path) -> None:
 
     target = tmp_path / "C.java"
     target.write_text(
-        "public AttackResult completed(@RequestParam(value = \"u\") String userId) {\n"
+        'public AttackResult completed(@RequestParam(value = "u") String userId) {\n'
         "    return injectableQuery(userId);\n"
         "}\n"
         "public AttackResult injectableQuery(String accountName) {\n"
-        "    String query = \"SELECT * WHERE name = '\" + accountName + \"'\";\n"
+        '    String query = "SELECT * WHERE name = \'" + accountName + "\'";\n'
         "    ResultSet r = st.executeQuery(query);\n"
         "    return null;\n"
         "}\n",
         encoding="utf-8",
     )
     findings = scan_file(target, load_rules("java"))
-    assert any(
-        f.rule_id == "java-sql-concatenation" and f.line == 6 for f in findings
-    )
+    assert any(f.rule_id == "java-sql-concatenation" and f.line == 6 for f in findings)
 
 
 def test_condition_assignment_taints(tmp_path) -> None:
@@ -185,15 +181,13 @@ def test_condition_assignment_taints(tmp_path) -> None:
     target = tmp_path / "C.java"
     target.write_text(
         "String q = null;\n"
-        "while ((q = req.getParameter(\"x\")) != null) {\n"
+        'while ((q = req.getParameter("x")) != null) {\n'
         "    st.executeQuery(q);\n"
         "}\n",
         encoding="utf-8",
     )
     findings = scan_file(target, load_rules("java"))
-    assert any(
-        f.rule_id == "java-sql-concatenation" and f.line == 3 for f in findings
-    )
+    assert any(f.rule_id == "java-sql-concatenation" and f.line == 3 for f in findings)
 
 
 def test_resource_check_flags_unclosed(tmp_path) -> None:
@@ -204,16 +198,16 @@ def test_resource_check_flags_unclosed(tmp_path) -> None:
         "import java.io.*;\n"
         "class R {\n"
         "    void a() throws Exception {\n"
-        "        BufferedReader r = new BufferedReader(new FileReader(\"x\"));\n"
+        '        BufferedReader r = new BufferedReader(new FileReader("x"));\n'
         "        System.out.println(r.readLine());\n"
         "    }\n"
         "    void b() throws Exception {\n"
-        "        try (BufferedReader q = new BufferedReader(new FileReader(\"y\"))) {\n"
+        '        try (BufferedReader q = new BufferedReader(new FileReader("y"))) {\n'
         "            System.out.println(q.readLine());\n"
         "        }\n"
         "    }\n"
         "    void c() throws Exception {\n"
-        "        BufferedReader s = new BufferedReader(new FileReader(\"z\"));\n"
+        '        BufferedReader s = new BufferedReader(new FileReader("z"));\n'
         "        s.close();\n"
         "    }\n"
         "}\n",
@@ -241,6 +235,4 @@ def test_heredoc_and_append_propagate_taint(tmp_path) -> None:
         encoding="utf-8",
     )
     findings = scan_file(target, load_rules("php"))
-    assert any(
-        f.rule_id == "php-reflected-xss" and f.line == 7 for f in findings
-    )
+    assert any(f.rule_id == "php-reflected-xss" and f.line == 7 for f in findings)

@@ -415,7 +415,7 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 	if key == "esc" {
 		switch {
 		case m.keyInput:
-			// Leaving key entry keeps whatever is typed; Ctrl+K saves it.
+			// Thoát khỏi ô nhập key giữ nguyên những gì đã gõ; Ctrl+K sẽ lưu lại.
 			m.keyInput = false
 			m.keysName.Blur()
 			m.keysValue.Blur()
@@ -606,7 +606,7 @@ func (m Model) handleKey(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 }
 func (m Model) handleInput(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if m.keyInput {
-		// Typing an API key: name field first, value (hidden) after.
+		// Gõ API key: trường name trước, value (ẩn) sau.
 		var cmd tea.Cmd
 		if m.keysFocus == 0 {
 			m.keysName, cmd = m.keysName.Update(msg)

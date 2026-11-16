@@ -1,4 +1,4 @@
-/** Shared API shapes (Phase 1 skeleton — mirrors WEBUI-NOTES endpoint contract). */
+/** Các định dạng API dùng chung (khung Phase 1 — phản chiếu giao ước endpoint WEBUI-NOTES). */
 export type Severity = "critical" | "high" | "medium" | "low" | "info";
 export type VerificationState = "confirmed" | "unresolved" | "rejected" | "unprocessed";
 export type RunStatus = "queued" | "running" | "completed" | "failed" | "cancelled";
@@ -28,9 +28,9 @@ export interface ScanSummary {
   status: RunStatus;
   gate: "pass" | "fail" | "unknown";
   counts: Counts;
-  /** Findings per severity (lower-cased), e.g. {critical: 4}. Phase 2+. */
+  /** Findings theo mức độ nghiêm trọng (viết thường), ví dụ: {critical: 4}. Phase 2+. */
   severity?: Record<string, number>;
-  /** Top CWE tallies, most frequent first. Phase 2+. */
+  /** Thống kê các CWE hàng đầu, tần suất cao nhất đứng trước. Phase 2+. */
   top_cwe?: { cwe: string; count: number }[];
   stages: StageSummary[];
   created_at: string;
@@ -48,14 +48,14 @@ export interface FindingSummary {
 }
 
 export interface ScanEvent {
-  /** Row id when the backend supplies it (history/SSE payloads do). */
+  /** Id của dòng khi backend cung cấp (các payload history/SSE có chứa). */
   id?: number;
   seq: number;
   kind: EventKind;
   stage: string | null;
   message: string;
   created_at: string;
-  /** Structured payload (status/stage/proposals) when the backend supplies it. */
+  /** Payload có cấu trúc (status/stage/proposals) khi backend cung cấp. */
   payload?: unknown;
 }
 
@@ -65,7 +65,7 @@ export interface EventsHistory {
   next_cursor: number;
 }
 
-/** Phase 3 — live scan snapshot served by GET /api/scans/{id}. */
+/** Phase 3 — snapshot lượt quét trực tiếp do GET /api/scans/{id} phục vụ. */
 export interface LiveAssessment {
   finding_id?: string;
   proposed_severity?: string | null;
@@ -123,7 +123,7 @@ export type LiveConnection =
   | "polling"
   | "closed";
 
-/** Phase 2 shared shapes (Home / New Scan / Keys). */
+/** Các định dạng dùng chung Phase 2 (Home / New Scan / Keys). */
 
 export interface ToolHealth {
   tool: string;
@@ -167,7 +167,7 @@ export interface TopCwe {
   count: number;
 }
 
-/** Phase 5 — Reports + Logs shapes (mirror the /api contract). */
+/** Phase 5 — các định dạng Reports + Logs (phản chiếu giao ước /api). */
 export type ReportFormat = "json" | "sarif" | "html" | "markdown" | "txt" | "docx" | "csv";
 
 export interface ReportDescriptor {
@@ -258,7 +258,7 @@ export interface LogsResponse {
   granularity: string;
 }
 
-/** Phase 6: AI-fix proposal for one finding. */
+/** Phase 6: đề xuất AI-fix cho một finding. */
 export type FixProposalStatus = "proposed" | "applied" | "verified" | "failed";
 
 export interface FixVerification {
@@ -288,10 +288,10 @@ export interface FixRequestBody {
   provider_model?: string | null;
 }
 
-/** Model-first hunt provenance (finding metadata.origin). Missing means scanner. */
+/** Nguồn gốc hunt ưu tiên model (metadata.origin của finding). Thiếu nghĩa là từ scanner. */
 export type FindingProvenance = "model" | "scanner" | "both";
 
-/** Phase 4: one row of the findings table (scanner vs AI severities). */
+/** Phase 4: một dòng của bảng findings (mức độ nghiêm trọng từ scanner so với AI). */
 
 export interface FindingListItem {
   id: string;
@@ -307,7 +307,7 @@ export interface FindingListItem {
   file: string;
   line: number;
   origin: "source" | "dependency";
-  /** Hunt provenance (metadata.origin). Optional: absent means scanner. */
+  /** Nguồn gốc hunt (metadata.origin). Tùy chọn: vắng mặt nghĩa là từ scanner. */
   provenance?: FindingProvenance;
 }
 
@@ -318,7 +318,7 @@ export interface FindingsQuery {
   verifications?: string[];
   aiChanged?: boolean | null;
   origin?: "source" | "dependency" | null;
-  /** Client-side hunt-provenance filter (all when null). Never sent to the API. */
+  /** Bộ lọc nguồn gốc hunt phía client (tất cả khi null). Không bao giờ gửi tới API. */
   provenance?: FindingProvenance | null;
   q?: string;
   sort?: "severity" | "title" | "file" | "status";
@@ -394,7 +394,7 @@ export interface VerificationCheck {
   outcome: string;
 }
 
-/** Phase 4: full drawer/page payload for one finding. */
+/** Phase 4: payload đầy đủ dạng drawer/page cho một finding. */
 export interface FindingDetail extends FindingListItem {
   run_id: number;
   description: string;
@@ -409,7 +409,7 @@ export interface FindingDetail extends FindingListItem {
   raw: unknown;
 }
 
-/** Task 4: scan-completion notification. */
+/** Task 4: thông báo hoàn tất lượt quét. */
 export type NotificationKind = "scan_completed" | "gate_failed";
 
 export interface ScanNotification {

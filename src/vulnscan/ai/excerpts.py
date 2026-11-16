@@ -1,9 +1,9 @@
-"""Shared, jailed source-excerpt readers for AI stages.
+"""Bộ đọc trích đoạn mã nguồn dùng chung, bị cô lập (jailed) cho các giai đoạn AI.
 
-Both the per-finding review loop and the hunt-pipeline Laya verification
-need the same thing: a bounded, numbered window of source around a
-location, resolved inside the immutable scan snapshot. Centralized here so
-the behavior (jail, radius, truncation) stays identical everywhere.
+Cả vòng lặp đánh giá theo từng finding và xác minh Laya trong hunt-pipeline
+đều cần điều tương tự: một phạm vi mã nguồn có đánh số dòng, giới hạn xung quanh
+một vị trí, được phân giải bên trong snapshot quét bất biến. Được tập trung tại đây để
+hành vi (cô lập, bán kính, cắt ngắn) luôn đồng nhất ở mọi nơi.
 """
 
 from __future__ import annotations
@@ -15,7 +15,7 @@ _EXCERPT_CHARS = 3000
 
 
 def _resolve_inside(root: Path, rel: str) -> Path | None:
-    """Resolve *rel* inside *root*; None when it escapes the snapshot."""
+    """Phân giải *rel* bên trong *root*; None khi nó thoát ra ngoài snapshot."""
     try:
         target = (root / rel).resolve()
     except (OSError, ValueError):
@@ -28,7 +28,8 @@ def _resolve_inside(root: Path, rel: str) -> Path | None:
 
 
 def code_excerpt(snapshot_root: str | Path, file_path: str, line: int, radius: int = 30) -> str:
-    """Read ±radius numbered lines around *line* in *file_path* (jailed)."""
+    """Đọc ±radius dòng được đánh số xung quanh *line* trong *file_path* (bị cô lập)."""
+
     target = _resolve_inside(Path(snapshot_root), file_path)
     if target is None or not target.is_file():
         return "(no source excerpt available)"
@@ -49,7 +50,8 @@ def code_excerpt(snapshot_root: str | Path, file_path: str, line: int, radius: i
 
 
 def code_excerpt_for_finding(snapshot_root: str, finding: Any, radius: int = 30) -> str:
-    """Read ±radius lines around the first observation location (jailed)."""
+    """Đọc ±radius dòng xung quanh vị trí quan sát đầu tiên (bị cô lập)."""
+
     for obs in finding.observations:
         if obs.location is None:
             continue

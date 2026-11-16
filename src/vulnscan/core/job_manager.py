@@ -1,7 +1,7 @@
-"""Job manager — submit scans, track runs, enforce single-run-at-a-time.
+"""Job manager — gửi yêu cầu quét, theo dõi các lần chạy, thực thi chỉ một lần chạy tại một thời điểm.
 
-A retry is a *new attempt*: it preserves prior artifacts and stage history
-but never reuses a failed run id. Only one run may be RUNNING at a time.
+Việc thử lại là một *lần thử mới*: nó bảo toàn các artifact trước đó và lịch sử các giai
+đoạn nhưng không bao giờ tái sử dụng run id đã thất bại. Chỉ một lần chạy có thể ở trạng thái RUNNING tại một thời điểm.
 """
 
 from __future__ import annotations
@@ -16,11 +16,11 @@ from ..storage.models import RunORM, TargetORM
 
 
 class RunAlreadyRunningError(RuntimeError):
-    """Another scan run is already RUNNING."""
+    """Một lần quét khác hiện đã ở trạng thái RUNNING."""
 
 
 class RunNotFoundError(KeyError):
-    """No run with the given id."""
+    """Không có lần chạy nào với id được cung cấp."""
 
 
 def _utcnow() -> datetime:
@@ -28,7 +28,7 @@ def _utcnow() -> datetime:
 
 
 class JobManager:
-    """Submits and tracks scan runs against a session."""
+    """Gửi và theo dõi các lần quét đối với một session."""
 
     def __init__(self, session: Session) -> None:
         self.session = session
@@ -37,9 +37,9 @@ class JobManager:
         return self.session.query(RunORM).filter(RunORM.status == "running").first()
 
     def submit_scan(self, spec: ScanSpecification) -> int:
-        """Create a queued run for the spec's pinned target.
+        """Tạo một lần chạy trong hàng đợi cho mục tiêu đã ghim của spec.
 
-        Raises RunAlreadyRunningError if another run is in progress.
+        Ném ra RunAlreadyRunningError nếu một lần chạy khác đang được tiến hành.
         """
         if self._running() is not None:
             raise RunAlreadyRunningError("a scan run is already RUNNING")
@@ -73,11 +73,11 @@ class JobManager:
         return run.id
 
     def retry(self, run_id: int) -> int:
-        """Create a new attempt for a failed/interrupted run.
+        """Tạo một lần thử mới cho một lần chạy bị thất bại/gián đoạn.
 
-        The original run is retained unchanged; the new run inherits its
-        target and increments the attempt counter. Prior artifacts are
-        preserved by the ArtifactStore (keyed by run+attempt).
+        Lần chạy ban đầu được giữ nguyên không đổi; lần chạy mới kế thừa mục
+        tiêu của nó và tăng bộ đếm số lần thử. Các artifact trước đó được
+        bảo toàn bởi ArtifactStore (được đánh khóa theo run+attempt).
         """
         prior = self._get(run_id)
         if self._running() is not None:

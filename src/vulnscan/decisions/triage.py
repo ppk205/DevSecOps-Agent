@@ -1,7 +1,7 @@
-"""Shadow-mode Laya triage stage.
+"""Giai đoạn triage Laya ở chế độ shadow.
 
-The stage runs *after* deterministic evidence is prepared and *before* targeted
-deep analysis. It is advisory only: it records a route, never a finding status.
+Giai đoạn này chạy *sau khi* bằng chứng tất định được chuẩn bị và *trước khi* phân tích
+sâu có mục tiêu. Nó chỉ mang tính khuyến nghị: ghi lại một route, không bao giờ ghi finding status.
 """
 
 from __future__ import annotations
@@ -44,7 +44,7 @@ _ROUTE_CRITERIA: dict[str, str] = {
 
 
 def build_triage_questions() -> dict[str, DecisionQuestion]:
-    """Frozen question set used for every shadow triage run."""
+    """Tập câu hỏi cố định được dùng cho mọi lượt chạy shadow triage."""
     return {
         "recommended_action": DecisionQuestion(
             name="recommended_action",
@@ -80,28 +80,28 @@ _TRUNCATION_NOTE = "\n... [truncated]"
 
 
 def build_excerpt(raw: Any) -> tuple[str, bool]:
-    """Reduce a raw code excerpt to a bounded, redacted snippet for the model.
+    """Rút gọn đoạn trích mã thô thành snippet giới hạn, đã che dữ liệu nhạy cảm cho model.
 
-    Laya routes on this text, so it must be short (bounded input), free of
-    secrets, and explicitly flagged when cut. Snippets are untrusted evidence:
-    they describe the finding, they never instruct the model.
+    Laya định tuyến dựa trên văn bản này, vì vậy nó phải ngắn (đầu vào giới hạn), không chứa
+    secret và được gắn cờ rõ ràng khi bị cắt. Các snippet là bằng chứng không đáng tin cậy:
+    chúng mô tả finding, không bao giờ chỉ dẫn model.
     """
     text = sanitize(str(raw or "")).strip()
     if not text:
         return "", False
     truncated = len(text) > _EXCERPT_LIMIT
     if truncated:
-        # The bound covers the note too, so a truncated excerpt never exceeds it.
+        # Giới hạn bao gồm cả phần ghi chú, do đó đoạn trích bị cắt ngắn không bao giờ vượt quá nó.
         text = text[: _EXCERPT_LIMIT - len(_TRUNCATION_NOTE)] + _TRUNCATION_NOTE
     return text, truncated
 
 
 def finding_to_state(finding: Any) -> dict[str, Any]:
-    """Project a finding into the bounded state Laya is allowed to see.
+    """Ánh xạ một finding vào state bị giới hạn mà Laya được phép nhìn thấy.
 
-    Only metadata the project controls is exported: identifiers, CWE, severity,
-    tool provenance, source coordinates, evidence flags, and a bounded redacted
-    code excerpt. No credentials, no ground-truth labels.
+    Chỉ metadata do dự án kiểm soát mới được xuất: định danh, CWE, mức độ nghiêm trọng,
+    nguồn gốc công cụ, tọa độ mã nguồn, cờ bằng chứng và đoạn trích mã nguồn bị giới hạn đã che dữ liệu nhạy cảm.
+    Không có thông tin xác thực, không có nhãn ground-truth.
     """
 
     def value(item: Any) -> str:
@@ -133,10 +133,10 @@ def finding_to_state(finding: Any) -> dict[str, Any]:
             if key in metadata:
                 state[key] = metadata[key]
     if representative is not None:
-        # Prefer adapter excerpts, falling back to source retained by the scan service.
+        # Ưu tiên các đoạn trích từ adapter, dự phòng bằng mã nguồn do scan service lưu giữ.
         meta = getattr(representative, "metadata", None) or {}
         raw = meta.get("code_excerpt")
-        # Semgrep CE without a login reports `extra.lines` as "requires login".
+        # Semgrep CE không đăng nhập sẽ báo cáo `extra.lines` là "requires login".
         if str(raw or "").strip() in ("", "requires login"):
             raw = getattr(location, "snippet", None)
         excerpt, was_truncated = build_excerpt(raw)
@@ -150,7 +150,7 @@ def finding_to_state(finding: Any) -> dict[str, Any]:
 
 @dataclass(frozen=True)
 class TriageOutcome:
-    """Advisory result for one finding; carries no status authority."""
+    """Kết quả khuyến nghị cho một finding; không mang thẩm quyền quyết định trạng thái."""
 
     finding_id: str
     route: DecisionRoute
@@ -163,7 +163,7 @@ class TriageOutcome:
         return self.result.status is DecisionStatus.COMPLETED
 
     def as_artifact_payload(self) -> dict[str, Any]:
-        """Deterministic, human-readable evidence payload for the artifact store."""
+        """Payload bằng chứng tất định, con người đọc được cho artifact store."""
         return {
             "finding_id": self.finding_id,
             "route": self.route.route,
@@ -199,7 +199,7 @@ class TriageOutcome:
 
 
 class LayaTriageStage:
-    """Run advisory Laya routing over findings without touching final status."""
+    """Chạy định tuyến Laya khuyến nghị trên các finding mà không can thiệp vào trạng thái cuối cùng."""
 
     def __init__(
         self,

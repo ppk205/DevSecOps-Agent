@@ -1,1 +1,1 @@
-"""Offline, independently labeled Laya training preparation."""
+"""Chuẩn bị huấn luyện Laya ngoại tuyến với nhãn độc lập."""

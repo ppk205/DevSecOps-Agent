@@ -12,9 +12,9 @@ import { Banner } from "../components/Banner";
 import { Button } from "../components/Button";
 import { useStrings } from "../i18n/lang";
 
-const SCANNERS = ["semgrep", "gitleaks", "spotbugs", "owasp-dependency-check"] as const;
+const SCANNERS = ["native-hunt"] as const;
 const PROFILE_SCANNERS: Record<"fast" | "full", readonly string[]> = {
-  fast: ["semgrep", "gitleaks"],
+  fast: SCANNERS,
   full: SCANNERS,
 };
 
@@ -45,10 +45,7 @@ export function NewScanPage() {
   const [repo, setRepo] = useState("https://github.com/example/jva-bookstore");
   const [profile, setProfile] = useState<"fast" | "full">("fast");
   const [tools, setTools] = useState<Record<string, boolean>>({
-    semgrep: true,
-    gitleaks: true,
-    spotbugs: false,
-    "owasp-dependency-check": false,
+    "native-hunt": true,
   });
   // Off by default: no source excerpt goes to a provider until the user allows it.
   const [allowCloud, setAllowCloud] = useState(false);
@@ -184,7 +181,7 @@ export function NewScanPage() {
                 aria-checked={profile === "fast"}
                 onClick={() => {
                   setProfile("fast");
-                  setTools({ semgrep: true, gitleaks: true, spotbugs: false, "owasp-dependency-check": false });
+                  setTools({ "native-hunt": true });
                 }}
                 className={`border p-4 text-left ${profile === "fast" ? "border-ink" : "border-hairline"}`}
               >
@@ -197,7 +194,7 @@ export function NewScanPage() {
                 aria-checked={profile === "full"}
                 onClick={() => {
                   setProfile("full");
-                  setTools({ semgrep: true, gitleaks: true, spotbugs: true, "owasp-dependency-check": true });
+                  setTools({ "native-hunt": true });
                 }}
                 className={`border p-4 text-left ${profile === "full" ? "border-ink" : "border-hairline"}`}
               >

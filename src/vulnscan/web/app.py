@@ -1,4 +1,4 @@
-"""FastAPI dashboard for scan intake, progress, findings, and evidence.
+"""Dashboard FastAPI cho việc tiếp nhận scan, tiến độ, finding và bằng chứng.
 
 The root redirects to the React SPA ("PIT WALL") at ``/app/*``. The older
 ``/runs/*`` and ``/findings/*`` pages remain available for compatibility and
@@ -64,10 +64,10 @@ def _findings_for_run(session: Session, run_pk: int) -> list[Finding]:
     return [Finding.model_validate_json(row.finding_json) for row in rows]
 
 
-# ---- Phase 5 shared helpers: secret redaction + flat CSV -------------------
-# Secret redaction runs on BOTH sides: the server redacts every log/event
-# payload before it leaves the API, and the SPA redacts again before render
-# (see web-ui/src/utils/redact.ts). The patterns below mirror the client.
+# ---- Phase 5 shared helpers: che giấu secret + flat CSV --------------------
+# Việc che giấu secret chạy trên CẢ HAI phía: server che giấu từng payload log/event
+# trước khi rời khỏi API, và SPA che giấu lại lần nữa trước khi render
+# (xem web-ui/src/utils/redact.ts). Các pattern bên dưới phản chiếu phía client.
 
 _SECRET_PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"sk-[A-Za-z0-9]{8,}"), "sk-***REDACTED***"),
@@ -84,7 +84,7 @@ _SECRET_PATTERNS: list[tuple[re.Pattern[str], str]] = [
 
 
 def redact_secrets(text: str) -> str:
-    """Redact likely secret material from a log/event string (server-side)."""
+    """Che giấu thông tin có khả năng là secret khỏi chuỗi log/event (phía server)."""
     redacted = text
     for pattern, replacement in _SECRET_PATTERNS:
         redacted = pattern.sub(replacement, redacted)
@@ -92,7 +92,7 @@ def redact_secrets(text: str) -> str:
 
 
 def redact_value(value: Any) -> Any:
-    """Recursively redact strings inside a JSON-like payload."""
+    """Che giấu đệ quy các chuỗi bên trong một payload dạng JSON."""
     if isinstance(value, str):
         return redact_secrets(value)
     if isinstance(value, dict):
@@ -103,10 +103,10 @@ def redact_value(value: Any) -> Any:
 
 
 def findings_csv(findings: list[Finding]) -> str:
-    """Flat CSV renderer for findings (Phase 5 decision: implemented).
+    """Bộ render CSV phẳng cho các finding (quyết định Phase 5: đã triển khai).
 
-    Columns: finding_id,title,severity,status,tools,file,line,cwe. Tools are
-    pipe-joined; file/line come from the first observation when present.
+    Các cột: finding_id,title,severity,status,tools,file,line,cwe. Tools được
+    nối bằng ký tự gạch đứng (|); file/line lấy từ observation đầu tiên nếu có.
     """
     buffer = io.StringIO()
     writer = csv.writer(buffer)
@@ -137,10 +137,10 @@ def create_app(
     engine: Engine | None = None,
     export_dir: str | Path = "artifacts/reports",
 ) -> FastAPI:
-    """Create the dashboard application.
+    """Tạo ứng dụng dashboard.
 
-    Passing an engine is useful for tests and embedding.  The default uses
-    the project singleton from :mod:`vulnscan.storage.database`.
+    Việc truyền vào một engine rất hữu ích cho các bài test và nhúng. Mặc định sử dụng
+    singleton của dự án từ :mod:`vulnscan.storage.database`.
     """
     db_engine = engine or get_engine()
     migrate(db_engine)
@@ -159,15 +159,15 @@ def create_app(
 
     @app.middleware("http")
     async def csrf_protection(request: Request, call_next: Any) -> Response:
-        """Double-submit CSRF protection for all state-changing requests."""
+        """Bảo vệ chống CSRF theo cơ chế double-submit cho mọi request thay đổi trạng thái."""
         token = request.cookies.get("vulnscan_csrf")
         if token is None:
             token = secrets.token_urlsafe(32)
         request.state.csrf_token = token
 
         if request.method not in _SAFE_METHODS:
-            # Reading the form consumes the receive stream. Replay it so FastAPI's
-            # Form(...) dependencies still see the same body downstream.
+            # Việc đọc form làm tiêu hao receive stream. Phát lại để các dependency
+            # Form(...) của FastAPI vẫn thấy được phần body tương tự ở phía sau.
             body = await request.body()
             replayed = False
 
@@ -200,8 +200,8 @@ def create_app(
             name=name,
             context={"csrf_token": request.state.csrf_token, **context},
         )
-        # LEGACY Jinja UI marker (Phase 1): lets the SPA and tests tell the
-        # legacy server-rendered pages apart from the new /app/* surface.
+        # Dấu hiệu nhận biết UI Jinja CŨ (Phase 1): giúp SPA và test phân biệt
+        # các trang server-rendered cũ với giao diện /app/* mới.
         response.headers["X-Pitwall-Legacy"] = "true"
         return response
 
@@ -380,7 +380,7 @@ def create_app(
             "reports": snapshot.get("reports", {}),
         }
 
-    # ---- Phase 4 findings JSON surface --------------------------------------
+    # ---- Giao diện JSON findings của Phase 4 ---------------------------------
 
     _SEVERITY_ORDER: tuple[str, ...] = (
         "critical",
@@ -478,7 +478,7 @@ def create_app(
             "line": line,
             "origin": _origin_of(item),
         }
-        # Hunt provenance rides top-level; absent (None) means scanner.
+        # Nguồn gốc Hunt nằm ở cấp cao nhất; vắng mặt (None) nghĩa là scanner.
         provenance = item.get("provenance")
         if provenance in ("model", "scanner", "both"):
             entry["provenance"] = provenance
@@ -556,7 +556,7 @@ def create_app(
         page: int = Query(default=1, ge=1),
         page_size: int = Query(default=50, ge=1, le=2000),
     ) -> dict[str, Any]:
-        """Filtered, sorted, paginated finding list for one scan run."""
+        """Danh sách finding đã lọc, sắp xếp và phân trang cho một lượt quét."""
         run = session.get(RunORM, run_id)
         if run is None:
             raise HTTPException(404, "Run not found")
@@ -677,7 +677,7 @@ def create_app(
         session: SessionDep,
         run_id: int | None = Query(default=None),
     ) -> dict[str, Any]:
-        """Full detail for one finding: evidence, AI assessment, verification."""
+        """Chi tiết đầy đủ cho một finding: bằng chứng, đánh giá AI, xác minh."""
         query = session.query(FindingORM).order_by(FindingORM.id)
         if run_id is not None:
             run = session.get(RunORM, run_id)
@@ -824,7 +824,7 @@ def create_app(
                 return finding
         raise HTTPException(404, "Finding not found")
 
-    # ---- Phase 1 JSON surface (skeleton) -----------------------------------
+    # ---- Giao diện JSON của Phase 1 (khung xương) ---------------------------
 
     @app.get("/api/health")
     def api_health() -> dict[str, Any]:
@@ -832,16 +832,16 @@ def create_app(
 
     @app.get("/api/csrf")
     def api_csrf(request: Request) -> dict[str, Any]:
-        """Expose the double-submit CSRF token to the same-origin SPA.
+        """Cung cấp token CSRF double-submit cho SPA cùng origin.
 
-        The ``vulnscan_csrf`` cookie is httponly so JS cannot read it; the
-        SPA fetches it here before POST calls. Same-origin only (no CORS is
-        configured) on a localhost-bound, single-user console.
+        Cookie ``vulnscan_csrf`` là httponly nên JS không thể đọc; SPA
+        lấy nó tại đây trước các lệnh gọi POST. Chỉ cùng origin (không cấu
+        hình CORS) trên console cho một người dùng gắn với localhost.
         """
         return {"csrf_token": request.state.csrf_token}
 
     def _event_to_dict(row: ScanEventORM) -> dict[str, Any]:
-        # Phase 5: server-side secret redaction on the Phase 1 surface too.
+        # Phase 5: che giấu secret phía server trên cả giao diện Phase 1.
         return {
             "id": row.id,
             "seq": row.seq,
@@ -870,15 +870,15 @@ def create_app(
     async def events_stream(
         run_id: int, request: Request, session: SessionDep
     ) -> EventSourceResponse:
-        """Phase 3 live SSE: hello + backlog + DB-polled tail + done hint.
+        """SSE trực tiếp Phase 3: hello + backlog + tail được poll từ DB + gợi ý done.
 
-        Replays stored ``scan_events`` rows newer than ``Last-Event-ID``
-        (or ``?last_event_id=``), then — while the run is still
-        queued/running — polls the table for new rows every 0.7s (up to
-        ~60s per connection) so a long scan streams without websockets.
-        Terminal runs close after a ``done`` event; live runs close after
-        the poll budget with a ``live`` hint so the client reconnects with
-        ``Last-Event-ID`` resume or falls back to ``?since=`` polling.
+        Phát lại các dòng ``scan_events`` đã lưu mới hơn ``Last-Event-ID``
+        (hoặc ``?last_event_id=``), sau đó — trong khi lượt chạy vẫn đang
+        queued/running — poll bảng để lấy các dòng mới mỗi 0.7s (tối đa
+        ~60s mỗi kết nối) để lượt quét dài có thể stream mà không cần websocket.
+        Các lượt chạy kết thúc sẽ đóng sau sự kiện ``done``; các lượt chạy trực tiếp đóng
+        sau ngân sách poll với gợi ý ``live`` để client kết nối lại kèm tiếp tục từ
+        ``Last-Event-ID`` hoặc chuyển sang poll bằng ``?since=``.
         """
         import asyncio
 
@@ -924,8 +924,8 @@ def create_app(
                     "data": json.dumps({"type": "done", "run_id": run_id, "status": status}),
                 }
                 return
-            # Live tail: poll a fresh session — the request-scoped session
-            # would never see rows committed by the scanner process.
+            # Live tail: thăm dò một session mới — session trong phạm vi request
+            # sẽ không bao giờ thấy các dòng được commit bởi tiến trình scanner.
             for _ in range(85):
                 if await request.is_disconnected():
                     break
@@ -973,11 +973,11 @@ def create_app(
 
         return EventSourceResponse(generator())
 
-    # ---- Phase 3 live scan detail + cancel/retry --------------------------
+    # ---- Chi tiết live scan + cancel/retry của Phase 3 ----------------------
 
     @app.get("/api/scans/{run_id}")
     def scan_detail(run_id: int, session: SessionDep) -> dict[str, Any]:
-        """Live scan snapshot: status, stages, AI evidence, usage, cursors."""
+        """Snapshot lượt quét trực tiếp: status, stages, bằng chứng AI, usage, cursors."""
         run = session.get(RunORM, run_id)
         if run is None:
             raise HTTPException(404, "Run not found")
@@ -1050,10 +1050,10 @@ def create_app(
 
     @app.post("/api/scans/{run_id}/cancel")
     def scan_cancel(run_id: int, session: SessionDep) -> dict[str, Any]:
-        """Request cancellation: sets the flag a running scan polls.
+        """Yêu cầu hủy: đặt cờ mà lượt quét đang chạy sẽ poll.
 
-        Queued runs flip to ``cancelled`` immediately; a running scan
-        observes ``cancel_requested`` and stops at the next checkpoint.
+        Lượt chạy trong hàng đợi chuyển sang ``cancelled`` ngay lập tức; lượt quét đang chạy
+        sẽ phát hiện ``cancel_requested`` và dừng tại checkpoint tiếp theo.
         """
         run = session.get(RunORM, run_id)
         if run is None:
@@ -1072,7 +1072,7 @@ def create_app(
 
     @app.post("/api/scans/{run_id}/retry", status_code=201)
     def scan_retry(run_id: int, session: SessionDep) -> dict[str, Any]:
-        """Clone a terminal run into a fresh queued run (same target)."""
+        """Nhân bản một lượt chạy đã kết thúc thành lượt chạy mới trong hàng đợi (cùng target)."""
         from datetime import UTC as _UTC
         from datetime import datetime as _dt
 
@@ -1111,9 +1111,9 @@ def create_app(
         session.commit()
         return {"run_id": clone.id, "status": "queued", "retried_from": run_id}
 
-    # ---- AI fix proposals -------------------------------------------------
-    # The model writes unified diffs only. Applying patches a COPY under
-    # artifacts and rescans it; the user's checkout is never modified.
+    # ---- Đề xuất sửa lỗi bằng AI --------------------------------------------
+    # Model chỉ tạo unified diff. Việc áp dụng sẽ vá một BẢN SAO nằm dưới
+    # artifacts và quét lại; checkout của người dùng không bao giờ bị sửa đổi.
 
     class _FixIn(BaseModel):
         finding_ids: list[str] | None = None
@@ -1156,10 +1156,10 @@ def create_app(
         )
 
     def _fix_context(checkout: str, file_path: str, line: int | None) -> str:
-        """Read ~60 lines around the finding from the local checkout (if any).
+        """Đọc ~60 dòng xung quanh finding từ checkout cục bộ (nếu có).
 
-        The finding snippet is only ±1 line, which makes the model invent
-        context. wider real context lets the strict applier accept the patch.
+        Đoạn trích finding chỉ có ±1 dòng, khiến model tự suy diễn
+        ngữ cảnh. Ngữ cảnh thực tế rộng hơn giúp bộ áp dụng nghiêm ngặt chấp nhận bản vá.
         """
         if not checkout or not os.path.isdir(checkout):
             return ""
@@ -1244,7 +1244,7 @@ def create_app(
         background: BackgroundTasks,
         session: SessionDep,
     ) -> dict[str, Any]:
-        """Queue AI fix proposals for findings (diff only, never edits source)."""
+        """Đưa đề xuất sửa lỗi bằng AI cho findings vào hàng đợi (chỉ diff, không bao giờ sửa nguồn)."""
         run = session.get(RunORM, run_id)
         if run is None:
             raise HTTPException(404, "Run not found")
@@ -1267,7 +1267,7 @@ def create_app(
 
     @app.get("/api/scans/{run_id}/hunt")
     def scan_hunt(run_id: int, session: SessionDep) -> dict[str, Any]:
-        """Model hunt candidates for a run: agreed + model-only, slimmed for UI."""
+        """Các ứng viên model hunt cho một lượt chạy: đồng thuận + chỉ từ model, rút gọn cho UI."""
         run = session.get(RunORM, run_id)
         if run is None:
             raise HTTPException(404, "Run not found")
@@ -1306,7 +1306,7 @@ def create_app(
 
     @app.get("/api/scans/{run_id}/fixes")
     def scan_fixes(run_id: int, session: SessionDep) -> dict[str, Any]:
-        """List fix proposals for a run (diffs included for review)."""
+        """Liệt kê các đề xuất sửa lỗi cho một lượt chạy (kèm diff để review)."""
         run = session.get(RunORM, run_id)
         if run is None:
             raise HTTPException(404, "Run not found")
@@ -1340,7 +1340,7 @@ def create_app(
         request: Request,
         session: SessionDep,
     ) -> dict[str, Any]:
-        """Apply a proposal to an overlay copy and rescan to verify the fix."""
+        """Áp dụng đề xuất vào bản sao overlay và quét lại để xác minh bản sửa lỗi."""
         from vulnscan.ai.fix import apply_unified_diff, prepare_overlay, verify_fixed
 
         run = session.get(RunORM, run_id)
@@ -1461,7 +1461,7 @@ def create_app(
     def record_scan_notification(
         session: Session, run_id: int, kind: str, message: str
     ) -> dict[str, Any] | None:
-        """Record one notification per (run_id, kind); idempotent, returns dict."""
+        """Ghi lại một thông báo cho mỗi (run_id, kind); idempotent, trả về dict."""
         existing = (
             session.query(NotificationORM)
             .filter(NotificationORM.run_id == run_id, NotificationORM.kind == kind)
@@ -1475,7 +1475,7 @@ def create_app(
         return _notification_to_dict(row)
 
     def _ensure_scan_notifications(session: Session) -> None:
-        """Lazily record completion notifications for terminal runs missing them."""
+        """Ghi nhận lười (lazy) thông báo hoàn thành cho các lượt chạy đã kết thúc còn thiếu."""
         terminal = (
             session.query(RunORM)
             .filter(RunORM.status.in_(["completed", "failed", "cancelled"]))
@@ -1503,7 +1503,7 @@ def create_app(
 
     @app.get("/api/notifications")
     def list_notifications(session: SessionDep) -> dict[str, Any]:
-        """List notifications, newest first, with an unread count."""
+        """Liệt kê thông báo, mới nhất trước, kèm số lượng chưa đọc."""
         _ensure_scan_notifications(session)
         rows = session.query(NotificationORM).order_by(NotificationORM.id.desc()).all()
         items = [_notification_to_dict(row) for row in rows]
@@ -1524,7 +1524,7 @@ def create_app(
 
     @app.get("/api/scans/{run_id}/fixes/{proposal_id}/download")
     def download_fix_diff(run_id: int, proposal_id: int, session: SessionDep) -> Response:
-        """Download one fix proposal's unified diff as text/plain."""
+        """Tải về unified diff của một đề xuất sửa lỗi dưới dạng text/plain."""
         proposal = session.get(FixProposalORM, proposal_id)
         if proposal is None or proposal.run_id != run_id or not proposal.diff_text:
             raise HTTPException(404, "Proposal diff not found")
@@ -1534,11 +1534,11 @@ def create_app(
             headers={"Content-Disposition": f'attachment; filename="proposal-{proposal_id}.diff"'},
         )
 
-    # ---- Phase 5 Reports + Logs -------------------------------------------
-    # Log lines are DERIVED (no dedicated event/log table beyond the Phase 1
-    # ``scan_events`` table): stage rows + persisted ``scan_events`` + the
-    # stored ``events_json`` list. There is no per-process stdout capture, so
-    # granularity is coarse — every response says so honestly.
+    # ---- Báo cáo + Log của Phase 5 -----------------------------------------
+    # Các dòng log được SUY DẪN (không có bảng event/log chuyên dụng ngoài bảng
+    # ``scan_events`` của Phase 1): các hàng stage + ``scan_events`` đã lưu + danh sách
+    # ``events_json`` đã lưu trữ. Không có cơ chế bắt stdout theo từng tiến trình, do đó
+    # độ chi tiết ở mức thô — mọi response đều phản ánh trung thực điều này.
 
     _REPORT_SUFFIX: dict[str, str] = {
         "json": "json",
@@ -1643,11 +1643,11 @@ def create_app(
 
     @app.post("/api/scans/{run_id}/reports", status_code=201)
     def generate_report(run_id: int, request: ReportRequest, session: SessionDep) -> dict[str, Any]:
-        """Generate one report artifact synchronously.
+        """Tạo đồng bộ một artifact báo cáo.
 
-        Generation is sub-second for typical runs; clients poll
-        ``GET /api/scans/{id}/reports`` which flips ``generated`` to true —
-        that poll is the "progress" contract for this endpoint.
+        Quá trình tạo dưới một giây cho các lượt chạy thông thường; client poll
+        ``GET /api/scans/{id}/reports`` và chuyển ``generated`` thành true —
+        lần poll đó là giao ước "tiến độ" cho endpoint này.
         """
         run = session.get(RunORM, run_id)
         if run is None:
@@ -1700,7 +1700,7 @@ def create_app(
         }
 
     def _ai_summary(session: SessionDep, run_id: int) -> dict[str, Any]:
-        """AI lane summary for cross-run comparison: hunt + validation."""
+        """Tóm tắt luồng AI để so sánh giữa các lượt chạy: hunt + validation."""
         run = session.get(RunORM, run_id)
         try:
             snapshot = json.loads((run.result_json if run else None) or "{}")
@@ -1849,7 +1849,7 @@ def create_app(
         return result
 
     def _scan_log_lines(session: Session, run: RunORM) -> list[dict[str, Any]]:
-        """Derive log lines from stages + scan_events + the stored event list."""
+        """Suy ra các dòng log từ stages + scan_events + danh sách sự kiện đã lưu."""
         lines: list[dict[str, Any]] = []
         for stage in sorted(run.stages, key=lambda item: item.ordinal):
             message = f"{stage.name} → {stage.status}"
@@ -1984,10 +1984,10 @@ def create_app(
         source: str = Query(default="all"),
         q: str = Query(default=""),
     ) -> EventSourceResponse:
-        """SSE replay of derived log lines, then a live hint (Phase 1 shape).
+        """Phát lại SSE các dòng log suy ra, sau đó gửi gợi ý live (dạng Phase 1).
 
-        Closes after the burst; the client falls back to polling
-        ``GET /api/logs`` with ``?since=``.
+        Đóng lại sau đợt phát; client chuyển về poll
+        ``GET /api/logs`` với ``?since=``.
         """
         run = session.get(RunORM, scan_id)
         if run is None:
@@ -2014,18 +2014,18 @@ def create_app(
 
         return EventSourceResponse(generator())
 
-    # ---- Phase 2 JSON surface (Home / New Scan / Keys) ----------------------
+    # ---- Giao diện JSON của Phase 2 (Home / New Scan / Keys) -----------------
     from vulnscan.web.phase2_routes import register_phase2
 
     register_phase2(app, db_engine)
     app.state.db_engine = db_engine
     app.state.export_dir = str(output)
 
-    # ---- Phase 1 SPA static mount (React build, optional) -------------------
-    # web-ui/dist is copied to src/vulnscan/web/static/app at build/packaging
-    # time; in a source checkout we also accept web-ui/dist in place so that
-    # `npm run build && uvicorn` just works. Absence is fine (API + Jinja
-    # still serve) — only mount when the directory exists.
+    # ---- Mount tĩnh SPA của Phase 1 (bản build React, tùy chọn) --------------
+    # web-ui/dist được sao chép vào src/vulnscan/web/static/app khi build/đóng gói;
+    # trong bản checkout mã nguồn, ta cũng chấp nhận trực tiếp web-ui/dist tại chỗ để
+    # `npm run build && uvicorn` chạy được ngay. Việc vắng mặt cũng không sao (API + Jinja
+    # vẫn phục vụ) — chỉ mount khi thư mục tồn tại.
     _dist = Path(__file__).with_name("static") / "app"
     _dev_dist = Path(__file__).resolve().parents[3] / "web-ui" / "dist"
     _spa_dir = _dist if _dist.is_dir() else (_dev_dist if _dev_dist.is_dir() else None)

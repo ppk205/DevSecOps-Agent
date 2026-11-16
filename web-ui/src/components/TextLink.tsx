@@ -6,7 +6,7 @@ interface TextLinkProps {
   className?: string;
 }
 
-/** Plain-text link: body color + always underlined (mBlue fails AA as text). */
+/** Liên kết văn bản thuần: màu thân bài viết + luôn gạch chân (mBlue không đạt chuẩn AA khi dùng làm chữ). */
 export function TextLink({ to, children, className = "" }: TextLinkProps) {
   return (
     <Link

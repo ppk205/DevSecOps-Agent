@@ -1,8 +1,8 @@
-"""Subprocess wrapper for scanner adapters.
+"""Wrapper subprocess cho các scanner adapter.
 
-Adapters never call ``subprocess`` directly: all external process invocations
-funnel through here so tests can monkeypatch one seam (``run_command``) instead
-of every adapter, and so timeouts / missing binaries are handled uniformly.
+Các adapter không bao giờ gọi trực tiếp ``subprocess``: mọi lệnh gọi tiến trình ngoài
+đều được dẫn qua đây để test có thể monkeypatch một điểm nối duy nhất (``run_command``)
+thay vì từng adapter, đồng thời xử lý timeout / thiếu binary một cách đồng nhất.
 """
 
 from __future__ import annotations
@@ -19,7 +19,7 @@ from .platform import which
 
 
 class ScanCancelled(BaseException):
-    """Cooperative cancellation must not be swallowed by adapter error handlers."""
+    """Cơ chế hủy hợp tác không được phép bị nuốt bởi các trình xử lý lỗi của adapter."""
 
 
 _cancel_check: ContextVar[Callable[[], bool]] = ContextVar("cancel", default=lambda: False)
@@ -45,7 +45,7 @@ def scanner_environment(extra: dict[str, str] | None = None) -> dict[str, str]:
 
 @dataclass
 class CommandResult:
-    """Result of an external command invocation."""
+    """Kết quả của một lần gọi lệnh bên ngoài."""
 
     returncode: int
     stdout: str = ""
@@ -56,7 +56,7 @@ class CommandResult:
 
     @property
     def succeeded(self) -> bool:
-        """True iff the process exited zero without timing out."""
+        """True nếu và chỉ nếu tiến trình kết thúc với mã 0 mà không bị timeout."""
         return self.returncode == 0 and not self.timed_out
 
 
@@ -68,19 +68,19 @@ def run_command(
     env: dict[str, str] | None = None,
     input_text: str | None = None,
 ) -> CommandResult:
-    """Run *argv* and capture output.
+    """Chạy *argv* và thu nhận output.
 
-    Never raises for missing binary, non-zero exit, or timeout — adapters
-    translate the returned :class:`CommandResult` into a documented condition.
+    Không bao giờ ném ngoại lệ khi thiếu binary, exit code khác 0, hoặc timeout — các
+    adapter sẽ dịch :class:`CommandResult` trả về thành điều kiện được ghi nhận tài liệu.
     """
     import subprocess
 
     command = tuple(str(a) for a in argv)
-    # Resolve the executable through the shared lookup before spawning: the
-    # child env passes the caller's PATH down unchanged, and that PATH does
-    # not necessarily contain the venv the scanners ship in. Without this a
-    # scanner that `which()` can see is still "command not found" at spawn
-    # time (exit 127), because Popen only searches the child's PATH.
+    # Phân giải file thực thi qua hàm tra cứu dùng chung trước khi spawn: môi trường
+    # con truyền PATH của bên gọi xuống nguyên vẹn, và PATH đó không
+    # nhất thiết chứa venv mà các scanner được cài đặt cùng. Nếu không có điều này, một
+    # scanner mà `which()` nhìn thấy vẫn bị lỗi "command not found" vào thời điểm
+    # spawn (exit 127), vì Popen chỉ tìm kiếm trong PATH của tiến trình con.
     resolved = which(command[0])
     if resolved is not None:
         command = (resolved, *command[1:])
@@ -164,7 +164,7 @@ def run_command(
 
 
 def binary_available(binary: str) -> bool:
-    """True iff *binary* exists on PATH (or is an absolute existing path)."""
+    """True nếu và chỉ nếu *binary* tồn tại trong PATH (hoặc là một đường dẫn tuyệt đối đang tồn tại)."""
     return which(binary) is not None
 
 

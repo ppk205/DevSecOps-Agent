@@ -8,7 +8,7 @@ describe("SeverityBadge", () => {
     render(<SeverityBadge severity="critical" />);
     const badge = screen.getByTestId("severity-critical");
     expect(badge).toHaveTextContent("Critical");
-    // Label text is ink (4.5:1+ on bg-soft); the brand color lives on the chip.
+    // Chữ nhãn có màu ink (4.5:1+ trên bg-soft); màu thương hiệu nằm trên chip.
     expect(badge.style.color).toBe("");
     expect(badge.className).toContain("text-ink");
     const chip = badge.querySelector("span[aria-hidden]");

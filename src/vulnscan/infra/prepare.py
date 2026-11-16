@@ -1,7 +1,7 @@
-"""Preparation-time dependency caching.
+"""Lưu cache phần phụ thuộc tại thời điểm chuẩn bị.
 
-Verification must not hit the network. Maven artifacts are resolved once,
-at preparation time, into a cache directory that verification reuses.
+Quá trình xác minh không được truy cập mạng. Các artifact Maven được phân giải một lần,
+tại thời điểm chuẩn bị, vào một thư mục cache mà quá trình xác minh sẽ tái sử dụng.
 """
 
 from __future__ import annotations
@@ -13,7 +13,7 @@ from pathlib import Path
 
 @dataclass
 class PreparedCache:
-    """Record of what was cached at preparation time."""
+    """Bản ghi những gì đã được cache tại thời điểm chuẩn bị."""
 
     m2_cache_dir: Path
     cache_key: str
@@ -21,7 +21,7 @@ class PreparedCache:
 
 
 def cache_key_for(pom_xml: Path) -> str:
-    """Stable key from the POM contents (not the path or timestamp)."""
+    """Khóa ổn định từ nội dung POM (không phải đường dẫn hoặc timestamp)."""
     h = hashlib.sha256()
     with pom_xml.open("rb") as fh:
         for chunk in iter(lambda: fh.read(65536), b""):
@@ -35,9 +35,9 @@ def prepare_maven_cache(
     maven_cmd: str = "mvn.cmd",
     java_home: str = "C:/Program Files/Java/jdk-17",
 ) -> PreparedCache:
-    """Resolve dependencies once into cache_root/<key>/.m2.
+    """Phân giải các phụ thuộc một lần vào cache_root/<key>/.m2.
 
-    Never called during verification: this is preparation-time only.
+    Không bao giờ được gọi trong quá trình xác minh: đây chỉ là bước tại thời điểm chuẩn bị.
     """
     project_dir = Path(project_dir)
     pom = project_dir / "pom.xml"
@@ -59,7 +59,7 @@ def prepare_maven_cache(
         [maven_cmd, "-B", "-DskipTests", "dependency:go-offline"],
         cwd=str(project_dir),
         env=env,
-        check=False,  # preparation is best-effort; verification reports gaps
+        check=False,  # bước chuẩn bị được thực hiện theo khả năng tốt nhất; bước xác minh sẽ báo cáo các khoảng trống
         capture_output=True,
         timeout=900,
     )

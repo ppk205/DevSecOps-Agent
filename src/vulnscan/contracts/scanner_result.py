@@ -1,7 +1,7 @@
-"""ScannerResult — the envelope every scanner adapter returns.
+"""ScannerResult — lớp vỏ mà mọi scanner adapter đều trả về.
 
-Normalized at the boundary: adapters translate native output into this shape so
-downstream modules never see vendor-specific structures.
+Được chuẩn hóa tại ranh giới: các adapter chuyển đổi đầu ra gốc sang cấu trúc này để
+các module phía sau không bao giờ thấy các cấu trúc riêng biệt của nhà cung cấp.
 """
 
 from __future__ import annotations
@@ -19,7 +19,7 @@ from .finding import Observation
 
 
 class ScannerResult(VersionedModel):
-    """Envelope returned by a scanner adapter for one tool invocation."""
+    """Lớp vỏ (envelope) được trả về bởi một scanner adapter cho một lần gọi công cụ."""
 
     run_id: str = Field(
         ...,
@@ -107,7 +107,7 @@ class ScannerResult(VersionedModel):
 
     @property
     def is_complete(self) -> bool:
-        """True if the tool ran to completion without tool-level errors."""
+        """True nếu công cụ đã chạy đến khi hoàn tất mà không gặp lỗi ở cấp độ công cụ."""
         return self.status == RunStatus.COMPLETED and not self.errors
 
 

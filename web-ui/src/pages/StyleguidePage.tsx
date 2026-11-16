@@ -28,7 +28,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-/** Hidden route: renders every token and component. Not in nav. */
+/** Route ẩn: render mọi token và component. Không có trong nav. */
 export function StyleguidePage() {
   const en = useStrings();
   const [tab, setTab] = useState("tokens");
@@ -116,7 +116,7 @@ export function StyleguidePage() {
                 <SpecCell label="Run" value="#7" />
                 <SpecCell label="Commit" value="9f3ac41…" mono />
                 <SpecCell label="Gate" value="FAIL" />
-                <SpecCell label="Toolchain" value="semgrep + odc" />
+                <SpecCell label="Toolchain" value="native-hunt" />
               </div>
             </Section>
             <Section title="Table (first 5 mock findings)">

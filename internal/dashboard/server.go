@@ -1,4 +1,4 @@
-// Package dashboard preserves local dashboard routes and escaped templates.
+// Package dashboard duy trì các route dashboard cục bộ và các template đã escape.
 package dashboard
 
 import (

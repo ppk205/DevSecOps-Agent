@@ -107,8 +107,7 @@ def test_batched_vuln_fires_safe_silent_no_cross_language() -> None:
 def test_go_walrus_assignment_taints(tmp_path: Path) -> None:
     target = tmp_path / "v.go"
     target.write_text(
-        'name := r.URL.Query().Get("n")\n'
-        'w.Write([]byte("hello " + name))\n',
+        'name := r.URL.Query().Get("n")\nw.Write([]byte("hello " + name))\n',
         encoding="utf-8",
     )
     findings = scan_file(target, load_rules("go"))
@@ -116,9 +115,7 @@ def test_go_walrus_assignment_taints(tmp_path: Path) -> None:
 
     clean = tmp_path / "c.go"
     clean.write_text(
-        'if (a == r.URL.Query().Get("n")) {\n'
-        '    w.Write([]byte("static"))\n'
-        "}\n",
+        'if (a == r.URL.Query().Get("n")) {\n    w.Write([]byte("static"))\n}\n',
         encoding="utf-8",
     )
     assert scan_file(clean, load_rules("go")) == []
@@ -139,8 +136,7 @@ def test_csharp_fromquery_entry_param_taints(tmp_path: Path) -> None:
 def test_ruby_sanitizer_kills_command(tmp_path: Path) -> None:
     target = tmp_path / "v.rb"
     target.write_text(
-        "qq = params[:qq]\n"
-        'system("ls", Shellwords.escape(qq))\n',
+        'qq = params[:qq]\nsystem("ls", Shellwords.escape(qq))\n',
         encoding="utf-8",
     )
     assert scan_file(target, load_rules("ruby")) == []

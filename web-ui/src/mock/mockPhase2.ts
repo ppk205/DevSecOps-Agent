@@ -5,40 +5,16 @@ import type {
   UsageSummary,
 } from "../api/types";
 
-/** Deterministic Phase 2 fixtures: tools, settings, keys, usage. */
+/** Fixture Phase 2 đơn định: tools, settings, keys, usage. */
 
 export const MOCK_TOOLS: ToolHealth[] = [
   {
-    tool: "semgrep",
-    binary: "semgrep",
-    path: "/usr/local/bin/semgrep",
+    tool: "native-hunt",
+    binary: "native-hunt",
+    path: "built-in",
     available: true,
-    version: "1.178.0",
+    version: "0.2.0",
     hint: null,
-  },
-  {
-    tool: "gitleaks",
-    binary: "gitleaks",
-    path: "/usr/local/bin/gitleaks",
-    available: true,
-    version: "8.18.4",
-    hint: null,
-  },
-  {
-    tool: "spotbugs",
-    binary: "spotbugs",
-    path: null,
-    available: false,
-    version: null,
-    hint: "Install spotbugs on PATH",
-  },
-  {
-    tool: "owasp-dependency-check",
-    binary: "dependency-check",
-    path: null,
-    available: false,
-    version: null,
-    hint: "Install dependency-check on PATH",
   },
 ];
 

@@ -1,4 +1,4 @@
-"""AI-generated fix proposals for findings.
+"""Đề xuất sửa đổi do AI tạo cho các finding.
 
 The model only writes a unified diff — it never touches source. Applying a
 proposal copies the affected files into an overlay directory under artifacts,
@@ -65,11 +65,11 @@ class FixProposal:
 
 
 def build_fix_prompt(finding: dict[str, Any], code_context: str = "") -> str:
-    """Render the user prompt for one finding dict (Finding dump).
+    """Kết xuất prompt người dùng cho một dict finding (bản kết xuất Finding).
 
-    ``code_context`` is wider surrounding source from the local checkout.
-    Without it the model reconstructs plausible-but-wrong context lines and
-    the strict applier rightly rejects the patch.
+    ``code_context`` là mã nguồn bao quanh rộng hơn từ checkout cục bộ.
+    Nếu không có nó, mô hình sẽ tái tạo các dòng ngữ cảnh nghe có vẻ hợp lý nhưng sai,
+    và bộ áp dụng bản vá nghiêm ngặt sẽ từ chối patch một cách chính xác.
     """
     section = ""
     if code_context.strip():
@@ -100,7 +100,7 @@ def extract_diff(reply: str) -> str:
     match = re.search(r"```diff\s*(.*?)```", reply, re.DOTALL)
     if match:
         return match.group(1).strip() + "\n"
-    # Fallback: raw diff starting at the first --- a/ header.
+    # Phương án dự phòng: diff thô bắt đầu tại tiêu đề --- a/ đầu tiên.
     start = reply.find("--- a/")
     if start >= 0:
         return reply[start:].strip() + "\n"
@@ -116,7 +116,7 @@ def propose_fix(
     *,
     budget: BudgetManager | None = None,
 ) -> FixProposal:
-    """Ask the model for a unified diff fixing one finding."""
+    """Yêu cầu mô hình cung cấp unified diff để khắc phục một finding."""
     profile = load_profile(profile_id)
     tracker = budget if budget is not None else BudgetManager()
     if tracker.available <= 0:

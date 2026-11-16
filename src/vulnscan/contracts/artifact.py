@@ -1,8 +1,8 @@
-"""ArtifactReference — lightweight pointer to a persisted binary or text artifact.
+"""ArtifactReference — con trỏ nhẹ trỏ tới một artifact nhị phân hoặc văn bản đã được lưu trữ lâu dài.
 
-Every file produced or consumed by the pipeline (scanner raw output, JUnit
-report, evidence screenshot, exported SARIF) gets one of these.  Checksums
-ensure reproducibility; MIME type keeps parsers honest.
+Mọi tệp do pipeline tạo ra hoặc sử dụng (đầu ra thô của scanner, báo cáo JUnit,
+ảnh chụp màn hình bằng chứng, SARIF được xuất) đều nhận một trong các con trỏ này. Checksum
+đảm bảo khả năng tái tạo; MIME type đảm bảo các trình phân tích cú pháp hoạt động chính xác.
 """
 
 from __future__ import annotations
@@ -14,7 +14,7 @@ from .enums import LanguageKind
 
 
 class ArtifactReference(VersionedModel):
-    """Immutable reference to a file on disk or object-store location."""
+    """Tham chiếu bất biến tới một tệp trên đĩa hoặc vị trí trong object-store."""
 
     path: str = Field(
         ...,
@@ -46,7 +46,7 @@ class ArtifactReference(VersionedModel):
     )
 
     def fingerprint(self) -> str:
-        """Short, human-readable identifier for logs and reports."""
+        """Định danh ngắn gọn, dễ đọc cho con người trong nhật ký và báo cáo."""
         return f"{self.path}@{self.checksum_sha256[:12]}"
 
 

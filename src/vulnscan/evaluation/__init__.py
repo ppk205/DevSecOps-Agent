@@ -1,5 +1,5 @@
-"""Evaluation dataset management: cases, labels, metrics (ACC-05–07).
+"""Quản lý tập dữ liệu đánh giá: cases, labels, metrics (ACC-05–07).
 
-Evaluator-only.  Expected labels and fixed-variant references must never
-be exposed through scanner or agent input mounts.
+Chỉ dành cho evaluator. Các nhãn kỳ vọng và tham chiếu biến thể đã sửa tuyệt đối không
+được lộ qua các mount đầu vào của scanner hoặc agent.
 """

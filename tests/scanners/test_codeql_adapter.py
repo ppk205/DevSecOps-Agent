@@ -66,9 +66,7 @@ _FIXTURE_SARIF: dict[str, Any] = {
                     "locations": [
                         {
                             "physicalLocation": {
-                                "artifactLocation": {
-                                    "uri": "src/main/java/com/example/Db.java"
-                                },
+                                "artifactLocation": {"uri": "src/main/java/com/example/Db.java"},
                                 "region": {
                                     "startLine": 42,
                                     "endLine": 44,
@@ -88,9 +86,7 @@ _FIXTURE_SARIF: dict[str, Any] = {
                     "locations": [
                         {
                             "physicalLocation": {
-                                "artifactLocation": {
-                                    "uri": "src/main/java/com/example/Web.java"
-                                },
+                                "artifactLocation": {"uri": "src/main/java/com/example/Web.java"},
                                 "region": {
                                     "startLine": 7,
                                     "endLine": 7,
@@ -142,9 +138,7 @@ def test_missing_binary_returns_skipped_with_actionable_reason(
     assert any("codeql" in e.lower() and "path" in e.lower() for e in result.errors)
 
 
-def test_disabled_tool_is_skipped(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_disabled_tool_is_skipped(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(codeql_adapter, "which", lambda name: None)
     spec = _spec(tmp_path)
     spec.tools = [ToolConfig(tool=ToolName.CODEQL, enabled=False)]
@@ -235,9 +229,7 @@ def _fake_invoke_factory(
     monkeypatch.setattr(adapter, "_invoke", fake)
 
 
-def test_run_creates_database_and_analyzes(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_run_creates_database_and_analyzes(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(codeql_adapter, "which", lambda name: "/usr/bin/codeql")
     adapter = CodeQLAdapter()
     recorded: list[list[str]] = []
@@ -257,9 +249,7 @@ def test_run_creates_database_and_analyzes(
     assert any("--source-root=" in arg for cmd in recorded for arg in cmd)
 
 
-def test_run_reuses_cached_database(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_run_reuses_cached_database(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(codeql_adapter, "which", lambda name: "/usr/bin/codeql")
     adapter = CodeQLAdapter()
     cached = tmp_path / "artifacts" / "codeql-db" / "abc123def456" / "java"

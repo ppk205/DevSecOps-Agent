@@ -8,7 +8,7 @@ interface DrawerProps {
   children: React.ReactNode;
 }
 
-/** Right slide-over evidence drawer. Escape closes; content scrolls. */
+/** Drawer bằng chứng trượt từ bên phải. Phím Escape để đóng; nội dung cuộn được. */
 export function Drawer({ open, title, onClose, children }: DrawerProps) {
   const en = useStrings();
   const closeRef = useRef<HTMLButtonElement>(null);

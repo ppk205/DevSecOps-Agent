@@ -243,9 +243,7 @@ class TestScanFindingsList:
             f"/api/scans/{client.run_pk}/findings?sort=title&order=desc&page=1&page_size=2"
         ).json()
         assert by_title["total"] == 4 and len(by_title["items"]) == 2
-        page2 = client.get(
-            f"/api/scans/{client.run_pk}/findings?page=2&page_size=3"
-        ).json()
+        page2 = client.get(f"/api/scans/{client.run_pk}/findings?page=2&page_size=3").json()
         assert page2["page"] == 2 and len(page2["items"]) == 1
 
     def test_bad_origin_and_unknown_run(self, tmp_path: Path) -> None:

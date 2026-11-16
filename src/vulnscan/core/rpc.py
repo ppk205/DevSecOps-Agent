@@ -1,7 +1,7 @@
-"""Owned application service over JSON-lines for the Go interface (IR-16).
+"""Dịch vụ ứng dụng phụ thuộc qua JSON-lines cho giao diện Go (IR-16).
 
-EOF cancels active work and waits for evidence persistence. This is a child
-service, never a detached daemon. Stdout contains protocol records only.
+EOF sẽ hủy công việc đang hoạt động và chờ lưu trữ bằng chứng bền vững. Đây là một
+dịch vụ con, không bao giờ là daemon tách rời. Stdout chỉ chứa các bản ghi giao thức.
 """
 
 from __future__ import annotations
@@ -348,7 +348,7 @@ class ServiceRPC:
         raise ValueError("unsupported service method")
 
     def serve(self) -> None:
-        # Redirect vendor prints process-wide; protocol sends use the original buffer.
+        # Chuyển hướng các lệnh in của bên thứ ba trên toàn tiến trình; việc gửi giao thức sử dụng buffer ban đầu.
         with redirect_stdout(sys.stderr):
             try:
                 while True:

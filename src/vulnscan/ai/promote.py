@@ -1,19 +1,18 @@
-"""Promote verified model-only hunt candidates to scanner-grade Findings.
+"""Quảng bá các ứng viên săn tìm đã xác minh chỉ thuộc về mô hình thành Finding tương đương cấp độ scanner.
 
-Hunt mode buckets model candidates against scanner findings
-(:func:`vulnscan.ai.compare.compare_hunt_vs_scanners`): agreed candidates
-already have a scanner Finding, but model-only candidates would otherwise
-die silently. Promotion re-reads each candidate's location through the
-same jailed excerpt reader the hunt and review lanes use, and synthesizes
-one ``UNPROCESSED`` Finding per candidate that still has real source
-evidence behind it.
+Chế độ Hunt phân nhóm các ứng viên của mô hình với các finding của scanner
+(:func:`vulnscan.ai.compare.compare_hunt_vs_scanners`): các ứng viên đồng thuận
+đã có một scanner Finding, nhưng các ứng viên chỉ thuộc về mô hình sẽ
+bị biến mất trong âm thầm. Việc quảng bá sẽ đọc lại vị trí của từng ứng viên thông qua
+cùng bộ đọc trích đoạn bị cô lập mà các luồng hunt và review sử dụng, và tổng hợp
+một Finding ``UNPROCESSED`` cho mỗi ứng viên vẫn còn bằng chứng mã nguồn thực sự phía sau nó.
 
-Drop rules: non-dict items, missing or non-string files, files that escape
-the snapshot, unreadable or empty excerpts, and invalid (non-integer or
-< 1) lines are skipped. Promotion never raises: one bad candidate never
-kills the batch. Severity falls back to ``MEDIUM`` when the candidate
-value is not a :class:`Severity` member; an unmappable CWE becomes
-``UNCLASSIFIED`` on the finding (``None`` on the observation).
+Quy tắc loại bỏ: các mục không phải dict, tệp bị thiếu hoặc không phải chuỗi, tệp thoát ra
+ngoài snapshot, trích đoạn không đọc được hoặc rỗng, và dòng không hợp lệ (không phải số nguyên hoặc
+< 1) sẽ bị bỏ qua. Việc quảng bá không bao giờ ném ngoại lệ: một ứng viên hỏng không bao giờ
+làm hỏng cả đợt. Severity fallback về ``MEDIUM`` khi giá trị của ứng viên
+không phải là thành viên :class:`Severity`; CWE không thể ánh xạ sẽ trở thành
+``UNCLASSIFIED`` trên finding (``None`` trên observation).
 """
 
 from __future__ import annotations
@@ -39,23 +38,23 @@ from vulnscan.contracts.finding import Finding, Observation, SourceCoordinate
 from vulnscan.scanners.mapping import confidence_value
 from vulnscan.scanners.mapping import cwe_category as map_cwe_category
 
-#: Sentinel returned by :func:`code_excerpt` when no source is readable.
+#: Sentinel được trả về bởi :func:`code_excerpt` khi không có mã nguồn nào đọc được.
 _NO_EXCERPT = "(no source excerpt available)"
 
 logger = logging.getLogger(__name__)
 
 _MODEL_RULE_ID = "model-hunt"
 
-# The contracts enum has no model member yet; rule_id + origin metadata
-# carry the model provenance until one exists.
+# Enum contracts chưa có thành viên model; metadata rule_id + origin
+# sẽ mang thông tin nguồn gốc model cho đến khi có thành viên này.
 _candidate_tool: object = getattr(ToolName, "MODEL_HUNT", None)
 _MODEL_TOOL: ToolName = (
-    _candidate_tool if isinstance(_candidate_tool, ToolName) else ToolName.SEMGREP
+    _candidate_tool if isinstance(_candidate_tool, ToolName) else ToolName.NATIVE_HUNT
 )
 
 
 def _candidate_line(candidate: dict[str, Any]) -> int | None:
-    """1-based source line, or None when the candidate line is invalid."""
+    """Dòng mã nguồn bắt đầu từ 1, hoặc None khi dòng của ứng viên không hợp lệ."""
     try:
         line = int(candidate.get("line", 0))
     except (TypeError, ValueError):
@@ -64,7 +63,7 @@ def _candidate_line(candidate: dict[str, Any]) -> int | None:
 
 
 def _inside_snapshot(snapshot_root: str, file_path: str) -> bool:
-    """True when *file_path* resolves inside *snapshot_root*."""
+    """True khi *file_path* được phân giải bên trong *snapshot_root*."""
     try:
         root = Path(snapshot_root).resolve()
         target = (root / file_path).resolve()
@@ -75,7 +74,7 @@ def _inside_snapshot(snapshot_root: str, file_path: str) -> bool:
 
 
 def _severity_of(candidate: dict[str, Any]) -> Severity:
-    """Candidate severity, or MEDIUM when it is not a Severity member."""
+    """Mức độ nghiêm trọng của ứng viên, hoặc MEDIUM khi nó không phải thành viên Severity."""
     try:
         return Severity(str(candidate.get("severity", "medium")).strip().lower())
     except ValueError:
@@ -83,7 +82,7 @@ def _severity_of(candidate: dict[str, Any]) -> Severity:
 
 
 def _promote_one(candidate: Any, *, snapshot_root: str, run_id: str) -> Finding | None:
-    """Build one model-origin Finding, or None when the candidate drops."""
+    """Tạo một Finding có nguồn gốc từ model, hoặc None khi ứng viên bị loại bỏ."""
     if not isinstance(candidate, dict):
         return None
     raw_file = candidate.get("file")
@@ -160,10 +159,10 @@ def promote_model_only(
     snapshot_root: str,
     run_id: str,
 ) -> list[Finding]:
-    """Promote model-only candidates with readable source evidence.
+    """Quảng bá các ứng viên chỉ thuộc về mô hình có bằng chứng mã nguồn đọc được.
 
-    Every returned Finding carries top-level ``provenance == MODEL``.
-    Never raises: bad items are skipped.
+    Mỗi Finding trả về đều mang ``provenance == MODEL`` ở cấp cao nhất.
+    Không bao giờ ném ngoại lệ: các mục lỗi sẽ bị bỏ qua.
     """
     promoted: list[Finding] = []
     for candidate in model_only or []:

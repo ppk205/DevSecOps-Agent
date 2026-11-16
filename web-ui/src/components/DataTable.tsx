@@ -14,7 +14,7 @@ interface DataTableProps<T> {
   emptyBody?: string;
 }
 
-/** Squared, hairline-ruled table with an EmptyState fallback. */
+/** Bảng góc vuông, đường kẻ mảnh (hairline) kèm dự phòng EmptyState. */
 export function DataTable<T>({ columns, rows, rowKey, emptyTitle, emptyBody }: DataTableProps<T>) {
   const en = useStrings();
   if (rows.length === 0) {

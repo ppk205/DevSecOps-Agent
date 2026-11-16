@@ -17,7 +17,7 @@ interface FindingDrawerProps {
   hasNext: boolean;
 }
 
-/** Evidence drawer: header badges, viewers, Esc/J/K navigation, V raw JSON. */
+/** Drawer bằng chứng: huy hiệu header, trình xem, điều hướng Esc/J/K, phím V xem JSON thô. */
 export function FindingDrawer({
   findingId,
   runId,

@@ -1,5 +1,5 @@
-// Package bridge owns the Python service during migration. Closing stdin
-// requests cooperative cancellation and evidence persistence before shutdown.
+// Package bridge sở hữu service Python trong quá trình migration. Đóng stdin
+// yêu cầu hủy hợp tác và lưu trữ bằng chứng trước khi tắt.
 package bridge
 
 import (
@@ -165,7 +165,7 @@ func (c *Client) Call(ctx context.Context, method string, params any, target any
 			}
 			return nil
 		case <-ctx.Done():
-			// Signal the owned service even when intake has not allocated a run yet.
+			// Gửi tín hiệu đến service được sở hữu ngay cả khi intake chưa phân bổ lượt chạy.
 			_ = c.write("cancel-"+id, "cancel_request", map[string]string{"request_id": id})
 			return ctx.Err()
 		case <-c.done:

@@ -6,7 +6,7 @@ import type {
   VerificationState,
 } from "../api/types";
 
-/** Deterministic PRNG so the mock run is identical on every load. */
+/** PRNG đơn định để lượt chạy mock hoàn toàn giống nhau trong mỗi lần tải. */
 function mulberry32(seed: number): () => number {
   let a = seed >>> 0;
   return () => {
@@ -55,7 +55,7 @@ function buildFindings(): FindingSummary[] {
   const rand = mulberry32(20261101);
   const out: FindingSummary[] = [];
   let n = 0;
-  // Scripted run: exactly 60 findings, severity mix 4/14/22/14/6.
+  // Lượt chạy theo kịch bản: chính xác 60 finding, phân bổ mức độ 4/14/22/14/6.
   const plan: Severity[] = [
     ...Array<Severity>(4).fill("critical"),
     ...Array<Severity>(14).fill("high"),

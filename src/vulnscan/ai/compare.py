@@ -1,12 +1,12 @@
-"""Compare model-hunted vulns against deterministic scanner findings.
+"""So sánh các lỗ hổng do mô hình săn tìm với các finding từ scanner xác định (deterministic).
 
-Pure function, no I/O. Match key: (normalized posix path, line ±3 lines
-tolerance, CWE digits with a rule->CWE fallback map built at runtime from
+Hàm thuần túy, không I/O. Khóa khớp: (đường dẫn posix chuẩn hóa, dung sai dòng ±3 dòng,
+các chữ số CWE với bản đồ fallback rule->CWE được tạo lúc runtime từ
 ``src/vulnscan/scanners/rules/*.yml`` ``metadata.cwe``).
 
-Returns ``{"agreed": [...], "model_only": [...], "scanner_only": [...],
-"counts": {...}}``. Report-only: matched items are cross-referenced, stored
-findings are never merged or mutated.
+Trả về ``{"agreed": [...], "model_only": [...], "scanner_only": [...],
+"counts": {...}}``. Chỉ dùng cho báo cáo: các mục khớp được tham chiếu chéo, các finding
+đã lưu không bao giờ bị hợp nhất hay chỉnh sửa.
 """
 
 from __future__ import annotations
@@ -17,10 +17,10 @@ from typing import Any
 
 _LINE_TOLERANCE = 3
 
-# Directory holding the semgrep rule packs (java/javascript/python/php yml).
+# Thư mục chứa các bộ quy tắc semgrep (java/javascript/python/php yml).
 _RULES_DIR = Path(__file__).resolve().parent.parent / "scanners" / "rules"
 
-# Parsed once on first use, then cached in module state.
+# Được phân tích một lần ở lượt sử dụng đầu tiên, sau đó lưu cache trong module state.
 _rule_cwe_cache: dict[str, str] | None = None
 
 _CWE_DIGITS = re.compile(r"(\d+)")
@@ -28,12 +28,12 @@ _RULE_ID_LINE = re.compile(r"^\s*-\s*id\s*:\s*(\S+)\s*$")
 
 
 def _scan_rules_text(text: str) -> dict[str, str]:
-    """Extract ``{rule id: CWE digits}`` from one rules file's text.
+    """Trích xuất ``{rule id: CWE digits}`` từ nội dung văn bản của một tệp rules.
 
-    Each rule block declares ``- id: <rule-id>`` followed by a ``metadata:``
-    section with a single-line ``cwe: ['CWE-NNN: ...']`` entry. The scan
-    tracks the most recent rule id and records the first CWE entry seen
-    under it — no YAML dependency required.
+    Mỗi khối rule khai báo ``- id: <rule-id>`` theo sau bởi phần ``metadata:``
+    với một mục ``cwe: ['CWE-NNN: ...']`` trên một dòng đơn. Quá trình quét
+    theo dõi rule id gần nhất và ghi lại mục CWE đầu tiên tìm thấy bên dưới nó
+    — không yêu cầu phụ thuộc thư viện YAML.
     """
     mapping: dict[str, str] = {}
     current_id = ""
@@ -50,7 +50,7 @@ def _scan_rules_text(text: str) -> dict[str, str]:
 
 
 def _load_rule_cwe_map() -> dict[str, str]:
-    """Build rule id -> CWE digits from every ``rules/*.yml`` file."""
+    """Xây dựng ánh xạ rule id -> CWE digits từ mỗi tệp ``rules/*.yml``."""
     mapping: dict[str, str] = {}
     try:
         files = sorted(_RULES_DIR.glob("*.yml"))
@@ -66,7 +66,7 @@ def _load_rule_cwe_map() -> dict[str, str]:
 
 
 def rule_cwe_map() -> dict[str, str]:
-    """Runtime rule->CWE map (parsed once, cached); ``{}`` when unavailable."""
+    """Bản đồ rule->CWE lúc runtime (phân tích một lần, lưu cache); ``{}`` khi không khả dụng."""
     global _rule_cwe_cache
     if _rule_cwe_cache is None:
         _rule_cwe_cache = _load_rule_cwe_map()
@@ -74,12 +74,12 @@ def rule_cwe_map() -> dict[str, str]:
 
 
 def _rule_cwe(rule_id: str) -> str:
-    """CWE digits for a rule id of any language prefix; ``""`` when unknown."""
+    """Các chữ số CWE cho một rule id thuộc bất kỳ tiền tố ngôn ngữ nào; ``""`` khi không xác định."""
     return rule_cwe_map().get(rule_id, "")
 
 
 def norm_path(path: str) -> str:
-    """Normalize to a comparable posix path (strip ``./`` prefixes)."""
+    """Chuẩn hóa thành đường dẫn posix có thể so sánh được (loại bỏ tiền tố ``./``)."""
     text = str(path or "").replace("\\", "/").strip()
     while text.startswith("./"):
         text = text[2:]
@@ -87,7 +87,7 @@ def norm_path(path: str) -> str:
 
 
 def cwe_digits(value: Any) -> str:
-    """Extract CWE digits (``CWE-89`` -> ``89``); ``""`` when absent."""
+    """Trích xuất các chữ số CWE (``CWE-89`` -> ``89``); ``""`` khi không có."""
     if value is None:
         return ""
     match = _CWE_DIGITS.search(str(value))
@@ -154,12 +154,12 @@ def _finding_location(finding: Any) -> tuple[str, int]:
 
 
 def compare_hunt_vs_scanners(candidates: list[Any], findings: list[Any]) -> dict[str, Any]:
-    """Bucket hunted candidates vs scanner findings by (path, line±3, CWE).
+    """Phân nhóm ứng viên được săn tìm với các finding của scanner theo (path, line±3, CWE).
 
-    A candidate agrees with a finding when paths match exactly after
-    normalization, lines are within ±3, and CWE digits agree — or either
-    side carries no CWE information (then path+line alone decide). Each
-    finding matches at most one candidate (first wins, input order kept).
+    Một ứng viên khớp với một finding khi đường dẫn trùng khớp hoàn toàn sau khi chuẩn hóa,
+    dòng nằm trong khoảng ±3 và các chữ số CWE trùng khớp — hoặc một trong hai bên
+    không mang thông tin CWE (khi đó chỉ path+line sẽ quyết định). Mỗi finding
+    khớp tối đa với một ứng viên (ưu tiên ứng viên đầu tiên, giữ nguyên thứ tự đầu vào).
     """
     agreed: list[dict[str, Any]] = []
     matched_findings: set[int] = set()

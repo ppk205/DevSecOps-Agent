@@ -118,7 +118,9 @@ class TestCancelRetry:
 
     def test_retry_rejects_live(self, tmp_path: Path) -> None:
         client, pk = _seeded(tmp_path, status="running")
-        assert client.post(f"/api/scans/{pk}/retry", headers=self._headers(client)).status_code == 409
+        assert (
+            client.post(f"/api/scans/{pk}/retry", headers=self._headers(client)).status_code == 409
+        )
 
 
 class TestEventEmission:
@@ -143,8 +145,18 @@ class TestEventEmission:
             check=True,
         )
         subprocess.run(
-            ["git", "-C", str(checkout), "-c", "user.email=t@t.t", "-c", "user.name=t",
-             "commit", "-qm", "init"],
+            [
+                "git",
+                "-C",
+                str(checkout),
+                "-c",
+                "user.email=t@t.t",
+                "-c",
+                "user.name=t",
+                "commit",
+                "-qm",
+                "init",
+            ],
             check=True,
         )
         db = tmp_path / "live.db"

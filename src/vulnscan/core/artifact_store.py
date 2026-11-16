@@ -1,8 +1,8 @@
-"""Content-addressed artifact store (sha256 -> path), grouped by run.
+"""Kho lưu trữ artifact định địa chỉ theo nội dung (sha256 -> path), được nhóm theo lần chạy.
 
-Artifacts are raw scanner outputs, source snapshots, and generated reports.
-They must be identifiable by run *and* attempt: a retry must preserve the
-prior attempt's artifacts rather than overwriting them.
+Các artifact là đầu ra thô của scanner, ảnh chụp nhanh mã nguồn và các báo cáo đã tạo.
+Chúng phải có thể nhận diện được theo lần chạy *và* lần thử: việc thử lại phải lưu giữ
+các artifact của lần thử trước đó thay vì ghi đè lên chúng.
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ from typing import Any
 
 @dataclass(frozen=True)
 class StoredArtifact:
-    """Pointer to a stored artifact."""
+    """Con trỏ tới một artifact đã lưu trữ."""
 
     run_id: int
     attempt: int
@@ -27,13 +27,13 @@ class StoredArtifact:
 
 
 class ArtifactStore:
-    """Filesystem-backed, content-addressed artifact store.
+    """Kho lưu trữ artifact định địa chỉ theo nội dung, dựa trên hệ thống tệp.
 
     Layout::
 
         <root>/run-<run_id>/attempt-<attempt>/<checksum>/<name>
 
-    A different checksum cannot overwrite an existing artifact.
+    Checksum khác không thể ghi đè lên một artifact hiện có.
     """
 
     def __init__(self, root: str | Path) -> None:
@@ -51,13 +51,13 @@ class ArtifactStore:
         data: bytes,
         kind: str = "raw",
     ) -> StoredArtifact:
-        """Store raw bytes; the checksum is computed, never accepted as input."""
+        """Lưu trữ byte thô; checksum được tính toán, không bao giờ nhận vào dưới dạng đầu vào."""
         checksum = hashlib.sha256(data).hexdigest()
         d = self._dir_for(run_id, attempt) / checksum
         d.mkdir(parents=True, exist_ok=True)
         p = d / name
         if p.exists():
-            # Same name but different content would be a content collision; refuse.
+            # Cùng tên nhưng nội dung khác nhau sẽ là xung đột nội dung (content collision); từ chối.
             if hashlib.sha256(p.read_bytes()).hexdigest() != checksum:
                 raise FileExistsError(f"artifact name collision with different content: {p}")
         else:
@@ -67,7 +67,7 @@ class ArtifactStore:
     def save_json(
         self, run_id: int, attempt: int, name: str, obj: Any, kind: str = "json"
     ) -> StoredArtifact:
-        """Serialize obj to JSON and store it (sorted keys for stability)."""
+        """Tuần tự hóa obj sang JSON và lưu trữ (sắp xếp khóa để đảm bảo tính ổn định)."""
         data = json.dumps(obj, ensure_ascii=False, sort_keys=True).encode("utf-8")
         return self.save_bytes(run_id, attempt, name, data, kind=kind)
 
@@ -86,7 +86,7 @@ class ArtifactStore:
         return data
 
     def list_by_run(self, run_id: int, attempt: int | None = None) -> list[StoredArtifact]:
-        """List artifacts for a run; pass attempt to filter to one attempt."""
+        """Liệt kê các artifact cho một lần chạy; truyền attempt để lọc theo một lần thử."""
         out: list[StoredArtifact] = []
         run_dir = self.root / f"run-{run_id}"
         if not run_dir.exists():

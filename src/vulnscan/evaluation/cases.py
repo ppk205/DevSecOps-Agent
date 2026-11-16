@@ -1,8 +1,8 @@
-"""Evaluation case management — loading, validation, and split management.
+"""Quản lý case đánh giá — tải, xác thực và quản lý tập phân chia (split).
 
-Case families group related vulnerable/fixed/negative variants.  Labels and
-fixed-variant references are evaluator-only and must never be exposed
-through scanner or agent input mounts.
+Các họ case nhóm các biến thể vulnerable/fixed/negative có liên quan. Các nhãn và
+tham chiếu biến thể đã sửa chỉ dành cho evaluator và tuyệt đối không được lộ
+qua các mount đầu vào của scanner hoặc agent.
 """
 
 from __future__ import annotations
@@ -23,13 +23,13 @@ from vulnscan.contracts.evaluation import EvaluationCase, MatchingCriteria
 
 
 def load_cases(path: Path) -> list[EvaluationCase]:
-    """Load evaluation cases from a JSON file."""
+    """Tải các case đánh giá từ một file JSON."""
     data = json.loads(path.read_text(encoding="utf-8"))
     return [EvaluationCase(**item) for item in data]
 
 
 def save_cases(cases: list[EvaluationCase], path: Path) -> None:
-    """Save evaluation cases to a JSON file."""
+    """Lưu các case đánh giá vào một file JSON."""
     path.write_text(
         json.dumps([c.model_dump(mode="json") for c in cases], indent=2),
         encoding="utf-8",
@@ -37,7 +37,7 @@ def save_cases(cases: list[EvaluationCase], path: Path) -> None:
 
 
 def validate_cases(cases: list[EvaluationCase]) -> list[str]:
-    """Validate a set of evaluation cases. Returns list of error strings."""
+    """Xác thực một tập hợp các case đánh giá. Trả về danh sách chuỗi lỗi."""
     errors: list[str] = []
     ids: set[str] = set()
     for c in cases:
@@ -57,7 +57,7 @@ def validate_cases(cases: list[EvaluationCase]) -> list[str]:
 
 
 def case_families(cases: list[EvaluationCase]) -> dict[str, list[EvaluationCase]]:
-    """Group cases by case_family."""
+    """Nhóm các case theo case_family."""
     groups: dict[str, list[EvaluationCase]] = defaultdict(list)
     for c in cases:
         groups[c.case_family].append(c)
@@ -65,7 +65,7 @@ def case_families(cases: list[EvaluationCase]) -> dict[str, list[EvaluationCase]
 
 
 def split_summary(cases: list[EvaluationCase]) -> dict[str, Any]:
-    """Return a summary of the dataset splits."""
+    """Trả về bản tóm tắt các tập phân chia của bộ dữ liệu."""
     split_counts = Counter(c.split.value for c in cases)
     vuln = [c for c in cases if c.expected_cwe_category is not None]
     vuln_by_split = Counter(c.split.value for c in vuln)
@@ -79,10 +79,10 @@ def split_summary(cases: list[EvaluationCase]) -> dict[str, Any]:
 
 
 def create_sample_cases() -> list[EvaluationCase]:
-    """Create sample evaluation cases for testing.
+    """Tạo các case đánh giá mẫu để kiểm thử.
 
-    Three CWE groups with one dev + two held-out cases each.
-    Covers CWE-89, CWE-79, CWE-862.
+    Ba nhóm CWE với mỗi nhóm gồm một case dev + hai case held-out.
+    Bao gồm CWE-89, CWE-79, CWE-862.
     """
     from datetime import datetime
 

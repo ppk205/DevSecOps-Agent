@@ -28,7 +28,7 @@ function safeParse(text: string): unknown {
   }
 }
 
-/** Highlight regex matches and linkify finding ids inside a message. */
+/** Làm nổi bật các khớp regex và tạo liên kết cho finding id bên trong thông điệp. */
 function renderMessage(message: string, highlight: RegExp | null): ReactNode {
   const safe = redactSecrets(message);
   const parts: ReactNode[] = [];

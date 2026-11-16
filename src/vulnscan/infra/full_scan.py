@@ -1,4 +1,4 @@
-"""Full scans isolate target builds from credentials and the persistent advisory cache."""
+"""Quét toàn bộ tách biệt các bản dựng mục tiêu khỏi thông tin xác thực và cache khuyến nghị lưu trữ lâu dài."""
 
 from __future__ import annotations
 
@@ -70,8 +70,8 @@ def _container(mounts: list[str], command: list[str], timeout: float) -> Command
 
 @contextmanager
 def _advisories(spec: ScanSpecification, timeout: float) -> Iterator[Path]:
-    # The updater has no target mount. Untrusted Maven builds never receive write
-    # access to this shared database, so one target cannot poison a later scan.
+    # Updater không có mount mục tiêu. Các bản dựng Maven không tin cậy không bao giờ nhận quyền ghi
+    # vào cơ sở dữ liệu dùng chung này, do đó một mục tiêu không thể làm sai lệch lượt quét sau.
     root = Path(spec.metadata.get("configuration", {}).get("output_dir", "artifacts")).resolve()
     cache = root / ".scanner-data" / "dependency-check-13.0.0"
     if not cache.resolve().is_relative_to(root):
@@ -125,11 +125,11 @@ def _advisories(spec: ScanSpecification, timeout: float) -> Iterator[Path]:
 
 
 def ensure_maven_build(workdir: str, timeout: float) -> str | None:
-    """Compile a Maven checkout in place so bytecode scanners can run.
+    """Biên dịch checkout Maven tại chỗ để các scanner bytecode có thể chạy.
 
-    Returns None on success (or when there is nothing to build), otherwise
-    a short reason. Never raises. Only builds when ``pom.xml`` exists and
-    ``target/classes`` or ``target/dependency`` is missing.
+    Trả về None khi thành công (hoặc khi không có gì để dựng), ngược lại trả về
+    một lý do ngắn gọn. Không bao giờ raise ngoại lệ. Chỉ dựng khi tồn tại ``pom.xml`` và
+    thiếu ``target/classes`` hoặc ``target/dependency``.
     """
     from pathlib import Path
 
@@ -241,9 +241,9 @@ def main() -> None:
         timeout=spec.max_wall_seconds,
     )
 
-    # CodeQL database creation traces its own build (and JavaScript targets need
-    # no Maven build at all), so a failed pre-build is a warning for the opt-in
-    # DEEP step rather than a fatal gate as it is for bytecode scanners.
+    # Việc tạo cơ sở dữ liệu CodeQL theo dõi bản dựng của chính nó (và các mục tiêu JavaScript
+    # hoàn toàn không cần bản dựng Maven), vì vậy tiền bản dựng thất bại chỉ là cảnh báo cho bước
+    # DEEP tùy chọn thay vì là điều kiện chặn nghiêm ngặt như đối với các scanner bytecode.
     build_required = tool != ToolName.CODEQL
     if build_required and not build.succeeded:
         result = ScannerResult(
@@ -272,7 +272,7 @@ def main() -> None:
         if result.is_complete:
             if tool == ToolName.SPOTBUGS:
                 result.metadata["findsecbugs_version"] = "1.14.0"
-                # Maven succeeded; SpotBugs's FindBugsSummary lists analyzed source files.
+                # Maven thành công; FindBugsSummary của SpotBugs liệt kê các file mã nguồn đã phân tích.
                 from lxml import etree
 
                 tree = etree.parse(

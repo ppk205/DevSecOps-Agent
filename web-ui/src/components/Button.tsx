@@ -20,7 +20,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: Size;
 }
 
-/** Squared M-dark button. Only circular icon buttons get radius (see IconButton). */
+/** Nút góc vuông kiểu M-dark. Chỉ các nút icon hình tròn mới có bán kính bo góc (xem IconButton). */
 export function Button({ variant = "primary", size = "md", className = "", ...rest }: ButtonProps) {
   return (
     <button

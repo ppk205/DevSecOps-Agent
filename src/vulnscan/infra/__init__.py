@@ -1,1 +1,1 @@
-"""Infrastructure backends: isolation, container backends, dependency caching."""
+"""Backend hạ tầng: cô lập, container backend, caching phần phụ thuộc."""

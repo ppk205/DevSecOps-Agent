@@ -1,8 +1,8 @@
-"""Caching and batch helpers for the advisory Laya stage.
+"""Các helper lưu bộ nhớ đệm và xử lý theo lô cho giai đoạn Laya tham vấn.
 
-Speed comes from two places only: skip identical states entirely, and evaluate
-many findings in a single model forward pass. Neither changes what the baseline
-pipeline already decided.
+Tốc độ chỉ đến từ hai điểm: bỏ qua hoàn toàn các trạng thái giống nhau, và đánh
+giá nhiều finding trong một lượt lan truyền xuôi của mô hình. Cả hai
+đều không làm thay đổi những gì pipeline cơ sở đã quyết định.
 """
 
 from __future__ import annotations
@@ -34,7 +34,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 def question_signature(questions: dict[str, DecisionQuestion]) -> str:
-    """Stable signature of the question set; part of the cache key."""
+    """Chữ ký ổn định của tập câu hỏi; là một phần của khóa cache."""
     return json.dumps(
         {
             name: {
@@ -50,7 +50,7 @@ def question_signature(questions: dict[str, DecisionQuestion]) -> str:
 
 
 class DecisionCache:
-    """In-memory cache keyed by redacted state hash + question signature."""
+    """Bộ nhớ đệm trong bộ nhớ (in-memory cache) có khóa là hash trạng thái đã biên tập + chữ ký câu hỏi."""
 
     def __init__(self) -> None:
         self._entries: dict[str, DecisionResult] = {}
@@ -110,11 +110,11 @@ def triage_many_batched(
     cache: DecisionCache | None = None,
     max_input_tokens: int = MAX_INPUT_TOKENS,
 ) -> list[TriageOutcome]:
-    """Route many findings using batched inference plus a per-state cache.
+    """Định tuyến nhiều finding bằng cách sử dụng suy luận theo lô kết hợp bộ nhớ đệm theo trạng thái.
 
-    ``agent`` is any object exposing ``predict(state, questions, **kwargs)`` or
-    ``predict_batch(states, questions, **kwargs)``; both shapes are supported so
-    the stage works against the real ``laya.Agent`` and against fakes.
+    ``agent`` là bất kỳ đối tượng nào cung cấp ``predict(state, questions, **kwargs)`` hoặc
+    ``predict_batch(states, questions, **kwargs)``; cả hai dạng đều được hỗ trợ để giai
+    đoạn này hoạt động với ``laya.Agent`` thực tế cũng như với các fake object.
     """
     if batch_size < 1:
         raise ValueError("batch_size must be >= 1")
@@ -148,11 +148,11 @@ def triage_many_batched(
 
 
 def _looks_like_backend(candidate: Any) -> bool:
-    """True when *candidate* already returns a typed :class:`DecisionResult`.
+    """True khi *candidate* đã trả về một :class:`DecisionResult` được định kiểu.
 
-    A raw ``laya.Agent`` also has ``predict``, but it takes ``(state, questions)``
-    and returns a dict, so a real backend is told apart by its declared return
-    type. Duck-typing keeps this working for test doubles too.
+    Một ``laya.Agent`` thô cũng có ``predict``, nhưng nó nhận ``(state, questions)``
+    và trả về một dict, do đó một backend thực sự được phân biệt bằng kiểu trả về đã khai
+    báo của nó. Duck-typing giúp điều này hoạt động cho cả các test double.
     """
     if not callable(getattr(candidate, "predict", None)):
         return False
@@ -174,9 +174,9 @@ def _run_chunk(
     if isinstance(agent, LayaDecisionBackend):
         return agent.predict_many([requests[index] for index in chunk])
 
-    # A real backend already speaks our contract, so its typed result is used
-    # as-is with no wire round trip. Duck-typed on purpose: DecisionBackend is a
-    # non-runtime-checkable Protocol, and a test fake must also be accepted.
+    # Một backend thực sự đã tuân theo hợp đồng của chúng ta, vì vậy kết quả định kiểu của nó được sử dụng
+    # nguyên trạng mà không cần truyền tải qua mạng. Cố ý sử dụng duck-typing: DecisionBackend là một
+    # Protocol không thể kiểm tra lúc runtime, và một test fake cũng phải được chấp nhận.
     if _looks_like_backend(agent):
         return [agent.predict(requests[index]) for index in chunk]
 
@@ -193,8 +193,8 @@ def _run_chunk(
                     for index, row in zip(chunk, raw, strict=True)
                 ]
         except Exception:
-            # Batch inference is an optimisation only: a failure must not lose the
-            # findings, so the stage falls back to per-state inference below.
+            # Suy luận theo lô chỉ là một tối ưu hóa: sự cố không được làm mất các
+            # finding, vì vậy giai đoạn này sẽ chuyển sang suy luận theo từng trạng thái bên dưới.
             _LOGGER.warning(
                 "Laya batch inference failed; falling back to single-state calls",
                 exc_info=True,
@@ -212,7 +212,7 @@ def _parse(
     envelope = build_evidence_state(request.state)
 
     if not isinstance(raw, Mapping) or not isinstance(raw.get("answers"), Mapping):
-        # A backend that reported a structured failure keeps its own reason.
+        # Một backend đã báo cáo lỗi có cấu trúc sẽ giữ nguyên lý do của chính nó.
         reason = raw.get("__error__") if isinstance(raw, Mapping) else None
         return DecisionResult(
             status=DecisionStatus.UNAVAILABLE if reason else DecisionStatus.INCOMPLETE,

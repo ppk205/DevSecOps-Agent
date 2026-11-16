@@ -1,31 +1,30 @@
-"""Targeted HTTP verification probes (assisted DAST, opt-in).
+"""Các probe xác minh HTTP có định hướng (assisted DAST, tùy chọn tham gia).
 
-Only two probe kinds exist, and both are strictly read-only checks against a
-target the operator explicitly allowlists:
+Chỉ có hai loại probe tồn tại, và cả hai đều là các kiểm tra chỉ đọc nghiêm ngặt đối với
+mục tiêu mà người vận hành đưa vào allowlist một cách rõ ràng:
 
-- ``reflected-xss``: GET the vulnerable path with a unique random canary
-  token in the flagged parameter; report whether the token is reflected.
-- ``sql-error``: GET (then POST if needed) with a single quote appended to
-  the flagged parameter; match the response against known DB error
-  signatures (MySQL, PostgreSQL, MSSQL, Oracle, SQLite) and report the
-  DBMS guess.
+- ``reflected-xss``: GET đường dẫn dễ bị tấn công với một canary token ngẫu nhiên
+  duy nhất trong tham số bị gắn cờ; báo cáo liệu token có bị phản chiếu hay không.
+- ``sql-error``: GET (sau đó POST nếu cần) với dấu nháy đơn nối thêm vào
+  tham số bị gắn cờ; so khớp response với các chữ ký lỗi DB đã biết
+  (MySQL, PostgreSQL, MSSQL, Oracle, SQLite) và báo cáo phỏng đoán DBMS.
 
-Safety rules enforced here (not by convention elsewhere):
+Các quy tắc an toàn được thực thi tại đây (không phải theo quy ước ở nơi khác):
 
-- The target host must appear in the explicit ``allowed_hosts`` argument,
-  matched exactly after lowercasing (so ``localhost`` never implies
-  ``127.0.0.1``/``[::1]`` and vice versa). Anything else raises
-  :class:`AllowlistError` before any request is made.
-- Only ``http``/``https`` URLs are probed.
-- The per-probe timeout is clamped to :data:`MAX_TIMEOUT_SECONDS` (10s).
-- At most :data:`MAX_REQUESTS_PER_FINDING` (3) requests are made per
-  finding; every request is logged and returned in ``requests_made``.
-- Redirects are not followed, so a probe can never be bounced to an
-  off-allowlist host.
+- Host mục tiêu phải xuất hiện trong đối số ``allowed_hosts`` rõ ràng,
+  so khớp chính xác sau khi chuyển về chữ thường (do đó ``localhost`` không bao giờ ngầm định
+  ``127.0.0.1``/``[::1]`` và ngược lại). Mọi trường hợp khác sẽ ném
+  :class:`AllowlistError` trước khi bất kỳ request nào được thực hiện.
+- Chỉ các URL ``http``/``https`` mới được probe.
+- Timeout cho mỗi probe bị giới hạn ở :data:`MAX_TIMEOUT_SECONDS` (10s).
+- Tối đa :data:`MAX_REQUESTS_PER_FINDING` (3) request được thực hiện cho mỗi
+  finding; mọi request đều được ghi log và trả về trong ``requests_made``.
+- Không theo dõi chuyển hướng (redirect), do đó probe không bao giờ bị chuyển tiếp sang
+  một host nằm ngoài allowlist.
 
-This module never creates findings. It returns a :class:`VerificationProbe`
-value object; promoting or rejecting a finding from that result is the
-validator's job, not this module's.
+Module này không bao giờ tạo finding. Nó trả về một value object :class:`VerificationProbe`;
+việc nâng cấp hoặc từ chối một finding từ kết quả đó là nhiệm vụ của validator,
+không phải của module này.
 """
 
 from __future__ import annotations
@@ -47,14 +46,14 @@ if TYPE_CHECKING:  # pragma: no cover - typing only, never constructed here
 
 logger = logging.getLogger(__name__)
 
-#: Hard ceiling for any single probe request (seconds). Larger ``timeout``
-#: arguments are clamped down to this value.
+#: Trần giới hạn cứng cho bất kỳ request probe đơn lẻ nào (giây). Các đối số ``timeout``
+#: lớn hơn sẽ được ép xuống giá trị này.
 MAX_TIMEOUT_SECONDS = 10.0
 
-#: Hard ceiling on HTTP requests per finding, across both probe kinds.
+#: Trần giới hạn cứng về số request HTTP cho mỗi finding, trên cả hai loại probe.
 MAX_REQUESTS_PER_FINDING = 3
 
-#: Maximum characters kept in ``evidence_excerpt`` after redaction.
+#: Số ký tự tối đa được giữ trong ``evidence_excerpt`` sau khi che giấu dữ liệu nhạy cảm.
 EVIDENCE_EXCERPT_LIMIT = 500
 
 _CANARY_BYTES = 8
@@ -75,29 +74,29 @@ __all__ = [
 
 
 class ProbeKind(str, Enum):
-    """The only two probe kinds this module supports."""
+    """Hai loại probe duy nhất mà module này hỗ trợ."""
 
     REFLECTED_XSS = "reflected-xss"
     SQL_ERROR = "sql-error"
 
 
 class AllowlistError(ValueError):
-    """Raised when a probe target host is not explicitly allowlisted.
+    """Được ném ra khi host mục tiêu của probe không nằm trong allowlist rõ ràng.
 
-    Raised before any network request is made.
+    Được ném ra trước khi bất kỳ request mạng nào được thực hiện.
     """
 
 
 class UnsupportedProbeKindError(ValueError):
-    """Raised when the probe kind cannot be resolved to a supported kind."""
+    """Được ném ra khi loại probe không thể phân giải thành một loại được hỗ trợ."""
 
 
 class RequestBudgetExceeded(RuntimeError):
-    """Raised if a probe would exceed ``MAX_REQUESTS_PER_FINDING``."""
+    """Được ném ra nếu một probe vượt quá ``MAX_REQUESTS_PER_FINDING``."""
 
 
 class ProbedRequest(VersionedModel):
-    """One HTTP request made by a probe, kept for auditability."""
+    """Một request HTTP được thực hiện bởi probe, được giữ lại nhằm phục vụ kiểm toán."""
 
     method: str = Field(..., description="HTTP method used, e.g. 'GET'.")
     url: str = Field(..., description="Full URL requested (without secrets).")
@@ -108,7 +107,7 @@ class ProbedRequest(VersionedModel):
 
 
 class VerificationProbe(VersionedModel):
-    """Outcome of probing one finding. Never a finding itself."""
+    """Kết quả probe một finding. Bản thân nó không bao giờ là một finding."""
 
     kind: ProbeKind = Field(..., description="Which of the two probe kinds ran.")
     reflected: bool | None = Field(
@@ -133,8 +132,8 @@ class VerificationProbe(VersionedModel):
     )
 
 
-#: Case-insensitive DB error signatures keyed by DBMS guess. Each entry is
-#: deliberately DBMS-specific so a match names exactly one engine.
+#: Chữ ký lỗi DB không phân biệt hoa thường được định danh theo phỏng đoán DBMS. Mỗi mục
+#: được thiết kế đặc thù cho từng DBMS để khi khớp sẽ chỉ định danh chính xác một engine.
 _DB_ERROR_SIGNATURES: dict[str, tuple[str, ...]] = {
     "mysql": (
         "you have an error in your sql syntax",
@@ -177,19 +176,19 @@ _DB_ERROR_SIGNATURES: dict[str, tuple[str, ...]] = {
 _XSS_ALIASES = {"xss", "reflected-xss", "reflectedxss", "reflected_xss"}
 _SQL_ALIASES = {"sqli", "sql-error", "sqlerror", "sql_error", "sql-injection", "sqlinjection"}
 
-# ``key=value`` / ``key: value`` secrets are masked before being stored.
+# Các secret dạng ``key=value`` / ``key: value`` được che đi trước khi lưu trữ.
 _REDACT_PATTERN = re.compile(
     r"(?i)((?:passw(?:or)?d|passwd|pwd|secret|api[_-]?key|token|sessionid|auth)\s*[:=]\s*)([^\s&;\"']+)"
 )
 
 
 def _redact(text: str) -> str:
-    """Mask credential-looking values so excerpts are safe to persist."""
+    """Che các giá trị trông giống thông tin xác thực để đoạn trích an toàn khi lưu trữ."""
     return _REDACT_PATTERN.sub(r"\1***", text or "")
 
 
 def _excerpt(body: str, needle: str = "", *, case_sensitive: bool = True) -> str:
-    """Return a redacted excerpt, preferring a window around ``needle``."""
+    """Trả về một đoạn trích đã che dữ liệu nhạy cảm, ưu tiên vùng xung quanh ``needle``."""
     text = _redact(body or "")
     if needle:
         haystack = text if case_sensitive else text.lower()
@@ -206,11 +205,11 @@ def _normalize_host(host: str) -> str:
 
 
 def _checked_url(base_url: str, path: str, allowed_hosts: Any) -> str:
-    """Join ``path`` onto ``base_url`` and enforce the host allowlist.
+    """Nối ``path`` vào ``base_url`` và thực thi allowlist cho host.
 
-    Both the base URL and the final joined URL must carry an allowlisted
-    host, so a finding path that is itself an absolute off-allowlist URL
-    cannot smuggle a probe elsewhere.
+    Cả URL cơ sở và URL kết quả sau khi nối đều phải chứa một host
+    trong allowlist, để đường dẫn finding vốn là một URL tuyệt đối ngoài allowlist
+    không thể lén đưa probe tới nơi khác.
     """
     allowed = {_normalize_host(h) for h in (allowed_hosts or ()) if str(h).strip()}
     try:
@@ -244,7 +243,7 @@ def _effective_timeout(timeout: float) -> float:
 
 
 class _RequestBudget:
-    """Counts probe requests; refuses to exceed ``MAX_REQUESTS_PER_FINDING``."""
+    """Đếm số request probe; từ chối vượt quá ``MAX_REQUESTS_PER_FINDING``."""
 
     def __init__(self, limit: int = MAX_REQUESTS_PER_FINDING) -> None:
         self._remaining = limit
@@ -258,7 +257,7 @@ class _RequestBudget:
 
 
 def _hints_of(finding: Finding | Mapping[str, Any]) -> dict[str, Any]:
-    """Read probe hints (path/parameter/method/kind) off any finding shape."""
+    """Đọc các gợi ý probe (path/parameter/method/kind) từ bất kỳ cấu trúc finding nào."""
     if isinstance(finding, Mapping):
         return dict(finding)
     hints: dict[str, Any] = {}
@@ -298,7 +297,7 @@ def _normalize_kind(raw: Any) -> ProbeKind:
 
 
 def _match_dbms(body: str) -> tuple[str | None, str | None]:
-    """Return (dbms, matched_signature) for the first known error signature."""
+    """Trả về (dbms, matched_signature) cho chữ ký lỗi đã biết đầu tiên."""
     lowered = (body or "").lower()
     for dbms, signatures in _DB_ERROR_SIGNATURES.items():
         for signature in signatures:
@@ -316,7 +315,7 @@ def _do_request(
     params: dict[str, str] | None = None,
     data: dict[str, str] | None = None,
 ) -> httpx.Response | None:
-    """Make one budgeted, logged request; return None on transport failure."""
+    """Thực hiện một request trong ngân sách định mức có ghi log; trả về None khi lỗi truyền tải."""
     budget.consume()
     label = f"{method} {url}"
     logger.info("probe request: %s params=%s", label, bool(params or data))
@@ -398,16 +397,15 @@ def probe_target(
     kind: str | ProbeKind | None = None,
     client: httpx.Client | None = None,
 ) -> VerificationProbe:
-    """Probe one finding against ``base_url`` and return a verdict object.
+    """Probe một finding đối với ``base_url`` và trả về một đối tượng phán quyết (verdict).
 
-    ``finding`` may be a :class:`~vulnscan.contracts.finding.Finding` or a
-    plain mapping carrying any of ``path``, ``parameter`` (alias ``param``),
-    ``method``, ``kind``/``probe_kind`` (or a ``cwe_category`` of CWE-79 /
-    CWE-89 to derive the kind). ``kind`` overrides whatever the finding says.
+    ``finding`` có thể là một :class:`~vulnscan.contracts.finding.Finding` hoặc một
+    mapping thông thường chứa bất kỳ trường nào như ``path``, ``parameter`` (bí danh ``param``),
+    ``method``, ``kind``/``probe_kind`` (hoặc ``cwe_category`` của CWE-79 /
+    CWE-89 để suy ra kind). ``kind`` sẽ ghi đè lên bất kỳ giá trị nào finding khai báo.
 
-    ``client`` is an escape hatch for tests (a pre-configured
-    ``httpx.Client``); when omitted, a client with the clamped timeout is
-    created and closed automatically.
+    ``client`` là lối thoát dự phòng cho các bài test (một ``httpx.Client`` được cấu hình trước);
+    khi bỏ qua, một client với timeout đã được ép giới hạn sẽ được tạo và đóng tự động.
     """
     effective_timeout = _effective_timeout(timeout)
     hints = _hints_of(finding)

@@ -1,10 +1,10 @@
 """Resolve a local source folder or repository URL into a scan target.
 
-Users paste whatever they have: a local path, a GitHub URL, or a bare
-``owner/repo`` slug. This module turns that into a concrete checkout the
-rest of the pipeline can trust, so no pre-imported fixture is required.
+Người dùng dán bất cứ thứ gì họ có: đường dẫn cục bộ, URL GitHub hoặc slug
+``owner/repo`` đơn thuần. Module này chuyển đổi mục tiêu đó thành một bản checkout cụ thể mà
+phần còn lại của pipeline có thể tin cậy, do đó không cần fixture được nhập trước.
 
-Design constraints:
+Các ràng buộc thiết kế:
 
 - Git sources record an actual commit; other local folders record no-revision.
 - Clones are shallow and cached under a work directory so re-scans are cheap.
@@ -240,12 +240,12 @@ def resolve_source(
     Parameters
     ----------
     value:
-        Local directory, remote URL, or ``owner/repo`` slug.
+        Thư mục cục bộ, URL từ xa, hoặc slug ``owner/repo``.
     workdir:
-        Cache directory for cloned repositories.
+        Thư mục bộ nhớ đệm cho các repository đã clone.
     commit:
-        Optional pinned commit. When omitted the remote's default branch HEAD
-        is used, and that resolved SHA is recorded.
+        Commit được ghim tùy chọn. Khi bị bỏ qua, HEAD nhánh mặc định của remote
+        sẽ được sử dụng và SHA đã phân giải đó được ghi lại.
     """
     runner = run or _default_run
     text = _input_text(value)

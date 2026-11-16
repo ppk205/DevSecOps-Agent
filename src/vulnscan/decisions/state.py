@@ -1,4 +1,4 @@
-"""Redacted, bounded evidence envelopes for local decision backends."""
+"""Evidence envelope đã che dữ liệu nhạy cảm và giới hạn kích thước cho các decision backend cục bộ."""
 
 from __future__ import annotations
 
@@ -60,15 +60,15 @@ def build_evidence_state(
     *,
     max_chars: int = MAX_STATE_TEXT_CHARS,
 ) -> dict[str, Any]:
-    """Redact, bound, and hash a state before passing it to Laya.
+    """Che thông tin nhạy cảm, giới hạn và băm state trước khi chuyển tới Laya.
 
-    The returned ``state_text`` is deterministic for cache keys and evidence
-    artifacts; the original raw source is intentionally not retained here.
+    ``state_text`` trả về là tất định cho khóa cache và evidence
+    artifact; mã nguồn gốc có chủ ý không được lưu giữ tại đây.
     """
     if max_chars < 2:
         raise ValueError("state limit must be at least two characters")
     redacted = _redact({k: v for k, v in state.items() if k not in {"finding_id", "run_id"}})
-    # Bound the actual object sent to inference, keeping a valid JSON document.
+    # Giới hạn kích thước đối tượng thực tế gửi tới inference, giữ tài liệu JSON hợp lệ.
     bounded: dict[str, Any] = {}
     truncated = False
     for key, value in sorted(redacted.items()):
@@ -117,7 +117,7 @@ def build_evidence_state(
 
 
 def model_state(envelope: Mapping[str, Any]) -> dict[str, Any]:
-    """The exact hashed payload; never pass envelope bookkeeping to inference."""
+    """Payload đã băm chính xác; không bao giờ chuyển dữ liệu quản lý envelope sang inference."""
     return {
         k: v
         for k, v in envelope.items()

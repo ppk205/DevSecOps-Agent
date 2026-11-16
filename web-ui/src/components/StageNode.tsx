@@ -16,7 +16,7 @@ interface StageNodeProps {
   last?: boolean;
 }
 
-/** One node of the pipeline rail: status dot, label, connector. */
+/** Một node của thanh tiến trình (rail) pipeline: chấm trạng thái, nhãn, đường nối. */
 export function StageNode({ name, status, last = false }: StageNodeProps) {
   return (
     <div className="flex flex-1 items-center" data-testid={`stage-${name}`}>

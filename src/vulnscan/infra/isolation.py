@@ -1,8 +1,8 @@
-"""Credential separation for verification runs.
+"""Phân tách thông tin xác thực cho các lượt chạy xác minh.
 
-A verification subprocess must NEVER see provider credentials and must
-NEVER inherit the host docker socket. This module produces the scrubbed
-environment.
+Một tiến trình con xác minh TUYỆT ĐỐI KHÔNG được thấy thông tin xác thực provider và
+TUYỆT ĐỐI KHÔNG được kế thừa host docker socket. Module này tạo ra môi trường
+đã được làm sạch.
 """
 
 from __future__ import annotations
@@ -10,8 +10,8 @@ from __future__ import annotations
 import os
 import re
 
-# Patterns whose presence would leak provider credentials into a
-# verification run. Matched case-insensitively against the env key.
+# Các pattern mà sự hiện diện của chúng sẽ làm rò rỉ thông tin xác thực provider vào
+# lượt chạy xác minh. Được so khớp không phân biệt hoa thường với env key.
 _SENSITIVE_PATTERNS = [
     re.compile(p, re.IGNORECASE)
     for p in (
@@ -40,9 +40,9 @@ def _is_sensitive(key: str) -> bool:
 
 
 def scrub_env(base: dict[str, str] | None = None) -> dict[str, str]:
-    """Return an environment with provider credentials removed.
+    """Trả về một môi trường đã được loại bỏ thông tin xác thực provider.
 
-    If base is None, starts from os.environ (a copy, never mutated).
+    Nếu base là None, bắt đầu từ os.environ (một bản sao, không bao giờ bị thay đổi).
     """
     src = dict(base if base is not None else os.environ)
     scrubbed: dict[str, str] = {}
@@ -57,7 +57,7 @@ def scrub_env(base: dict[str, str] | None = None) -> dict[str, str]:
 
 
 def assert_no_credentials(env: dict[str, str]) -> None:
-    """Fail loudly if a credential still appears in the env."""
+    """Báo lỗi ngay lập tức nếu một credential vẫn xuất hiện trong env."""
     leaked = [k for k in env if _is_sensitive(k) and k != "_VULNSCAN_SCRUBBED_KEYS"]
     if leaked:
         raise AssertionError(f"provider credentials present in env: {sorted(leaked)}")

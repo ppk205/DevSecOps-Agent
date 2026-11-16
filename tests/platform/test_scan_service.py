@@ -109,6 +109,9 @@ def service(tmp_path):
     leaks = FixtureAdapter()
     leaks.tool = ToolName.GITLEAKS
     registry.register(leaks)
+    native = FixtureAdapter()
+    native.tool = ToolName.NATIVE_HUNT
+    registry.register(native)
     return ScanService(str(tmp_path / "runs.db"), registry)
 
 

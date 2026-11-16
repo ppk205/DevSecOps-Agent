@@ -1,8 +1,8 @@
-"""OWASP Dependency-Check adapter — dependency-track analysis.
+"""Adapter OWASP Dependency-Check — phân tích theo nhánh dependency.
 
-Parses the Dependency-Check JSON report (``--format JSON``).  Missing
-binary, missing report file, and virtual dependencies are all documented
-conditions: the adapter records them and returns a result, never raising.
+Phân tích cú pháp báo cáo JSON của Dependency-Check (``--format JSON``). Việc thiếu
+binary, thiếu file báo cáo, và các dependency ảo đều là các điều kiện đã được ghi nhận trong tài liệu:
+adapter sẽ ghi nhận chúng và trả về kết quả chứ không bao giờ ném ngoại lệ.
 """
 
 from __future__ import annotations
@@ -43,7 +43,7 @@ _SEVERITY_BY_NAME = {
 
 
 def _cvss_to_severity(score: float | None) -> Severity | None:
-    """CVSS v3 base score -> contract Severity (None when undeterminable)."""
+    """Điểm cơ sở CVSS v3 -> Severity theo contract (None khi không thể xác định)."""
     if score is None:
         return None
     if score >= 9.0:
@@ -64,7 +64,7 @@ def _name_to_severity(name: str | None) -> Severity | None:
 
 
 def _extract_cwe(vuln: dict[str, Any]) -> CWECategory | None:
-    """Pull the first supported CWE id out of a Dependency-Check vuln entry."""
+    """Lấy ID CWE được hỗ trợ đầu tiên ra khỏi mục lỗ hổng của Dependency-Check."""
     raw = vuln.get("cwes") or vuln.get("cwe") or []
     if isinstance(raw, (str, int)):
         raw = [raw]
@@ -88,7 +88,7 @@ def parse_dependency_check_json(
     tool_version: str,
     source_snapshot: str,
 ) -> tuple[list[Observation], list[CoverageRecord]]:
-    """Parse a Dependency-Check JSON report into observations + coverage."""
+    """Phân tích báo cáo JSON của Dependency-Check thành các observation + độ bao phủ."""
     now = datetime.now(UTC)
     observations: list[Observation] = []
     coverage: list[CoverageRecord] = []
@@ -157,7 +157,7 @@ def parse_dependency_check_json(
 
 
 class DependencyCheckAdapter(ScannerAdapter):
-    """OWASP Dependency-Check adapter (dependency track)."""
+    """Adapter OWASP Dependency-Check (nhánh dependency)."""
 
     tool = ToolName.OWASP_DEPENDENCY_CHECK
     binary_name = "dependency-check"
@@ -185,8 +185,8 @@ class DependencyCheckAdapter(ScannerAdapter):
 
         cap = self.capabilities()
         if not cap.available:
-            # No ODC binary (and its NVD download is flaky offline): fall back
-            # to the OSV.dev lookup on manifests instead of skipping outright.
+            # Không có binary ODC (và việc tải NVD không ổn định khi offline): chuyển sang
+            # tra cứu OSV.dev trên các manifest thay vì bỏ qua hoàn toàn.
             try:
                 from .osv_adapter import OSVAdapter
 
@@ -226,15 +226,19 @@ class DependencyCheckAdapter(ScannerAdapter):
         finished = datetime.now(UTC)
 
         if not result.succeeded or not report_path.exists():
-            # ODC failed (missing NVD DB, no network, no key): OSV.dev covers
-            # manifests instead of failing the whole scan.
+            # ODC thất bại (thiếu NVD DB, không có mạng, không có key): OSV.dev sẽ bao quát
+            # các manifest thay vì làm thất bại toàn bộ lượt quét.
             try:
                 from .osv_adapter import OSVAdapter
 
                 return OSVAdapter().run(spec, workdir=workdir)
             except Exception as exc:  # noqa: BLE001 - fallback must never break the scan
                 return self._fatal(
-                    spec, started, finished, result, note=f"dependency-check produced no report; osv fallback: {exc}"
+                    spec,
+                    started,
+                    finished,
+                    result,
+                    note=f"dependency-check produced no report; osv fallback: {exc}",
                 )
 
         try:
@@ -246,7 +250,11 @@ class DependencyCheckAdapter(ScannerAdapter):
                 return OSVAdapter().run(spec, workdir=workdir)
             except Exception as fallback_exc:  # noqa: BLE001 - fallback must never break the scan
                 return self._fatal(
-                    spec, started, finished, result, note=f"unreadable dependency-check report: {exc}; osv fallback: {fallback_exc}"
+                    spec,
+                    started,
+                    finished,
+                    result,
+                    note=f"unreadable dependency-check report: {exc}; osv fallback: {fallback_exc}",
                 )
 
         if not isinstance(report, dict) or not isinstance(report.get("dependencies"), list):

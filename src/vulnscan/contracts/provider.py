@@ -1,4 +1,4 @@
-"""ProviderProfile and ProviderUsage — BYOK Chat-Completions configuration and accounting.
+"""ProviderProfile và ProviderUsage — cấu hình và hạch toán Chat-Completions cho BYOK.
 
 Provider profiles are local JSON metadata with credential variable references.
 Provider requests resolve credentials at run time. Usage records carry reported
@@ -19,11 +19,11 @@ PROFILE_ID_PATTERN = r"^[a-z][a-z0-9-]{2,63}$"
 
 
 class ProviderProfile(VersionedModel):
-    """Named configuration for a single BYOK model provider.
+    """Cấu hình được đặt tên cho một model provider BYOK đơn lẻ.
 
-    The ``id`` is a stable slug; ``label`` is a human-readable alias shown on
-    the dashboard.  ``api_key_env`` references an environment variable holding
-    the secret — the actual key never leaves the env.
+    ``id`` là một slug ổn định; ``label`` là bí danh dễ đọc hiển thị trên
+    dashboard. ``api_key_env`` tham chiếu đến biến môi trường chứa khóa bí mật
+    — khóa thực tế không bao giờ rời khỏi biến môi trường.
     """
 
     id: str = Field(
@@ -80,10 +80,10 @@ class ProviderProfile(VersionedModel):
 
 
 class ProviderUsage(VersionedModel):
-    """Append-only accounting record for one provider call.
+    """Bản ghi hạch toán dạng chỉ thêm (append-only) cho một lệnh gọi provider.
 
-    Records are written immediately after each request completes (success or
-    failure) so budget checks work even after a crash.
+    Các bản ghi được ghi ngay sau khi mỗi yêu cầu hoàn tất (thành công hoặc
+    thất bại) để việc kiểm tra ngân sách vẫn hoạt động ngay cả sau sự cố sập.
     """
 
     provider_id: str = Field(
@@ -145,7 +145,7 @@ class ProviderUsage(VersionedModel):
     )
 
     def __add__(self, other: ProviderUsage) -> ProviderUsage:
-        """Accumulate two usage records (same provider/model assumed)."""
+        """Tích lũy hai bản ghi sử dụng (giả định cùng provider/model)."""
         if self.provider_id != other.provider_id or self.model != other.model:
             raise ValueError("Cannot accumulate usage for different provider/model pairs.")
         return ProviderUsage(

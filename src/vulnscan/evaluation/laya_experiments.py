@@ -1,8 +1,8 @@
-"""Score one scan's advisory routing against evaluator-supplied ground truth.
+"""Chấm điểm định tuyến khuyến nghị của một lượt quét so với ground truth do evaluator cung cấp.
 
-The ground truth file is the only source of expectations. Nothing in the
-advisory layer is allowed to write to it, and a finding status is never
-consulted as the answer key — that would let the system grade itself.
+File ground truth là nguồn kỳ vọng duy nhất. Không có thành phần nào trong tầng
+khuyến nghị được phép ghi vào nó, và finding status không bao giờ
+được tham khảo như đáp án — điều đó sẽ khiến hệ thống tự chấm điểm chính mình.
 """
 
 from __future__ import annotations
@@ -31,7 +31,7 @@ RELIABILITY_BINS = 10
 
 @dataclass
 class GroundTruthRow:
-    """One graded finding. ``expected_route`` may be a lane name or a bool."""
+    """Một finding đã được chấm điểm. ``expected_route`` có thể là tên lane hoặc một bool."""
 
     finding_id: str
     expected_route: str | bool | None
@@ -59,10 +59,10 @@ def _answer(payload: dict[str, Any], name: str) -> dict[str, Any]:
 
 
 def _confidence(payload: dict[str, Any]) -> float | None:
-    """Confidence the model reported for its own recommended action.
+    """Độ tin cậy mà model đã báo cáo cho hành động khuyến nghị của chính nó.
 
-    Laya returns a per-answer ``confidence`` alongside the label. It is
-    uncalibrated by construction, which is exactly why T09 measures it.
+    Laya trả về một ``confidence`` theo từng câu trả lời cùng với nhãn. Theo thiết kế
+    nó chưa được hiệu chuẩn, đó chính xác là lý do T09 đo lường nó.
     """
     answer = _answer(payload, "recommended_action")
     value = answer.get("answer_confidence")
@@ -76,7 +76,7 @@ def evaluate_routing(
     payloads: Sequence[dict[str, Any]],
     ground_truth: Sequence[GroundTruthRow],
 ) -> dict[str, Any]:
-    """Produce the T09 experiment record for one run's advisory routing."""
+    """Tạo bản ghi thử nghiệm T09 cho định tuyến khuyến nghị của một lượt chạy."""
     truth = {row.finding_id: row for row in ground_truth}
 
     rows: list[dict[str, Any]] = []
@@ -109,8 +109,8 @@ def evaluate_routing(
                 route_was_correct = raw_route == str(label.expected_route)
 
             if confidence is not None and row["decision_status"] == "completed":
-                # Calibration is graded on route correctness: did the lane the
-                # model picked actually match what the ground truth called for.
+                # Hiệu chuẩn được chấm điểm dựa trên tính đúng đắn của route: lane mà
+                # model đã chọn có thực sự khớp với yêu cầu của ground truth hay không.
                 confidences.append(confidence)
                 correct.append(route_was_correct)
 
@@ -147,7 +147,7 @@ def evaluate_routing(
 
 
 def evaluate_from_files(scan_json: Path, truth_path: Path) -> dict[str, Any]:
-    """Evaluate a pipeline JSON export against a ground-truth file."""
+    """Đánh giá bản xuất JSON của pipeline so với một file ground-truth."""
     scan = json.loads(scan_json.read_text(encoding="utf-8"))
     payloads = scan.get("advisory_routing", {}).get("payloads", [])
     return evaluate_routing(payloads, load_ground_truth(truth_path))

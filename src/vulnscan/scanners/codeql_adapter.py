@@ -1,14 +1,14 @@
-"""CodeQL adapter — opt-in DEEP dataflow step.
+"""CodeQL adapter — bước phân tích luồng dữ liệu chuyên sâu (DEEP dataflow) tùy chọn.
 
-Runs ``codeql database create`` (cached under ``artifacts/codeql-db/<commit>``
-and reused when a database marker is present) followed by
-``codeql database analyze`` with the security-extended suite, then parses the
-SARIF report into normalized observations.
+Chạy ``codeql database create`` (được lưu cache tại ``artifacts/codeql-db/<commit>``
+và tái sử dụng khi có file đánh dấu database) tiếp theo là
+``codeql database analyze`` với bộ quy tắc security-extended, sau đó phân tích
+báo cáo SARIF thành các observation đã chuẩn hóa.
 
-Missing binary handling: when ``codeql`` is not on PATH the adapter returns a
-``skipped`` envelope with an actionable install reason — never a failure and
-never an exception. Query-pack/bundle download and live CI wiring are
-explicitly out of scope for this slice.
+Xử lý khi thiếu binary: khi ``codeql`` không có trên PATH, adapter sẽ trả về một
+envelope ``skipped`` kèm theo hướng dẫn cài đặt cụ thể — không bao giờ là lỗi và
+không bao giờ ném ngoại lệ. Việc tải query-pack/bundle và tích hợp CI trực tiếp
+nằm ngoài phạm vi của phần này.
 """
 
 from __future__ import annotations
@@ -44,13 +44,13 @@ from .tool_versions import probe_version
 
 ADAPTER_VERSION = "0.3.0"
 
-#: Marker file CodeQL writes inside a successfully created database directory.
+#: File đánh dấu mà CodeQL ghi bên trong một thư mục database được tạo thành công.
 _DB_MARKER = "codeql-database.yml"
 
-#: Languages this adapter can request from ``codeql database create``.
+#: Các ngôn ngữ mà adapter này có thể yêu cầu từ ``codeql database create``.
 _SUPPORTED_LANGUAGES = ("java", "javascript")
 
-#: Install guidance surfaced whenever the binary is absent.
+#: Hướng dẫn cài đặt được hiển thị bất cứ khi nào thiếu binary.
 _MISSING_BINARY_REASON = (
     "codeql not found on PATH; install the CodeQL CLI bundle "
     "(https://github.com/github/codeql-cli-binaries) and ensure 'codeql' is "
@@ -61,13 +61,13 @@ _JSP_SUFFIXES = (".jsp", ".jspx")
 
 
 def _safe_commit(sha: str | None) -> str:
-    """Sanitize a commit SHA for use as a cache directory name."""
+    """Chuẩn hóa commit SHA để dùng làm tên thư mục cache."""
     cleaned = re.sub(r"[^A-Za-z0-9._-]", "_", (sha or "unknown"))[:64]
     return cleaned or "unknown"
 
 
 def _codeql_languages(spec: ScanSpecification) -> list[str]:
-    """Resolve which CodeQL languages to analyze for *spec*."""
+    """Xác định các ngôn ngữ CodeQL cần phân tích cho *spec*."""
     tool_cfg = next((c for c in spec.tools if c.tool == ToolName.CODEQL), None)
     options = dict(getattr(tool_cfg, "options", None) or {})
     override = options.get("languages") or options.get("language")
@@ -83,7 +83,7 @@ def _codeql_languages(spec: ScanSpecification) -> list[str]:
 
 
 def _suite_for(language: str, spec: ScanSpecification) -> str:
-    """Query suite for *language*; overridable via tool options."""
+    """Bộ truy vấn cho *language*; có thể ghi đè qua các tùy chọn của công cụ."""
     tool_cfg = next((c for c in spec.tools if c.tool == ToolName.CODEQL), None)
     options = dict(getattr(tool_cfg, "options", None) or {})
     override = options.get("suite")
@@ -93,7 +93,7 @@ def _suite_for(language: str, spec: ScanSpecification) -> str:
 
 
 def _database_root(spec: ScanSpecification) -> Path:
-    """Cache root ``artifacts/codeql-db/<commit>`` for this run."""
+    """Thư mục gốc của cache ``artifacts/codeql-db/<commit>`` cho lượt chạy này."""
     tool_cfg = next((c for c in spec.tools if c.tool == ToolName.CODEQL), None)
     options = dict(getattr(tool_cfg, "options", None) or {})
     override = options.get("database_dir")
@@ -109,7 +109,7 @@ def _observation_id(rule_id: str, file_path: str, line: int) -> str:
 
 
 def _strip_file_uri(uri: str) -> str:
-    """SARIF artifact URIs may be ``file://`` URIs; keep a plain relative path."""
+    """URI artifact của SARIF có thể là URI ``file://``; giữ lại đường dẫn tương đối thông thường."""
     if uri.startswith("file://"):
         return uri[len("file://") :]
     return uri
@@ -122,11 +122,11 @@ def parse_codeql_sarif(
     tool_version: str,
     source_snapshot: str,
 ) -> tuple[list[Observation], list[CoverageRecord]]:
-    """Parse a CodeQL SARIF report into observations and per-file coverage.
+    """Phân tích báo cáo SARIF của CodeQL thành các observation và độ bao phủ theo từng file.
 
-    Pure function: takes already-fetched text so tests drive fixtures through
-    it without a subprocess. ``rule_id`` comes from the SARIF rule id, CWE
-    from the rule tags, and the snippet from the result region.
+    Hàm thuần túy: nhận văn bản đã được lấy sẵn để các bài test có thể chạy fixture
+    thông qua nó mà không cần subprocess. ``rule_id`` lấy từ rule id của SARIF, CWE
+    lấy từ tag của rule, và đoạn mã lấy từ vùng kết quả (result region).
     """
     sarif = json.loads(text)
     if not isinstance(sarif, dict):
@@ -235,7 +235,7 @@ def parse_codeql_sarif(
 
 
 class CodeQLAdapter(ScannerAdapter):
-    """CodeQL adapter: cached database create + security-extended analyze."""
+    """CodeQL adapter: tạo database có cache + phân tích security-extended."""
 
     tool = ToolName.CODEQL
     binary_name = "codeql"
@@ -253,7 +253,7 @@ class CodeQLAdapter(ScannerAdapter):
         )
 
     def _skipped_missing_binary(self, spec: ScanSpecification, started_at: Any) -> ScannerResult:
-        """Skipped envelope for the absent-binary case (never a failure)."""
+        """Envelope skipped cho trường hợp thiếu binary (không bao giờ coi là lỗi)."""
         return ScannerResult(
             run_id=spec.run_id or "unassigned",
             tool=self.tool,
@@ -263,7 +263,9 @@ class CodeQLAdapter(ScannerAdapter):
             started_at=started_at,
             finished_at=started_at,
             errors=[_MISSING_BINARY_REASON],
-            warnings=["CodeQL is an opt-in DEEP step; skipping it leaves baseline coverage unchanged"],
+            warnings=[
+                "CodeQL is an opt-in DEEP step; skipping it leaves baseline coverage unchanged"
+            ],
         )
 
     def run(self, spec: ScanSpecification, *, workdir: str) -> ScannerResult:
@@ -337,7 +339,9 @@ class CodeQLAdapter(ScannerAdapter):
         warnings: list[str] = []
         inventory = spec.metadata.get("manifest", {}).get("inventory", [])
         if any(str(p).lower().endswith(_JSP_SUFFIXES) for p in inventory):
-            warnings.append("JSP sources sit outside the CodeQL database; no JSP coverage is claimed")
+            warnings.append(
+                "JSP sources sit outside the CodeQL database; no JSP coverage is claimed"
+            )
 
         analyzed = sum(1 for c in coverage_records if c.status == CoverageUnitStatus.ANALYZED)
         return ScannerResult(
@@ -363,7 +367,7 @@ class CodeQLAdapter(ScannerAdapter):
         )
 
     def _ensure_database(self, db_dir: Path, language: str, workdir: str) -> bool:
-        """Create the CodeQL database unless a cached one is present."""
+        """Tạo database CodeQL trừ khi đã có sẵn bản trong cache."""
         if (db_dir / _DB_MARKER).is_file():
             return True
         if db_dir.exists():

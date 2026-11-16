@@ -1,8 +1,8 @@
-"""Build the evidence manifest for T10 handover.
+"""Xây dựng evidence manifest cho việc bàn giao T10.
 
-Every entry is derived from a file that exists; nothing is asserted from
-memory. A missing artifact is reported as missing rather than omitted, so the
-manifest can never look more complete than the repository is.
+Mọi mục đều được lấy từ một file tồn tại; không có gì được khẳng định từ
+bộ nhớ. Một artifact bị thiếu sẽ được báo cáo là thiếu thay vì bỏ qua, nhờ đó
+manifest không bao giờ có thể trông đầy đủ hơn tình trạng thực tế của repository.
 """
 
 from __future__ import annotations
@@ -26,8 +26,8 @@ from vulnscan.decisions.protocol import (
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 
-#: Paths the plan requires for handover. A missing entry is a finding, not a
-#: reason to drop the line.
+#: Các đường dẫn kế hoạch yêu cầu cho việc bàn giao. Một mục bị thiếu là một finding, không phải
+#: lý do để bỏ qua dòng này.
 REQUIRED_ARTIFACTS = (
     "docs/REPRODUCTION.md",
     "requirements.lock.txt",
@@ -57,7 +57,7 @@ class Artifact:
 
 
 def describe(rel_path: str, root: Path = REPO_ROOT) -> Artifact:
-    """Hash one artifact; a missing file is reported, never skipped."""
+    """Băm một artifact; một file bị thiếu sẽ được báo cáo, không bao giờ bị bỏ qua."""
     target = root / rel_path
     if not target.is_file():
         return Artifact(path=rel_path, present=False, sha256=None, size_bytes=None)
@@ -71,14 +71,14 @@ def describe(rel_path: str, root: Path = REPO_ROOT) -> Artifact:
 
 
 def ground_truth_state(root: Path = REPO_ROOT) -> dict[str, Any]:
-    """Read the labelled adjudication sheet.
+    """Đọc bảng phán quyết đã gắn nhãn.
 
-    The sheet is the single source of truth. An earlier placeholder
-    ``ground_truth.json`` claimed to be this file but was never written, so
-    the manifest reported "no ground truth" while 29 labels sat in the sheet
-    next to it. A sheet is only adjudicated once every row carries a lane and
-    a verdict; ``independently_adjudicated`` stays false because these labels
-    were derived by the pipeline's own agent.
+    Bảng này là nguồn chân lý duy nhất. Một file giữ chỗ trước đó
+    ``ground_truth.json`` từng tuyên bố là file này nhưng chưa từng được ghi, do đó
+    manifest đã báo cáo "no ground truth" trong khi 29 nhãn vẫn nằm trong bảng
+    bên cạnh nó. Một bảng chỉ được coi là đã phán quyết khi mọi hàng đều có một lane và
+    một verdict; ``independently_adjudicated`` vẫn giữ là false vì các nhãn này
+    được suy ra bởi chính agent của pipeline.
     """
     path = root / "evidence" / "t09" / "adjudication_sheet.json"
     if not path.is_file():
@@ -122,7 +122,7 @@ def build_manifest(root: Path = REPO_ROOT) -> dict[str, Any]:
 
 
 def _blockers(truth: dict[str, Any], missing: list[str]) -> list[str]:
-    """Plain statements of what prevents T09/T10 being called complete."""
+    """Các tuyên bố rõ ràng về những điều khiến T09/T10 chưa thể được gọi là hoàn thành."""
     blockers: list[str] = []
     if not truth.get("adjudicated") or not truth.get("rows"):
         blockers.append(

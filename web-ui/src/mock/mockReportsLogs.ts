@@ -20,7 +20,7 @@ const SUFFIX: Record<ReportFormat, string> = {
   csv: "csv",
 };
 
-/** Reports list mock: html/json/csv pre-generated, rest pending. */
+/** Mock danh sách báo cáo: html/json/csv được tạo sẵn, phần còn lại đang chờ. */
 export function mockReports(scanId: number): ReportsResponse {
   const generated: ReportFormat[] = ["json", "html", "csv"];
   const reports: ReportDescriptor[] = FORMATS.map((format) => {

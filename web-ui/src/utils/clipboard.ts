@@ -1,4 +1,4 @@
-/** Clipboard copy with a textarea fallback for restricted contexts. */
+/** Sao chép vào clipboard kèm dự phòng qua textarea cho các ngữ cảnh bị hạn chế. */
 export async function copyText(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);

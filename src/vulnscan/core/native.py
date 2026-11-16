@@ -1,4 +1,4 @@
-"""Optional verified Go compute paths; Python remains the compatible fallback."""
+"""Các đường dẫn tính toán bằng Go đã được xác minh tùy chọn; Python vẫn là giải pháp dự phòng tương thích."""
 
 from __future__ import annotations
 

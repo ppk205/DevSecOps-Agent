@@ -1,4 +1,4 @@
-"""Application version, independent of schema versions."""
+"""Phiên bản ứng dụng, độc lập với các phiên bản schema."""
 
 from importlib.metadata import version
 

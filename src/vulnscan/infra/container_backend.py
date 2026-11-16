@@ -1,9 +1,9 @@
-"""Container backend with a documented-unavailable docker path.
+"""Container backend với đường dẫn docker được ghi nhận là không khả dụng.
 
-Docker is NOT available on the build host. The DockerBackend therefore
-raises a structured Unavailable condition that callers record as a
-coverage limitation, rather than crashing or silently degrading.
-The LocalSubprocessBackend is the fallback execution backend.
+Docker KHÔNG khả dụng trên host bản dựng. Do đó DockerBackend đưa ra
+một điều kiện Unavailable có cấu trúc mà bên gọi ghi lại như một giới hạn
+độ bao phủ, thay vì gặp sự cố hoặc âm thầm suy giảm chất lượng.
+LocalSubprocessBackend là backend thực thi dự phòng.
 """
 
 from __future__ import annotations
@@ -14,12 +14,12 @@ from pathlib import Path
 
 
 class BackendUnavailable(RuntimeError):
-    """The requested backend cannot run on this host (documented condition)."""
+    """Backend được yêu cầu không thể chạy trên host này (điều kiện đã ghi nhận)."""
 
 
 @dataclass
 class ExecutionResult:
-    """Outcome of running one command under a backend."""
+    """Kết quả của việc chạy một lệnh dưới một backend."""
 
     returncode: int
     stdout: bytes
@@ -30,7 +30,7 @@ class ExecutionResult:
 
 
 class ContainerBackend:
-    """Protocol-style base: what every execution backend must provide."""
+    """Lớp cơ sở dạng protocol: những gì mọi execution backend phải cung cấp."""
 
     name: str = "abstract"
 
@@ -48,7 +48,7 @@ class ContainerBackend:
 
 
 class DockerBackend(ContainerBackend):
-    """Docker-based isolation. Unavailable on this host by design."""
+    """Cô lập dựa trên Docker. Theo thiết kế là không khả dụng trên host này."""
 
     name = "docker"
 
@@ -66,7 +66,7 @@ class DockerBackend(ContainerBackend):
         env: dict[str, str] | None = None,
     ) -> ExecutionResult:
         if not self.is_available():
-            # Documented unavailable condition: never crash the pipeline.
+            # Điều kiện không khả dụng đã được ghi nhận: không bao giờ làm dừng pipeline.
             raise BackendUnavailable(
                 "docker CLI not found; the container isolation level is "
                 "unavailable on this host. Falls back to LocalSubprocessBackend."
@@ -78,12 +78,12 @@ class DockerBackend(ContainerBackend):
 
 
 class LocalSubprocessBackend(ContainerBackend):
-    """Fallback backend: subprocess with timeout + resource limits.
+    """Backend dự phòng: subprocess kèm timeout + giới hạn tài nguyên.
 
-    Not a security boundary. Used when Docker is unavailable; the isolation
-    guarantees that do hold are: no provider credentials in the environment,
-    no host docker socket, bounded runtime, bounded memory (where the OS
-    supports RLIMIT), and a scratch workdir that is cleaned up.
+    Không phải là một ranh giới bảo mật. Được dùng khi Docker không khả dụng; các bảo đảm
+    cô lập thực sự có hiệu lực gồm: không có thông tin xác thực provider trong môi trường,
+    không có host docker socket, runtime có giới hạn, bộ nhớ có giới hạn (nơi OS
+    hỗ trợ RLIMIT), và một thư mục làm việc tạm được dọn dẹp sau khi chạy.
     """
 
     name = "local-subprocess"

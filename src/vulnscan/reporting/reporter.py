@@ -1,4 +1,4 @@
-"""Single-source report generation for JSON, SARIF, HTML, and Markdown."""
+"""Tạo báo cáo từ một nguồn duy nhất cho JSON, SARIF, HTML và Markdown."""
 
 from __future__ import annotations
 
@@ -65,7 +65,7 @@ _SUFFIX = {
 
 
 class ReportGenerator:
-    """Generate consistent, escaped reports from one run's findings."""
+    """Tạo các báo cáo nhất quán, được escape từ các finding của một lượt chạy."""
 
     def __init__(
         self,
@@ -84,11 +84,11 @@ class ReportGenerator:
         self.run_metadata = sanitize(run_metadata or {})
 
     def routing_by_finding(self) -> dict[str, dict[str, Any]]:
-        """Advisory routing payloads keyed by finding id."""
+        """Payload định tuyến tư vấn được lập chỉ mục theo finding id."""
         return {str(p.get("finding_id")): p for p in self.routing_payloads}
 
     def routing_counts(self) -> dict[str, int]:
-        """How many findings took each route, including the fallback."""
+        """Số lượng finding đã đi qua mỗi tuyến, bao gồm cả tuyến dự phòng."""
         counts: dict[str, int] = {}
         for payload in self.routing_payloads:
             route = str(payload.get("route", "unknown"))
@@ -96,14 +96,14 @@ class ReportGenerator:
         return dict(sorted(counts.items(), key=lambda kv: -kv[1]))
 
     def advisory_unavailable(self) -> list[dict[str, Any]]:
-        """Payloads where the model did not return a usable decision."""
+        """Các payload mà model không trả về quyết định có thể sử dụng được."""
         return [
             p for p in self.routing_payloads if str(p.get("decision_status", "")) != "completed"
         ]
 
     @staticmethod
     def counts(findings: list[Finding]) -> FindingCounts:
-        """Partition findings into the four mandatory status buckets."""
+        """Phân chia các finding vào bốn bucket trạng thái bắt buộc."""
         buckets = {
             FindingStatus.CONFIRMED: 0,
             FindingStatus.REJECTED: 0,
@@ -216,7 +216,7 @@ class ReportGenerator:
         return json.dumps(data, indent=2, ensure_ascii=False)
 
     def advisory_section(self) -> list[str]:
-        """Markdown for the advisory routing block, or a stated absence."""
+        """Markdown cho khối định tuyến tư vấn, hoặc ghi nhận rõ sự vắng mặt."""
         if not self.routing_payloads:
             absent = (
                 "Laya advisory routing did not run for this scan "
@@ -327,7 +327,7 @@ class ReportGenerator:
         return "\n".join(lines)
 
     def to_txt(self) -> str:
-        """Plain-text rendering of the same single-source report data."""
+        """Bản render dạng plain-text của cùng dữ liệu báo cáo từ một nguồn duy nhất."""
         counts = self.counts(self.findings)
         lines = [
             f"Security assessment — {self.run_id}",
@@ -387,7 +387,7 @@ class ReportGenerator:
         return "\n".join(lines)
 
     def to_docx_bytes(self) -> bytes:
-        """Word rendering of the same single-source report data."""
+        """Bản render dạng Word của cùng dữ liệu báo cáo từ một nguồn duy nhất."""
         from docx import Document
         from docx.shared import Pt
 
@@ -454,11 +454,11 @@ class ReportGenerator:
         return buf.getvalue()
 
     def _display_metadata(self) -> dict[str, Any]:
-        """run_metadata with a capped errors list for human formats.
+        """run_metadata với danh sách lỗi được giới hạn số lượng cho các định dạng người đọc.
 
-        Full per-file coverage notes stay in JSON/SARIF; human formats get
-        the first entries plus a count so one scan cannot render a wall of
-        hundreds of lines.
+        Ghi chú đầy đủ về độ bao phủ theo từng file được giữ lại trong JSON/SARIF; các định dạng cho con người đọc
+        chỉ nhận các mục đầu tiên kèm theo tổng số lượng để tránh một lượt quét hiển thị cả
+        hàng trăm dòng lỗi.
         """
         meta = dict(self.run_metadata)
         errors = list(meta.get("errors", []) or [])
@@ -529,12 +529,12 @@ class ReportGenerator:
 
 
 def _coverage_cards(coverage_summary: dict[str, Any]) -> list[dict[str, Any]]:
-    """Summarize per-tool coverage for the HTML report.
+    """Tóm tắt độ bao phủ theo từng công cụ cho báo cáo HTML.
 
-    The stored payload is a mapping of tool name to coverage records (or
-    record-like dicts). Dumping it raw produces a wall of repr text, so
-    collapse each tool to unit counts plus the distinct limitation reasons.
-    Unknown shapes degrade to a short record count instead of raising.
+    Payload được lưu trữ là một ánh xạ từ tên công cụ sang các bản ghi độ bao phủ (hoặc
+    các dict dạng bản ghi). Việc dump trực tiếp sẽ tạo ra một khối văn bản repr quá lớn, vì vậy
+    hãy thu gọn mỗi công cụ thành số lượng đơn vị cùng các lý do giới hạn riêng biệt.
+    Các định dạng không xác định sẽ giảm cấp thành số lượng bản ghi ngắn thay vì ném ngoại lệ.
     """
     cards: list[dict[str, Any]] = []
     for tool, records in (coverage_summary or {}).items():

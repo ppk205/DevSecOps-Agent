@@ -116,9 +116,9 @@ func TestFR70HistoryActionsUseHighlightedRunWithoutOpeningIt(t *testing.T) {
 		m, api := readyWorkflow(t)
 		m = press(m, ctrl('1'))
 		m = press(m, tea.KeyPressMsg{Code: tea.KeyDown})
-		m = press(m, tea.KeyPressMsg{Code: tea.KeyEnter}) // Inspect A.
+		m = press(m, tea.KeyPressMsg{Code: tea.KeyEnter}) // Kiểm tra A.
 		m = press(m, ctrl('1'))
-		m = press(m, tea.KeyPressMsg{Code: tea.KeyUp}) // Highlight B.
+		m = press(m, tea.KeyPressMsg{Code: tea.KeyUp}) // Làm nổi bật B.
 		m = press(m, ctrl(action))
 		actual := api.retried
 		if action == 'o' {

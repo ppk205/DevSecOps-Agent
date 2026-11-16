@@ -1,4 +1,4 @@
-/** EN strings dictionary (Phase 1). VI lands in Phase 6. */
+/** Từ điển chuỗi EN (Phase 1). VI sẽ có trong Phase 6. */
 export const en = {
   app: {
     name: "PIT WALL",
@@ -88,9 +88,9 @@ export const en = {
     recentTargets: "Recent targets",
     profile: "Scan profile",
     fast: "FAST",
-    fastDetail: "Semgrep + Gitleaks · minutes",
+    fastDetail: "native-hunt · minutes",
     deep: "DEEP",
-    deepDetail: "Semgrep + Gitleaks + SpotBugs + ODC · slower, needs Java + NVD data",
+    deepDetail: "native-hunt · deep scan",
     scanners: "Scanners",
     aiReview: "AI review",
     aiOff: "Off — deterministic",
@@ -150,7 +150,7 @@ export const en = {
     deleteKey: "Delete",
     noKeys: "No provider profiles yet. Save a key to create one.",
     scanners: "Scanner tools",
-    scannersBody: "Binaries resolved on PATH. DETECT re-checks presence; VERIFY also probes versions.",
+    scannersBody: "Built-in scanner engine (native-hunt). DETECT re-checks status; VERIFY also probes version.",
     detect: "Detect",
     verify: "Verify",
     usage: "Usage & budget",
@@ -366,7 +366,7 @@ export const en = {
   },
 } as const;
 
-/** Deep-widened dictionary type: leaves are `string` so VI can mirror EN key-for-key. */
+/** Kiểu từ điển được mở rộng sâu: các nút lá là `string` để VI có thể đối ứng từng key với EN. */
 type Widen<T> = T extends readonly unknown[]
   ? ReadonlyArray<Widen<T[number]>>
   : T extends object

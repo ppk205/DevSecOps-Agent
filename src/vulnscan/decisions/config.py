@@ -1,4 +1,4 @@
-"""Load and validate the optional Laya runtime configuration."""
+"""Tải và xác thực cấu hình runtime Laya tùy chọn."""
 
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ _FALSE_MODES = {"off", "disabled"}
 
 
 def _import_torch() -> bool:
-    """Import torch lazily; unit tests must never require the heavy dep."""
+    """Import torch theo cơ chế lazy; các unit test không bao giờ được yêu cầu phụ thuộc nặng này."""
     try:
         importlib.import_module("torch")
     except ImportError:
@@ -29,7 +29,7 @@ def _import_torch() -> bool:
 
 
 def _torch_cuda_ok() -> bool:
-    """True only when CUDA is importable *and* a device answers."""
+    """True chỉ khi CUDA có thể import được *và* một thiết bị phản hồi."""
     try:
         torch = importlib.import_module("torch")
 
@@ -40,7 +40,7 @@ def _torch_cuda_ok() -> bool:
 
 @dataclass(frozen=True)
 class LayaConfig:
-    """Validated Laya settings; defaults keep the baseline behaviour intact."""
+    """Các cài đặt Laya đã được xác thực; giá trị mặc định giữ nguyên hành vi cơ sở."""
 
     enabled: bool = False
     mode: str = "shadow"
@@ -56,7 +56,7 @@ class LayaConfig:
     affects_finding_status: bool = False
 
     def validate(self) -> None:
-        """Reject configurations that could grant Laya status authority."""
+        """Từ chối các cấu hình có thể cấp cho Laya quyền quyết định trạng thái."""
         if self.mode not in _TRUE_MODES | _FALSE_MODES:
             raise ValueError(f"unsupported Laya mode: {self.mode!r}")
         if self.device not in {"auto", "cuda", "cpu"}:
@@ -78,7 +78,7 @@ class LayaConfig:
 
 
 def load_config(path: str | Path | None = None) -> LayaConfig:
-    """Load config from JSON; a missing file yields the safe defaults."""
+    """Tải cấu hình từ JSON; tệp bị thiếu sẽ trả về các giá trị mặc định an toàn."""
     if path is None:
         return LayaConfig()
     file = Path(path)

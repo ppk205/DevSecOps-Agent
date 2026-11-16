@@ -145,7 +145,7 @@ export function LivePage() {
       try {
         dock.scrollTop = dock.scrollHeight;
       } catch {
-        // jsdom has no layout — ignore.
+        // jsdom không có bố cục layout — bỏ qua.
       }
     }
   }, [streamed, autoScroll, paused]);
@@ -207,14 +207,12 @@ export function LivePage() {
     for (const item of items) {
       for (const tool of item.scanners) tally.set(tool, (tally.get(tool) ?? 0) + 1);
     }
-    // Include every tool that actually ran (even with 0 findings, e.g. a
-    // dependency scanner with a clean manifest) so ran ≠ found stays visible.
+    // Bao gồm mọi công cụ đã thực sự chạy (ngay cả khi có 0 finding, ví dụ
+    // dependency scanner với manifest sạch) để ran ≠ found luôn hiển thị rõ.
     const ran = new Set<string>();
     for (const s of live.data?.stages ?? []) {
       const name = String(s.name ?? "");
-      if (
-        ["semgrep", "native-hunt", "gitleaks", "spotbugs", "owasp-dependency-check"].includes(name)
-      ) {
+      if (["native-hunt"].includes(name)) {
         ran.add(name);
       }
     }

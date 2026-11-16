@@ -6,8 +6,8 @@ import { StripeDivider } from "../components/StripeDivider";
 import { useLang, useStrings } from "../i18n/lang";
 
 /**
- * PIT WALL shell: 64px black topnav with 7 nav items,
- * 4px M-stripe progress rail, content, footer.
+ * Khung shell PIT WALL: topnav đen 64px với 7 mục điều hướng,
+ * thanh tiến trình 4px sọc chữ M, phần nội dung, footer.
  */
 export function Shell() {
   const en = useStrings();

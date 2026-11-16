@@ -7,7 +7,7 @@ function rank(severity: string): number {
   return i === -1 ? SEVERITY_RANK.length : i;
 }
 
-/** Serialize a findings query to `?a=b&…` (used for the live API call). */
+/** Tuần tự hóa một truy vấn findings thành `?a=b&…` (dùng cho lệnh gọi API trực tiếp). */
 export function buildFindingsSearch(query: FindingsQuery): string {
   const params = new URLSearchParams();
   if (query.severities?.length) params.set("severity", query.severities.join(","));

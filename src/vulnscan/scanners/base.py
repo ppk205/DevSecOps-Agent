@@ -1,16 +1,16 @@
-"""Scanner adapter interface and registry.
+"""Giao diện adapter và registry cho scanner.
 
-An adapter is the *only* module that understands a vendor's native output
-shape.  Everything downstream consumes :class:`ScannerResult` envelopes.
+Một adapter là module *duy nhất* hiểu định dạng đầu ra gốc của từng nhà cung cấp.
+Mọi thành phần phía sau chỉ tiêu thụ các envelope :class:`ScannerResult`.
 
-Design rules
-------------
-* Missing binaries are a documented condition, never an exception.
-  ``AdapterCapability`` reports presence; adapters return a result whose
-  ``status`` is ``failed`` with the reason in ``errors`` (or ``skipped`` when
-  the scan spec disables the tool).
-* Parsing is pure: ``parse`` takes already-fetched text so tests drive
-  fixtures through it without a subprocess.
+Quy tắc thiết kế
+----------------
+* Thiếu binary là một điều kiện được ghi nhận, không bao giờ là ngoại lệ.
+  ``AdapterCapability`` báo cáo sự hiện diện; các adapter trả về kết quả có
+  ``status`` là ``failed`` kèm lý do trong ``errors`` (hoặc ``skipped`` khi
+  scan spec vô hiệu hóa công cụ).
+* Phân tích cú pháp thuần túy: ``parse`` nhận văn bản đã được lấy sẵn để các test có thể
+  chạy fixture thông qua nó mà không cần tạo subprocess.
 """
 
 from __future__ import annotations
@@ -36,7 +36,7 @@ ADAPTER_VERSION = "0.2.0"
 
 @dataclass(frozen=True)
 class AdapterCapability:
-    """What an adapter declared about its tool and environment."""
+    """Những gì một adapter khai báo về công cụ và môi trường của nó."""
 
     tool: ToolName
     binary: str | None = None
@@ -45,7 +45,7 @@ class AdapterCapability:
     reason: str | None = None
 
     def unavailable_message(self) -> str:
-        """Stable human-readable reason for the unavailability."""
+        """Lý do ổn định, dễ đọc cho con người về việc không khả dụng."""
         if self.available:
             return ""
         if self.reason:
@@ -54,39 +54,39 @@ class AdapterCapability:
 
 
 class ScannerAdapter(abc.ABC):
-    """Vendor-specific scanner adapter."""
+    """Scanner adapter dành riêng cho từng nhà cung cấp."""
 
-    #: Tool this adapter binds to.
+    #: Công cụ mà adapter này liên kết tới.
     tool: ToolName
-    #: Executable name looked up on PATH.
+    #: Tên file thực thi được tìm kiếm trên PATH.
     binary_name: str
-    #: Adapter implementation version (see :data:`ADAPTER_VERSION`).
+    #: Phiên bản hiện thực của adapter (xem :data:`ADAPTER_VERSION`).
     adapter_version: str = ADAPTER_VERSION
-    #: Default per-invocation timeout in seconds.
+    #: Thời gian chờ mặc định cho mỗi lần gọi tính bằng giây.
     default_timeout: float = 600.0
 
     # ------------------------------------------------------------------ #
-    # Public API
+    # API công khai
     # ------------------------------------------------------------------ #
 
     @abc.abstractmethod
     def capabilities(self) -> AdapterCapability:
-        """Probe the environment for the tool binary and its version."""
+        """Thăm dò môi trường để tìm binary của công cụ và phiên bản của nó."""
 
     @abc.abstractmethod
     def run(self, spec: ScanSpecification, *, workdir: str) -> ScannerResult:
-        """Execute the tool for *spec* and return a normalized result.
+        """Thực thi công cụ cho *spec* và trả về kết quả đã chuẩn hóa.
 
-        Never raises for environmental problems (missing binary, timeout,
-        non-zero exit): those are recorded in the returned envelope.
+        Không bao giờ ném ngoại lệ do các vấn đề môi trường (thiếu binary, timeout,
+        exit code khác 0): những thông tin đó được ghi nhận trong envelope trả về.
         """
 
     # ------------------------------------------------------------------ #
-    # Shared helpers
+    # Các hàm trợ giúp dùng chung
     # ------------------------------------------------------------------ #
 
     def _tool_config(self, spec: ScanSpecification) -> Any:
-        """Return this tool's :class:`ToolConfig`, or ``None`` when absent."""
+        """Trả về :class:`ToolConfig` của công cụ này, hoặc ``None`` nếu vắng mặt."""
         for cfg in spec.tools:
             if cfg.tool == self.tool:
                 return cfg
@@ -95,7 +95,7 @@ class ScannerAdapter(abc.ABC):
     def _skipped_result(
         self, spec: ScanSpecification, started_at: Any, reason: str
     ) -> ScannerResult:
-        """Build a ``skipped`` envelope for a disabled/absent tool."""
+        """Xây dựng một envelope ``skipped`` cho một công cụ bị tắt/vắng mặt."""
         return ScannerResult(
             run_id=spec.run_id or "unassigned",
             tool=self.tool,
@@ -115,7 +115,7 @@ class ScannerAdapter(abc.ABC):
         timeout: float | None = None,
         env: dict[str, str] | None = None,
     ) -> CommandResult:
-        """Run the tool binary, translating a missing binary into a result."""
+        """Chạy binary của công cụ, chuyển đổi việc thiếu binary thành một kết quả."""
         if which(str(argv[0])) is None:
             return CommandResult(
                 returncode=127,
@@ -138,7 +138,7 @@ class ScannerAdapter(abc.ABC):
         *,
         note: str,
     ) -> ScannerResult:
-        """Envelope for a tool invocation that could not produce output."""
+        """Envelope cho một lần gọi công cụ không thể tạo ra đầu ra."""
         detail = note
         if result.timed_out:
             detail = f"{note}; timed out after {result.duration_ms} ms"
@@ -163,13 +163,13 @@ class ScannerAdapter(abc.ABC):
 
 @dataclass
 class AdapterRegistry:
-    """Lookup of tool -> adapter, created once per process."""
+    """Tra cứu tool -> adapter, được tạo một lần cho mỗi tiến trình."""
 
     adapters: dict[str, ScannerAdapter] = field(default_factory=dict)
 
     @classmethod
     def default(cls) -> AdapterRegistry:
-        """Build the registry with every adapter shipped in this package."""
+        """Xây dựng registry với mọi adapter được đóng gói kèm theo package này."""
         from .codeql_adapter import CodeQLAdapter
         from .dependency_check_adapter import DependencyCheckAdapter
         from .gitleaks_adapter import GitleaksAdapter
@@ -190,11 +190,11 @@ class AdapterRegistry:
         return registry
 
     def register(self, adapter: ScannerAdapter) -> None:
-        """Add *adapter* under its tool name."""
+        """Thêm *adapter* dưới tên công cụ tương ứng của nó."""
         self.adapters[adapter.tool.value] = adapter
 
     def get(self, tool: ToolName | str) -> ScannerAdapter | None:
-        """Return the adapter for *tool*, or ``None`` when unregistered."""
+        """Trả về adapter cho *tool*, hoặc ``None`` khi chưa được đăng ký."""
         return self.adapters.get(tool.value if isinstance(tool, ToolName) else tool)
 
     def __contains__(self, tool: ToolName | str) -> bool:

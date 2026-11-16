@@ -46,7 +46,10 @@ def test_asgi_request_navigation_keeps_precedence(tmp_path):
     )
     html = rpc.dispatch(
         "render_page",
-        {"template": "targets.html", "context": {"request": request, "page_path": "/", "run": {"id": 7}}},
+        {
+            "template": "targets.html",
+            "context": {"request": request, "page_path": "/", "run": {"id": 7}},
+        },
         "render",
         threading.Event(),
     )

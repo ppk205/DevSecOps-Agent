@@ -1,4 +1,4 @@
-"""Evaluate frozen Laya triage checkpoints without exposing labels to inference."""
+"""Đánh giá các checkpoint phân loại Laya đóng băng mà không để lộ nhãn cho quá trình suy luận."""
 
 from __future__ import annotations
 
@@ -82,7 +82,7 @@ def evaluate(rows: list[dict[str, Any]], backend: LayaDecisionBackend) -> dict[s
             state=row["state"], questions=to_decision_questions(row["questions"])
         )
         result = backend.predict(request)
-        # Labels are accessed only after inference returns.
+        # Nhãn chỉ được truy cập sau khi quá trình suy luận (inference) hoàn tất.
         gold = row["gold"]
         expected_route = max(
             gold["recommended_action"]["probabilities"],

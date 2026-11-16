@@ -1,7 +1,7 @@
-"""Cross-platform path and binary helpers.
+"""Các helper đường dẫn và binary đa nền tảng.
 
-Windows/MSYS quoting differs from POSIX; adapters route path arguments
-through ``normalize_path`` so tests and runtime agree on separators.
+Quy tắc đặt dấu ngoặc kép trên Windows/MSYS khác với POSIX; các adapter điều hướng đối số đường dẫn
+qua ``normalize_path`` để test và runtime thống nhất về dấu phân cách.
 """
 
 from __future__ import annotations
@@ -12,24 +12,23 @@ from pathlib import Path
 
 
 def which(binary: str) -> str | None:
-    """``shutil.which`` with a venv-relative fallback.
+    """``shutil.which`` với cơ chế dự phòng tương đối theo venv.
 
-    The scanners ship inside the application's own virtualenv (semgrep via
-    the ``scanners`` extra, gitleaks alongside it), but a caller's PATH does
-    not necessarily include ``<venv>/Scripts`` — e.g. when the TUI is started
-    from a shell that never activated the environment. Without the fallback
-    every scanner reports "not found on PATH" and the scan silently produces
-    zero findings. Resolution order: PATH first (an explicitly configured
-    install wins), then the interpreter's own environment (``sys.prefix``).
+    Các scanner được đóng gói bên trong virtualenv riêng của ứng dụng (semgrep thông
+    qua extra ``scanners``, gitleaks đi kèm), nhưng PATH của bên gọi không nhất thiết
+    phải chứa ``<venv>/Scripts`` — ví dụ khi TUI được khởi chạy từ shell chưa từng
+    kích hoạt môi trường. Nếu không có cơ chế dự phòng, mọi scanner sẽ báo "not found on PATH"
+    và lượt scan âm thầm không tạo ra finding nào. Thứ tự phân giải: PATH trước (cài đặt
+    được cấu hình rõ ràng được ưu tiên), sau đó đến môi trường riêng của trình thông dịch (``sys.prefix``).
     """
     if not binary:
         return None
     if os.path.isabs(binary) or Path(binary).drive:
-        # Absolute / drive-qualified: check the file itself.
+        # Đường dẫn tuyệt đối / có chỉ định ổ đĩa: kiểm tra chính file đó.
         p = Path(binary)
         if p.is_file():
             return str(p)
-        # Windows: respect PATHEXT for bare absolute names.
+        # Windows: tuân thủ PATHEXT cho các tên tuyệt đối không có phần mở rộng.
         for ext in os.environ.get("PATHEXT", "").split(os.pathsep):
             if (p.with_suffix(ext)).is_file():
                 return str(p.with_suffix(ext))
@@ -53,7 +52,7 @@ def which(binary: str) -> str | None:
 
 
 def _binary_candidates(directory: Path, binary: str) -> list[Path]:
-    """Candidate file names for *binary* inside *directory* (``.exe`` on Windows)."""
+    """Các tên file ứng viên cho *binary* bên trong *directory* (``.exe`` trên Windows)."""
     names = [directory / binary]
     for ext in os.environ.get("PATHEXT", "").split(os.pathsep):
         if ext:
@@ -62,19 +61,19 @@ def _binary_candidates(directory: Path, binary: str) -> list[Path]:
 
 
 def normalize_path(path: str | os.PathLike[str]) -> str:
-    """Normalize a path to the platform-native form.
+    """Chuẩn hóa một đường dẫn về dạng gốc của nền tảng.
 
-    Adapters receive repo-relative POSIX-ish paths from the scan spec; the
-    scanner binaries run natively (Windows) and need native separators.
+    Các adapter nhận đường dẫn kiểu POSIX tương đối so với repo từ scan spec; các
+    binary của scanner chạy ở dạng gốc (Windows) và cần dấu phân cách gốc của hệ thống.
     """
     return os.fspath(path).replace("/", os.sep) if os.sep != "/" else os.fspath(path)
 
 
 def repo_relative(path: str, root: str) -> str:
-    """Best-effort conversion of *path* to a repo-relative POSIX path.
+    """Chuyển đổi nỗ lực tối đa *path* thành đường dẫn POSIX tương đối so với repo.
 
-    Never raises: un-resolvable paths are returned unchanged so the caller can
-    decide whether to record them as-is or reject the observation.
+    Không bao giờ ném ngoại lệ: các đường dẫn không phân giải được sẽ được trả về nguyên trạng để bên
+    gọi quyết định ghi nhận chúng như hiện tại hay từ chối observation.
     """
     try:
         p = Path(path)
@@ -84,7 +83,7 @@ def repo_relative(path: str, root: str) -> str:
                 rel = p.relative_to(root_p)
                 return rel.as_posix()
             except ValueError:
-                # Absolute but not under root: keep tail beyond the root name.
+                # Tuyệt đối nhưng không nằm dưới root: giữ lại phần đuôi ngoài tên root.
                 return p.as_posix().lstrip("/")
         merged = (root_p / p).resolve(strict=False)
         try:
@@ -96,10 +95,10 @@ def repo_relative(path: str, root: str) -> str:
 
 
 def iter_files(root: str | os.PathLike[str], suffixes: tuple[str, ...]) -> list[str]:
-    """Return sorted POSIX repo-relative file paths under *root*.
+    """Trả về các đường dẫn file POSIX đã sắp xếp tương đối so với repo dưới *root*.
 
-    Hidden directories (``.git``, ``target``-like build dirs) are skipped so
-    coverage records describe source inventory, not build artifacts.
+    Các thư mục ẩn (``.git``, thư mục build dạng ``target``) bị bỏ qua để
+    các bản ghi coverage mô tả danh mục mã nguồn, không phải artifact build.
     """
     root_p = Path(root)
     skip_dirs = {".git", ".svn", ".hg", "target", "node_modules", ".idea", ".vscode"}
@@ -118,7 +117,7 @@ def iter_files(root: str | os.PathLike[str], suffixes: tuple[str, ...]) -> list[
 
 
 def read_text(path: str | os.PathLike[str], max_bytes: int = 1_000_000) -> str:
-    """Read a file as text; returns '' on any read failure."""
+    """Đọc file dưới dạng văn bản; trả về '' khi có bất kỳ lỗi đọc nào."""
     try:
         data = Path(path).read_bytes()[:max_bytes]
         return data.decode("utf-8", errors="replace")

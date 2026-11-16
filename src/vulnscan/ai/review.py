@@ -1,6 +1,6 @@
-"""AI review wiring: model verdicts on findings, owned by IndependentValidator.
+"""Kết nối AI review: các phán quyết của mô hình đối với finding, do IndependentValidator sở hữu.
 
-Pipeline position (authoritative order):
+Vị trí trong pipeline (thứ tự có thẩm quyền):
 
 ```text
 Deterministic evidence
@@ -14,14 +14,14 @@ Independent validation    (IndependentValidator owns every status change)
 Human decision support    (report + dashboard)
 ```
 
-Guarantees:
-* No provider configured (or provider/budget failure) → stages report
-  ``skipped``/``partial`` and every finding keeps its scanner status.
-  The deterministic baseline is never degraded by AI.
-* The model only *proposes* (Assessment). Only IndependentValidator moves
-  a finding to confirmed/rejected/unresolved — via ValidationDecision.
-* Tool handlers are read-only and jailed to the immutable scan snapshot:
-  no shell, no network, no writes, no credentials in context.
+Bảo đảm:
+* Không có provider được cấu hình (hoặc sự cố provider/ngân sách) → các giai đoạn báo cáo
+  ``skipped``/``partial`` và mọi finding giữ nguyên trạng thái scanner của nó.
+  Đường cơ sở xác định không bao giờ bị AI làm suy giảm.
+* Mô hình chỉ *đề xuất* (Assessment). Chỉ IndependentValidator mới chuyển
+  một finding sang confirmed/rejected/unresolved — thông qua ValidationDecision.
+* Các trình xử lý công cụ là chỉ đọc và bị cô lập trong snapshot quét bất biến:
+  không shell, không mạng, không ghi, không có thông tin xác thực trong context.
 """
 
 from __future__ import annotations
@@ -54,8 +54,8 @@ from vulnscan.providers.profile_store import load_profile
 
 logger = logging.getLogger(__name__)
 
-# Routes that earn a (bounded, read-only) model investigation. Findings on
-# any other route keep their deterministic status untouched.
+# Các tuyến đủ điều kiện để được điều tra bằng mô hình (có giới hạn, chỉ đọc). Các finding trên
+# bất kỳ tuyến nào khác đều giữ nguyên trạng thái xác định của chúng.
 DEEP_ANALYSIS_ROUTES = frozenset(
     {
         "cross_file_analysis",
@@ -66,7 +66,7 @@ DEEP_ANALYSIS_ROUTES = frozenset(
 
 
 def _resolve_inside(root: Path, rel: str) -> Path | None:
-    """Resolve *rel* inside *root*; None when it escapes the snapshot."""
+    """Phân giải *rel* bên trong *root*; None khi nó thoát ra ngoài snapshot."""
     try:
         target = (root / rel).resolve()
     except (OSError, ValueError):
@@ -83,7 +83,7 @@ def build_tool_handlers(
     findings: Sequence[Finding],
     coverage_summary: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Local, read-only handlers for the agent's registered tools."""
+    """Các hàm xử lý cục bộ, chỉ đọc cho những công cụ đã đăng ký của agent."""
     root = Path(snapshot_root)
     by_id = {f.finding_id: f for f in findings}
     coverage: dict[str, Any] = dict(coverage_summary or {})
@@ -256,10 +256,10 @@ def build_review_agent(
     budget: BudgetManager | None = None,
     max_followups: int = 5,
 ) -> tuple[AgentLoop, ProviderClient, ProviderProfile, BudgetManager]:
-    """Build a bounded AgentLoop from a stored provider profile (BYOK).
+    """Xây dựng một AgentLoop có giới hạn từ một hồ sơ provider đã lưu (BYOK).
 
-    The API key is read from the environment variable named by the profile
-    at call time; it is never stored, logged, or embedded in any artifact.
+    API key được đọc từ biến môi trường do hồ sơ chỉ định tại thời điểm gọi;
+    nó không bao giờ được lưu trữ, ghi log, hoặc nhúng vào bất kỳ artifact nào.
     """
     profile = load_profile(profile_id)
     selected_model = model or profile.default_model or next(iter(profile.models), None)
@@ -285,9 +285,9 @@ def single_shot_verdict(
     profile: ProviderProfile,
     model: str | None,
 ) -> Assessment | None:
-    """One bounded call with embedded evidence — for models without tool use.
+    """Một lệnh gọi có giới hạn với bằng chứng nhúng sẵn — dành cho các mô hình không dùng công cụ.
 
-    Returns None when the reply carries no usable verdict.
+    Trả về None khi phản hồi không mang lại phán quyết khả dụng.
     """
     from vulnscan.providers.client import ChatMessage
 
@@ -359,10 +359,10 @@ def pick_review_targets(
     routing: Sequence[dict[str, Any]],
     max_findings: int,
 ) -> list[Finding]:
-    """Deep-lane findings first, then the rest — always bounded.
+    """Các finding luồng sâu trước, sau đó là phần còn lại — luôn có giới hạn.
 
-    Bounding matters on metered/free-tier gateways where every agent turn
-    is a billable request.
+    Việc giới hạn rất quan trọng trên các gateway tính phí/gói miễn phí, nơi mỗi lượt
+    agent là một yêu cầu bị tính phí.
     """
     route_by_id = {str(p.get("finding_id")): str(p.get("route", "")) for p in routing}
     deep = [f for f in findings if route_by_id.get(f.finding_id) in DEEP_ANALYSIS_ROUTES]
@@ -378,7 +378,7 @@ def evidence_for(
     assessment: Assessment,
     run_id: str,
 ) -> list[EvidenceRecord]:
-    """Scanner observations + the model proposal, as validator input."""
+    """Các quan sát của scanner + đề xuất của mô hình, dùng làm đầu vào cho validator."""
     now = datetime.now(UTC)
     records: list[EvidenceRecord] = []
     for obs in finding.observations:
@@ -444,11 +444,11 @@ def run_ai_review(
     max_findings: int = 10,
     budget: BudgetManager | None = None,
 ) -> dict[str, Any]:
-    """Investigate bounded targets with the model, validate, apply statuses.
+    """Điều tra các mục tiêu có giới hạn bằng mô hình, xác thực, áp dụng trạng thái.
 
-    Returns a JSON-safe report with assessments, decisions, per-finding
-    outcomes, and provider usage. Never raises for provider problems:
-    failures degrade to ``unresolved`` assessments and ``skipped`` stages.
+    Trả về một báo cáo an toàn cho JSON chứa các đánh giá, quyết định, kết quả
+    theo từng finding và mức sử dụng provider. Không bao giờ ném ngoại lệ khi gặp vấn đề từ provider:
+    các lỗi sẽ tự hạ cấp về đánh giá ``unresolved`` và các giai đoạn ``skipped``.
     """
     report: dict[str, Any] = {
         "enabled": False,
@@ -492,9 +492,9 @@ def run_ai_review(
         _, _, _, explicit = parse_verdict_text(assessment.rationale)
         explicit = assessment.metadata.get("verdict_explicit") is True or explicit
         if not explicit:
-            # Tool-incapable model (reasoning-only gateway, empty or
-            # tool-less reply): one bounded single-shot verdict with
-            # embedded evidence instead of another multi-turn loop.
+            # Mô hình không hỗ trợ công cụ (gateway chuyên suy luận, phản hồi rỗng hoặc
+            # không dùng công cụ): một kết luận single-shot có giới hạn với
+            # bằng chứng nhúng sẵn thay vì một vòng lặp nhiều lượt khác.
             single = single_shot_verdict(client, finding, str(snapshot_root), profile, model)
             if single is not None:
                 assessment = single

@@ -72,7 +72,9 @@ def test_native_dashboard_routes_csrf_and_exports(service, checkout, tmp_path):
             assert '<a href="/" class="active">Targets</a>' in home.text
             run = client.get(f"/runs/{result['id']}")
             assert run.status_code == 200
-            assert f'<a href="/runs/{result["id"]}" class="active">Run {result["id"]}</a>' in run.text
+            assert (
+                f'<a href="/runs/{result["id"]}" class="active">Run {result["id"]}</a>' in run.text
+            )
             assert client.get(f"/runs/{result['id']}/findings").status_code == 200
             route = f"/findings/{finding['finding_id']}/status"
             assert client.post(route, data={"status": "rejected"}).status_code == 403

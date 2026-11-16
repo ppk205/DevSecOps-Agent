@@ -133,7 +133,7 @@ func run(args []string) int {
 	format := flags.String("fmt", "json", "Report format")
 	host := flags.String("host", "127.0.0.1", "Local dashboard host")
 	port := flags.Int("port", 8000, "Dashboard port")
-	// Permit legacy positional run IDs before flags.
+	// Cho phép các run ID theo vị trí kiểu cũ trước các cờ.
 	position := ""
 	rest := args[1:]
 	if len(rest) > 0 && !strings.HasPrefix(rest[0], "-") {
@@ -332,13 +332,13 @@ func output(value any, err error) int {
 	return 0
 }
 
-// pythonEnvironment builds the child env for the Python side. A PYTHONPATH
-// inherited from the caller can point at some other environment's
-// site-packages and shadow this install's compiled wheels (a pydantic_core
-// built for a different interpreter ABI loads and then fails at import), so
-// the key is filtered and re-added pointing at the repo's own src when one
-// exists next to the selected interpreter's venv; otherwise the user's
-// PYTHONPATH is preserved.
+// pythonEnvironment xây dựng env con cho phía Python. Một PYTHONPATH
+// kế thừa từ bên gọi có thể trỏ tới site-packages của môi trường khác
+// và che khuất các compiled wheel của bản cài đặt này (một pydantic_core
+// được build cho ABI trình thông dịch khác khi nạp sẽ bị lỗi ở import), vì vậy
+// key này được lọc và thêm lại trỏ tới src của chính repo khi có thư mục tồn tại
+// cạnh venv của trình thông dịch đã chọn; nếu không thì PYTHONPATH
+// của người dùng được giữ nguyên.
 func pythonEnvironment() []string {
 	env := make([]string, 0, len(os.Environ())+2)
 	var userPythonPath string
@@ -351,7 +351,7 @@ func pythonEnvironment() []string {
 		case "PYTHONPATH":
 			userPythonPath = value
 		case "DEVSECOPS_PYTHON_ONLY":
-			// re-added below
+			// được thêm lại bên dưới
 		default:
 			env = append(env, entry)
 		}
@@ -365,13 +365,13 @@ func pythonEnvironment() []string {
 	return env
 }
 
-// pythonSrcDir locates <repo>/src relative to the selected interpreter's venv
-// (<venv>/Scripts/python.exe on Windows, <venv>/bin/python elsewhere) so the
-// launcher works from any working directory.
+// pythonSrcDir định vị <repo>/src tương đối với venv của trình thông dịch đã chọn
+// (<venv>/Scripts/python.exe trên Windows, <venv>/bin/python ở nơi khác) để
+// launcher hoạt động từ bất kỳ thư mục làm việc nào.
 func pythonSrcDir() string {
 	exe := pythonExecutable()
 	if exe == "" || exe == "python" || exe == "python3" {
-		return "" // PATH fallback; no venv to anchor on
+		return "" // Dự phòng PATH; không có venv để neo vào
 	}
 	venv := filepath.Dir(filepath.Dir(exe))
 	base := filepath.Base(venv)

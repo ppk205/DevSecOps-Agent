@@ -1,8 +1,8 @@
-"""Index Java source for security-relevant entry points.
+"""Lập chỉ mục mã nguồn Java cho các điểm vào liên quan đến bảo mật.
 
-Pure-Python parsing of @WebServlet/@WebFilter annotations and the classic
-web.xml deployment descriptor. Also indexes auth helpers (files that call
-authenticate/authorize). No reflection, no network.
+Phân tích cú pháp thuần Python các annotation @WebServlet/@WebFilter và bộ mô tả triển khai
+web.xml cổ điển. Đồng thời lập chỉ mục các trình trợ giúp auth (các tệp gọi
+authenticate/authorize). Không dùng reflection, không dùng mạng.
 """
 
 from __future__ import annotations
@@ -31,7 +31,7 @@ class FilterEntry:
 
 @dataclass
 class SourceIndex:
-    """Indexed entry points and auth helpers for the snapshot."""
+    """Các điểm vào và hàm trợ giúp auth đã được lập chỉ mục cho snapshot."""
 
     servlets: list[ServletEntry] = field(default_factory=list)
     filters: list[FilterEntry] = field(default_factory=list)
@@ -47,7 +47,7 @@ _AUTH_CALL = re.compile(r"\b(authenticate|authorize|login|logout|isAuthenticated
 
 
 def _annotation_url_patterns(source: str) -> list[str]:
-    """Extract url-patterns from an @WebServlet/@WebFilter annotation body."""
+    """Trích xuất url-patterns từ phần thân annotation @WebServlet/@WebFilter."""
     patterns: list[str] = []
     for m in _ANNOT_BLOCK.finditer(source):
         for q in _QUOTED.finditer(m.group(1)):
@@ -62,7 +62,7 @@ def _class_name_of(source: str) -> str | None:
 
 
 def index_web_xml(web_xml: Path) -> tuple[list[ServletEntry], list[FilterEntry]]:
-    """Parse web.xml servlet + filter mappings (classic style)."""
+    """Phân tích cú pháp các ánh xạ servlet + filter trong web.xml (kiểu cổ điển)."""
     servlets: list[ServletEntry] = []
     filters: list[FilterEntry] = []
     try:
@@ -114,13 +114,13 @@ def index_web_xml(web_xml: Path) -> tuple[list[ServletEntry], list[FilterEntry]]
 
 
 def build_source_index(snapshot: Path) -> SourceIndex:
-    """Scan a snapshot root for entry points + auth helpers."""
+    """Quét thư mục gốc của snapshot để tìm các điểm vào + hàm trợ giúp auth."""
     snapshot = Path(snapshot)
     idx = SourceIndex()
     if not snapshot.exists():
         return idx
 
-    # 1. web.xml (may be absent or split across fragments)
+    # 1. web.xml (có thể vắng mặt hoặc bị phân chia qua các mảnh fragment)
     for web_xml in snapshot.rglob("web.xml"):
         s, f = index_web_xml(web_xml)
         idx.servlets.extend(s)
@@ -131,7 +131,7 @@ def build_source_index(snapshot: Path) -> SourceIndex:
                 f"{web_xml}: parsed but contained no servlet/filter mappings"
             )
 
-    # 2. annotation-based declarations
+    # 2. Các khai báo dựa trên annotation
     for java in snapshot.rglob("*.java"):
         try:
             source = java.read_text(encoding="utf-8", errors="replace")
@@ -158,7 +158,7 @@ def build_source_index(snapshot: Path) -> SourceIndex:
                     )
                 )
 
-    # 3. auth helpers
+    # 3. Các hàm trợ giúp auth
     for java in snapshot.rglob("*.java"):
         try:
             source = java.read_text(encoding="utf-8", errors="replace")

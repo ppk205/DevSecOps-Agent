@@ -1,16 +1,16 @@
-"""Registered tool definitions for the bounded investigation loop.
+"""Các định nghĩa công cụ đã đăng ký cho vòng lặp điều tra có giới hạn.
 
-Tools are OpenAI function-calling compatible.  The agent may only invoke
-these registered tools — no arbitrary code execution, no shell access, no
-provider credentials.  Each tool returns a dict that is injected back as
-a tool message.
+Các công cụ tương thích với OpenAI function-calling. Agent chỉ có thể gọi
+các công cụ đã đăng ký này — không thực thi code tùy ý, không truy cập shell, không
+có thông tin xác thực provider. Mỗi công cụ trả về một dict được đưa ngược lại dưới dạng
+tool message.
 """
 
 from __future__ import annotations
 
 from typing import Any
 
-# Tool schemas in OpenAI function-calling format
+# Định nghĩa schema công cụ theo định dạng OpenAI function-calling
 TOOL_SCHEMAS: list[dict[str, Any]] = [
     {
         "type": "function",

@@ -1,7 +1,7 @@
 import type { Counts } from "../../api/types";
 import { tokens } from "../../tokens";
 
-/** Hand-drawn SVG donut — severity mix. No chart library. */
+/** Biểu đồ donut SVG tự vẽ — phân bổ mức độ nghiêm trọng. Không dùng thư viện biểu đồ. */
 export function SeverityDonut({ counts, size = 180 }: { counts: Counts; size?: number }) {
   const segments: { value: number; color: string; label: string }[] = [
     { value: counts.confirmed, color: tokens.color.mRed, label: "confirmed" },

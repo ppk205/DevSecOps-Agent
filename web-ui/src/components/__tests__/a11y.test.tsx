@@ -12,7 +12,7 @@ import cssText from "../../styles.css?raw";
 const _rawCss = String(cssText);
 function loadCss(): string {
   if (_rawCss.length > 0) return _rawCss;
-  // Fallback: read the source file directly (jsdom transform may empty CSS).
+  // Dự phòng: đọc trực tiếp file nguồn (biến đổi của jsdom có thể làm rỗng CSS).
   return readFileSync(join(process.cwd(), "src", "styles.css"), "utf8");
 }
 
@@ -29,7 +29,7 @@ function renderAt(path: string) {
   );
 }
 
-/** WCAG relative luminance + contrast ratio. */
+/** Độ sáng tương đối và tỷ lệ tương phản theo WCAG. */
 function luminance(hex: string): number {
   const rgb = [1, 3, 5].map((i) => {
     const v = parseInt(hex.slice(i, i + 2), 16) / 255;
@@ -106,7 +106,7 @@ describe("Phase 6 a11y", () => {
   it("essential text pairs meet WCAG 2.2 AA (4.5:1) on every surface", () => {
     const surfaces = ["#000000", "#0d0d0d", "#1a1a1a", "#262626"];
     for (const bg of surfaces) {
-      // Muted carries labels, counters, and table headers on all surfaces.
+      // Muted chứa nhãn, bộ đếm và tiêu đề bảng trên mọi giao diện.
       expect(ratio("#909090", bg), `muted on ${bg}`).toBeGreaterThanOrEqual(4.5);
       // Body copy everywhere.
       expect(ratio("#bbbbbb", bg), `body on ${bg}`).toBeGreaterThanOrEqual(4.5);

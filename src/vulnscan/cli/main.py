@@ -1,4 +1,4 @@
-"""Typer CLI entry point (devsecops-agent command)."""
+"""Điểm vào Typer CLI (lệnh devsecops-agent)."""
 
 from __future__ import annotations
 
@@ -36,7 +36,7 @@ def root(
 
 @app.command("db-init")
 def db_init(db_path: str = typer.Option("vulnscan.db", help="SQLite file path.")) -> None:
-    """Create all database tables."""
+    """Tạo tất cả các bảng cơ sở dữ liệu."""
     init_db(db_path)
     typer.echo(f"Initialized database at {db_path}")
 
@@ -47,7 +47,7 @@ def target_add(
     commit: str = typer.Argument(..., help="Pinned commit SHA (never 'HEAD')."),
     db_path: str = typer.Option("vulnscan.db", help="SQLite file path."),
 ) -> None:
-    """Register a scan target."""
+    """Đăng ký một mục tiêu quét."""
     init_db(db_path)
     with get_session(db_path) as session:
         target = TargetORM(repository_url=url, commit_sha=commit)
@@ -58,7 +58,7 @@ def target_add(
 
 @app.command("target-list")
 def target_list(db_path: str = typer.Option("vulnscan.db", help="SQLite file path.")) -> None:
-    """List registered targets."""
+    """Liệt kê các mục tiêu đã đăng ký."""
     init_db(db_path)
     with get_session(db_path) as session:
         for t in session.query(TargetORM).order_by(TargetORM.id).all():
@@ -70,7 +70,7 @@ def scan_status(
     run_id: str = typer.Argument(..., help="Public run ID or integer database ID."),
     db_path: str = typer.Option("vulnscan.db", "--db-path"),
 ) -> None:
-    """Show the status of a retained scan."""
+    """Hiển thị trạng thái của một lượt quét đã lưu giữ."""
     from ..core.scan_service import ScanService
 
     try:
@@ -83,7 +83,7 @@ def scan_status(
 
 @app.command("scan-list")
 def scan_list(db_path: str = typer.Option("vulnscan.db", help="SQLite file path.")) -> None:
-    """List scan runs (newest first)."""
+    """Liệt kê các lần chạy quét (mới nhất trước)."""
     init_db(db_path)
     with get_session(db_path) as session:
         for r in session.query(RunORM).order_by(RunORM.id.desc()).all():
@@ -126,7 +126,7 @@ def scan_run(
         None, "--mode", help="Scan mode: hunt (default) or deterministic."
     ),
 ) -> None:
-    """Scan any repository (URL or local path) and enforce policy."""
+    """Quét bất kỳ kho lưu trữ nào (URL hoặc đường dẫn cục bộ) và thực thi chính sách."""
     from pathlib import Path
 
     from ..core.config import resolve_config, resolve_model_config
@@ -199,7 +199,7 @@ def scan_run(
 
 @app.command("tui")
 def tui(db_path: str = typer.Option("vulnscan.db", "--db-path")) -> None:
-    """Open the full-screen terminal interface."""
+    """Mở giao diện terminal toàn màn hình."""
     launch_tui(db_path)
 
 
@@ -211,8 +211,8 @@ def launch_tui(db_path: str = "vulnscan.db") -> None:
     from ..core.native import binary_path
 
     binary = binary_path()
-    # The complete URL/credential workflow lives in Textual. Native UI remains
-    # explicit until those newer surfaces have native parity (C-04, FR-71).
+    # Quy trình URL/thông tin xác thực đầy đủ nằm trong Textual. UI native vẫn
+    # tường minh cho đến khi các bề mặt mới hơn này đạt sự tương đương native (C-04, FR-71).
     if (
         binary
         and os.environ.get("DEVSECOPS_NATIVE") == "go"
@@ -239,7 +239,7 @@ def env_set(
         "", "--value", help="Value to store (prompted securely when omitted)."
     ),
 ) -> None:
-    """Save an API key to the project .env file (permissions 0600)."""
+    """Lưu một API key vào tệp .env của dự án (phân quyền 0600)."""
     import getpass
 
     from ..infra.envfile import EnvFile
@@ -259,7 +259,7 @@ def env_set(
 
 @env_app.command("list")
 def env_list() -> None:
-    """List stored key names (values are never printed)."""
+    """Liệt kê các tên key đã lưu (giá trị không bao giờ được in ra)."""
     import os
 
     from ..infra.envfile import EnvFile, mask_secret
@@ -276,7 +276,7 @@ def env_list() -> None:
 
 @env_app.command("path")
 def env_path() -> None:
-    """Print the .env file location in use."""
+    """In ra vị trí tệp .env đang được sử dụng."""
     from ..infra.envfile import EnvFile
 
     typer.echo(str(EnvFile().path))
@@ -286,7 +286,7 @@ def env_path() -> None:
 def env_unset(
     name: str = typer.Argument(..., help="Variable name to remove from .env."),
 ) -> None:
-    """Remove a key from the project .env file."""
+    """Xóa một key khỏi tệp .env của dự án."""
     from pathlib import Path
 
     from ..infra.envfile import EnvFile
@@ -316,7 +316,7 @@ def provider_add(
     models: str = typer.Option("", "--models", help="Comma-separated allowed model ids."),
     default_model: str | None = typer.Option(None, "--default-model"),
 ) -> None:
-    """Register a BYOK provider profile (key stays in env, never on disk)."""
+    """Đăng ký hồ sơ provider BYOK (key giữ trong env, không bao giờ lưu trên đĩa)."""
     from ..contracts.enums import ProviderProtocol
     from ..contracts.provider import ProviderProfile
     from ..providers.profile_store import save_profile
@@ -402,15 +402,15 @@ def provider_setup() -> None:
 
 @app.command("serve")
 def serve(host: str = "127.0.0.1", port: int = 8000, db_path: str = "vulnscan.db") -> None:
-    """Serve the existing local dashboard against the shared scan history."""
+    """Khởi chạy dashboard cục bộ hiện có dựa trên lịch sử quét dùng chung."""
     import uvicorn
 
     from ..infra.envfile import EnvFile
     from ..storage.database import get_engine
     from ..web.app import create_app
 
-    # Web scans auto-resolve the default provider from the process env;
-    # load saved project-local keys so a restart does not lose them.
+    # Quét Web tự động phân giải provider mặc định từ biến môi trường của tiến trình;
+    # tải các key cục bộ đã lưu của dự án để việc khởi động lại không làm mất chúng.
     EnvFile().load_into_environ()
     if host not in {"127.0.0.1", "localhost", "::1"}:
         raise typer.BadParameter("The dashboard must bind to localhost")
@@ -421,7 +421,7 @@ def serve(host: str = "127.0.0.1", port: int = 8000, db_path: str = "vulnscan.db
 def scan_export(
     run_id: str, fmt: str = "json", out: str = "artifacts", db_path: str = "vulnscan.db"
 ) -> None:
-    """Export retained evidence without rerunning scanners."""
+    """Xuất bằng chứng đã lưu giữ mà không cần chạy lại các scanner."""
     from ..contracts import ExportFormat
     from ..core.scan_service import ScanService
 
@@ -448,9 +448,9 @@ def scan_retry(run_id: str, db_path: str = "vulnscan.db") -> None:
 def laya_config(
     config_path: str = typer.Option("config/laya.json", help="Laya config JSON path."),
 ) -> None:
-    """Show the resolved Laya decision-routing configuration.
+    """Hiển thị cấu hình định tuyến quyết định Laya đã phân giải.
 
-    Advisory only: the resolved config can never enable status authority.
+    Chỉ mang tính cố vấn: cấu hình đã phân giải không bao giờ có thể cấp quyền thay đổi trạng thái.
     """
     from ..decisions.config import load_config
 
@@ -470,7 +470,7 @@ def laya_check(
     ),
     model: str = typer.Option("convaiinnovations/laya", help="Model id or local path."),
 ) -> None:
-    """Check whether the optional Laya dependency is usable locally."""
+    """Kiểm tra xem phần phụ thuộc tùy chọn Laya có khả dụng cục bộ hay không."""
     try:
         import importlib
 
@@ -503,10 +503,10 @@ def laya_evaluate(
     truth: str = typer.Option(..., "--truth", help="Ground-truth JSON for evaluator grading."),
     out: str = typer.Option("", "--out", help="Optional path to write the experiment record."),
 ) -> None:
-    """Grade one run's advisory routing against evaluator ground truth.
+    """Chấm điểm định tuyến cố vấn của một lượt chạy so với ground truth của evaluator.
 
-    The ground-truth file is the only answer key. Finding statuses are never
-    consulted, so the advisory layer cannot grade itself.
+    Tệp ground-truth là đáp án duy nhất. Trạng thái của các finding không bao giờ
+    được tham chiếu, do đó lớp cố vấn không thể tự chấm điểm cho chính mình.
     """
     from pathlib import Path as _Path
 
@@ -530,7 +530,7 @@ def laya_evaluate(
 def evidence_manifest(
     out: str = typer.Option("", "--out", help="Optional path to write the manifest."),
 ) -> None:
-    """Build the handover evidence manifest with checksums and open blockers."""
+    """Xây dựng manifest bằng chứng bàn giao với mã kiểm tra checksum và các blocker đang mở."""
     from pathlib import Path as _Path
 
     from ..evaluation.manifest import build_manifest
@@ -554,7 +554,7 @@ def evidence_manifest(
 
 
 def main() -> None:
-    """Console-script entry point (pyproject: vulnscan.cli.main:main)."""
+    """Điểm vào console-script (pyproject: vulnscan.cli.main:main)."""
     import os
     import subprocess
     import sys

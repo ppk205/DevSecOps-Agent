@@ -58,7 +58,7 @@ describe("Phase 3 live pipeline (mock mode)", () => {
 
   it("supports click-to-filter and the timeline scrubber", async () => {
     renderAt("/live");
-    // Wait for the scripted rail to load before scrubbing.
+    // Đợi thanh tiến trình theo kịch bản tải xong trước khi tua (scrub).
     await screen.findByText(/checkout verified/, {}, { timeout: 8000 });
     const node = await screen.findByTestId("stage-scanners", {}, { timeout: 8000 });
     fireEvent.click(node);

@@ -1,9 +1,9 @@
-"""Shared enumerations for the DevSecOps-Agent contract layer.
+"""Các enum dùng chung cho tầng hợp đồng (contract layer) của DevSecOps-Agent.
 
-These enums are used across modules (scanners, normalization, assessment,
-validation, reporting) so that status values and categories are never spelled
-differently between components. Every value is a stable string so that
-serialized JSON records remain readable across versions.
+Các enum này được sử dụng trên các module (scanner, normalization, assessment,
+validation, reporting) để các giá trị trạng thái và danh mục không bao giờ bị viết
+khác nhau giữa các thành phần. Mỗi giá trị là một chuỗi ổn định để các bản ghi
+JSON được tuần tự hóa vẫn có thể đọc được qua các phiên bản.
 """
 
 from __future__ import annotations
@@ -12,7 +12,7 @@ from enum import Enum
 
 
 class RunStatus(str, Enum):
-    """Lifecycle of a whole scan run as persisted in storage."""
+    """Vòng đời của toàn bộ một lần quét (scan run) được lưu trữ bền vững."""
 
     QUEUED = "queued"
     RUNNING = "running"
@@ -27,7 +27,7 @@ class RunStatus(str, Enum):
 
 
 class StageStatus(str, Enum):
-    """Lifecycle of a single stage (intake, scan, normalize, assess, ...)."""
+    """Vòng đời của một giai đoạn đơn lẻ (intake, scan, normalize, assess, ...)."""
 
     PENDING = "pending"
     RUNNING = "running"
@@ -41,10 +41,10 @@ class StageStatus(str, Enum):
 
 
 class Severity(str, Enum):
-    """Reference severity categories.
+    """Các danh mục mức độ nghiêm trọng tham chiếu.
 
-    Native scanner severities are mapped onto these categories; numeric CVSS
-    equivalents are never invented for them.
+    Mức độ nghiêm trọng gốc của scanner được ánh xạ vào các danh mục này; không bao
+    giờ tự tạo ra các giá trị số tương đương CVSS cho chúng.
     """
 
     CRITICAL = "critical"
@@ -56,14 +56,14 @@ class Severity(str, Enum):
 
 
 class CWECategory(str, Enum):
-    """The twelve planned source-code vulnerability groups, plus dependency and
-    unclassified tracks.
+    """Mười hai nhóm lỗ hổng mã nguồn theo kế hoạch, cùng với các nhánh dependency
+    và unclassified.
 
-    Values use the canonical CWE identifier so records stay comparable across
-    tools. The dependency track is evaluated separately from source-code groups.
+    Các giá trị sử dụng định danh CWE chuẩn để các bản ghi có thể so sánh được
+    giữa các công cụ. Nhánh dependency được đánh giá riêng biệt với các nhóm mã nguồn.
     """
 
-    # Injection family
+    # Nhóm lỗ hổng Injection
     SQL_INJECTION = "CWE-89"
     COMMAND_INJECTION = "CWE-78"
     CODE_INJECTION = "CWE-94"
@@ -81,15 +81,15 @@ class CWECategory(str, Enum):
     PHP_FILE_INCLUSION = "CWE-98"
     PROTOTYPE_POLLUTION = "CWE-1321"
     DYNAMIC_OBJECT_ATTRS = "CWE-915"
-    # Cross-site scripting family
+    # Nhóm lỗ hổng Cross-site scripting
     XSS = "CWE-79"
-    # Authentication and session management
+    # Quản lý xác thực và phiên làm việc
     AUTH_FAILURE = "CWE-287"
     SESSION_FIXATION = "CWE-384"
-    # Access control
+    # Kiểm soát truy cập (Access control)
     BROKEN_ACCESS_CONTROL = "CWE-862"
     IDOR = "CWE-639"
-    # Sensitive data exposure
+    # Lộ lọt dữ liệu nhạy cảm (Sensitive data exposure)
     SENSITIVE_DATA_EXPOSURE = "CWE-200"
     HARD_CODED_SECRET = "CWE-798"
     INSECURE_RANDOMNESS = "CWE-330"
@@ -97,7 +97,7 @@ class CWECategory(str, Enum):
     INSECURE_DESERIALIZATION = "CWE-502"
     WEAK_HASH = "CWE-328"
     TLS_CERT_VALIDATION_DISABLED = "CWE-295"
-    # Security misconfiguration
+    # Cấu hình sai bảo mật (Security misconfiguration)
     SECURITY_MISCONFIGURATION = "CWE-16"
     DEBUG_LEFTOVER = "CWE-489"
     DEBUG_INFO_EXPOSURE = "CWE-215"
@@ -109,13 +109,13 @@ class CWECategory(str, Enum):
     IMPROPER_INPUT_VALIDATION = "CWE-20"
     UNSAFE_REFLECTION = "CWE-470"
     REDOS = "CWE-1333"
-    # Cryptographic failures
+    # Lỗi mã hóa (Cryptographic failures)
     CRYPTOGRAPHIC_FAILURE = "CWE-327"
-    # Logging and monitoring
+    # Ghi log và giám sát (Logging and monitoring)
     INSUFFICIENT_LOGGING = "CWE-778"
-    # Code-quality weaknesses reported by bytecode analyzers (SpotBugs).
-    # Kept distinct from UNCLASSIFIED so rule coverage can grow without
-    # pretending every lint is exploitable.
+    # Điểm yếu chất lượng mã nguồn do các bộ phân tích bytecode (SpotBugs) báo cáo.
+    # Được giữ tách biệt với UNCLASSIFIED để độ bao phủ của quy tắc có thể mở rộng mà không
+    # giả định rằng mọi lỗi linting đều có thể khai thác được.
     UNCHECKED_RETURN_VALUE = "CWE-252"
     UNUSED_ASSIGNMENT = "CWE-563"
     IMPROPER_RESOURCE_SHUTDOWN = "CWE-404"
@@ -123,16 +123,16 @@ class CWECategory(str, Enum):
     UNICODE_ENCODING_ERROR = "CWE-176"
     IMPROPER_EXCEPTION_CHECK = "CWE-754"
     EXTERNALLY_CONTROLLED_FORMAT_STRING = "CWE-134"
-    # Dependency track (evaluated separately)
+    # Nhánh phụ thuộc (được đánh giá riêng biệt)
     DEPENDENCY_VULNERABILITY = "CWE-1104"
     UNCLASSIFIED = "CWE-UNCLASSIFIED"
 
 
 class FindingStatus(str, Enum):
-    """Workflow status of a grouped finding.
+    """Trạng thái luồng công việc (workflow status) của một finding đã nhóm.
 
-    An AI assessment may never move a finding directly to CONFIRMED or
-    REJECTED; only independent validation can.
+    Một đánh giá AI không bao giờ được chuyển trực tiếp một finding sang CONFIRMED
+    hoặc REJECTED; chỉ validation độc lập mới có thể làm điều này.
     """
 
     UNPROCESSED = "unprocessed"
@@ -145,9 +145,9 @@ class FindingStatus(str, Enum):
 
 
 class FindingProvenance(str, Enum):
-    """Which lane produced a finding: model hunt, scanners, or both.
+    """Lane nào đã tạo ra một finding: model hunt, scanner, hoặc cả hai.
 
-    Optional on the Finding contract; absent (None) means scanner.
+    Tùy chọn trên hợp đồng Finding; nếu vắng mặt (None) nghĩa là scanner.
     """
 
     MODEL = "model"
@@ -156,7 +156,7 @@ class FindingProvenance(str, Enum):
 
 
 class VerificationOutcome(str, Enum):
-    """Outcome of independent verification. Kept distinct from evidence strength."""
+    """Kết quả của việc xác minh độc lập. Được giữ tách biệt với độ mạnh của bằng chứng."""
 
     DEMONSTRATED = "demonstrated"
     BLOCKED = "blocked"
@@ -167,10 +167,10 @@ class VerificationOutcome(str, Enum):
 
 
 class EvidenceStrength(str, Enum):
-    """Qualitative strength of the evidence backing a conclusion.
+    """Độ mạnh định tính của bằng chứng hỗ trợ cho một kết luận.
 
-    Static support is not proof of successful exploitation; a failed test is
-    not proof that a vulnerability is absent.
+    Bằng chứng tĩnh không phải là bằng chứng của việc khai thác thành công; một bài kiểm
+    tra thất bại không phải là bằng chứng cho thấy lỗ hổng không tồn tại.
     """
 
     STRONG = "strong"
@@ -181,7 +181,7 @@ class EvidenceStrength(str, Enum):
 
 
 class ExportFormat(str, Enum):
-    """Supported report export formats."""
+    """Các định dạng xuất báo cáo được hỗ trợ."""
 
     SARIF = "sarif"
     JSON = "json"
@@ -192,7 +192,7 @@ class ExportFormat(str, Enum):
 
 
 class ToolName(str, Enum):
-    """Deterministic scanners supported by the pipeline."""
+    """Các scanner tất định được hỗ trợ bởi pipeline."""
 
     SEMGREP = "semgrep"
     NATIVE_HUNT = "native-hunt"
@@ -204,7 +204,7 @@ class ToolName(str, Enum):
 
 
 class ExtractionMode(str, Enum):
-    """How a scanner derived its view of a unit of analysis (ACC-01, ACC-07)."""
+    """Cách một scanner thu được góc nhìn về một đơn vị phân tích (ACC-01, ACC-07)."""
 
     FULL_AST = "full_ast"
     PARTIAL_AST = "partial_ast"
@@ -219,10 +219,10 @@ class ExtractionMode(str, Enum):
 
 
 class CoverageUnitStatus(str, Enum):
-    """Per-unit analysis status used by coverage records (ACC-07).
+    """Trạng thái phân tích theo từng đơn vị được sử dụng bởi các bản ghi độ bao phủ (ACC-07).
 
-    Skipped units cannot appear successfully analyzed; partial and failed are
-    reported separately from analyzed.
+    Các đơn vị bị bỏ qua không thể hiển thị là đã phân tích thành công; các trạng
+    thái partial và failed được báo cáo tách biệt với analyzed.
     """
 
     ANALYZED = "analyzed"
@@ -235,7 +235,7 @@ class CoverageUnitStatus(str, Enum):
 
 
 class LanguageKind(str, Enum):
-    """Source language of an analysis unit; each web language reconciles separately."""
+    """Ngôn ngữ nguồn của một đơn vị phân tích; mỗi ngôn ngữ web được đối chiếu riêng biệt."""
 
     JAVA = "java"
     JSP = "jsp"
@@ -249,7 +249,7 @@ class LanguageKind(str, Enum):
     OTHER = "other"
 
 
-#: File extensions scanned as web source (inventory + coverage).
+#: Phần mở rộng tệp được quét dưới dạng mã nguồn web (inventory + coverage).
 WEB_SOURCE_EXTENSIONS = frozenset(
     {
         ".java",
@@ -296,14 +296,14 @@ _EXTENSION_LANGUAGE: dict[str, LanguageKind] = {
 
 
 def language_from_extension(path: str) -> LanguageKind:
-    """Map a file path to its web language; unknown extensions are OTHER."""
+    """Ánh xạ đường dẫn file tới ngôn ngữ web của nó; các phần mở rộng không xác định là OTHER."""
     from pathlib import Path
 
     return _EXTENSION_LANGUAGE.get(Path(path).suffix.lower(), LanguageKind.OTHER)
 
 
 class EvidenceKind(str, Enum):
-    """Kind of evidence attached to an observation or assessment."""
+    """Loại bằng chứng được đính kèm vào một observation hoặc assessment."""
 
     STATIC = "static"
     DATAFLOW = "dataflow"
@@ -315,7 +315,7 @@ class EvidenceKind(str, Enum):
 
 
 class ProviderProtocol(str, Enum):
-    """Wire protocol used to talk to a BYOK model provider."""
+    """Giao thức truyền thông (wire protocol) được sử dụng để giao tiếp với model provider BYOK."""
 
     OPENAI_CHAT_COMPLETIONS = "openai_chat_completions"
     OPENAI_RESPONSES = "openai_responses"
@@ -324,7 +324,7 @@ class ProviderProtocol(str, Enum):
 
 
 class RoleKind(str, Enum):
-    """Roles in the declared authorization policy (ACC-03)."""
+    """Các role trong chính sách phân quyền được khai báo (ACC-03)."""
 
     CUSTOMER = "customer"
     SELLER = "seller"
@@ -334,7 +334,7 @@ class RoleKind(str, Enum):
 
 
 class PolicyAssumptionStatus(str, Enum):
-    """Review state of an authorization-policy entry (ACC-03)."""
+    """Trạng thái rà soát của một mục chính sách phân quyền (ACC-03)."""
 
     INTENDED = "intended"
     IMPLEMENTED_OBSERVED = "implemented_observed"
@@ -344,7 +344,7 @@ class PolicyAssumptionStatus(str, Enum):
 
 
 class SplitMembership(str, Enum):
-    """Dataset split of an evaluation case (evaluator only)."""
+    """Phân chia tập dữ liệu (dataset split) của một ca đánh giá (chỉ dành cho evaluator)."""
 
     DEVELOPMENT = "development"
     HELD_OUT = "held_out"
@@ -353,7 +353,7 @@ class SplitMembership(str, Enum):
 
 
 class VariantRelationship(str, Enum):
-    """Relationship of a variant inside its case family (evaluator only)."""
+    """Mối quan hệ của một biến thể bên trong nhóm ca (case family) của nó (chỉ dành cho evaluator)."""
 
     VULNERABLE = "vulnerable"
     FIXED = "fixed"
@@ -362,10 +362,10 @@ class VariantRelationship(str, Enum):
 
 
 class MissReason(str, Enum):
-    """Classification of a missed finding by stage (ACC-07).
+    """Phân loại finding bị bỏ sót theo từng giai đoạn (ACC-07).
 
-    Multiple contributing reasons are permitted, plus an explicit undetermined
-    reason pending review; unsupported causal explanations are never forced.
+    Cho phép nhiều lý do đóng góp, cộng với một lý do undetermined tường minh
+    chờ rà soát; không bao giờ áp đặt các giải thích nguyên nhân không có căn cứ.
     """
 
     MISSING_RULE = "missing_rule"
@@ -379,7 +379,7 @@ class MissReason(str, Enum):
 
 
 class ModelApplicability(str, Enum):
-    """Applicability of a versioned security model (ACC-02, ACC-05)."""
+    """Khả năng áp dụng của một mô hình bảo mật được tạo phiên bản (ACC-02, ACC-05)."""
 
     APPLICABLE = "applicable"
     NOT_APPLICABLE = "not_applicable"
@@ -389,7 +389,7 @@ class ModelApplicability(str, Enum):
 
 
 class OperationKind(str, Enum):
-    """Coarse operation vocabulary for authorization-policy references."""
+    """Từ vựng thao tác tổng quát cho các tham chiếu chính sách phân quyền."""
 
     READ = "read"
     CREATE = "create"

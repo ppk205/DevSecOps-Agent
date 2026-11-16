@@ -1,6 +1,6 @@
 import type { FindingListItem, FindingProvenance } from "../api/types";
 
-/** Resolve hunt provenance; absent means scanner-found. */
+/** Phân giải nguồn gốc hunt; vắng mặt nghĩa là do scanner tìm thấy. */
 export function provenanceOf(item: Pick<FindingListItem, "provenance">): FindingProvenance {
   const value = item.provenance;
   if (value === "model" || value === "both" || value === "scanner") return value;

@@ -1,9 +1,9 @@
-"""Phase 2 helpers: tools, settings, keys, usage, scans (thin over services).
+"""Các helper Phase 2: tools, settings, keys, usage, scans (lớp mỏng trên services).
 
-Keys are stored ONLY via the project-local ``.env`` mechanism
-(:class:`vulnscan.infra.envfile.EnvFile`) plus ``.providers/*.json`` profiles
-(:mod:`vulnscan.providers.profile_store`). Secrets are never returned —
-only a masked ``••••`` + last-4 display string.
+Khóa CHỈ được lưu qua cơ chế ``.env`` cục bộ của dự án
+(:class:`vulnscan.infra.envfile.EnvFile`) cùng với profile ``.providers/*.json``
+(:mod:`vulnscan.providers.profile_store`). Secret không bao giờ được trả về —
+chỉ trả về chuỗi hiển thị đã che ``••••`` + 4 ký tự cuối.
 """
 
 from __future__ import annotations
@@ -84,7 +84,7 @@ def _validate_general_settings(values: dict[str, Any]) -> None:
 
 
 def mask_key(value: str) -> str:
-    """Masked display: ``••••`` + last-4. Never the secret itself."""
+    """Hiển thị dạng che: ``••••`` + 4 ký tự cuối. Không bao giờ là chính secret."""
     if not value or not value.strip():
         return ""
     stripped = value.strip()
@@ -195,7 +195,7 @@ def probe_tools(with_versions: bool = False) -> list[dict[str, Any]]:
 
 
 def aggregate_usage(runs: list[dict[str, Any]]) -> dict[str, Any]:
-    """Sum ``ai_usage`` summaries persisted in run result blobs."""
+    """Tính tổng các tóm tắt ``ai_usage`` được lưu trong các blob kết quả lượt chạy."""
     total_spent = 0.0
     by_provider: dict[str, float] = {}
     for snapshot in runs:

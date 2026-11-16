@@ -234,9 +234,7 @@ class TestReports:
 class TestCompare:
     def test_compare_tables_and_diff(self, tmp_path: Path) -> None:
         client = _seeded_client(tmp_path)
-        response = client.get(
-            f"/api/compare?scan_ids={client.run1},{client.run2}"
-        )
+        response = client.get(f"/api/compare?scan_ids={client.run1},{client.run2}")
         assert response.status_code == 200
         body = response.json()
         assert body["baseline"] == client.run1
@@ -266,9 +264,7 @@ class TestCompare:
 
     def test_compare_html_export(self, tmp_path: Path) -> None:
         client = _seeded_client(tmp_path)
-        response = client.get(
-            f"/api/compare?scan_ids={client.run1},{client.run2}&export=html"
-        )
+        response = client.get(f"/api/compare?scan_ids={client.run1},{client.run2}&export=html")
         assert response.status_code == 200
         assert "Scan comparison" in response.text
         assert "f-new" in response.text
@@ -288,23 +284,17 @@ class TestLogs:
 
     def test_logs_filters(self, tmp_path: Path) -> None:
         client = _seeded_client(tmp_path)
-        debug = client.get(
-            f"/api/logs?scan_id={client.run1}&level=debug"
-        ).json()
+        debug = client.get(f"/api/logs?scan_id={client.run1}&level=debug").json()
         assert debug["lines"]
         assert all(line["level"] == "debug" for line in debug["lines"])
-        hunt = client.get(
-            f"/api/logs?scan_id={client.run1}&source=hunt"
-        ).json()
+        hunt = client.get(f"/api/logs?scan_id={client.run1}&source=hunt").json()
         assert hunt["lines"]
         assert all(line["source"] == "hunt" for line in hunt["lines"])
         assert client.get("/api/logs?scan_id=1&level=bogus").status_code == 422
 
     def test_logs_stream_replays_without_secret(self, tmp_path: Path) -> None:
         client = _seeded_client(tmp_path)
-        with client.stream(
-            "GET", f"/api/logs/stream?scan_id={client.run1}"
-        ) as response:
+        with client.stream("GET", f"/api/logs/stream?scan_id={client.run1}") as response:
             assert response.status_code == 200
             body = response.read().decode()
         assert "event: hello" in body
@@ -336,13 +326,9 @@ class TestSecretLeak:
             client.get(f"/api/logs?scan_id={run_id}").text,
             client.get(f"/api/scans/{run_id}/events/history").text,
         ]
-        with client.stream(
-            "GET", f"/api/logs/stream?scan_id={run_id}"
-        ) as stream:
+        with client.stream("GET", f"/api/logs/stream?scan_id={run_id}") as stream:
             tainted.append(stream.read().decode())
-        with client.stream(
-            "GET", f"/api/scans/{run_id}/events"
-        ) as stream:
+        with client.stream("GET", f"/api/scans/{run_id}/events") as stream:
             tainted.append(stream.read().decode())
         clean = [
             client.get(f"/api/scans/{run_id}/reports").text,

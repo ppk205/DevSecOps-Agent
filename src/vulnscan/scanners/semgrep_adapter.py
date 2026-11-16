@@ -1,12 +1,12 @@
-"""Semgrep adapter — deterministic source-code scanner.
+"""Semgrep adapter — công cụ quét mã nguồn tất định.
 
-Handles both the legacy ``sarif`` path (Semgrep 1.x ``--json``) and the
-newer SARIF-v2 output.  Parsing is pure; the ``run`` method shells out
-via ``_invoke`` so that tests can inject fixture output.
+Xử lý cả đường dẫn ``sarif`` cũ (Semgrep 1.x ``--json``) lẫn output
+SARIF-v2 mới hơn. Quá trình parse là hàm thuần túy (pure); phương thức ``run`` gọi shell
+qua ``_invoke`` để các bài test có thể inject output fixture.
 
-Missing-binary handling: ``capabilities`` returns an unavailable record
-when ``semgrep`` is not on PATH; ``run`` then returns a ``skipped`` or
-``failed`` envelope without raising.
+Xử lý khi thiếu binary: ``capabilities`` trả về bản ghi unavailable
+khi ``semgrep`` không có trong PATH; ``run`` sau đó trả về phong bì ``skipped`` hoặc
+``failed`` mà không ném ngoại lệ.
 """
 
 from __future__ import annotations
@@ -39,7 +39,7 @@ from .mapping import cwe_category
 from .platform import which
 from .tool_versions import probe_version
 
-# --- severity map --------------------------------------------------------- #
+# --- bảng ánh xạ severity ------------------------------------------------- #
 
 _SEVERITY_MAP: dict[str, Severity] = {
     "ERROR": Severity.HIGH,
@@ -47,7 +47,7 @@ _SEVERITY_MAP: dict[str, Severity] = {
     "INFO": Severity.LOW,
     "INVENTORY": Severity.INFO,
     "UNDETERMINED": Severity.UNDETERMINED,
-    # Semgrep numeric-like
+    # Dạng số của Semgrep
     "1": Severity.HIGH,
     "2": Severity.MEDIUM,
     "3": Severity.LOW,
@@ -67,10 +67,10 @@ _TIMEOUT_RE = re.compile(r"Timeout when running \S+ on (\S+?)(?::\s*$|\s*$)")
 
 
 def partition_semgrep_errors(messages: list[str], stderr: str = "") -> tuple[list[str], set[str]]:
-    """Split semgrep errors into hard failures vs rule-timeout coverage notes.
+    """Tách các lỗi của semgrep thành lỗi nghiêm trọng (hard failure) và ghi chú coverage do timeout rule.
 
-    Timeouts (a rule giving up on one oversized file) are coverage
-    limitations recorded per-unit, never run failures. Pure function.
+    Timeout (một rule bỏ cuộc trên một file quá lớn) là các giới hạn
+    coverage được ghi nhận theo từng đơn vị, không bao giờ là lỗi thất bại của lần chạy. Hàm thuần túy.
     """
     timed_out: set[str] = set()
     for line in (stderr or "").splitlines():
@@ -86,12 +86,12 @@ def partition_semgrep_errors(messages: list[str], stderr: str = "") -> tuple[lis
 
 
 def _make_observation_id(rule_id: str, file_path: str, line: int) -> str:
-    """Deterministic observation ID so repeated parses merge cleanly."""
+    """ID observation tất định để các lần parse lặp lại hợp nhất sạch sẽ."""
     blob = f"{rule_id}|{file_path}|{line}"
     return "obs-" + hashlib.sha1(blob.encode()).hexdigest()[:16]
 
 
-# --- SARIF helpers ------------------------------------------------------- #
+# --- Các helper SARIF ----------------------------------------------------- #
 
 
 def _extract_from_sarif_v2(
@@ -101,7 +101,7 @@ def _extract_from_sarif_v2(
     tool_version: str,
     source_snapshot: str,
 ) -> tuple[list[Observation], list[CoverageRecord]]:
-    """Parse a SARIF v2 document (Semgrep ``--sarif``)."""
+    """Phân tích tài liệu SARIF v2 (Semgrep ``--sarif``)."""
     now = datetime.now(UTC)
     observations: list[Observation] = []
     coverage: list[CoverageRecord] = []
@@ -127,9 +127,9 @@ def _extract_from_sarif_v2(
             col_start = region.get("startColumn")
             col_end = region.get("endColumn")
 
-            # CWE extraction. Semgrep tags are formatted as
-            # "CWE-89: Improper ...", so the label must be split from its
-            # description before it can be matched against the enum.
+            # Trích xuất CWE. Các tag của Semgrep được định dạng là
+            # "CWE-89: Improper ...", nên nhãn phải được tách khỏi phần
+            # mô tả của nó trước khi có thể so khớp với enum.
             cwe_cat = None
             for tag in _rules.get(rule_id, {}).get("properties", {}).get("tags", []):
                 if isinstance(tag, str) and tag.strip().upper().startswith("CWE-"):
@@ -137,7 +137,7 @@ def _extract_from_sarif_v2(
                     if cwe_cat is not None:
                         break
 
-            # Determine language
+            # Xác định ngôn ngữ
             lang = language_from_extension(file_path)
 
             observations.append(
@@ -164,7 +164,7 @@ def _extract_from_sarif_v2(
                 )
             )
 
-        # Coverage from SARIF invocations
+        # Coverage từ các lượt gọi SARIF
         for invocation in run.get("invocations", []):
             art_locs = invocation.get("artifacts", [])
             for al in art_locs:
@@ -199,7 +199,7 @@ def _extract_from_legacy_json(
     tool_version: str,
     source_snapshot: str,
 ) -> tuple[list[Observation], list[CoverageRecord]]:
-    """Parse Semgrep legacy ``--json`` output (list of ``results``)."""
+    """Phân tích output ``--json`` cũ của Semgrep (danh sách ``results``)."""
     now = datetime.now(UTC)
     observations: list[Observation] = []
     coverage: list[CoverageRecord] = []
@@ -216,10 +216,10 @@ def _extract_from_legacy_json(
 
         lang = language_from_extension(path)
 
-        # CWE extraction. The legacy ``--json`` schema puts CWE labels under
-        # ``extra.metadata.cwe`` as a list of "CWE-89: description" strings;
-        # there is no ``tags`` key in this format, so reading only ``tags``
-        # silently classified every finding as UNCLASSIFIED.
+        # Trích xuất CWE. Schema ``--json`` cũ đặt các nhãn CWE dưới
+        # ``extra.metadata.cwe`` dưới dạng danh sách chuỗi "CWE-89: description";
+        # không có khóa ``tags`` trong định dạng này, nên việc chỉ đọc ``tags``
+        # sẽ âm thầm phân loại mọi finding thành UNCLASSIFIED.
         cwe_cat = None
         metadata = res.get("extra", {}).get("metadata", {})
         labels = list(metadata.get("cwe", []))
@@ -254,7 +254,7 @@ def _extract_from_legacy_json(
             )
         )
 
-    # Coverage from the ``scan_targets`` list
+    # Coverage từ danh sách ``scan_targets```
     for target in data.get("paths", {}).get("scanned", data.get("scan_info", {}).get("files", [])):
         lang = language_from_extension(target)
         coverage.append(
@@ -286,7 +286,7 @@ def parse_sarif(
     tool_version: str,
     source_snapshot: str,
 ) -> tuple[list[Observation], list[CoverageRecord]]:
-    """Parse Semgrep SARIF text into Observations and CoverageRecords."""
+    """Phân tích văn bản SARIF của Semgrep thành các Observation và CoverageRecord."""
     sarif = json.loads(text)
     return _extract_from_sarif_v2(
         sarif, run_id=run_id, tool_version=tool_version, source_snapshot=source_snapshot
@@ -300,7 +300,7 @@ def parse_json(
     tool_version: str,
     source_snapshot: str,
 ) -> tuple[list[Observation], list[CoverageRecord]]:
-    """Parse Semgrep legacy JSON text into Observations and CoverageRecords."""
+    """Phân tích văn bản JSON cũ của Semgrep thành các Observation và CoverageRecord."""
     data = json.loads(text)
     return _extract_from_legacy_json(
         data, run_id=run_id, tool_version=tool_version, source_snapshot=source_snapshot
@@ -308,7 +308,7 @@ def parse_json(
 
 
 class SemgrepAdapter(ScannerAdapter):
-    """Deterministic Semgrep adapter with SARIF + legacy JSON paths."""
+    """Semgrep adapter tất định với các đường dẫn SARIF + JSON cũ."""
 
     tool = ToolName.SEMGREP
     binary_name = "semgrep"
@@ -331,15 +331,15 @@ class SemgrepAdapter(ScannerAdapter):
         started = datetime.now(UTC)
         tool_cfg = self._tool_config(spec)
 
-        # Disabled in spec?
+        # Bị vô hiệu hóa trong spec?
         if tool_cfg and not tool_cfg.enabled:
             return self._skipped_result(spec, started, "disabled in scan spec")
 
-        # Missing binary?
+        # Thiếu binary?
         if not cap.available:
             return self._skipped_result(spec, started, cap.unavailable_message())
 
-        # Build argv
+        # Xây dựng argv
         argv: list[str] = [self.binary_name]
         argv += ["--metrics", "off", "--disable-version-check"]
         if not (tool_cfg and tool_cfg.rule_paths):
@@ -348,12 +348,12 @@ class SemgrepAdapter(ScannerAdapter):
                 argv += ["--config", str(rules_file)]
         argv += ["--json"]
         argv += ["--no-git-ignore"]
-        # Build output copied into the snapshot (target/classes, jars) is not
-        # source: keep semgrep out or big vendored .js times out rules.
+        # Output bản build được sao chép vào snapshot (target/classes, jars) không phải là
+        # source: ngăn semgrep quét hoặc các file .js lớn của bên thứ ba sẽ làm timeout rule.
         argv += ["--exclude", "target"]
-        # Minified bundles are never meaningfully pattern-scanned (a single
-        # 400KB line like ace.js times out taint rules file-wide); exclude
-        # up front. Completion still records each as unsupported with reason.
+        # Các bundle đã nén gọn không bao giờ quét mẫu hiệu quả (một dòng
+        # 400KB đơn lẻ như ace.js làm timeout các rule taint trên toàn file); loại trừ
+        # ngay từ đầu. Bước hoàn tất vẫn ghi nhận từng file là unsupported kèm lý do.
         argv += ["--exclude", "*.min.js"]
         if tool_cfg and tool_cfg.rule_paths:
             for rp in tool_cfg.rule_paths:
@@ -366,7 +366,7 @@ class SemgrepAdapter(ScannerAdapter):
                     argv += ["--max-target-bytes", str(v)]
                 elif k == "jobs":
                     argv += ["--jobs", str(v)]
-                # other unknown options are skipped
+                # các tùy chọn không xác định khác bị bỏ qua
         argv += ["."]
 
         result = self._invoke(argv, cwd=workdir)
@@ -375,8 +375,8 @@ class SemgrepAdapter(ScannerAdapter):
         if not result.succeeded:
             if result.timed_out or result.returncode not in (0, 1):
                 return self._fatal(spec, started, finished, result, note="semgrep failed")
-            # returncode == 1 means findings (not a failure)
-            # fall through to parse stdout
+            # returncode == 1 nghĩa là có finding (không phải lỗi thực thi)
+            # chuyển tiếp để phân tích stdout
             if not result.stdout.strip():
                 return self._fatal(
                     spec, started, finished, result, note="semgrep produced no output"
@@ -386,7 +386,7 @@ class SemgrepAdapter(ScannerAdapter):
         if not raw_text:
             return self._fatal(spec, started, finished, result, note="semgrep produced no output")
 
-        # Detect format: SARIF starts with `{ "runs"`, legacy JSON has `"results"`
+        # Nhận diện định dạng: SARIF bắt đầu bằng `{ "runs"`, JSON cũ có `"results"`
         try:
             data = json.loads(raw_text)
         except json.JSONDecodeError:
@@ -436,13 +436,13 @@ class SemgrepAdapter(ScannerAdapter):
                     analyzed_at=finished,
                 )
             )
-        # Completion: semgrep scans every target it is given, so an inventory
-        # file with no record and no stderr evidence was scanned clean — mark
-        # it analyzed. Files semgrep demonstrably skipped (rule timeouts,
-        # minified bundles) get unsupported records with a reason instead of
-        # vanishing into false "missing coverage" errors.
-        # Rule timeouts surface both on stderr and as JSON errors; both are
-        # coverage limitations, never run failures.
+        # Hoàn tất: semgrep quét mọi target được cung cấp, do đó một file trong
+        # inventory không có bản ghi và không có bằng chứng stderr nghĩa là đã quét sạch — đánh dấu
+        # là analyzed. Các file mà semgrep chứng minh đã bỏ qua (timeout rule,
+        # bundle đã nén gọn) sẽ nhận bản ghi unsupported kèm lý do thay vì
+        # biến mất thành các lỗi giả "missing coverage".
+        # Timeout rule xuất hiện cả ở stderr và dưới dạng lỗi JSON; cả hai đều là
+        # giới hạn coverage, không bao giờ là lỗi thất bại của lần chạy.
         semgrep_errors = [str(e.get("message", "Semgrep error")) for e in data.get("errors", [])]
         hard_errors, timed_out = partition_semgrep_errors(semgrep_errors, result.stderr or "")
 

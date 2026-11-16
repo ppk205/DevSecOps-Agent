@@ -1,6 +1,6 @@
 import type { StageSummary } from "../api/types";
 
-/** The 8 canonical live-pipeline nodes (Phase 3 rail). */
+/** 8 node chuẩn của live-pipeline (thanh tiến trình Phase 3). */
 export interface LiveNode {
   key: string;
   label: string;
@@ -10,7 +10,7 @@ export interface LiveNode {
 export const LIVE_NODES: LiveNode[] = [
   { key: "intake", label: "Intake", hint: "Pin commit, freeze snapshot" },
   { key: "model_hunt", label: "Model hunt", hint: "Agentic candidate sweep" },
-  { key: "scanners", label: "Scanners", hint: "Semgrep · Gitleaks · SpotBugs · ODC" },
+  { key: "scanners", label: "Scanners", hint: "native-hunt" },
   { key: "laya_batch_routing", label: "Batch routing", hint: "Route findings to the advisory model" },
   { key: "laya_verification", label: "Verification", hint: "Laya checks vs the build" },
   { key: "targeted_deep_analysis", label: "Deep analysis", hint: "Targeted AI review + CVSS" },
@@ -18,14 +18,12 @@ export const LIVE_NODES: LiveNode[] = [
   { key: "final_report", label: "Report", hint: "Gate + evidence bundle" },
 ];
 
-/** Raw pipeline stage names produced by ScanService (incl. legacy + per-tool). */
+/** Tên stage thô của pipeline do ScanService tạo ra (bao gồm dạng cũ + theo từng công cụ). */
 const RAW_TO_NODE: Record<string, string> = {
   intake: "intake",
   model_hunt: "model_hunt",
-  semgrep: "scanners",
-  gitleaks: "scanners",
-  spotbugs: "scanners",
-  "owasp-dependency-check": "scanners",
+  "native-hunt": "scanners",
+  native_hunt: "scanners",
   scanners: "scanners",
   scan: "scanners",
   hunt: "model_hunt",
@@ -40,14 +38,14 @@ const RAW_TO_NODE: Record<string, string> = {
   execution: "final_report",
 };
 
-/** Fold a raw ScanService stage name onto one of the 8 rail nodes. */
+/** Gộp (fold) tên stage ScanService thô vào một trong 8 node của thanh tiến trình. */
 export function mapRawStage(raw: string): string {
   return RAW_TO_NODE[raw] ?? "scanners";
 }
 
 export type NodeStatus = "pending" | "running" | "completed" | "failed" | "skipped" | "partial";
 
-/** Aggregate raw stage rows onto the 8 nodes: worst-status-wins. */
+/** Tổng hợp các dòng stage thô vào 8 node: ưu tiên trạng thái xấu nhất (worst-status-wins). */
 export function aggregateNodeStatuses(stages: StageSummary[]): Record<string, NodeStatus> {
   const rank: Record<NodeStatus, number> = {
     failed: 0,
@@ -85,7 +83,7 @@ export function aggregateNodeStatuses(stages: StageSummary[]): Record<string, No
   return out;
 }
 
-/** Latest message across the raw stages folded into a node (for detail). */
+/** Thông điệp mới nhất qua các stage thô được gộp vào một node (phục vụ xem chi tiết). */
 export function nodeMessage(nodeKey: string, stages: StageSummary[]): string {
   const relevant = stages.filter((s) => mapRawStage(s.name) === nodeKey && s.message);
   if (relevant.length === 0) return "";
@@ -93,7 +91,7 @@ export function nodeMessage(nodeKey: string, stages: StageSummary[]): string {
   return (running ?? relevant[relevant.length - 1]).message;
 }
 
-/** Rail progress 0..1 across the 8 nodes (completed counts, running/partial half). */
+/** Tiến độ thanh tiến trình 0..1 qua 8 node (đếm completed, running/partial tính một nửa). */
 export function railProgress(statuses: Record<string, NodeStatus>): number {
   let score = 0;
   for (const node of LIVE_NODES) {
