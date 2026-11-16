@@ -2,6 +2,64 @@
 
 ## Unreleased
 
+- Direct the Python web root to the React application, show notification
+  settings in its navigation, and expose webhook event switches in the Go TUI.
+  The native dashboard still uses the older server-rendered pages.
+
+- Remove the legacy `WEBHOOK_URL` send triggered by reading the notification
+  feed. Local feed entries remain available. Add an opt-in signed generic webhook
+  through the shared notification service, CLI and web settings; terminal and
+  native controls are pending.
+
+- Add a source-backed codebase map and an interactive scan pipeline with explicit
+  inputs and outputs. Add proposed implementation plans for fix suggestions with
+  draft pull requests and shared outbound webhooks; these plans do not implement
+  the features.
+
+- The web UI New Scan form has an "Allow cloud model" switch, off by default.
+  Off sends a deterministic scan with no model stages; on shows separate
+  Model hunt, AI review and AI report switches plus the provider and model.
+  The form also offers Laya routing, the gate's fail-on level, and now sends
+  the pinned commit, which it collected but never sent. `POST /api/scans`
+  accepts `ai_report`, `laya`, `fail_on` and `allow_cloud_model`;
+  `allow_cloud_model: false` turns every model stage off on the server. Requests
+  without these fields keep the earlier behavior, where Hunt also enabled AI
+  review and AI report. This is a web form control, not a scan-wide consent
+  mechanism: the CLI is unchanged.
+- The web UI tool list (`/api/tools`) shows SpotBugs and Dependency-Check as
+  available when Docker has the `devsecops-agent-scanners:0.2.0` image, since
+  full-profile scans run them in that container. It listed them as missing
+  whenever the host had no binaries on PATH.
+- Model hunt now detects language families from every file name in the
+  snapshot. It used the `list_files` tool, which refused more than 2000 files,
+  so on BenchmarkPython (2505 files) and BenchmarkJava (5570) the language pass
+  never ran and only the generic and logic passes did. Over 2000 matches,
+  `list_files` now returns the first 200 paths with the total and per-directory
+  counts, and `grep_code` searches the first 2000 files and marks the result
+  truncated, instead of returning an error the model kept retrying.
+- Retry provider calls that fail with HTTP 499, 502, 503 or 504, in addition to
+  429, up to the profile's `max_retries`. 429 and 499 wait 30 s (or the
+  `Retry-After` value); 502-504 back off 5 s per attempt. Other HTTP errors
+  still fail at once. A gateway that dropped long calls left most AI review
+  targets unresolved.
+
+- Reject web UI provider IDs that break the profile contract (for example
+  `deepseek_test`) with a 422 that names the allowed characters. Saving such an
+  ID previously stored the key in `.env` and then failed with a 500. The web UI
+  now shows the server's error detail instead of only the status code.
+
+- Add `ci/launch.py`, which installs missing Python packages, web UI packages,
+  the web UI build, the Go binary and a checksum-verified Gitleaks before
+  launching the web UI, Go CLI or Python CLI.
+
+- Add `provider-setup` for guided local model provider and key configuration.
+
+- Run the Go, Ruby and C# native-hunt packs through `scan-run`. These files now
+  join the scan inventory and report their own language. A vulnerable target in
+  these languages previously ended with no native-hunt findings and a passed gate.
+  Semgrep records these files as `unsupported` instead of `analyzed` because its
+  bundled rules do not cover them.
+
 - Correct independent-validation logic: exclude model/raw-scanner proposals
   from decision authority, separate counterevidence from support, scope records
   by finding/run, deduplicate identities, and keep conflicts, blocked/failed

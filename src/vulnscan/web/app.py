@@ -1,9 +1,9 @@
 """FastAPI dashboard for scan intake, progress, findings, and evidence.
 
-LEGACY NOTE (Phase 1): the Jinja pages below (``/``, ``/runs/*``,
-``/findings/*``) are the legacy server-rendered UI and stay working.
-The new React SPA ("PIT WALL") is served at ``/app/*`` with an SPA
-fallback once ``web-ui/dist`` has been built (see static mount at the
+The root redirects to the React SPA ("PIT WALL") at ``/app/*``. The older
+``/runs/*`` and ``/findings/*`` pages remain available for compatibility and
+the native dashboard until those flows have equivalent replacements. The SPA
+has a fallback once ``web-ui/dist`` has been built (see static mount at the
 bottom of :func:`create_app`). New JSON surface lives under ``/api``.
 """
 
@@ -212,10 +212,9 @@ def create_app(
             response.headers["X-Contract-Version"] = "1"
         return cast(Response, response)
 
-    @app.get("/", response_class=HTMLResponse)
-    def target_registration(request: Request, session: SessionDep) -> HTMLResponse:
-        runs = session.query(RunORM).order_by(RunORM.id.desc()).limit(10).all()
-        return render(request, "targets.html", runs=runs)
+    @app.get("/", include_in_schema=False)
+    def target_registration() -> RedirectResponse:
+        return RedirectResponse("/app/", status_code=307)
 
     @app.post("/scans")
     def submit_scan(
@@ -1459,23 +1458,6 @@ def create_app(
             "created_at": row.created_at.isoformat() if row.created_at else None,
         }
 
-    def _maybe_dispatch_webhook(payload: dict[str, Any]) -> None:
-        """Best-effort gate-fail webhook POST; never raises into the scan path."""
-        url = (os.environ.get("WEBHOOK_URL") or "").strip()
-        if not url:
-            return
-        try:
-            import urllib.request
-
-            data = json.dumps(payload).encode("utf-8")
-            request = urllib.request.Request(
-                url, data=data, headers={"Content-Type": "application/json"}
-            )
-            with urllib.request.urlopen(request, timeout=5):
-                pass
-        except Exception:  # webhook delivery must not fail the scan
-            logger.warning("webhook dispatch failed", exc_info=True)
-
     def record_scan_notification(
         session: Session, run_id: int, kind: str, message: str
     ) -> dict[str, Any] | None:
@@ -1490,8 +1472,6 @@ def create_app(
         row = NotificationORM(run_id=run_id, kind=kind, message=message)
         session.add(row)
         session.flush()
-        if kind == "gate_failed":
-            _maybe_dispatch_webhook({"run_id": run_id, "kind": kind, "message": message})
         return _notification_to_dict(row)
 
     def _ensure_scan_notifications(session: Session) -> None:

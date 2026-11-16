@@ -1,0 +1,406 @@
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "finalize",
+  "status": "fail",
+  "type": "architecture",
+  "quality": "showcase",
+  "startedAt": "2026-11-15T11:01:26.070Z",
+  "specification": {
+    "path": "D:\\phuc\\Code Project\\DevSecOps-Agent\\.archify\\architecture-scan-pipeline-20261115-175839\\candidate.json",
+    "sha256": "088d9cfff16f3b644e0242c2752f555bccb300f25402f128285813b315bda012",
+    "bytes": 9983
+  },
+  "artifact": {
+    "path": "D:\\phuc\\Code Project\\DevSecOps-Agent\\docs\\diagrams\\scan-pipeline.html",
+    "sha256": "ced92804e2eb1827f25cde6baf34b42786a8cf2f080e68e9c60c034a9b264891",
+    "bytes": 868917
+  },
+  "stages": {
+    "validate": {
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": null,
+      "execution": "embedded-in-deliver",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "C:\\Users\\Admin\\.agents\\skills\\archify\\bin\\archify.mjs",
+        "deliver",
+        "architecture",
+        "D:\\phuc\\Code Project\\DevSecOps-Agent\\.archify\\architecture-scan-pipeline-20261115-175839\\candidate.json",
+        "D:\\phuc\\Code Project\\DevSecOps-Agent\\docs\\diagrams\\scan-pipeline.html",
+        "--quality",
+        "showcase",
+        "--repo-root",
+        "D:\\phuc\\Code Project\\DevSecOps-Agent",
+        "--json"
+      ],
+      "receipt": {
+        "schemaVersion": 1,
+        "ok": true,
+        "command": "validate",
+        "specification": {
+          "sha256": "088d9cfff16f3b644e0242c2752f555bccb300f25402f128285813b315bda012",
+          "bytes": 9983
+        },
+        "validation": {
+          "checksPassed": 9,
+          "checkCount": 9,
+          "compositionProfile": "showcase",
+          "compositionStatus": "pass",
+          "errors": 0,
+          "warnings": 0
+        }
+      }
+    },
+    "deliver": {
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 1045,
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "C:\\Users\\Admin\\.agents\\skills\\archify\\bin\\archify.mjs",
+        "deliver",
+        "architecture",
+        "D:\\phuc\\Code Project\\DevSecOps-Agent\\.archify\\architecture-scan-pipeline-20261115-175839\\candidate.json",
+        "D:\\phuc\\Code Project\\DevSecOps-Agent\\docs\\diagrams\\scan-pipeline.html",
+        "--quality",
+        "showcase",
+        "--repo-root",
+        "D:\\phuc\\Code Project\\DevSecOps-Agent",
+        "--json"
+      ],
+      "receipt": {
+        "schemaVersion": 1,
+        "receiptId": "9df7b41a-1832-40a6-8d7d-469942e0f574",
+        "ok": true,
+        "command": "deliver",
+        "type": "architecture",
+        "input": "D:\\phuc\\Code Project\\DevSecOps-Agent\\.archify\\architecture-scan-pipeline-20261115-175839\\candidate.json",
+        "output": "D:\\phuc\\Code Project\\DevSecOps-Agent\\docs\\diagrams\\scan-pipeline.html",
+        "specification": {
+          "sha256": "088d9cfff16f3b644e0242c2752f555bccb300f25402f128285813b315bda012",
+          "bytes": 9983
+        },
+        "artifact": {
+          "sha256": "ced92804e2eb1827f25cde6baf34b42786a8cf2f080e68e9c60c034a9b264891",
+          "bytes": 868917
+        },
+        "validation": {
+          "checksPassed": 9,
+          "checkCount": 9,
+          "compositionProfile": "showcase",
+          "compositionStatus": "pass",
+          "errors": 0,
+          "warnings": 0
+        },
+        "evidence": {
+          "verified": true,
+          "repository": "https://github.com/ppk205/DevSecOps-Agent",
+          "revision": "03c5533857a975dd7b5fdd33ef49ea1960c53e7f",
+          "references": 31,
+          "linkMode": "local-only"
+        },
+        "update": {
+          "status": "unavailable",
+          "installedVersion": null,
+          "availableVersion": null,
+          "releaseNotes": null,
+          "checkedAt": null,
+          "source": null,
+          "noticeRequired": false,
+          "noticeText": null,
+          "reason": "disabled"
+        }
+      }
+    },
+    "check": {
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 278,
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "C:\\Users\\Admin\\.agents\\skills\\archify\\bin\\archify.mjs",
+        "check",
+        "D:\\phuc\\Code Project\\DevSecOps-Agent\\docs\\diagrams\\scan-pipeline.html",
+        "--require-provenance"
+      ],
+      "receipt": {
+        "ok": true,
+        "file": "D:\\phuc\\Code Project\\DevSecOps-Agent\\docs\\diagrams\\scan-pipeline.html",
+        "artifact": {
+          "sha256": "ced92804e2eb1827f25cde6baf34b42786a8cf2f080e68e9c60c034a9b264891",
+          "bytes": 868917
+        },
+        "checks": [
+          {
+            "name": "single_svg",
+            "ok": true,
+            "details": [
+              "found 1 <svg> block(s)"
+            ]
+          },
+          {
+            "name": "finite_svg",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "orthogonal_arrows",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "label_route_clearance",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "relationship_crossings",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "relationship_corridors",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "container_border_runs",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "route_rhythm",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "legend_clearance",
+            "ok": true,
+            "details": []
+          }
+        ],
+        "composition": {
+          "schemaVersion": 1,
+          "profile": "showcase",
+          "status": "pass",
+          "summary": {
+            "errors": 0,
+            "warnings": 0
+          },
+          "metrics": {
+            "properCrossings": 0,
+            "resolvedCrossovers": 1,
+            "ambiguousCorridors": 0,
+            "arrowheadCollisions": 0,
+            "containerBorderRuns": 0,
+            "labelRouteClearanceIssues": 0,
+            "labelCanvasOverflowIssues": 0,
+            "minLabelRouteClearance": 18,
+            "desktopReadabilityIssues": 0,
+            "viewportHeightIssues": 0,
+            "minProjectedNodeTextPx": 7.44,
+            "maxBends": 2,
+            "routesOverSuggestedBends": 0,
+            "maxStretch": 1,
+            "routesOverSuggestedStretch": 0,
+            "minSegmentPx": 24,
+            "minInteriorSegmentPx": 255,
+            "shortSegmentCount": 0,
+            "shortEndpointSegmentCount": 0,
+            "shortInteriorSegmentCount": 0,
+            "microSegmentCount": 0
+          },
+          "suggestedLimits": {
+            "bendsPerRelationship": 2,
+            "stretch": 1.35,
+            "segmentPx": 16,
+            "microSegmentPx": 8
+          },
+          "routeReview": {
+            "crossings": [
+              {
+                "left": {
+                  "id": "normalize-laya",
+                  "from": "normalize",
+                  "to": "laya",
+                  "label": "",
+                  "collectionIndex": 7,
+                  "artifactIndex": 8
+                },
+                "right": {
+                  "id": "candidates-compare",
+                  "from": "candidates",
+                  "to": "compare",
+                  "label": "ứng viên",
+                  "collectionIndex": 9,
+                  "artifactIndex": 10
+                },
+                "point": [
+                  514,
+                  561
+                ]
+              }
+            ],
+            "detours": []
+          },
+          "leadingSpace": {
+            "measured": true,
+            "emptyTopPx": 40,
+            "emptyTopRatio": 0.034,
+            "occupiedTop": 40,
+            "viewBoxTop": 0,
+            "canvasHeight": 1194,
+            "typicalNodeHeight": 76,
+            "reviewSuggested": false
+          },
+          "desktopReadability": {
+            "budgetBasis": "legacy-930",
+            "readerContract": "declared-wide-v1",
+            "availableDiagramWidth": 930,
+            "actualBudgetPx": 930,
+            "limit": "legacy",
+            "requestedTargetPx": 7.5,
+            "requestedTargetMet": false,
+            "hardFloorPx": 6,
+            "hardFloorMet": true,
+            "minimumOwner": {
+              "kind": "edge",
+              "id": "intake-hunt",
+              "from": "intake",
+              "to": "hunt"
+            },
+            "minimumSourceTextPx": 8,
+            "minimumProjectedTextPx": 7.44,
+            "semanticTextCount": 39
+          },
+          "issues": []
+        },
+        "provenance": "current",
+        "deliveryReceiptId": "9df7b41a-1832-40a6-8d7d-469942e0f574"
+      }
+    },
+    "browser-check": {
+      "status": "fail",
+      "exitCode": 1,
+      "durationMs": 99,
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "C:\\Users\\Admin\\.agents\\skills\\archify\\bin\\archify.mjs",
+        "browser-check",
+        "D:\\phuc\\Code Project\\DevSecOps-Agent\\docs\\diagrams\\scan-pipeline.html",
+        "--json",
+        "--require-provenance"
+      ],
+      "execution": "in-process",
+      "receipt": {
+        "schemaVersion": 1,
+        "ok": false,
+        "command": "browser-check",
+        "evidenceKind": "automated-browser",
+        "status": "fail",
+        "visualReview": "not-requested",
+        "provenance": "current",
+        "deliveryReceiptId": "9df7b41a-1832-40a6-8d7d-469942e0f574",
+        "artifact": {
+          "path": "D:\\phuc\\Code Project\\DevSecOps-Agent\\docs\\diagrams\\scan-pipeline.html",
+          "sha256": "ced92804e2eb1827f25cde6baf34b42786a8cf2f080e68e9c60c034a9b264891",
+          "bytes": 868917
+        },
+        "state": {
+          "detail": "read",
+          "motion": "still"
+        },
+        "chrome": {
+          "status": "available",
+          "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+        },
+        "diagnostics": [
+          {
+            "code": "viewer/browser-check-runtime",
+            "severity": "error",
+            "message": "browser-check could not complete its Chrome inspection.",
+            "subject": {
+              "artifact": "D:\\phuc\\Code Project\\DevSecOps-Agent\\docs\\diagrams\\scan-pipeline.html"
+            },
+            "evidence": {
+              "reason": "Temporary directory ancestor identity is unavailable: C:\\Users\\Admin\\AppData\\Local\\Temp"
+            },
+            "supportedFixes": [
+              "resolve the reported Chrome inspection error, then rerun browser-check"
+            ]
+          }
+        ],
+        "containment": {
+          "status": "fail",
+          "policy": "fit-or-reader-declared-readable-vertical-scroll",
+          "viewports": []
+        },
+        "themeStates": {
+          "status": "fail",
+          "viewports": []
+        },
+        "readability": {
+          "status": "fail",
+          "minimumProjectedNodeTextPx": 6,
+          "viewports": []
+        },
+        "viewerChrome": {
+          "status": "fail",
+          "viewports": []
+        },
+        "captures": {
+          "status": "not-requested",
+          "screenshots": [],
+          "contactSheet": null
+        },
+        "sidecars": {
+          "receipt": "scan-pipeline.browser-check.json",
+          "files": []
+        },
+        "error": "Temporary directory ancestor identity is unavailable: C:\\Users\\Admin\\AppData\\Local\\Temp"
+      }
+    }
+  },
+  "browserCheck": {
+    "requested": true,
+    "ran": false
+  },
+  "diagnostics": [
+    {
+      "code": "viewer/browser-check-runtime",
+      "severity": "error",
+      "message": "browser-check could not complete its Chrome inspection.",
+      "subject": {
+        "artifact": "D:\\phuc\\Code Project\\DevSecOps-Agent\\docs\\diagrams\\scan-pipeline.html"
+      },
+      "evidence": {
+        "reason": "Temporary directory ancestor identity is unavailable: C:\\Users\\Admin\\AppData\\Local\\Temp"
+      },
+      "supportedFixes": [
+        "resolve the reported Chrome inspection error, then rerun browser-check"
+      ]
+    }
+  ],
+  "evidence": {
+    "receipt": "D:\\phuc\\Code Project\\DevSecOps-Agent\\docs\\diagrams\\scan-pipeline.finalize.json",
+    "summaryReceipt": "D:\\phuc\\Code Project\\DevSecOps-Agent\\docs\\diagrams\\scan-pipeline.finalize-summary.json",
+    "browserCheckReceipt": "D:\\phuc\\Code Project\\DevSecOps-Agent\\docs\\diagrams\\scan-pipeline.browser-check.json"
+  },
+  "visualReview": "not-requested",
+  "failedStage": "browser-check",
+  "finishedAt": "2026-11-15T11:01:28.327Z",
+  "durationMs": 2257,
+  "update": {
+    "status": "unavailable",
+    "installedVersion": null,
+    "availableVersion": null,
+    "releaseNotes": null,
+    "checkedAt": null,
+    "source": null,
+    "noticeRequired": false,
+    "noticeText": null,
+    "reason": "cache-unavailable"
+  }
+}

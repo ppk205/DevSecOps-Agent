@@ -157,9 +157,25 @@ class FixProposalORM(Base):
     error: Mapped[str | None] = mapped_column(Text, nullable=True)
     overlay_path: Mapped[str | None] = mapped_column(Text, nullable=True)
     verification_json: Mapped[str] = mapped_column(Text, default="{}")
+    provenance_json: Mapped[str] = mapped_column(Text, default="{}", server_default="{}")
     created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=_utcnow)
 
     run: Mapped[RunORM] = relationship("RunORM")
+
+
+class RemediationAttemptORM(Base):
+    """Retained application or publication attempt for one proposal."""
+
+    __tablename__ = "remediation_attempts"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    proposal_id: Mapped[int] = mapped_column(ForeignKey("fix_proposals.id"))
+    kind: Mapped[str] = mapped_column(String(16))
+    state: Mapped[str] = mapped_column(String(16))
+    request_json: Mapped[str] = mapped_column(Text, default="{}")
+    result_json: Mapped[str] = mapped_column(Text, default="{}")
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=_utcnow)
+    updated_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=_utcnow, onupdate=_utcnow)
 
 
 class NotificationORM(Base):
@@ -193,6 +209,9 @@ class NotificationDeliveryORM(Base):
     channel: Mapped[str] = mapped_column(String(16))
     events_json: Mapped[str] = mapped_column(Text, default="[]")
     selected_events_json: Mapped[str] = mapped_column(Text, default="[]")
+    delivery_key: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    payload_json: Mapped[str | None] = mapped_column(Text, nullable=True)
+    destination_fingerprint: Mapped[str | None] = mapped_column(String(64), nullable=True)
     status: Mapped[str] = mapped_column(String(16), default="pending")
     detail: Mapped[str] = mapped_column(Text, default="Awaiting event selection")
     created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=_utcnow)

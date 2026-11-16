@@ -25,19 +25,12 @@ from vulnscan.contracts import (
     SourceCoordinate,
     ToolName,
 )
-from vulnscan.native_hunt import scan_snapshot
+from vulnscan.native_hunt import FAMILY_EXTENSIONS, scan_snapshot
 from vulnscan.scanners.mapping import cwe_category
 
 from .base import AdapterCapability, ScannerAdapter
 
 TOOL_VERSION = "1.0"
-
-_FAMILY_LANGUAGE: dict[str, LanguageKind] = {
-    "java": LanguageKind.JAVA,
-    "javascript": LanguageKind.JAVASCRIPT,
-    "python": LanguageKind.PYTHON,
-    "php": LanguageKind.PHP,
-}
 
 _SEVERITY_MAP = {"ERROR": Severity.HIGH, "WARNING": Severity.MEDIUM}
 
@@ -59,6 +52,12 @@ def _language_for(path: str) -> LanguageKind:
         return LanguageKind.PYTHON
     if suffix in {".php", ".phtml"}:
         return LanguageKind.PHP
+    if suffix == ".go":
+        return LanguageKind.GO
+    if suffix in {".rb", ".erb"}:
+        return LanguageKind.RUBY
+    if suffix in {".cs", ".cshtml", ".razor"}:
+        return LanguageKind.CSHARP
     return LanguageKind.OTHER
 
 
@@ -81,7 +80,7 @@ class NativeHuntAdapter(ScannerAdapter):
         started = datetime.now(UTC)
         run_id = spec.run_id or "unassigned"
         try:
-            result = scan_snapshot(workdir, ["java", "javascript", "python", "php"])
+            result = scan_snapshot(workdir, list(FAMILY_EXTENSIONS))
         except Exception as exc:  # noqa: BLE001 - adapter never raises
             finished = datetime.now(UTC)
             return ScannerResult(

@@ -46,10 +46,13 @@ func (m Model) notificationRows() []notificationRow {
 	rows := []notificationRow{}
 	if p.mode == "settings" {
 		rows = append(rows, notificationRow{key: "mode", label: "Mode: " + p.settings.Mode, action: true})
-		for _, channel := range []string{"telegram", "discord"} {
+		for _, channel := range []string{"telegram", "discord", "webhook"} {
 			config := p.settings.Telegram
 			if channel == "discord" {
 				config = p.settings.Discord
+			} else if channel == "webhook" {
+				config.Enabled = p.settings.Webhook.Enabled
+				config.Events = p.settings.Webhook.Events
 			}
 			rows = append(rows, notificationRow{key: channel, label: channel + " enabled", checked: config.Enabled})
 			for _, event := range notificationEvents {
@@ -150,7 +153,7 @@ func (m Model) notificationKey(key string) (tea.Model, tea.Cmd) {
 					events = append(events, event.Kind)
 				}
 			}
-			for _, channel := range []string{"telegram", "discord"} {
+			for _, channel := range []string{"telegram", "discord", "webhook"} {
 				if p.selected["channel:"+channel] {
 					channels = append(channels, channel)
 				}
@@ -175,6 +178,8 @@ func (m Model) notificationKey(key string) (tea.Model, tea.Cmd) {
 			channel := &p.settings.Telegram
 			if parts[0] == "discord" {
 				channel = &p.settings.Discord
+			} else if parts[0] == "webhook" {
+				channel = &service.NotificationChannel{Enabled: p.settings.Webhook.Enabled, Events: p.settings.Webhook.Events}
 			}
 			if len(parts) == 1 {
 				channel.Enabled = !channel.Enabled
@@ -193,6 +198,10 @@ func (m Model) notificationKey(key string) (tea.Model, tea.Cmd) {
 				}
 				channel.Events = values
 			}
+			if parts[0] == "webhook" {
+				p.settings.Webhook.Enabled = channel.Enabled
+				p.settings.Webhook.Events = channel.Events
+			}
 		} else {
 			p.selected[row.key] = !p.selected[row.key]
 		}
@@ -207,7 +216,7 @@ func (m Model) notificationView(height int) string {
 	}
 	lines := []string{title}
 	if p.mode == "settings" {
-		lines = append(lines, "manual: ask after scans; automatic: use saved event rules", "Credentials: Workspace Ctrl+K or `notifications configure` help")
+		lines = append(lines, "manual: ask after scans; automatic: use saved event rules", "Webhook hosts and credential references: `notifications configure`")
 	} else {
 		for _, delivery := range p.receipt.Deliveries {
 			lines = append(lines, delivery.Channel+": "+delivery.Status+" · "+delivery.Detail)

@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from vulnscan.ai.fix import (
     apply_unified_diff,
     build_fix_prompt,
@@ -11,6 +13,7 @@ from vulnscan.ai.fix import (
     prepare_overlay,
     verify_fixed,
 )
+from vulnscan.scanners.process import binary_available
 
 
 def _finding() -> dict:
@@ -60,6 +63,8 @@ def test_extract_diff_empty_without_diff() -> None:
 
 
 def test_apply_and_verify_roundtrip(tmp_path: Path) -> None:
+    if not binary_available("semgrep"):
+        pytest.skip("Installed Semgrep unavailable")
     checkout = tmp_path / "repo"
     src = checkout / "src"
     src.mkdir(parents=True)
@@ -90,7 +95,7 @@ def test_apply_and_verify_roundtrip(tmp_path: Path) -> None:
     assert applied == ["src/app.py"]
     patched = (overlay / "src" / "app.py").read_text(encoding="utf-8")
     assert "?" in patched and "+ name +" not in patched
-    result = verify_fixed(overlay, "src/app.py", "py-sql-injection", 4)
+    result = verify_fixed(overlay, "src/app.py", "py-sql-injection", 4, baseline=src / "app.py")
     assert result["fixed"] is True, result
 
 

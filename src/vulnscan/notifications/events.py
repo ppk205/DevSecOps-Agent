@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+import json
+import re
+from collections.abc import Mapping, Sequence
 from typing import Any, Literal
 
 from vulnscan.contracts import Finding, FindingStatus, Severity
@@ -29,6 +31,53 @@ EVENT_LABELS: dict[NotificationKind, str] = {
     "ai_failed": "AI support unavailable or failed",
     "report_ready": "Reports ready",
 }
+
+
+def _webhook_text(value: str) -> str:
+    safe = str(sanitize(redact(value)))
+    safe = re.sub(r"[\x00-\x1f\x7f-\x9f]", "", safe)
+    return str(sanitize(redact(safe)))
+
+
+def build_webhook_body(
+    run_id: str,
+    scan_status: str,
+    events: Sequence[Mapping[str, str]],
+    delivery_id: str,
+) -> bytes:
+    """Copy selected retained summaries into the canonical schema-1 envelope."""
+    if (
+        not all(isinstance(value, str) for value in (run_id, scan_status, delivery_id))
+        or not isinstance(events, Sequence)
+        or isinstance(events, (str, bytes))
+    ):
+        raise ValueError("Invalid webhook summary")
+    selected: list[dict[str, str]] = []
+    for event in events:
+        if (
+            not isinstance(event, Mapping)
+            or not isinstance(event.get("kind"), str)
+            or event["kind"] not in EVENT_LABELS
+            or not isinstance(event.get("message"), str)
+        ):
+            raise ValueError("Invalid webhook summary")
+        selected.append({"kind": event["kind"], "message": _webhook_text(event["message"])[:1800]})
+    envelope = {
+        "schema_version": 1,
+        "delivery_id": _webhook_text(delivery_id),
+        "run_id": _webhook_text(run_id)[:100],
+        "scan_status": _webhook_text(scan_status),
+        "events": selected,
+    }
+    try:
+        body = json.dumps(
+            envelope, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+    except UnicodeError:
+        raise ValueError("Invalid webhook summary") from None
+    if len(body) > 16384:
+        raise ValueError("Webhook summary exceeds 16 KiB")
+    return body
 
 
 def events_for_scan(summary: dict[str, Any], findings: Sequence[Finding]) -> list[dict[str, str]]:

@@ -49,6 +49,26 @@ cd web-ui && npm install && npm run dev               # http://localhost:5173/ap
 Open `http://localhost:5173/app/scans/new`, pick a repo, press **Start scan**,
 watch the **Live** rail turn green.
 
+### One-command launch
+
+`ci/launch.py` installs what is missing, then starts the app. It uses only the
+standard library, so any Python 3.11+ can run it before `.venv` exists.
+
+```bash
+python ci/launch.py               # web UI at http://127.0.0.1:8000/app/
+python ci/launch.py go tui        # Go CLI/TUI; any Go CLI arguments work
+python ci/launch.py cli scan-list # Python CLI
+```
+
+On each launch it runs `uv sync --frozen --inexact --extra scanners` (installed
+extras such as `dev` are kept). It runs `npm ci` and `npm run build` when
+`web-ui/` sources are newer than the build. It rebuilds `bin/devsecops-agent-go`
+when Go sources changed, using `go` from `PATH` or `.tools/go`. If Gitleaks is
+missing, it downloads the pinned 8.24.2 release and checks its SHA-256 before
+placing it in the virtualenv's script folder. It needs `uv`, Node 18+ for the
+web UI and a Go SDK only when the Go binary must be rebuilt. It does not install
+Java, SpotBugs, Dependency-Check, CodeQL or the `laya` extra.
+
 The terminal opens in **Workspace**. Choose a checkout and profile, expand
 Advanced options when needed, then press **Ctrl+E** to review and **Ctrl+S** to
 start. **Ctrl+K** opens the action menu. Review and finding details scroll with
@@ -113,8 +133,8 @@ Stages in execution order (ScanService._run):
 
 Native-hunt has 142 rules: Java 30, JavaScript/TypeScript 25, PHP 23, Python 23, C# 14,
 Go 13, Ruby 13 and one generic rule (counted from `src/vulnscan/native_hunt/rules/` on
-2026-11-04). The `scan-run` adapter runs only the Java, JavaScript/TypeScript, PHP and
-Python packs, which the table below lists. A rule
+2026-11-04). `scan-run` runs every language pack but not the generic rule. The table
+below covers the Java, JavaScript/TypeScript, PHP and Python packs. A rule
 existing does not mean it works well; see [Measured Results](#measured-results).
 
 | CWE | Description | Native-hunt rule families |
@@ -177,6 +197,11 @@ quality result yet: retained model runs use synthetic providers or found no cand
 
 ## Project Structure
 
+See the [codebase map](docs/CODEBASE-MAP.md) for file responsibilities, execution
+paths and launch commands, and the [interactive scan pipeline](docs/diagrams/scan-pipeline.html)
+for inputs, processing and outputs. The [remediation and webhook design](docs/superpowers/specs/2026-11-15-remediation-webhook-design.md)
+links the proposed implementation plans.
+
 ```text
 DevSecOps-Agent/
 ├── src/vulnscan/
@@ -231,7 +256,7 @@ DevSecOps-Agent/
 | Model-first hunt (`--mode hunt`) | One pass per extension family present (java/js-ts/py/php), a generic pass for other text, and a logic pass (authZ/session/crypto). Findings carry a `provenance` of `model`, `scanner` or `both`. |
 | DAST / runtime attacks | **Not supported.** |
 | Auto-remediation | **Not supported.** Proposals only; you apply them. |
-| Go, Ruby, C# | Native-hunt engine packs (13, 13 and 14 rules) pass fixture tests through `scan_snapshot`. The scanner adapter requests only Java, JavaScript, Python and PHP, so `scan-run` gives no native-hunt findings for these languages. Model hunt has no dedicated pass for them; the generic pass can read their text. |
+| Go, Ruby, C# | Native-hunt 13, 13 and 14 rules, on `.go`, `.rb`, `.erb`, `.cs`, `.cshtml` and `.razor`. Semgrep has no rules for them and records these files as `unsupported`. No answer-key measurement yet. Model hunt has no dedicated pass; the generic pass can read their text. |
 | Kotlin, Rust, Swift and others | No dedicated rules. The generic hunt pass can read their text. |
 
 Semgrep rules have `Vuln*` and `Safe*` fixtures (`tests/scanners/test_*_rules.py`). These
@@ -273,7 +298,13 @@ pip install -e ".[dev,scanners]"
 ### Configuration
 
 Register an OpenAI-compatible Chat Completions profile using your endpoint and
-model name. The following endpoint and model are placeholders:
+model name. For guided setup, run `devsecops-agent provider-setup` and enter
+the profile ID, base URL, model ID, environment variable name, and API key.
+The key prompt is hidden. If the variable already has a key, setup keeps it.
+The command does not contact the provider or verify the model.
+
+For scripts, use `provider-add` and `env set`. The following endpoint and model
+are placeholders:
 
 ```bash
 devsecops-agent provider-add --id my-provider \
@@ -341,12 +372,13 @@ devsecops-agent serve --host 127.0.0.1 --port 8000
 
 ### Web Dashboard
 
-The legacy Jinja pages (`/`, `/runs/...`). The main interface is the
-PIT WALL SPA below — the dashboard links there.
+The Python server redirects `/` to the PIT WALL SPA at `/app/`. Older
+server-rendered run and finding pages remain available for compatibility;
+the native Go dashboard still uses those templates.
 
 ### Web UI (PIT WALL)
 
-The React SPA at `/app/` (FastAPI serves `web-ui/dist`; legacy Jinja stays at `/`).
+The React SPA is at `/app/` (FastAPI serves `web-ui/dist`).
 
 ```bash
 cd web-ui
@@ -630,7 +662,9 @@ labels created by agents record `labelled_by`; agents never self-assign
   API and Discord incoming-webhook notifications send selected summary events.
   Configure event choices and credentials explicitly; see
   [notification setup](docs/NOTIFICATIONS.md). New installations disable both
-  destinations. The legacy `WEBHOOK_URL` gate-failure integration remains separate.
+  destinations. The legacy `WEBHOOK_URL` feed-triggered delivery has been removed.
+  Generic signed webhook delivery is available through the shared notification
+  service, CLI and web settings; terminal and native controls remain incomplete.
 - Static analysis only — no DAST, no runtime exploitation. Opt-in targeted
   HTTP probes (XSS canary, SQL-error signatures, allowlisted host only) can
   corroborate a finding as extra evidence.

@@ -119,12 +119,11 @@ class TestSseSkeleton:
 
 
 class TestSpaFallback:
-    def test_no_dist_no_app_route(self, tmp_path: Path) -> None:
-        # No web-ui/dist in a bare checkout state for this tmp engine —
-        # /app/* is simply unmounted (404), Jinja keeps working.
+    def test_root_redirects_to_current_app(self, tmp_path: Path) -> None:
         client = _seeded_client(tmp_path)
-        assert client.get("/").status_code == 200
-        assert client.get("/").headers.get("X-Pitwall-Legacy") == "true"
+        response = client.get("/", follow_redirects=False)
+        assert response.status_code == 307
+        assert response.headers["location"] == "/app/"
 
     def test_spa_dir_serves_index_and_fallback(self, tmp_path: Path) -> None:
         import vulnscan.web.app as app_module

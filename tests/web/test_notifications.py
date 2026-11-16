@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -15,11 +14,13 @@ from vulnscan.web.app import create_app
 
 _DIFF = (
     "--- a/src/app.py\n+++ b/src/app.py\n"
-    "@@ -8 +8 @@\n-    cur.execute(\"SELECT * FROM x\")\n+    cur.execute(\"SELECT * FROM x WHERE n = ?\", (n,))\n"
+    '@@ -8 +8 @@\n-    cur.execute("SELECT * FROM x")\n+    cur.execute("SELECT * FROM x WHERE n = ?", (n,))\n'
 )
 
 
-def _client(tmp_path: Path, monkeypatch, result_json: str = '{"gate": "failed"}') -> tuple[TestClient, int, int]:
+def _client(
+    tmp_path: Path, monkeypatch, result_json: str = '{"gate": "failed"}'
+) -> tuple[TestClient, int, int]:
     monkeypatch.chdir(tmp_path)
     engine = create_engine(f"sqlite:///{tmp_path / 'notif.db'}")
     migrate(engine)
@@ -99,30 +100,21 @@ def test_webhook_failure_never_breaks_listing(tmp_path: Path, monkeypatch) -> No
     assert {n["kind"] for n in body.json()["notifications"]} >= {"gate_failed"}
 
 
-def test_webhook_called_on_gate_fail(tmp_path: Path, monkeypatch) -> None:
+def test_gate_failed_feed_reads_never_send_legacy_webhook(tmp_path: Path, monkeypatch) -> None:
     import urllib.request
 
-    seen: dict[str, object] = {}
-
-    class _FakeResponse:
-        def __enter__(self):  # type: ignore[no-untyped-def]
-            return self
-
-        def __exit__(self, *args: object) -> bool:
-            return False
+    seen = []
 
     def _capture(request, timeout=None):  # type: ignore[no-untyped-def]
-        seen["url"] = request.full_url
-        seen["payload"] = json.loads(request.data.decode("utf-8"))
-        return _FakeResponse()
+        seen.append(request)
+        raise AssertionError("Feed reads must not send notifications")
 
     monkeypatch.setattr(urllib.request, "urlopen", _capture)
     monkeypatch.setenv("WEBHOOK_URL", "http://example.test/hook")
     client, rid, _ = _client(tmp_path, monkeypatch)
-    assert client.get("/api/notifications").status_code == 200
-    assert seen["url"] == "http://example.test/hook"
-    assert seen["payload"] == {
-        "run_id": rid,
-        "kind": "gate_failed",
-        "message": f"Scan #{rid} gate failed.",
-    }
+    for _ in range(2):
+        response = client.get("/api/notifications")
+        assert response.status_code == 200
+        assert response.json()["unread"] == 2
+        assert {item["run_id"] for item in response.json()["notifications"]} == {rid}
+    assert seen == []

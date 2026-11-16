@@ -1,8 +1,9 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { App } from "../../App";
+import { mockApi } from "../../mock/mockClient";
 
 vi.stubEnv("VITE_MOCK", "1");
 
@@ -44,11 +45,56 @@ describe("Phase 2 pages (mock mode, standalone)", () => {
     expect(deep).not.toBeDisabled();
     fireEvent.click(deep);
     expect(deep).toHaveAttribute("aria-checked", "true");
+    fireEvent.click(screen.getByRole("switch", { name: "Allow cloud model" }));
     expect(screen.getByRole("switch", { name: "AI review" })).toBeInTheDocument();
     expect(screen.getByRole("switch", { name: "Model hunt" })).toBeInTheDocument();
     expect(screen.getByText("Equivalent CLI command")).toBeInTheDocument();
     expect(screen.getByText(/devsecops-agent scan/)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Start scan" })).toBeInTheDocument();
+  });
+
+  it("new scan keeps model stages off until the cloud model is allowed", async () => {
+    const spy = vi.spyOn(mockApi, "createScan");
+    renderAt("/scans/new");
+    const start = await screen.findByRole("button", { name: "Start scan" }, { timeout: 5000 });
+    expect(screen.queryByRole("switch", { name: "Model hunt" })).not.toBeInTheDocument();
+    expect(screen.getByText(/--mode deterministic/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("switch", { name: "Laya routing" }));
+    fireEvent.change(screen.getByLabelText(/Pinned commit/), { target: { value: "abc123" } });
+    fireEvent.change(screen.getByLabelText("Fail the gate at"), { target: { value: "critical" } });
+    fireEvent.click(start);
+    await waitFor(() =>
+      expect(spy).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          mode: "deterministic",
+          ai_review: false,
+          ai_report: false,
+          laya: false,
+          fail_on: "critical",
+          allow_cloud_model: false,
+          commit_sha: "abc123",
+          provider_profile: null,
+        }),
+      ),
+    );
+
+    await screen.findByText(/Scan queued/, {}, { timeout: 5000 });
+    fireEvent.click(screen.getByRole("switch", { name: "Allow cloud model" }));
+    expect(screen.getByRole("switch", { name: "AI report" })).toHaveAttribute("aria-checked", "true");
+    fireEvent.change(screen.getByLabelText("Provider profile"), { target: { value: "omni" } });
+    fireEvent.click(start);
+    await waitFor(() =>
+      expect(spy).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          mode: "hunt",
+          ai_review: true,
+          ai_report: true,
+          allow_cloud_model: true,
+          provider_profile: "omni",
+        }),
+      ),
+    );
+    expect(screen.getByText(/--provider omni/)).toBeInTheDocument();
   });
 
   it("new scan start queues a run and shows the confirmation", async () => {

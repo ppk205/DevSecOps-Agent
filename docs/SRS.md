@@ -507,6 +507,19 @@ requests. Delivery failure shall not change scan/finding status. Notification
 network calls belong to the human-facing service and must never become
 model-callable tools.
 
+The Python web server shall direct its root URL to the current React application;
+notification settings shall be reachable from the application navigation.
+
+An optional generic webhook shall use signed, bounded summary payloads and an
+explicit exact-host allowlist. It shall permit only public HTTPS destinations on
+port 443, validate every DNS answer and connect to a validated address while
+checking TLS for the configured hostname. The retained delivery ID and selected
+body shall remain stable on an explicitly requested retry; destination changes
+shall block a retained draft. A timeout leaves delivery unknown and shall not be
+retried automatically. Feed and settings reads shall not send notifications.
+The shared service, CLI and web settings implement this extension; terminal
+controls and native end-to-end verification remain in progress.
+
 **FR-74: Release.** Maintainer selects X.Y.Z after version/changelog PR. Freeze main commit, verify exact package version, rerun required checks and full integration, build once and publish GitHub wheel/sdist/checksums/notes. Serialize releases; never move tags or overwrite assets. Resume only matching commit and artifact identities.
 
 ## 4. Data, Storage, and Reporting Requirements

@@ -33,7 +33,7 @@ export function OutboundNotifications() {
   const pending = receipt?.deliveries.filter(row => row.status === "pending") ?? [];
   const offered = Array.from(new Map(pending.filter(row => channels.includes(row.channel)).flatMap(row => row.events).map(event => [event.kind, event])).values());
   return <>
-    <button type="button" className={buttonStyle} onClick={() => { setOpen(true); setMessage(""); }}>Telegram / Discord</button>
+    <button type="button" className={buttonStyle} onClick={() => { setOpen(true); setMessage(""); }}>Notification settings</button>
     {open && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3" onPointerDown={event => event.stopPropagation()}>
       <div ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label="Outbound notifications" className="max-h-[90vh] w-full max-w-2xl space-y-3 overflow-auto border border-hairline bg-elevated p-4 text-body" onKeyDown={event => {
         if (event.key === "Escape") { event.stopPropagation(); setOpen(false); }
@@ -53,8 +53,16 @@ export function OutboundNotifications() {
             <label className="block"><input type="checkbox" checked={config.settings[channel].enabled} onChange={event => change({ ...config.settings, [channel]: { ...config.settings[channel], enabled: event.target.checked } })} aria-label={`${channel === "telegram" ? "Telegram" : "Discord"} enabled`} /> Enabled</label>
             {Object.entries(config.events).map(([kind, label]) => <label key={kind} className="block text-sm"><input type="checkbox" aria-label={`${channel === "telegram" ? "Telegram" : "Discord"}: ${label}`} checked={config.settings[channel].events.includes(kind)} onChange={() => change({ ...config.settings, [channel]: { ...config.settings[channel], events: toggle(config.settings[channel].events, kind) } })} /> {label}</label>)}
           </fieldset>)}</div>
+          <fieldset className="space-y-1 border border-hairline p-2">
+            <legend>Webhook</legend>
+            <label className="block"><input type="checkbox" aria-label="Webhook enabled" checked={config.settings.webhook.enabled} onChange={event => change({ ...config.settings, webhook: { ...config.settings.webhook, enabled: event.target.checked } })} /> Enabled</label>
+            {Object.entries(config.events).map(([kind, label]) => <label key={kind} className="block text-sm"><input type="checkbox" aria-label={`Webhook: ${label}`} checked={config.settings.webhook.events.includes(kind)} onChange={() => change({ ...config.settings, webhook: { ...config.settings.webhook, events: toggle(config.settings.webhook.events, kind) } })} /> {label}</label>)}
+            <label className="block">Allowed hosts <input aria-label="Webhook allowed hosts" value={config.settings.webhook.allowed_hosts.join(",")} onChange={event => change({ ...config.settings, webhook: { ...config.settings.webhook, allowed_hosts: event.target.value.split(",") } })} /></label>
+            <label className="block">URL environment variable <input aria-label="Webhook URL environment variable" value={config.settings.webhook.url_env} onChange={event => change({ ...config.settings, webhook: { ...config.settings.webhook, url_env: event.target.value } })} /></label>
+            <label className="block">Signing key environment variable <input aria-label="Webhook signing key environment variable" value={config.settings.webhook.signing_key_env} onChange={event => change({ ...config.settings, webhook: { ...config.settings.webhook, signing_key_env: event.target.value } })} /></label>
+          </fieldset>
           <p className="text-sm text-muted">Save the bot token, chat ID and Discord webhook through the masked Keys page or CLI <code>env set</code>. This form stores event preferences only.</p>
-          <button type="button" className={buttonStyle} onClick={() => void operate(async () => { setConfig(await saveOutboundSettings(config.settings)); setMessage("Preferences saved. No messages sent."); })}>Save preferences</button>
+          <button type="button" className={buttonStyle} onClick={() => void operate(async () => { const webhook = { ...config.settings.webhook, allowed_hosts: config.settings.webhook.allowed_hosts.map(host => host.trim()).filter(Boolean) }; setConfig(await saveOutboundSettings({ ...config.settings, webhook })); setMessage("Preferences saved. No messages sent."); })}>Save preferences</button>
         </fieldset>}
         <fieldset disabled={busy} className="space-y-2 border-t border-hairline pt-3">
           <legend>Review retained deliveries</legend>
@@ -62,6 +70,8 @@ export function OutboundNotifications() {
           <button type="button" disabled={!runId.trim() || busy} className={buttonStyle} onClick={() => void operate(async () => { setReceipt(await fetchOutbound(runId.trim())); setChannels([]); setEvents([]); })}>Load deliveries</button>
           {receipt?.deliveries.map(row => <div key={row.channel} className="text-sm">
             <p>{row.channel}: {row.status} — {row.detail}</p>
+            {row.delivery_id && <p>Delivery ID: {row.delivery_id}</p>}
+            {(["unknown", "failed", "unconfigured"].includes(row.status) && row.selected_events.length > 0) && <button type="button" className={buttonStyle} onClick={() => { if (window.confirm("The previous delivery may have reached its destination. Retry the same summary?")) void operate(async () => { setReceipt(await sendOutbound(receipt!.run_id, row.selected_events, [row.channel], true)); setMessage("Delivery status recorded."); }); }}>Retry {row.channel} delivery</button>}
             {row.status === "pending" && <label><input type="checkbox" checked={channels.includes(row.channel)} onChange={() => { setChannels(toggle(channels, row.channel)); setEvents([]); }} /> Send to {row.channel}</label>}
           </div>)}
           {offered.map(event => <label key={event.kind} className="block text-sm"><input type="checkbox" checked={events.includes(event.kind)} onChange={() => setEvents(toggle(events, event.kind))} /> {event.message}</label>)}

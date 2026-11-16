@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 import logging
 import re
+from pathlib import Path
 from typing import Any, TypedDict
 
 from vulnscan.agent.tools import TOOL_SCHEMAS
@@ -685,10 +686,9 @@ def hunt_all(
     """
     inventory: list[str] = []
     try:
-        probe = build_tool_handlers(snapshot_root, [])
-        out = probe["list_files"]({"dir": ".", "glob": "*"})
-        if isinstance(out, dict) and out.get("files"):
-            inventory = [str(f) for f in out["files"]]
+        # File names only, for family detection. Not the list_files tool: its
+        # 2000-file page dropped families on large snapshots (BenchmarkPython).
+        inventory = [p.name for p in Path(snapshot_root).rglob("*") if p.is_file()]
     except Exception as exc:  # noqa: BLE001 - inventory is best-effort
         logger.debug("hunt inventory probe failed: %s", exc)
     fams = list(families) if families else detect_families(inventory)

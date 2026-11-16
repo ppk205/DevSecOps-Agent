@@ -15,6 +15,8 @@ from pydantic import Field
 from ._base import VersionedModel
 from .enums import ProviderProtocol
 
+PROFILE_ID_PATTERN = r"^[a-z][a-z0-9-]{2,63}$"
+
 
 class ProviderProfile(VersionedModel):
     """Named configuration for a single BYOK model provider.
@@ -27,7 +29,7 @@ class ProviderProfile(VersionedModel):
     id: str = Field(
         ...,
         description="Stable provider slug, e.g. 'openai-main'.",
-        pattern=r"^[a-z][a-z0-9-]{2,63}$",
+        pattern=PROFILE_ID_PATTERN,
     )
     label: str = Field(
         ...,

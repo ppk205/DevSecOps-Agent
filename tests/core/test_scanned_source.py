@@ -31,6 +31,14 @@ from vulnscan.core.scan_service import _is_scanned_source
         ("web/src/main/java/App.java", True),
         # A test *helper* in production sources is not a test file.
         ("comicsite/src/main/java/TestHelper.java", True),
+        # Go, Ruby and C# sources and templates reach the native-hunt packs.
+        ("cmd/app/main.go", True),
+        ("app/models/user.rb", True),
+        ("app/views/index.html.erb", True),
+        ("Web/Program.cs", True),
+        ("Pages/Index.cshtml", True),
+        ("Pages/App.razor", True),
+        ("tests/helpers/client.go", False),
         # Non-source files are never scanned.
         ("Comic/src/main/resources/application.properties", False),
     ],

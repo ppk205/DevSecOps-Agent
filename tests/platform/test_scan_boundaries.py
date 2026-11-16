@@ -9,6 +9,7 @@ import pytest
 
 from vulnscan.contracts import ScanSpecification, ToolName
 from vulnscan.core.config import resolve_config
+from vulnscan.core.scan_service import reconcile
 from vulnscan.core.security import sanitize
 from vulnscan.scanners.base import AdapterCapability
 from vulnscan.scanners.gitleaks_adapter import GitleaksAdapter, parse_gitleaks_json
@@ -90,6 +91,40 @@ def test_fr72_malformed_semgrep_fails(payload, monkeypatch, tmp_path):
     monkeypatch.setattr(adapter, "_invoke", lambda *a, **k: CommandResult(0, stdout=payload))
     spec = ScanSpecification(run_id="r", target_repository_url="local", target_commit_sha="abcd")
     assert not adapter.run(spec, workdir=str(tmp_path)).is_complete
+
+
+@pytest.mark.parametrize(
+    "path,language",
+    [
+        ("cmd/main.go", "go"),
+        ("app/user.rb", "ruby"),
+        ("app/index.html.erb", "ruby"),
+        ("Web/Program.cs", "csharp"),
+        ("Pages/Index.cshtml", "csharp"),
+        ("Pages/App.razor", "csharp"),
+    ],
+)
+def test_semgrep_does_not_claim_languages_without_rules(path, language, monkeypatch, tmp_path):
+    adapter = SemgrepAdapter()
+    monkeypatch.setattr(
+        adapter, "capabilities", lambda: AdapterCapability(ToolName.SEMGREP, available=True)
+    )
+    report = '{"results":[],"errors":[],"paths":{"scanned":[]}}'
+    monkeypatch.setattr(adapter, "_invoke", lambda *a, **k: CommandResult(0, stdout=report))
+    manifest = {"inventory": ["src/App.java", path]}
+    spec = ScanSpecification(
+        run_id="r",
+        target_repository_url="local",
+        target_commit_sha="abcd",
+        metadata={"manifest": manifest},
+    )
+    result = adapter.run(spec, workdir=str(tmp_path))
+    coverage = {c.unit_path: c for c in result.coverage_records}
+    assert coverage["src/App.java"].status.value == "analyzed"
+    assert coverage[path].status.value == "unsupported"
+    assert coverage[path].unit_language.value == language
+    assert coverage[path].limitation_reason
+    assert reconcile([result], manifest) == []
 
 
 def test_fr72_gitleaks_missing_report_never_passes(monkeypatch, tmp_path):

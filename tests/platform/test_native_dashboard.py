@@ -19,7 +19,17 @@ pytestmark = pytest.mark.skipif(
 
 
 def test_native_dashboard_routes_csrf_and_exports(service, checkout, tmp_path):
-    result = service.run(str(checkout), settings(tmp_path))
+    result = service.run(
+        str(checkout),
+        settings(
+            tmp_path,
+            mode="deterministic",
+            laya=False,
+            ai_review=False,
+            ai_report=False,
+            tools=["semgrep", "gitleaks"],
+        ),
+    )
     finding = service.detail(result["id"])["findings"][0]
     with socket.socket() as listener:
         listener.bind(("127.0.0.1", 0))
@@ -48,7 +58,8 @@ def test_native_dashboard_routes_csrf_and_exports(service, checkout, tmp_path):
         with httpx.Client(
             base_url=f"http://127.0.0.1:{port}", trust_env=False, timeout=5
         ) as client:
-            for _ in range(100):
+            deadline = time.monotonic() + 40
+            while time.monotonic() < deadline:
                 try:
                     home = client.get("/")
                     break
@@ -58,7 +69,10 @@ def test_native_dashboard_routes_csrf_and_exports(service, checkout, tmp_path):
                 pytest.fail("Native dashboard did not start")
             assert home.status_code == 200, home.text
             assert "Target registration" in home.text
-            assert client.get(f"/runs/{result['id']}").status_code == 200
+            assert '<a href="/" class="active">Targets</a>' in home.text
+            run = client.get(f"/runs/{result['id']}")
+            assert run.status_code == 200
+            assert f'<a href="/runs/{result["id"]}" class="active">Run {result["id"]}</a>' in run.text
             assert client.get(f"/runs/{result['id']}/findings").status_code == 200
             route = f"/findings/{finding['finding_id']}/status"
             assert client.post(route, data={"status": "rejected"}).status_code == 403

@@ -46,6 +46,27 @@ class TestTools:
         for item in tools:
             assert set(item) >= {"tool", "binary", "available", "path", "hint"}
 
+    def test_container_scanners_count_when_image_present(self, monkeypatch) -> None:  # type: ignore[no-untyped-def]
+        # Full scans run SpotBugs and Dependency-Check in the scanner image, so a
+        # host without those binaries but with Docker and the image can use them.
+        from vulnscan.scanners import platform
+        from vulnscan.web import phase2
+
+        monkeypatch.setattr(
+            platform, "which", lambda b: "/usr/bin/docker" if b == "docker" else None
+        )
+        monkeypatch.setattr(phase2, "_scanner_image_present", lambda: True)
+        tools = {t["tool"]: t for t in phase2.probe_tools()}
+        for name in ("spotbugs", "owasp-dependency-check"):
+            assert tools[name]["available"] is True
+            assert tools[name]["path"] == "docker:devsecops-agent-scanners:0.2.0"
+            assert "full profile" in tools[name]["hint"]
+        assert tools["gitleaks"]["available"] is False
+
+        monkeypatch.setattr(phase2, "_scanner_image_present", lambda: False)
+        tools = {t["tool"]: t for t in phase2.probe_tools()}
+        assert tools["spotbugs"]["available"] is False
+
 
 class TestSettings:
     def test_get_defaults(self, tmp_path: Path, monkeypatch) -> None:  # type: ignore[no-untyped-def]
@@ -97,6 +118,24 @@ class TestKeys:
             "/api/settings/keys/t-empty", json={"api_key": "  "}, headers=_csrf(client)
         )
         assert response.status_code == 422
+
+    def test_put_rejects_contract_invalid_id_without_storing_key(  # type: ignore[no-untyped-def]
+        self, tmp_path: Path, monkeypatch
+    ) -> None:
+        client = _client(tmp_path, monkeypatch)
+        headers = _csrf(client)
+        for profile in ("deepseek_test", "9lives"):
+            response = client.put(
+                f"/api/settings/keys/{profile}", json={"api_key": FAKE_KEY}, headers=headers
+            )
+            assert response.status_code == 422
+            assert "lowercase letters, digits or hyphens" in response.json()["detail"]
+            assert FAKE_KEY not in response.text
+        env = tmp_path / ".env"
+        assert not env.exists() or FAKE_KEY not in env.read_text(encoding="utf-8")
+        assert (
+            client.post("/api/settings/keys/deepseek_test/test", headers=headers).status_code == 422
+        )
 
     def test_put_key_only_preserves_headers(self, tmp_path: Path, monkeypatch) -> None:  # type: ignore[no-untyped-def]
         from vulnscan.providers.profile_store import load_profile
@@ -180,6 +219,62 @@ class TestScans:
         assert listed["scans"][0]["status"] == "queued"
         assert client.get("/api/scans", params={"status": "completed"}).json()["total"] == 0
         assert client.get("/api/scans", params={"status": "queued"}).json()["total"] == 1
+
+    def test_create_passes_every_scan_choice(self, tmp_path: Path, monkeypatch) -> None:  # type: ignore[no-untyped-def]
+        import vulnscan.web.phase2_routes as routes
+
+        seen: list[dict[str, object]] = []
+        monkeypatch.setattr(routes, "_execute_web_scan", lambda *a: seen.append(a[3]))
+        client = _client(tmp_path, monkeypatch)
+        body = {
+            "repository_url": "https://example.test/shop",
+            "commit_sha": "a" * 40,
+            "mode": "hunt",
+            "ai_review": False,
+            "ai_report": False,
+            "laya": False,
+            "fail_on": "critical",
+            "allow_cloud_model": True,
+        }
+        assert client.post("/api/scans", json=body, headers=_csrf(client)).status_code == 200
+        params = seen[0]
+        assert params["allow_cloud_model"] is True
+        assert params["commit"] == "a" * 40
+        assert (params["ai_review"], params["ai_report"], params["laya"]) == (False, False, False)
+        assert params["fail_on"] == "critical"
+
+    def test_execute_keeps_explicit_choices_and_legacy_hunt_default(
+        self,
+        tmp_path: Path,
+        monkeypatch,  # type: ignore[no-untyped-def]
+    ) -> None:
+        import vulnscan.core.config as config_module
+        from vulnscan.web.phase2_routes import _execute_web_scan
+
+        captured: list[dict[str, object]] = []
+
+        def fake_resolve(profile, config, **flags):  # type: ignore[no-untyped-def]
+            captured.append(flags)
+            raise ValueError("stop after config")
+
+        monkeypatch.setattr(config_module, "resolve_config", fake_resolve)
+        base = {"checkout": "x", "repo": "x", "profile": "fast", "mode": "hunt"}
+        explicit = {"ai_review": False, "ai_report": False, "laya": False, "fail_on": "none"}
+        _execute_web_scan(str(tmp_path / "x.db"), str(tmp_path), "web-1", {**base, **explicit})
+        _execute_web_scan(str(tmp_path / "x.db"), str(tmp_path), "web-2", dict(base))
+        assert captured[0]["ai_review"] is False and captured[0]["ai_report"] is False
+        assert captured[0]["laya"] is False and captured[0]["fail_on"] == "none"
+        # Older clients that send only mode=hunt keep review and report on.
+        assert captured[1]["ai_review"] is True and captured[1]["ai_report"] is True
+        assert captured[1]["laya"] is None and captured[1]["fail_on"] == "high"
+        # allow_cloud_model=False turns every model stage off, whatever else was asked.
+        denied = {**base, "allow_cloud_model": False, "ai_review": True, "ai_report": True}
+        _execute_web_scan(str(tmp_path / "x.db"), str(tmp_path), "web-3", denied)
+        assert captured[2]["mode"] == "deterministic"
+        assert captured[2]["ai_review"] is False and captured[2]["ai_report"] is False
+        allowed = {**base, "allow_cloud_model": True}
+        _execute_web_scan(str(tmp_path / "x.db"), str(tmp_path), "web-4", allowed)
+        assert captured[3]["mode"] == "hunt"
 
     def test_create_hunt_requires_provider(
         self,

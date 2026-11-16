@@ -172,14 +172,18 @@ class ProviderClient:
                     model=use_model,
                     usage={},
                 )
-                if exc.response.status_code == 429 and attempt < attempts - 1:
+                code = exc.response.status_code
+                if code in (429, 499, 502, 503, 504) and attempt < attempts - 1:
+                    # Rate limits, gateway-closed (499) and transient gateway failures;
+                    # other errors are final.
                     import time as _time
 
                     retry_after = exc.response.headers.get("retry-after")
+                    backoff = 30.0 if code in (429, 499) else 5.0 * (attempt + 1)
                     try:
-                        wait = float(retry_after) if retry_after else 20.0 * (attempt + 1)
+                        wait = float(retry_after) if retry_after else backoff
                     except (TypeError, ValueError):
-                        wait = 20.0 * (attempt + 1)
+                        wait = backoff
                     _time.sleep(min(wait, 120.0))
                     continue
                 raise ProviderError(

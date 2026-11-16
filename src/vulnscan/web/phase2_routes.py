@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import time
 from datetime import UTC, datetime
 from pathlib import Path
@@ -16,7 +17,7 @@ from typing import Any
 
 import httpx
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Query, Request
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 from sqlalchemy.orm import Session
 
 from vulnscan.infra.envfile import EnvFile
@@ -38,6 +39,20 @@ from vulnscan.web.phase2 import (
 )
 
 router = APIRouter()
+
+
+def _profile_id(profile: str) -> str:
+    # The contract pattern also keeps the ID safe to use as a profile file name.
+    from vulnscan.contracts.provider import PROFILE_ID_PATTERN
+
+    slug = profile.strip().lower()
+    if not re.fullmatch(PROFILE_ID_PATTERN, slug):
+        raise HTTPException(
+            422,
+            "Invalid profile ID: use 3-64 lowercase letters, digits or hyphens, "
+            "starting with a letter (for example deepseek-test).",
+        )
+    return slug
 
 
 def _session(request: Request) -> Session:
@@ -75,7 +90,14 @@ class ScanCreateIn(BaseModel):
     checkout_path: str | None = None
     profile: str | None = "fast"
     tools: list[str] | None = None
-    ai_review: bool = False
+    # None keeps the older rule: Hunt also turns on AI review and AI report.
+    ai_review: bool | None = None
+    ai_report: bool | None = None
+    laya: bool | None = None
+    fail_on: str | None = None
+    # False turns every model stage off (no source excerpt leaves the machine).
+    # None, from older clients, keeps the mode and switches they sent.
+    allow_cloud_model: bool | None = None
     provider_profile: str | None = None
     provider_model: str | None = None
     max_ai_findings: int | None = 10
@@ -193,9 +215,7 @@ def api_key_put(profile: str, body: KeyPutIn) -> dict[str, Any]:
     from vulnscan.contracts.enums import ProviderProtocol
     from vulnscan.contracts.provider import ProviderProfile
 
-    slug = profile.strip().lower()
-    if not slug.replace("-", "").replace("_", "").isalnum() or len(slug) < 3 or len(slug) > 64:
-        raise HTTPException(422, "Invalid profile id")
+    slug = _profile_id(profile)
     raw = (body.api_key or "").strip()
     if not raw:
         raise HTTPException(422, "Refusing to store an empty secret")
@@ -219,19 +239,24 @@ def api_key_put(profile: str, body: KeyPutIn) -> dict[str, Any]:
     # update must not wipe profile transport settings.
     headers = dict(existing.headers) if existing and existing.headers else {}
     metadata = dict(existing.metadata) if existing and existing.metadata else {}
+    try:
+        saved = ProviderProfile(
+            id=slug,
+            label=label,
+            protocol=ProviderProtocol.OPENAI_COMPATIBLE,
+            base_url=base_url,
+            api_key_env=api_key_env,
+            models=models,
+            default_model=default_model,
+            headers=headers,
+            metadata=metadata,
+        )
+    except ValidationError as exc:
+        fields = ", ".join(str(error["loc"][0]) for error in exc.errors())
+        raise HTTPException(422, f"Invalid provider profile field: {fields}") from None
+    # Validate before storing: a rejected profile must not leave an orphan key.
     # Key stays in process env / project .env only — never on the profile JSON.
     EnvFile().set(api_key_env, raw)
-    saved = ProviderProfile(
-        id=slug,
-        label=label,
-        protocol=ProviderProtocol.OPENAI_COMPATIBLE,
-        base_url=base_url,
-        api_key_env=api_key_env,
-        models=models,
-        default_model=default_model,
-        headers=headers,
-        metadata=metadata,
-    )
     save_profile(saved)
     status = key_status(api_key_env)
     return {
@@ -246,7 +271,7 @@ def api_key_put(profile: str, body: KeyPutIn) -> dict[str, Any]:
 
 @router.delete("/api/settings/keys/{profile}")
 def api_key_delete(profile: str) -> dict[str, Any]:
-    slug = profile.strip().lower()
+    slug = _profile_id(profile)
     try:
         existing = load_profile(slug)
     except FileNotFoundError:
@@ -258,7 +283,7 @@ def api_key_delete(profile: str) -> dict[str, Any]:
 
 @router.post("/api/settings/keys/{profile}/test")
 def api_key_test(profile: str) -> dict[str, Any]:
-    slug = profile.strip().lower()
+    slug = _profile_id(profile)
     try:
         existing = load_profile(slug)
     except FileNotFoundError:
@@ -368,6 +393,10 @@ def api_scans_create(
         "profile": profile,
         "tools": list(body.tools or []),
         "ai_review": body.ai_review,
+        "ai_report": body.ai_report,
+        "laya": body.laya,
+        "fail_on": body.fail_on,
+        "allow_cloud_model": body.allow_cloud_model,
         "provider_profile": body.provider_profile,
         "provider_model": body.provider_model,
         "max_ai_findings": body.max_ai_findings or 10,
@@ -460,17 +489,25 @@ def _execute_web_scan(
             raise ValueError(f"Unknown scan mode: {mode}")
         # Hunt without an explicit provider auto-resolves the default keyed
         # profile inside the service; without any key it skips with a reason.
+        # Explicit review/report choices win; None keeps the Hunt-implies-both rule.
+        ai_review = params.get("ai_review")
+        ai_report = params.get("ai_report")
+        if params.get("allow_cloud_model") is False:
+            mode, ai_review, ai_report = "deterministic", False, False
         config = resolve_config(
             params.get("profile") or "fast",
             None,
-            fail_on="high",
+            fail_on=params.get("fail_on") or "high",
             output_dir=output_dir,
             timeout=params.get("timeout"),
             max_files=params.get("max_files"),
-            ai_review=params.get("ai_review") or mode == "hunt",
+            laya=params.get("laya"),
+            ai_review=mode == "hunt" if ai_review is None else ai_review,
             provider_profile=params.get("provider_profile"),
             provider_model=params.get("provider_model"),
-            ai_report=bool(params.get("provider_profile")) or mode == "hunt",
+            ai_report=(bool(params.get("provider_profile")) or mode == "hunt")
+            if ai_report is None
+            else ai_report,
             max_ai_findings=params.get("max_ai_findings") or 10,
             tools=params.get("tools") or None,
             mode=mode,

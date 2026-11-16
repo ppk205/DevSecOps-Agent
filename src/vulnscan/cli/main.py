@@ -335,6 +335,71 @@ def provider_add(
     typer.echo(f"provider profile saved: {path} (set {api_key_env} in env before scanning)")
 
 
+@app.command("provider-setup")
+def provider_setup() -> None:
+    """Interactively configure an OpenAI-compatible provider and its key."""
+    import re
+
+    from pydantic import ValidationError
+
+    from ..contracts.enums import ProviderProtocol
+    from ..contracts.provider import ProviderProfile
+    from ..infra.envfile import EnvFile
+    from ..providers.profile_store import load_profile, save_profile
+
+    typer.echo("Set up a provider for AI stages. No network request will be made.")
+    profile_id = typer.prompt("Profile ID (lowercase letters, digits and hyphens)").strip()
+    base_url = typer.prompt(
+        "OpenAI-compatible base URL (for example https://example.com/v1)"
+    ).strip()
+    model = typer.prompt("Model ID").strip()
+    key_name = typer.prompt("API key environment variable name").strip()
+    if not base_url or not model or not re.fullmatch(r"[A-Z_][A-Z0-9_]*", key_name):
+        typer.echo(
+            "Enter an endpoint, model, and valid uppercase environment variable name.", err=True
+        )
+        raise typer.Exit(1)
+    try:
+        profile = ProviderProfile(
+            id=profile_id,
+            label=profile_id,
+            protocol=ProviderProtocol.OPENAI_COMPATIBLE,
+            base_url=base_url,
+            api_key_env=key_name,
+            models=[model],
+            default_model=model,
+        )
+    except ValidationError:
+        typer.echo(
+            "Invalid profile ID: use 3–64 lowercase letters, digits or hyphens, starting with a letter.",
+            err=True,
+        )
+        raise typer.Exit(1) from None
+    try:
+        load_profile(profile_id)
+    except FileNotFoundError:
+        pass
+    else:
+        typer.echo(
+            "Profile already exists. Use a different ID or provider-add to update it.", err=True
+        )
+        raise typer.Exit(1)
+    env = EnvFile()
+    if env.is_configured(key_name):
+        typer.echo(f"{key_name} is already configured; the existing key will be used.")
+    else:
+        key = typer.prompt("API key", hide_input=True)
+        try:
+            env.set(key_name, key)
+        except ValueError as exc:
+            typer.echo(f"Could not save key: {exc}", err=True)
+            raise typer.Exit(1) from None
+    save_profile(profile)
+    typer.echo(
+        f"Provider {profile_id} saved with model {model}. Use --provider {profile_id} when scanning."
+    )
+
+
 @app.command("serve")
 def serve(host: str = "127.0.0.1", port: int = 8000, db_path: str = "vulnscan.db") -> None:
     """Serve the existing local dashboard against the shared scan history."""

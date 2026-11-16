@@ -25,7 +25,7 @@ Process-injected values retain precedence over the project `.env` file.
 `notifications configure` asks which destinations and events to enable, and
 whether to send automatically or ask after each scan. Native and Python Textual
 TUIs expose preferences with F6 and retained deliveries with F7. In the React
-dashboard, open the bell and choose **Telegram / Discord**. The masked Keys page
+dashboard, choose **Notification settings** in the top bar. The masked Keys page
 stores credentials; the notification form stores event rules only.
 
 Settings are saved atomically to the gitignored `.devsec-notifications.json`.
@@ -95,8 +95,27 @@ Telegram delivery uses the outgoing [Bot API sendMessage endpoint](https://core.
 which returns a Message on success. It does not register an inbound Telegram
 webhook or require a public listener. Discord uses the
 [Execute Webhook endpoint](https://docs.discord.com/developers/resources/webhook#execute-webhook)
-with `wait=true`. The existing generic `WEBHOOK_URL` gate-failure integration
-remains separate and keeps its legacy web-feed behavior.
+with `wait=true`. The legacy feed-triggered `WEBHOOK_URL` delivery has been
+removed. Setting that variable alone does not send notifications. The shared
+service, CLI and web settings support an opt-in generic signed webhook. Terminal
+and native controls are still being integrated.
+
+Enable a webhook with `notifications configure`, choose events, an exact public
+HTTPS hostname and environment variable references for the URL and signing key.
+The default references are `DEVSEC_WEBHOOK_URL` and
+`DEVSEC_WEBHOOK_SIGNING_SECRET`. The signing key must contain at least 32 UTF-8
+bytes. An existing `WEBHOOK_URL` can be selected explicitly as the URL reference;
+setting it alone neither enables delivery nor replays old scans.
+
+The service validates every DNS answer as public and connects to a validated IP
+on port 443 with the configured hostname for TLS. Redirects are not followed.
+DNS resolution is not covered by the socket timeout. Payloads contain selected
+summary events only. `X-DevSecOps-Signature` is HMAC-SHA256 over the ASCII
+timestamp, a dot and the exact request body; the timestamp and delivery ID are
+sent in the corresponding `X-DevSecOps-Timestamp` and `X-DevSecOps-Delivery`
+headers. Receivers should compare signatures in constant time, limit timestamp
+age to 300 seconds and deduplicate delivery IDs. A successful HTTP response is
+an acknowledgement, not proof that the receiver processed the event.
 
 ## Interfaces and verification
 

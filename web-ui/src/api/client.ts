@@ -2,12 +2,20 @@ import { isMock, mockApi } from "../mock/mockClient";
 
 const BASE: string = (import.meta.env.VITE_API_BASE as string | undefined) ?? "";
 
+/** Throw with the server's `detail` message when it sends one, so the UI can show why. */
+async function fail(method: string, path: string, response: Response): Promise<never> {
+  const body: unknown = await response.json().catch(() => null);
+  const detail = (body as { detail?: unknown } | null)?.detail;
+  const reason = typeof detail === "string" ? `: ${detail}` : "";
+  throw new Error(`${method} ${path} → ${response.status}${reason}`);
+}
+
 /** Thin fetch wrapper: mock layer when VITE_MOCK=1, FastAPI otherwise. */
 async function get<T>(path: string): Promise<T> {
   const response = await fetch(`${BASE}${path}`, {
     headers: { "X-Contract-Version": "1" },
   });
-  if (!response.ok) throw new Error(`GET ${path} → ${response.status}`);
+  if (!response.ok) await fail("GET", path, response);
   return (await response.json()) as T;
 }
 
@@ -23,7 +31,7 @@ async function postJson<T>(path: string, body: unknown): Promise<T> {
     },
     body: JSON.stringify(body),
   });
-  if (!response.ok) throw new Error(`POST ${path} → ${response.status}`);
+  if (!response.ok) await fail("POST", path, response);
   return (await response.json()) as T;
 }
 
@@ -38,7 +46,7 @@ async function putJson<T>(path: string, body: unknown): Promise<T> {
     },
     body: JSON.stringify(body),
   });
-  if (!response.ok) throw new Error(`PUT ${path} → ${response.status}`);
+  if (!response.ok) await fail("PUT", path, response);
   return (await response.json()) as T;
 }
 
@@ -48,7 +56,7 @@ async function deleteJson<T>(path: string): Promise<T> {
     method: "DELETE",
     headers: { "X-Contract-Version": "1", "X-CSRF-Token": csrf.csrf_token },
   });
-  if (!response.ok) throw new Error(`DELETE ${path} → ${response.status}`);
+  if (!response.ok) await fail("DELETE", path, response);
   return (await response.json()) as T;
 }
 
@@ -61,7 +69,7 @@ export const api = {
 export const fetchOutboundSettings = () => get<import("./types").OutboundConfig>("/api/outbound/settings");
 export const saveOutboundSettings = (settings: import("./types").OutboundSettings) => postJson<import("./types").OutboundConfig>("/api/outbound/settings", settings);
 export const fetchOutbound = (runId: string) => get<import("./types").OutboundReceipt>(`/api/scans/${encodeURIComponent(runId)}/outbound`);
-export const sendOutbound = (runId: string, events: string[], channels: string[]) => postJson<import("./types").OutboundReceipt>(`/api/scans/${encodeURIComponent(runId)}/outbound`, { events, channels });
+export const sendOutbound = (runId: string, events: string[], channels: string[], retry = false) => postJson<import("./types").OutboundReceipt>(`/api/scans/${encodeURIComponent(runId)}/outbound`, { events, channels, retry });
 
 export async function fetchScans(): Promise<import("../api/types").ScanSummary[]> {
   if (isMock) return mockApi.scans();
@@ -457,7 +465,12 @@ export async function createScan(body: {
   repository_url: string;
   profile?: string;
   tools?: string[];
+  commit_sha?: string | null;
   ai_review?: boolean;
+  ai_report?: boolean;
+  laya?: boolean;
+  fail_on?: string;
+  allow_cloud_model?: boolean;
   provider_profile?: string | null;
   provider_model?: string | null;
   max_ai_findings?: number;

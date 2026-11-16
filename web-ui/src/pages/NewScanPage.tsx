@@ -18,6 +18,24 @@ const PROFILE_SCANNERS: Record<"fast" | "full", readonly string[]> = {
   full: SCANNERS,
 };
 
+const FAIL_ON = ["critical", "high", "medium", "low", "info", "none"] as const;
+
+function Toggle(props: { label: string; detail: string; on: boolean; onChange: (next: boolean) => void }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={props.on}
+      aria-label={props.label}
+      onClick={() => props.onChange(!props.on)}
+      className={`mt-3 w-full border p-3 text-left ${props.on ? "border-ink" : "border-hairline"}`}
+    >
+      <div className="label-m text-sm text-ink">{props.label}</div>
+      <div className="mt-1 text-xs text-muted">{props.detail}</div>
+    </button>
+  );
+}
+
 function shellQuote(value: string): string {
   return /[^A-Za-z0-9_@%+=:,./-]/.test(value) ? `'${value.replace(/'/g, `'\\''`)}'` : value;
 }
@@ -32,8 +50,13 @@ export function NewScanPage() {
     spotbugs: false,
     "owasp-dependency-check": false,
   });
-  const [aiReview, setAiReview] = useState(false);
+  // Off by default: no source excerpt goes to a provider until the user allows it.
+  const [allowCloud, setAllowCloud] = useState(false);
+  const [aiReview, setAiReview] = useState(true);
+  const [aiReport, setAiReport] = useState(true);
   const [hunt, setHunt] = useState(true);
+  const [laya, setLaya] = useState(true);
+  const [failOn, setFailOn] = useState("high");
   const [providerProfile, setProviderProfile] = useState("");
   const [providerModel, setProviderModel] = useState("");
   const [maxAi, setMaxAi] = useState(10);
@@ -45,19 +68,28 @@ export function NewScanPage() {
   const toolsQuery = useQuery({ queryKey: ["tools"], queryFn: () => fetchTools(false) });
   const usageQuery = useQuery({ queryKey: ["usage"], queryFn: fetchUsage });
   const keysQuery = useQuery({ queryKey: ["keys"], queryFn: fetchKeys });
+  const useHunt = allowCloud && hunt;
+  const useReview = allowCloud && aiReview;
+  const useReport = allowCloud && aiReport;
+  const usesModel = useHunt || useReview || useReport;
   const startMutation = useMutation({
     mutationFn: () =>
       createScan({
         repository_url: repo.trim(),
+        commit_sha: commit.trim() || null,
         profile,
         tools: SCANNERS.filter((t) => tools[t]),
-        ai_review: aiReview,
-        provider_profile: providerProfile || null,
-        provider_model: providerModel || null,
+        ai_review: useReview,
+        ai_report: useReport,
+        laya,
+        fail_on: failOn,
+        allow_cloud_model: allowCloud,
+        provider_profile: (usesModel && providerProfile) || null,
+        provider_model: (usesModel && providerModel) || null,
         max_ai_findings: maxAi,
         timeout,
         max_files: maxFiles,
-        mode: hunt ? "hunt" : "deterministic",
+        mode: useHunt ? "hunt" : "deterministic",
       }),
   });
 
@@ -78,7 +110,7 @@ export function NewScanPage() {
     return [...seen];
   }, [scansQuery.data]);
 
-  const estimate = useMemo(() => (aiReview ? maxAi * 0.012 : 0), [aiReview, maxAi]);
+  const estimate = useMemo(() => (useReview ? maxAi * 0.012 : 0), [useReview, maxAi]);
   const remaining = usageQuery.data?.available;
 
   const cli = useMemo(() => {
@@ -88,15 +120,17 @@ export function NewScanPage() {
     if (commit.trim()) parts.push(`--commit ${shellQuote(commit.trim())}`);
     if (timeout !== 600) parts.push(`--timeout ${timeout}`);
     if (maxFiles !== 100000) parts.push(`--max-files ${maxFiles}`);
-    if (hunt) parts.push("--mode hunt");
-    if (aiReview) {
-      parts.push("--ai-review");
+    if (failOn !== "high") parts.push(`--fail-on ${failOn}`);
+    if (!laya) parts.push("--no-laya");
+    parts.push(useHunt ? "--mode hunt" : "--mode deterministic");
+    if (useReview) parts.push("--ai-review", `--max-ai-findings ${maxAi}`);
+    if (useReport) parts.push("--ai-report");
+    if (usesModel) {
       if (providerProfile) parts.push(`--provider ${shellQuote(providerProfile)}`);
       if (providerModel) parts.push(`--model ${shellQuote(providerModel)}`);
-      parts.push(`--max-ai-findings ${maxAi}`);
     }
     return parts.join(" ");
-  }, [repo, profile, tools, commit, timeout, maxFiles, hunt, aiReview, providerProfile, providerModel, maxAi]);
+  }, [repo, profile, tools, commit, timeout, maxFiles, failOn, laya, useHunt, useReview, useReport, usesModel, providerProfile, providerModel, maxAi]);
 
   return (
     <div>
@@ -209,82 +243,71 @@ export function NewScanPage() {
                 );
               })}
             </div>
+            <Toggle label={en.newScan.laya} detail={en.newScan.layaDetail} on={laya} onChange={setLaya} />
           </section>
 
-          {/* AI review */}
+          {/* Cloud model */}
           <section className="card p-6">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="label-m text-xs text-muted">{en.newScan.aiReview}</h2>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={hunt}
-                  aria-label={en.newScan.hunt}
-                  title={en.newScan.huntDetail}
-                  onClick={() => {
-                    const next = !hunt;
-                    setHunt(next);
-                    if (next) setAiReview(true);
-                  }}
-                  className={`label-m border px-3 py-1.5 text-[11px] ${hunt ? "border-ink text-ink" : "border-hairline text-muted"}`}
-                >
-                  {hunt ? en.newScan.huntOn : en.newScan.huntOff}
-                </button>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={aiReview}
-                  aria-label={en.newScan.aiReview}
-                  onClick={() => setAiReview((v) => !v)}
-                  className={`label-m border px-3 py-1.5 text-[11px] ${aiReview ? "border-ink text-ink" : "border-hairline text-muted"}`}
-                >
-                  {aiReview ? en.newScan.aiOn : en.newScan.aiOff}
-                </button>
-              </div>
-            </div>
-            {aiReview && (
-              <div className="grid gap-3 sm:grid-cols-2">
-                <label className="block">
-                  <span className="label-m text-[11px] text-muted">{en.newScan.providerProfile}</span>
-                  <input
-                    className="mt-1 w-full border border-hairline bg-canvas px-3 py-2 text-sm text-ink"
-                    value={providerProfile}
-                    onChange={(e) => setProviderProfile(e.target.value)}
-                    placeholder="kios-free"
-                    list="provider-profiles"
-                  />
-                  <datalist id="provider-profiles">
-                    {(keysQuery.data ?? []).map((k) => (
-                      <option key={k.profile} value={k.profile} />
-                    ))}
-                  </datalist>
-                </label>
-                <label className="block">
-                  <span className="label-m text-[11px] text-muted">{en.newScan.providerModel}</span>
-                  <input
-                    className="mt-1 w-full border border-hairline bg-canvas px-3 py-2 text-sm text-ink"
-                    value={providerModel}
-                    onChange={(e) => setProviderModel(e.target.value)}
-                    placeholder="beam-free"
-                  />
-                </label>
-                <label className="block">
-                  <span className="label-m text-[11px] text-muted">{en.newScan.maxAiFindings}</span>
-                  <input
-                    type="number"
-                    min={1}
-                    max={500}
-                    className="mt-1 w-full border border-hairline bg-canvas px-3 py-2 text-sm text-ink"
-                    value={maxAi}
-                    onChange={(e) => setMaxAi(Number(e.target.value) || 10)}
-                  />
-                </label>
-                <p className="self-end text-xs text-muted">
-                  {en.newScan.aiEstimate}: ${estimate.toFixed(2)}
-                  {remaining !== undefined && ` · $${remaining.toFixed(2)} ${en.newScan.aiBudget}`}
-                </p>
-              </div>
+            <h2 className="label-m mb-1 text-xs text-muted">{en.newScan.cloudModel}</h2>
+            <Toggle
+              label={en.newScan.allowCloud}
+              detail={allowCloud ? en.newScan.allowCloudOn : en.newScan.allowCloudOff}
+              on={allowCloud}
+              onChange={setAllowCloud}
+            />
+            {allowCloud && (
+              <>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <Toggle label={en.newScan.hunt} detail={en.newScan.huntDetail} on={hunt} onChange={setHunt} />
+                  <Toggle label={en.newScan.aiReview} detail={en.newScan.aiReviewDetail} on={aiReview} onChange={setAiReview} />
+                  <Toggle label={en.newScan.aiReport} detail={en.newScan.aiReportDetail} on={aiReport} onChange={setAiReport} />
+                </div>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  <label className="block">
+                    <span className="label-m text-[11px] text-muted">{en.newScan.providerProfile}</span>
+                    <input
+                      className="mt-1 w-full border border-hairline bg-canvas px-3 py-2 text-sm text-ink"
+                      value={providerProfile}
+                      onChange={(e) => setProviderProfile(e.target.value)}
+                      placeholder={en.newScan.providerAuto}
+                      list="provider-profiles"
+                    />
+                    <datalist id="provider-profiles">
+                      {(keysQuery.data ?? []).map((k) => (
+                        <option key={k.profile} value={k.profile} />
+                      ))}
+                    </datalist>
+                  </label>
+                  <label className="block">
+                    <span className="label-m text-[11px] text-muted">{en.newScan.providerModel}</span>
+                    <input
+                      className="mt-1 w-full border border-hairline bg-canvas px-3 py-2 text-sm text-ink"
+                      value={providerModel}
+                      onChange={(e) => setProviderModel(e.target.value)}
+                      placeholder={en.newScan.modelDefault}
+                    />
+                  </label>
+                  {aiReview && (
+                    <label className="block">
+                      <span className="label-m text-[11px] text-muted">{en.newScan.maxAiFindings}</span>
+                      <input
+                        type="number"
+                        min={1}
+                        max={500}
+                        className="mt-1 w-full border border-hairline bg-canvas px-3 py-2 text-sm text-ink"
+                        value={maxAi}
+                        onChange={(e) => setMaxAi(Number(e.target.value) || 10)}
+                      />
+                    </label>
+                  )}
+                  {aiReview && (
+                    <p className="self-end text-xs text-muted">
+                      {en.newScan.aiEstimate}: ${estimate.toFixed(2)}
+                      {remaining !== undefined && ` · $${remaining.toFixed(2)} ${en.newScan.aiBudget}`}
+                    </p>
+                  )}
+                </div>
+              </>
             )}
           </section>
 
@@ -324,6 +347,20 @@ export function NewScanPage() {
                     onChange={(e) => setMaxFiles(Number(e.target.value) || 100000)}
                   />
                 </label>
+                <label className="block">
+                  <span className="label-m text-[11px] text-muted">{en.newScan.failOn}</span>
+                  <select
+                    className="mt-1 w-full border border-hairline bg-canvas px-3 py-2 text-sm text-ink"
+                    value={failOn}
+                    onChange={(e) => setFailOn(e.target.value)}
+                  >
+                    {FAIL_ON.map((level) => (
+                      <option key={level} value={level}>
+                        {level}
+                      </option>
+                    ))}
+                  </select>
+                </label>
               </div>
             </details>
           </section>
@@ -351,7 +388,11 @@ export function NewScanPage() {
               <div className="flex justify-between gap-4">
                 <dt className="text-muted">{en.newScan.reviewAi}</dt>
                 <dd className="text-ink">
-                  {aiReview ? `${en.newScan.aiOnShort} · $${estimate.toFixed(2)} ${en.newScan.estShort}` : en.newScan.aiOffShort}
+                  {usesModel
+                    ? [useHunt && en.newScan.hunt, useReview && en.newScan.aiReview, useReport && en.newScan.aiReport]
+                        .filter(Boolean)
+                        .join(", ")
+                    : en.newScan.aiOffShort}
                 </dd>
               </div>
             </dl>

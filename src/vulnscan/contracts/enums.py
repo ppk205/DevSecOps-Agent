@@ -243,6 +243,9 @@ class LanguageKind(str, Enum):
     TYPESCRIPT = "typescript"
     PYTHON = "python"
     PHP = "php"
+    GO = "go"
+    RUBY = "ruby"
+    CSHARP = "csharp"
     OTHER = "other"
 
 
@@ -261,6 +264,12 @@ WEB_SOURCE_EXTENSIONS = frozenset(
         ".vue",
         ".py",
         ".php",
+        ".go",
+        ".rb",
+        ".erb",
+        ".cs",
+        ".cshtml",
+        ".razor",
     }
 )
 
@@ -277,6 +286,12 @@ _EXTENSION_LANGUAGE: dict[str, LanguageKind] = {
     ".tsx": LanguageKind.TYPESCRIPT,
     ".py": LanguageKind.PYTHON,
     ".php": LanguageKind.PHP,
+    ".go": LanguageKind.GO,
+    ".rb": LanguageKind.RUBY,
+    ".erb": LanguageKind.RUBY,
+    ".cs": LanguageKind.CSHARP,
+    ".cshtml": LanguageKind.CSHARP,
+    ".razor": LanguageKind.CSHARP,
 }
 
 

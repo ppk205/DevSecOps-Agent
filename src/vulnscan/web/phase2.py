@@ -120,14 +120,30 @@ def unset_key(env_name: str, env: EnvFile | None = None) -> bool:
     return True
 
 
+def _scanner_image_present() -> bool:
+    """True when Docker has the scanner image that full scans run SpotBugs/ODC in."""
+    from vulnscan.infra.full_scan import IMAGE
+    from vulnscan.scanners.process import run_command
+
+    try:
+        return run_command(["docker", "image", "inspect", IMAGE], timeout=10).succeeded
+    except OSError:
+        return False
+
+
 def probe_tools(with_versions: bool = False) -> list[dict[str, Any]]:
-    """Fast tool health: ``which`` on PATH; versions only when asked."""
+    """Fast tool health: ``which`` on PATH; versions only when asked.
+
+    SpotBugs and Dependency-Check also count as available when Docker has the
+    scanner image, because full-profile scans run them in that container.
+    """
     from vulnscan.scanners.base import AdapterRegistry
     from vulnscan.scanners.platform import which
 
     registry = AdapterRegistry.default()
     order = ["semgrep", "gitleaks", "spotbugs", "owasp-dependency-check"]
     out: list[dict[str, Any]] = []
+    image: bool | None = None
     for name in order:
         adapter = registry.get(name)
         if adapter is None:
@@ -135,6 +151,23 @@ def probe_tools(with_versions: bool = False) -> list[dict[str, Any]]:
         binary = adapter.binary_name
         resolved = which(binary)
         version: str | None = None
+        if resolved is None and name in {"spotbugs", "owasp-dependency-check"} and which("docker"):
+            if image is None:
+                image = _scanner_image_present()
+            if image:
+                from vulnscan.infra.full_scan import IMAGE
+
+                out.append(
+                    {
+                        "tool": name,
+                        "binary": binary,
+                        "path": f"docker:{IMAGE}",
+                        "available": True,
+                        "version": None,
+                        "hint": f"Runs in the {IMAGE} container for full profile scans",
+                    }
+                )
+                continue
         if resolved is not None and with_versions:
             try:
                 from vulnscan.scanners.tool_versions import probe_version

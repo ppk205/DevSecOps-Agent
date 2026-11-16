@@ -96,8 +96,9 @@
 <div class="topnav"><div class="topnav-inner">
   <a class="brand" href="/"><span class="brand-mark">DS</span><span class="brand-name">DEVSECOPS&nbsp;AGENT</span></a>
   <nav>
-    <a href="/" class="{% if request.url.path == '/' %}active{% endif %}">Targets</a>
-    {% if run %}<a href="/runs/{{ run.id }}" class="{% if request.url.path == '/runs/' ~ run.id %}active{% endif %}">Run {{ run.id }}</a><a href="/runs/{{ run.id }}/findings">Findings</a>{% endif %}
+    {% set current_path = request.url.path if request is defined else page_path|default('') %}
+    <a href="/" class="{% if current_path == '/' %}active{% endif %}">Targets</a>
+    {% if run %}<a href="/runs/{{ run.id }}" class="{% if current_path == '/runs/' ~ run.id %}active{% endif %}">Run {{ run.id }}</a><a href="/runs/{{ run.id }}/findings">Findings</a>{% endif %}
   </nav>
 </div></div>
 <main>{% block content %}{% endblock %}</main>

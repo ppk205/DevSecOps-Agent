@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { isMock } from "../mock/mockClient";
 import { NotificationsBell } from "../components/NotificationsBell";
+import { OutboundNotifications } from "../components/OutboundNotifications";
 import { StripeDivider } from "../components/StripeDivider";
 import { useLang, useStrings } from "../i18n/lang";
 
@@ -48,6 +49,7 @@ export function Shell() {
           </div>
           <div className="ml-auto flex shrink-0 items-center gap-3">
             <NotificationsBell />
+            <OutboundNotifications />
             <div role="group" aria-label={en.shell.language} className="flex items-center border border-hairline">
               {(["en", "vi"] as const).map((code) => (
                 <button
@@ -68,13 +70,6 @@ export function Shell() {
                 {en.common.mockBadge}
               </span>
             )}
-            <a
-              href="/"
-              className="label-m text-[10px] text-muted no-underline transition-colors hover:text-body"
-              title={en.shell.legacyTitle}
-            >
-              {en.app.legacyUi}
-            </a>
           </div>
         </nav>
         <StripeDivider />

@@ -10,11 +10,19 @@ type NotificationChannel struct {
 	ChatEnv    string   `json:"chat_env,omitempty"`
 	WebhookEnv string   `json:"webhook_env,omitempty"`
 }
+type WebhookNotificationChannel struct {
+	Enabled       bool     `json:"enabled"`
+	Events        []string `json:"events"`
+	URLEnv        string   `json:"url_env"`
+	SigningKeyEnv string   `json:"signing_key_env"`
+	AllowedHosts  []string `json:"allowed_hosts"`
+}
 type NotificationSettings struct {
-	SchemaVersion int                 `json:"schema_version"`
-	Mode          string              `json:"mode"`
-	Telegram      NotificationChannel `json:"telegram"`
-	Discord       NotificationChannel `json:"discord"`
+	SchemaVersion int                        `json:"schema_version"`
+	Mode          string                     `json:"mode"`
+	Telegram      NotificationChannel        `json:"telegram"`
+	Discord       NotificationChannel        `json:"discord"`
+	Webhook       WebhookNotificationChannel `json:"webhook"`
 }
 type NotificationEvent struct {
 	Kind    string `json:"kind"`
@@ -22,10 +30,11 @@ type NotificationEvent struct {
 	Message string `json:"message"`
 }
 type NotificationDelivery struct {
-	Channel string              `json:"channel"`
-	Status  string              `json:"status"`
-	Detail  string              `json:"detail"`
-	Events  []NotificationEvent `json:"events"`
+	Channel    string              `json:"channel"`
+	Status     string              `json:"status"`
+	Detail     string              `json:"detail"`
+	Events     []NotificationEvent `json:"events"`
+	DeliveryID string              `json:"delivery_id,omitempty"`
 }
 type NotificationResponse struct {
 	Settings   *NotificationSettings  `json:"settings,omitempty"`

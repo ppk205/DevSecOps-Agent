@@ -74,6 +74,30 @@ class TestExploreHandlers:
         assert "error" not in result
         assert len(result["hits"]) == 50
 
+    def test_list_files_over_cap_returns_bounded_listing(self, tmp_path):
+        # BenchmarkPython has 2505 files: a bare error left the model retrying blind.
+        for d in ("a", "b"):
+            (tmp_path / d).mkdir()
+            for i in range(1001):
+                (tmp_path / d / f"f{i}.py").write_text("x\n")
+        handlers = build_tool_handlers(str(tmp_path), [])
+        result = handlers["list_files"]({"dir": ".", "glob": "*"})
+        assert "error" not in result
+        assert result["truncated"] is True
+        assert result["total"] == 2002
+        assert len(result["files"]) == 200
+        assert result["dirs"] == {"a": 1001, "b": 1001}
+
+    def test_grep_over_cap_scans_first_files(self, tmp_path):
+        for i in range(2001):
+            (tmp_path / f"f{i:04}.py").write_text("os.system(cmd)\n" if i == 0 else "x\n")
+        handlers = build_tool_handlers(str(tmp_path), [])
+        result = handlers["grep_code"]({"pattern": "os\\.system", "glob": "*"})
+        assert "error" not in result
+        assert result["truncated"] is True
+        assert result["total_files"] == 2001
+        assert [h["file"] for h in result["hits"]] == ["f0000.py"]
+
 
 class TestHunt:
     def test_fake_client_two_vuln_hunt(self, tmp_path):
@@ -384,6 +408,24 @@ class TestHuntAll:
             families=["java"],
         )
         assert [p["family"] for p in result["passes"]] == ["java", "logic"]
+
+    def test_inventory_detects_family_beyond_tool_cap(self, tmp_path):
+        # More files than list_files returns must still select the Python pass.
+        from vulnscan.ai.hunt import hunt_all
+        from vulnscan.providers.client import ChatResponse
+
+        for i in range(2001):
+            (tmp_path / f"t{i:04}.html").write_text("<p>\n")
+        (tmp_path / "zz_app.py").write_text("import os\n")
+
+        class _EmptyClient:
+            def chat(self, messages, **kwargs):
+                return ChatResponse(content="[]", tool_calls=[], usage={})
+
+        result = hunt_all(
+            snapshot_root=str(tmp_path), client=_EmptyClient(), model="m", logic_pass=False
+        )
+        assert [p["family"] for p in result["passes"]] == ["python", "generic"]
 
 
 class TestDeepHunt:

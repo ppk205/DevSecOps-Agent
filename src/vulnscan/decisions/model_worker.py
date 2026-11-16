@@ -19,7 +19,7 @@ def _resolve_device(requested: str) -> str:
     Pure helper so tests can pin the matrix without loading a model.
     """
     try:
-        import torch
+        torch = importlib.import_module("torch")
     except ImportError:
         return "cpu"
     if str(requested or "").lower() == "cuda" and torch.cuda.is_available():

@@ -8,6 +8,16 @@
 
 ## 1. Ownership
 
+The Python web root now redirects to `/app/`, and notification settings are
+visible in the React navigation. The older run/finding pages and native Go
+dashboard remain while their replacement and client parity are incomplete
+(FR-66, FR-75).
+
+Notification feed reads no longer send the legacy `WEBHOOK_URL` gate-failure
+request. Local feed records remain. The shared service, CLI and web settings
+support signed generic webhooks; terminal controls and end-to-end parity remain
+in progress (FR-75).
+
 Validation/scoring correction (2026-11-04, FR-50/53/56): the validator now
 requires scoped independent evidence with explicit polarity and provenance for
 terminal status. Model confidence, raw detections, duplicate identities,
@@ -52,6 +62,8 @@ run identity, history, reports and cancellation boundaries. AI retries preserve
 the saved configuration and use the Python retry path.
 
 Workspace exposes scan mode, provider/model choices and bounded review settings.
+The `provider-setup` CLI guides local provider and key configuration without
+contacting the provider; `provider-add` remains available for scripted setup.
 Effective review shows provider readiness. Activity records call/tool progress
 and returned explanations; finding details retrieve assessments for the matching
 run and finding. Provider message serialization now includes tool-call IDs and

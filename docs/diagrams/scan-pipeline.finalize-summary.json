@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "finalize",
+  "status": "fail",
+  "type": "architecture",
+  "quality": "showcase",
+  "specification": {
+    "path": "D:\\phuc\\Code Project\\DevSecOps-Agent\\.archify\\architecture-scan-pipeline-20261115-175839\\candidate.json",
+    "sha256": "088d9cfff16f3b644e0242c2752f555bccb300f25402f128285813b315bda012",
+    "bytes": 9983
+  },
+  "artifact": {
+    "path": "D:\\phuc\\Code Project\\DevSecOps-Agent\\docs\\diagrams\\scan-pipeline.html",
+    "sha256": "ced92804e2eb1827f25cde6baf34b42786a8cf2f080e68e9c60c034a9b264891",
+    "bytes": 868917
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "fail"
+  },
+  "failedStage": "browser-check",
+  "diagnostics": [
+    {
+      "code": "viewer/browser-check-runtime",
+      "severity": "error",
+      "message": "browser-check could not complete its Chrome inspection.",
+      "subject": {
+        "artifact": "D:\\phuc\\Code Project\\DevSecOps-Agent\\docs\\diagrams\\scan-pipeline.html"
+      },
+      "evidence": {
+        "reason": "Temporary directory ancestor identity is unavailable: C:\\Users\\Admin\\AppData\\Local\\Temp"
+      },
+      "supportedFixes": [
+        "resolve the reported Chrome inspection error, then rerun browser-check"
+      ]
+    }
+  ],
+  "diagnosticSummary": {
+    "total": 1,
+    "shown": 1,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "D:\\phuc\\Code Project\\DevSecOps-Agent\\docs\\diagrams\\scan-pipeline.finalize.json",
+    "summaryReceipt": "D:\\phuc\\Code Project\\DevSecOps-Agent\\docs\\diagrams\\scan-pipeline.finalize-summary.json",
+    "browserCheckReceipt": "D:\\phuc\\Code Project\\DevSecOps-Agent\\docs\\diagrams\\scan-pipeline.browser-check.json"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 2257,
+  "browserCheck": {
+    "requested": true,
+    "ran": false
+  }
+}

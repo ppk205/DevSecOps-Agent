@@ -18,13 +18,31 @@ __all__ = ["checkout", "service"]
 def test_cli_setup_asks_which_events_to_send(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     (tmp_path / "pyproject.toml").touch()
-    result = CliRunner().invoke(app, ["notifications", "configure"], input="manual\ny\ny\n1,4\n1\n")
+    result = CliRunner().invoke(
+        app, ["notifications", "configure"], input="manual\ny\ny\nn\n1,4\n1\n"
+    )
     assert result.exit_code == 0, result.output
     cfg = load_settings()
     assert cfg.mode == "manual" and cfg.telegram.enabled and cfg.discord.enabled
     assert cfg.telegram.events == ["scan_completed", "gate_failed"]
     assert cfg.discord.events == ["scan_completed"]
     assert "Which events" in result.output
+
+
+def test_cli_configures_webhook_references_and_host_without_sending(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "pyproject.toml").touch()
+    result = CliRunner().invoke(
+        app,
+        ["notifications", "configure"],
+        input="manual\nn\nn\ny\n1\nhooks.example.com\nCUSTOM_URL\nCUSTOM_KEY\n",
+    )
+    assert result.exit_code == 0, result.output
+    cfg = load_settings().webhook
+    assert cfg.enabled and cfg.events == ["scan_completed"]
+    assert cfg.allowed_hosts == ["hooks.example.com"]
+    assert cfg.url_env == "CUSTOM_URL" and cfg.signing_key_env == "CUSTOM_KEY"
+    assert "No messages were sent" in result.output
 
 
 def test_rpc_settings_save_rejects_values_without_echo(service, tmp_path, monkeypatch):

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "903a7c0a-dfaf-4620-be26-eb2d4284b5c2",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "D:\\phuc\\Code Project\\DevSecOps-Agent\\.archify\\architecture-scan-pipeline-detail-20261115-185542\\candidate.json",
+  "output": "D:\\phuc\\Code Project\\DevSecOps-Agent\\docs\\diagrams\\scan-pipeline.html",
+  "specification": {
+    "sha256": "287657eb2096198803099ac9eed07287b6f0cec020464b8c5b73d4ca40638f5c",
+    "bytes": 11312
+  },
+  "artifact": {
+    "sha256": "6715eb7189d15c8c716cca630235f588eedc339f29a0e43c7104605e7a67fe9f",
+    "bytes": 860031
+  }
+}

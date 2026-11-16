@@ -399,7 +399,7 @@ class OSVAdapter(ScannerAdapter):
             reason=None,
         )
 
-    def _skipped_offline(self, spec: ScanSpecification, started: Any, reason: str) -> Any:
+    def _skipped_offline(self, spec: ScanSpecification, started: Any, reason: str) -> ScannerResult:
         return ScannerResult(
             run_id=spec.run_id or "unassigned",
             tool=self.tool,

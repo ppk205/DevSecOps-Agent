@@ -163,7 +163,22 @@ def build_tool_handlers(
             except (OSError, ValueError) as exc:
                 return {"error": f"cannot list {rel[:200]}: {exc}"}
             if len(paths) > 2000:
-                return {"error": f"too many files match ({len(paths)} > 2000); narrow the glob"}
+                # A bare error left models retrying blind; give a bounded page plus
+                # per-directory counts so the next call can narrow the dir or glob.
+                dirs: dict[str, int] = {}
+                for p in paths:
+                    top = p.split("/", 1)[0] if "/" in p else "."
+                    dirs[top] = dirs.get(top, 0) + 1
+                top_dirs = dict(sorted(dirs.items(), key=lambda kv: -kv[1])[:50])
+                return {
+                    "dir": rel[:200],
+                    "glob": glob[:200],
+                    "files": paths[:200],
+                    "truncated": True,
+                    "total": len(paths),
+                    "dirs": top_dirs,
+                    "note": "first 200 files shown; narrow dir or glob for more",
+                }
             return {"dir": rel[:200], "glob": glob[:200], "files": paths}
         except Exception as exc:  # noqa: BLE001 - tool boundary never raises
             return {"error": str(exc)[:500]}
@@ -187,13 +202,13 @@ def build_tool_handlers(
                 candidates = [p for p in root.rglob(glob) if p.is_file()]
             except (OSError, ValueError) as exc:
                 return {"error": f"cannot scan snapshot: {exc}"}
-            if len(candidates) > 2000:
-                return {
-                    "error": f"too many files match ({len(candidates)} > 2000); narrow the glob"
-                }
+            total_files = len(candidates)
+            # ponytail: over 2000 files only the first 2000 (sorted) are read; the
+            # result says so and the caller can narrow the glob for the rest.
+            candidates = sorted(candidates)[:2000]
             resolved = root.resolve()
             hits: list[dict[str, Any]] = []
-            for path in sorted(candidates):
+            for path in candidates:
                 try:
                     text = path.read_text(encoding="utf-8", errors="replace")
                 except OSError:
@@ -211,11 +226,15 @@ def build_tool_handlers(
                             break
                 if len(hits) >= max_hits:
                     break
-            return {
+            out: dict[str, Any] = {
                 "pattern": pattern[:500],
                 "hits": hits,
-                "truncated": len(hits) >= max_hits,
+                "truncated": len(hits) >= max_hits or total_files > 2000,
             }
+            if total_files > 2000:
+                out["total_files"] = total_files
+                out["note"] = "only the first 2000 matching files were searched; narrow the glob"
+            return out
         except Exception as exc:  # noqa: BLE001 - tool boundary never raises
             return {"error": str(exc)[:500]}
 

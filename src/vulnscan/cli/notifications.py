@@ -12,7 +12,7 @@ from vulnscan.notifications.service import deliveries, send_selected
 from vulnscan.notifications.settings import load_settings, save_settings
 from vulnscan.storage.database import init_db
 
-app = typer.Typer(help="Choose Telegram/Discord events and review pending digests.")
+app = typer.Typer(help="Choose notification events and review pending digests.")
 
 
 def _choose(prompt: str, options: list[str], *, default: str = "") -> list[str]:
@@ -38,23 +38,31 @@ def configure() -> None:
         if mode not in {"manual", "automatic"}:
             raise ValueError("Choose manual or automatic")
         cfg["mode"] = mode
-        for channel in ("telegram", "discord"):
+        for channel in ("telegram", "discord", "webhook"):
             cfg[channel]["enabled"] = typer.confirm(
                 f"Enable {channel.title()}?", default=cfg[channel]["enabled"]
             )
-        for channel in ("telegram", "discord"):
+        for channel in ("telegram", "discord", "webhook"):
             if cfg[channel]["enabled"]:
                 cfg[channel]["events"] = _choose(
                     f"Which events should {channel.title()} receive?", list(EVENT_LABELS)
                 )
+                if channel == "webhook":
+                    hosts = typer.prompt("Allowed exact hostnames (comma-separated)")
+                    cfg[channel]["allowed_hosts"] = [host.strip() for host in hosts.split(",")]
+                    cfg[channel]["url_env"] = typer.prompt(
+                        "URL environment variable name", default=cfg[channel]["url_env"]
+                    )
+                    cfg[channel]["signing_key_env"] = typer.prompt(
+                        "Signing key environment variable name",
+                        default=cfg[channel]["signing_key_env"],
+                    )
         save_settings(cfg)
     except (OSError, ValueError) as exc:
         typer.echo(str(exc), err=True)
         raise typer.Exit(1) from None
     typer.echo("Notification preferences saved. No messages were sent.")
-    typer.echo(
-        "Save credentials with `env set`: DEVSEC_TELEGRAM_BOT_TOKEN, DEVSEC_TELEGRAM_CHAT_ID, DEVSEC_DISCORD_WEBHOOK_SECRET."
-    )
+    typer.echo("Save credentials with `env set` using the configured environment variable names.")
 
 
 @app.command("settings")
@@ -120,7 +128,9 @@ def review(run_id: str, db_path: str = typer.Option("vulnscan.db", "--db-path"))
 def send(
     run_id: str,
     events: str = typer.Option(..., "--events", help="Comma-separated event IDs."),
-    channels: str = typer.Option(..., "--channels", help="telegram,discord or either."),
+    channels: str = typer.Option(
+        ..., "--channels", help="Comma-separated telegram, discord, webhook."
+    ),
     db_path: str = typer.Option("vulnscan.db", "--db-path"),
     retry: bool = typer.Option(
         False,

@@ -434,10 +434,11 @@ export interface OutboundChannel {
   webhook_env?: string;
 }
 export interface OutboundSettings {
-  schema_version: 1;
+  schema_version: 2;
   mode: "manual" | "automatic";
   telegram: OutboundChannel;
   discord: OutboundChannel;
+  webhook: OutboundChannel & { url_env: string; signing_key_env: string; allowed_hosts: string[] };
 }
 export interface OutboundConfig { settings: OutboundSettings; events: Record<string, string> }
 export interface OutboundReceipt {
@@ -448,5 +449,6 @@ export interface OutboundReceipt {
     detail: string;
     events: Array<{ kind: string; label: string; message: string }>;
     selected_events: string[];
+    delivery_id?: string;
   }>;
 }

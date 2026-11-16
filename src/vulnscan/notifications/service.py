@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import json
 import logging
+import os
+import uuid
 from typing import Any
 
 from sqlalchemy import select, update
@@ -15,9 +17,10 @@ from vulnscan.infra.envfile import EnvFile
 from vulnscan.storage.database import get_session
 from vulnscan.storage.models import FindingORM, NotificationDeliveryORM, RunORM
 
-from .events import EVENT_LABELS, events_for_scan
+from .events import EVENT_LABELS, build_webhook_body, events_for_scan
 from .settings import load_settings, save_settings
 from .transports import DeliveryResult, send_discord, send_telegram
+from .webhook import destination_fingerprint, send_webhook
 
 
 def _run(session: Session, identity: int | str) -> RunORM:
@@ -31,7 +34,7 @@ def _run(session: Session, identity: int | str) -> RunORM:
 
 
 def _receipt(row: NotificationDeliveryORM) -> dict[str, Any]:
-    return {
+    result = {
         "id": row.id,
         "channel": row.channel,
         "status": row.status,
@@ -39,6 +42,18 @@ def _receipt(row: NotificationDeliveryORM) -> dict[str, Any]:
         "events": json.loads(row.events_json),
         "selected_events": json.loads(row.selected_events_json),
     }
+    if row.channel == "webhook":
+        result["delivery_id"] = row.delivery_key
+    return result
+
+
+def _destination(config: Any) -> str | None:
+    url = os.environ.get(config.url_env, "")
+    if not url:
+        return None
+    return destination_fingerprint(
+        url, config.url_env, config.signing_key_env, config.allowed_hosts
+    )
 
 
 def deliveries(db_path: str, run_id: int | str) -> dict[str, Any]:
@@ -56,9 +71,11 @@ def deliveries(db_path: str, run_id: int | str) -> dict[str, Any]:
 def offer_run(db_path: str, run_id: int | str) -> dict[str, Any]:
     """Called at completion; saved manual rules create drafts, automatic rules send."""
     cfg = load_settings()
-    channels = {"telegram": cfg.telegram, "discord": cfg.discord}
+    channels = {"telegram": cfg.telegram, "discord": cfg.discord, "webhook": cfg.webhook}
     if not any(c.enabled and c.events for c in channels.values()):
         return {"mode": cfg.mode, "status": "disabled", "deliveries": []}
+    if cfg.webhook.enabled and cfg.webhook.events:
+        EnvFile().load_into_environ()
     with get_session(db_path) as session:
         run = _run(session, run_id)
         if run.status not in {"completed", "failed", "cancelled", "interrupted"}:
@@ -88,7 +105,13 @@ def offer_run(db_path: str, run_id: int | str) -> dict[str, Any]:
                 ):
                     session.add(
                         NotificationDeliveryORM(
-                            run_id=pk, channel=channel, events_json=json.dumps(candidates)
+                            run_id=pk,
+                            channel=channel,
+                            events_json=json.dumps(candidates),
+                            delivery_key=str(uuid.uuid4()) if channel == "webhook" else None,
+                            destination_fingerprint=_destination(cfg.webhook)
+                            if channel == "webhook"
+                            else None,
                         )
                     )
         except IntegrityError:
@@ -110,7 +133,7 @@ def send_selected(
     retry: bool = False,
 ) -> dict[str, Any]:
     """Explicit operator send. Never retry an uncertain delivery automatically."""
-    if not event_kinds or not channels or set(channels) - {"telegram", "discord"}:
+    if not event_kinds or not channels or set(channels) - {"telegram", "discord", "webhook"}:
         raise ValueError("Choose events and destinations before sending")
     cfg = load_settings()
     rows = deliveries(db_path, run_id)["deliveries"]
@@ -119,7 +142,9 @@ def send_selected(
     if len(chosen) != len(set(channels)):
         raise ValueError("No notification draft for the selected destination")
     for row in chosen:
-        config = cfg.telegram if row["channel"] == "telegram" else cfg.discord
+        config = {"telegram": cfg.telegram, "discord": cfg.discord, "webhook": cfg.webhook}[
+            row["channel"]
+        ]
         if not config.enabled:
             raise ValueError("Selected destination is disabled")
         available = {e["kind"] for e in row["events"]} & set(config.events)
@@ -130,12 +155,38 @@ def send_selected(
         raise ValueError("Event was not offered or selected in settings")
     EnvFile().load_into_environ()
     for row in chosen:
-        config = cfg.telegram if row["channel"] == "telegram" else cfg.discord
+        config = {"telegram": cfg.telegram, "discord": cfg.discord, "webhook": cfg.webhook}[
+            row["channel"]
+        ]
         selected = [
             e for e in row["events"] if e["kind"] in event_kinds and e["kind"] in config.events
         ]
         claimable = ["pending", "failed", "unknown", "unconfigured"] if retry else ["pending"]
         with get_session(db_path) as session:
+            existing = session.get(NotificationDeliveryORM, row["id"])
+            assert existing is not None
+            body = None
+            fingerprint = None
+            if row["channel"] == "webhook":
+                fingerprint = _destination(cfg.webhook)
+                if (
+                    existing.destination_fingerprint
+                    and existing.destination_fingerprint != fingerprint
+                ):
+                    raise ValueError("Webhook destination changed since the draft was offered")
+                selected_kinds = [e["kind"] for e in selected]
+                if existing.payload_json is not None:
+                    if json.loads(existing.selected_events_json) != selected_kinds:
+                        raise ValueError("Webhook retry must retain the selected events")
+                    body = existing.payload_json.encode("utf-8")
+                else:
+                    run = _run(session, run_id)
+                    body = build_webhook_body(
+                        run.public_id or str(run.id),
+                        run.status,
+                        selected,
+                        existing.delivery_key or "",
+                    )
             claimed = session.execute(
                 update(NotificationDeliveryORM)
                 .where(
@@ -146,6 +197,14 @@ def send_selected(
                     status="sending",
                     detail="Delivery in progress; do not repeat",
                     selected_events_json=json.dumps([e["kind"] for e in selected]),
+                    **(
+                        {
+                            "payload_json": body.decode("utf-8"),
+                            "destination_fingerprint": fingerprint,
+                        }
+                        if body is not None
+                        else {}
+                    ),
                 )
             )
             if claimed.rowcount != 1:  # type: ignore[attr-defined]
@@ -156,8 +215,21 @@ def send_selected(
                 result = send_telegram(
                     message, token_env=cfg.telegram.token_env, chat_env=cfg.telegram.chat_env
                 )
-            else:
+            elif row["channel"] == "discord":
                 result = send_discord(message, webhook_env=cfg.discord.webhook_env)
+            else:
+                assert body is not None
+                if fingerprint is None:
+                    result = DeliveryResult("unconfigured", "Webhook destination is not configured")
+                else:
+                    result = send_webhook(
+                        body,
+                        delivery_id=row["delivery_id"],
+                        url_env=cfg.webhook.url_env,
+                        signing_key_env=cfg.webhook.signing_key_env,
+                        allowed_hosts=cfg.webhook.allowed_hosts,
+                        expected_fingerprint=fingerprint,
+                    )
         except Exception:  # noqa: BLE001 - isolate delivery from scan outcome
             # No raw exception text: a transport exception can contain a credential URL.
             result = DeliveryResult(

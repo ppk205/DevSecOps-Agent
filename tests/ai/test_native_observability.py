@@ -131,6 +131,64 @@ def test_fr49_failed_http_call_is_never_reported_as_completed():
     assert events[-1]["usage"] == {}
 
 
+@pytest.mark.parametrize("code", [502, 503, 504])
+def test_transient_gateway_errors_are_retried(code, monkeypatch):
+    request = httpx.Request("POST", "https://offline.invalid/v1/chat/completions")
+    failure = httpx.HTTPStatusError(
+        "gateway", request=request, response=httpx.Response(code, request=request)
+    )
+    ok = MagicMock()
+    ok.json.return_value = {"choices": [{"message": {"content": "answer"}}]}
+    monkeypatch.setattr("time.sleep", lambda _: None)
+    with (
+        patch("vulnscan.providers.client.httpx.Client") as transport,
+        patch.object(ProviderClient, "_get_key", return_value="synthetic-credential"),
+    ):
+        post = transport.return_value.__enter__.return_value.post
+        post.side_effect = [failure, ok]
+        reply = ProviderClient(_profile(max_retries=2)).chat([ChatMessage("user", "input")])
+    assert reply.content == "answer"
+    assert post.call_count == 2
+
+
+@pytest.mark.parametrize("code", [429, 499])
+def test_rate_limit_and_client_closed_wait_30_seconds_then_retry(code, monkeypatch):
+    request = httpx.Request("POST", "https://offline.invalid/v1/chat/completions")
+    failure = httpx.HTTPStatusError(
+        "busy", request=request, response=httpx.Response(code, request=request)
+    )
+    ok = MagicMock()
+    ok.json.return_value = {"choices": [{"message": {"content": "answer"}}]}
+    waits = []
+    monkeypatch.setattr("time.sleep", waits.append)
+    with (
+        patch("vulnscan.providers.client.httpx.Client") as transport,
+        patch.object(ProviderClient, "_get_key", return_value="synthetic-credential"),
+    ):
+        post = transport.return_value.__enter__.return_value.post
+        post.side_effect = [failure, failure, ok]
+        reply = ProviderClient(_profile(max_retries=3)).chat([ChatMessage("user", "input")])
+    assert reply.content == "answer"
+    assert waits == [30.0, 30.0]
+
+
+def test_client_errors_other_than_rate_limit_are_not_retried(monkeypatch):
+    request = httpx.Request("POST", "https://offline.invalid/v1/chat/completions")
+    failure = httpx.HTTPStatusError(
+        "bad", request=request, response=httpx.Response(400, request=request)
+    )
+    monkeypatch.setattr("time.sleep", lambda _: None)
+    with (
+        patch("vulnscan.providers.client.httpx.Client") as transport,
+        patch.object(ProviderClient, "_get_key", return_value="synthetic-credential"),
+    ):
+        post = transport.return_value.__enter__.return_value.post
+        post.side_effect = failure
+        with pytest.raises(ProviderError):
+            ProviderClient(_profile(max_retries=2)).chat([ChatMessage("user", "input")])
+    assert post.call_count == 1
+
+
 def test_fr49_final_report_does_not_label_missing_usage_as_zero(monkeypatch):
     from vulnscan.reporting import final_report
 

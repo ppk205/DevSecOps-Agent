@@ -92,11 +92,9 @@ def client(tmp_path: Path) -> TestClient:
 
 class TestFourScreens:
     def test_screen_one_target_registration(self, client: TestClient):
-        response = client.get("/")
-        assert response.status_code == 200
-        assert "Target registration" in response.text
-        assert 'name="target_repository_url"' in response.text
-        assert 'name="_csrf"' in response.text
+        response = client.get("/", follow_redirects=False)
+        assert response.status_code == 307
+        assert response.headers["location"] == "/app/"
 
     def test_screen_two_run_progress(self, client: TestClient):
         response = client.get(f"/runs/{client.run_pk}")

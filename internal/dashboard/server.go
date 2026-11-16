@@ -182,6 +182,7 @@ func (s *Server) Handler() http.Handler {
 }
 func (s *Server) render(w http.ResponseWriter, r *http.Request, name string, data map[string]any) {
 	data["csrf_token"] = r.Context().Value(csrfKey{})
+	data["page_path"] = r.URL.Path
 	var html string
 	if err := s.Backend.Client.Call(r.Context(), "render_page", map[string]any{"template": name, "context": data}, &html, nil); err != nil {
 		s.failure(w, err)

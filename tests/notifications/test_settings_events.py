@@ -11,8 +11,10 @@ from vulnscan.notifications.settings import NotificationSettings, load_settings,
 
 def test_destinations_and_events_default_to_disabled(tmp_path):
     settings = load_settings(base=tmp_path)
+    assert settings.schema_version == 2
     assert not settings.telegram.enabled and not settings.discord.enabled
     assert settings.telegram.events == [] and settings.discord.events == []
+    assert not settings.webhook.enabled and settings.webhook.events == []
 
 
 def test_settings_store_references_and_preserve_selected_events(tmp_path):
@@ -27,6 +29,8 @@ def test_settings_store_references_and_preserve_selected_events(tmp_path):
     loaded = load_settings(base=tmp_path)
     assert loaded == settings
     data = json.loads((tmp_path / ".devsec-notifications.json").read_text())
+    assert data["schema_version"] == 2
+    assert data["webhook"]["enabled"] is False and data["webhook"]["events"] == []
     assert data["telegram"]["token_env"] == "DEVSEC_TELEGRAM_BOT_TOKEN"
     assert "token" not in data["telegram"] and "webhook_url" not in data["discord"]
 

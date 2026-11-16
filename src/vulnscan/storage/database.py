@@ -159,6 +159,32 @@ def migrate(engine: Engine) -> None:
             conn.exec_driver_sql("INSERT INTO schema_migrations VALUES (6)")
         # Base.metadata.create_all above adds the outbound ledger to older databases.
         conn.exec_driver_sql("INSERT OR IGNORE INTO schema_migrations VALUES (7)")
+        if not conn.exec_driver_sql("SELECT 1 FROM schema_migrations WHERE version = 8").first():
+            fix_columns = {
+                row[1] for row in conn.exec_driver_sql("PRAGMA table_info(fix_proposals)")
+            }
+            if "provenance_json" not in fix_columns:
+                conn.exec_driver_sql(
+                    "ALTER TABLE fix_proposals ADD COLUMN provenance_json TEXT NOT NULL DEFAULT '{}'"
+                )
+            conn.exec_driver_sql(
+                "CREATE UNIQUE INDEX IF NOT EXISTS remediation_active_apply ON remediation_attempts(proposal_id) WHERE kind = 'apply' AND state = 'running'"
+            )
+            conn.exec_driver_sql("INSERT INTO schema_migrations VALUES (8)")
+        if not conn.exec_driver_sql("SELECT 1 FROM schema_migrations WHERE version = 9").first():
+            delivery_columns = {
+                row[1] for row in conn.exec_driver_sql("PRAGMA table_info(notification_deliveries)")
+            }
+            for name, sql_type in {
+                "delivery_key": "VARCHAR(36)",
+                "payload_json": "TEXT",
+                "destination_fingerprint": "VARCHAR(64)",
+            }.items():
+                if name not in delivery_columns:
+                    conn.exec_driver_sql(
+                        f"ALTER TABLE notification_deliveries ADD COLUMN {name} {sql_type}"
+                    )
+            conn.exec_driver_sql("INSERT INTO schema_migrations VALUES (9)")
 
 
 def init_db(db_path: str | Path = "vulnscan.db") -> None:
