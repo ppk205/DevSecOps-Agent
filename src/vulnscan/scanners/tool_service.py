@@ -265,6 +265,17 @@ class ScannerToolService:
         )
 
     def _record_result(self, cache_key: str, result: ScannerResult) -> None:
+        if result.status == RunStatus.FAILED and result.errors and all(
+            any(tok in err.lower() for tok in ("not found", "unavailable", "no such file"))
+            for err in result.errors
+        ):
+            result = result.model_copy(
+                update={
+                    "status": RunStatus.SKIPPED,
+                    "warnings": [*result.warnings, *result.errors],
+                    "errors": [],
+                }
+            )
         self._cached_results[cache_key] = result
         existing_ids = {o.observation_id for o in self._cached_observations}
         for obs in result.observations:
@@ -283,10 +294,18 @@ class ScannerToolService:
             local_pack = rules_dir / (raw if raw.endswith(".yml") else f"{raw}.yml")
             if local_pack.is_file():
                 return [str(local_pack)]
-            # Allow bundled file path inside rules_dir or Semgrep registry pack (e.g. p/owasp-top-ten)
-            if raw.startswith(("p/", "r/", "auto")):
-                return [raw]
-            return [raw]
+            raw_fam = normalize_language_family(raw)
+            if raw_fam and _BUNDLED_SEMGREP_RULES.get(raw_fam):
+                fam_pack = rules_dir / _BUNDLED_SEMGREP_RULES[raw_fam]
+                if fam_pack.is_file():
+                    return [str(fam_pack)]
+            candidate_path = Path(raw)
+            if candidate_path.is_file():
+                return [str(candidate_path)]
+            # Non-existent symbolic ruleset names invented by LLMs (e.g.
+            # "security-audit", "default", "owasp") fall through to the
+            # language-matched bundled rule pack below so offline Semgrep
+            # never fails with exit code 7.
 
         fam = normalize_language_family(language)
         if fam:

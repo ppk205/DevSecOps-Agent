@@ -895,7 +895,7 @@ class ScanService:
             if (
                 config.mode == "hunt"
                 and hunt_status in {"completed", "partial"}
-                and ai_scanner_results
+                and any(r.is_complete for r in ai_scanner_results)
             ):
                 orchestration_mode = "ai_orchestrated"
                 for raw_result in ai_scanner_results:
