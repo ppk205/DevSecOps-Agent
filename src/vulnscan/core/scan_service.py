@@ -174,6 +174,69 @@ def reconcile(results: list[ScannerResult], manifest: dict[str, Any]) -> list[st
     return errors
 
 
+def _finalize_scanner_result(
+    result: ScannerResult,
+    *,
+    snapshot_root: Path,
+    output: Path,
+    spec: ScanSpecification,
+    run_id: str,
+) -> ScannerResult:
+    """Normalize paths, snippets, coverage counts, and persist scanner-<tool>.json."""
+    from vulnscan.contracts.artifact import ArtifactReference
+
+    for observation in result.observations:
+        coordinate = observation.location
+        source_path = (snapshot_root / coordinate.file_path).resolve()
+        if not source_path.is_relative_to(snapshot_root):
+            raise ValueError("scanner evidence path escapes the source snapshot")
+        coordinate.file_path = source_path.relative_to(snapshot_root).as_posix()
+        if source_path.is_file():
+            if result.tool.value == "gitleaks":
+                coordinate.snippet = "[REDACTED: secret evidence]"
+            else:
+                lines = source_path.read_text(encoding="utf-8", errors="replace").splitlines()
+                coordinate.snippet = "\n".join(
+                    lines[
+                        max(0, coordinate.line_start - 1) : min(
+                            len(lines), coordinate.line_start + 2
+                        )
+                    ]
+                )[:2000]
+    result = ScannerResult.model_validate(sanitize(result.model_dump(mode="json")))
+    if result.run_id != run_id:
+        raise ValueError("scanner result identity does not match the scan specification")
+    for observation in result.observations:
+        observation.rule_pack_version = spec.rules_packs_version
+    units = {
+        (c.unit_language.value, c.unit_path): c
+        for c in result.coverage_records
+        if c.eligible
+    }
+    result.eligible_units = len(units)
+    result.analyzed_units = sum(c.status.value == "analyzed" for c in units.values())
+    result.failed_units = sum(
+        c.status.value in {"failed", "not_processed"} for c in units.values()
+    )
+    result.skipped_units = sum(
+        c.status.value in {"skipped", "unsupported"} for c in units.values()
+    )
+    result.coverage_percent = 100.0 * result.analyzed_units / len(units) if units else 0.0
+    artifact = output / f"scanner-{result.tool.value}.json"
+    for observation in result.observations:
+        observation.raw_output_ref = str(artifact)
+    artifact.write_text(result.model_dump_json(indent=2), encoding="utf-8")
+    result.raw_output_refs.append(
+        ArtifactReference(
+            path=str(artifact),
+            checksum_sha256=hashlib.sha256(artifact.read_bytes()).hexdigest(),
+            mime_type="application/json",
+            size_bytes=artifact.stat().st_size,
+        )
+    )
+    return result
+
+
 class ScanService:
     def __init__(
         self, db_path: str = "vulnscan.db", registry: AdapterRegistry | None = None
@@ -666,6 +729,8 @@ class ScanService:
             "markdown": "",
             "ai_written": False,
         }
+        orchestration_mode = "deterministic"
+        ai_invoked_tools: list[str] = []
         try:
             persist("intake", "running")
             # Defaults for every stage below: the summary block after the
@@ -675,8 +740,9 @@ class ScanService:
             hunt_out = {}
             hunt_status = "skipped"
             hunt_detail = "scan ended before model hunt"
+            ai_scanner_results: list[ScannerResult] = []
             verified = []
-            comparison = {
+            comparison: dict[str, Any] = {
                 "agreed": [],
                 "model_only": [],
                 "scanner_only": [],
@@ -718,7 +784,11 @@ class ScanService:
             if config.mode != "hunt":
                 persist("model_hunt", "skipped", hunt_detail)
             if config.mode == "hunt":
-                persist("model_hunt", "running", "Model exploring snapshot for vulnerabilities")
+                persist(
+                    "model_hunt",
+                    "running",
+                    "AI orchestrator invoking security scanners and analyzing snapshot",
+                )
                 if not config.provider_profile:
                     from vulnscan.providers.profile_store import default_profile as _default_profile
 
@@ -729,39 +799,72 @@ class ScanService:
                             config.provider_model = _auto.default_model or None
                         hunt_detail = f"auto provider {_auto.id}"
                     else:
-                        hunt_detail = "no provider key configured — set a key to enable the model"
+                        hunt_detail = "no provider key configured — falling back to static scanners"
                         persist("model_hunt", "skipped", hunt_detail)
                 if config.provider_profile:
+                    hunt_client: Any = None
                     try:
+                        import inspect as _inspect
+
                         from vulnscan.ai.hunt import detect_families, hunt_all
                         from vulnscan.providers.budget import BudgetManager
                         from vulnscan.providers.client import ProviderClient
                         from vulnscan.providers.profile_store import load_profile
+                        from vulnscan.scanners.tool_service import ScannerToolService
 
                         hunt_profile = load_profile(config.provider_profile)
                         hunt_client = ProviderClient(hunt_profile, BudgetManager())
+                        hunt_scanner_service = ScannerToolService.from_registry(
+                            snapshot_root,
+                            self.registry,
+                            run_id=run_id,
+                            commit_sha=manifest["commit"],
+                        )
                         hunt_families = detect_families(
                             list(manifest.get("inventory") or [])
                             or list((manifest.get("files") or {}).keys())
                         )
-                        hunt_out = hunt_all(
-                            snapshot_root=str(snapshot_root),
-                            client=hunt_client,
-                            model=config.provider_model,
-                            families=hunt_families,
-                            logic_pass=True,
-                        )
+                        hunt_kwargs: dict[str, Any] = {
+                            "snapshot_root": str(snapshot_root),
+                            "client": hunt_client,
+                            "model": config.provider_model,
+                            "families": hunt_families,
+                            "logic_pass": True,
+                        }
+                        hunt_sig_params = _inspect.signature(hunt_all).parameters
+                        if "scanner_service" in hunt_sig_params:
+                            hunt_kwargs["scanner_service"] = hunt_scanner_service
+                        if "tool_first" in hunt_sig_params:
+                            hunt_kwargs["tool_first"] = True
+
+                        hunt_out = hunt_all(**hunt_kwargs)
                         hunt_candidates = [dict(c) for c in hunt_out.get("candidates", [])]
                         hunt_status = str(hunt_out.get("status", "partial"))
+                        ai_scanner_results = list(hunt_out.get("scanner_results") or []) or (
+                            hunt_scanner_service.executed_results()
+                        )
+                        ai_invoked_tools = list(hunt_out.get("tools_invoked") or []) or [
+                            r.tool.value for r in ai_scanner_results
+                        ]
+                        tools_note = (
+                            f"; scanners={','.join(ai_invoked_tools)}"
+                            if ai_invoked_tools
+                            else ""
+                        )
                         hunt_detail = (
                             f"{len(hunt_candidates)} candidates "
-                            f"in {hunt_out.get('rounds', 0)} rounds "
-                            f"({hunt_out.get('detail', '')})"
+                            f"in {hunt_out.get('rounds', 0)} rounds"
+                            f"{tools_note} ({hunt_out.get('detail', '')})"
                         )[:400]
                     except Exception as exc:  # noqa: BLE001 — hunt stage never fails a run
                         hunt_status = "failed"
                         hunt_detail = f"{type(exc).__name__}"
                         hunt_candidates = []
+                        ai_scanner_results = []
+                        ai_invoked_tools = []
+                    finally:
+                        if hunt_client is not None and hasattr(hunt_client, "cleanup_v0_chats"):
+                            hunt_client.cleanup_v0_chats()
                 if hunt_status not in {"skipped"}:
                     persist(
                         "model_hunt",
@@ -784,148 +887,158 @@ class ScanService:
                 registry=self.registry,
                 laya_config=advisory,
             )
-            for cfg in spec.tools:
-                if cancelled():
-                    raise ScanCancelled()
-                remaining = config.timeout - (time.monotonic() - started)
-                if remaining <= 0:
-                    raise TimeoutError("scan wall-clock limit exceeded")
-                persist(cfg.tool.value, "running")
-                adapter = self.registry.get(cfg.tool)
-                if adapter is None:
-                    errors.append(f"{cfg.tool.value}: adapter unavailable")
-                    persist(cfg.tool.value, "failed", errors[-1])
-                    continue
-                adapter.default_timeout = remaining
-                try:
-                    if config.profile == "full" and cfg.tool.value in {
-                        "spotbugs",
-                        "owasp-dependency-check",
-                    }:
-                        from vulnscan.infra.full_scan import run_isolated_tool
-                        from vulnscan.scanners.platform import which
 
-                        if which("docker") is None:
-                            # No Docker on this host: run the adapter in-process
-                            # instead of the isolated container. ODC without an
-                            # NVD DB degrades to the OSV.dev fallback inside
-                            # its own adapter; nothing fails the scan.
-                            if cfg.tool.value == "spotbugs":
-                                from vulnscan.infra.full_scan import ensure_maven_build
-
-                                build_issue = ensure_maven_build(
-                                    str(snapshot_root), min(600.0, remaining)
-                                )
-                                if build_issue is not None:
-                                    from vulnscan.contracts import RunStatus
-
-                                    now = datetime.now(UTC)
-                                    persist(cfg.tool.value, "skipped", build_issue)
-                                    results.append(
-                                        ScannerResult(
-                                            run_id=run_id,
-                                            tool=cfg.tool,
-                                            tool_version="unknown",
-                                            adapter_version="0.2.0",
-                                            status=RunStatus.SKIPPED,
-                                            started_at=now,
-                                            finished_at=now,
-                                            errors=[build_issue],
-                                        )
-                                    )
-                                    continue
-                            result = adapter.run(execution_spec, workdir=str(snapshot_root))
-                        else:
-                            result = run_isolated_tool(cfg.tool, execution_spec, remaining)
-                    else:
-                        result = adapter.run(execution_spec, workdir=str(snapshot_root))
-                    for observation in result.observations:
-                        coordinate = observation.location
-                        source_path = (snapshot_root / coordinate.file_path).resolve()
-                        if not source_path.is_relative_to(snapshot_root):
-                            raise ValueError("scanner evidence path escapes the source snapshot")
-                        coordinate.file_path = source_path.relative_to(snapshot_root).as_posix()
-                        if source_path.is_file():
-                            if result.tool.value == "gitleaks":
-                                coordinate.snippet = "[REDACTED: secret evidence]"
-                            else:
-                                lines = source_path.read_text(
-                                    encoding="utf-8", errors="replace"
-                                ).splitlines()
-                                coordinate.snippet = "\n".join(
-                                    lines[
-                                        max(0, coordinate.line_start - 1) : min(
-                                            len(lines), coordinate.line_start + 2
-                                        )
-                                    ]
-                                )[:2000]
-                    result = ScannerResult.model_validate(sanitize(result.model_dump(mode="json")))
-                    if result.run_id != run_id or result.tool != cfg.tool:
-                        raise ValueError(
-                            "scanner result identity does not match the scan specification"
+            # Unified Phase 1 + Phase 2: when AI orchestrated scanners directly
+            # during model_hunt, reuse those exact ScannerResult artifacts
+            # without re-running deterministic scanners. Otherwise fall back to
+            # running the baseline spec.tools scanners.
+            if (
+                config.mode == "hunt"
+                and hunt_status in {"completed", "partial"}
+                and ai_scanner_results
+            ):
+                orchestration_mode = "ai_orchestrated"
+                for raw_result in ai_scanner_results:
+                    if cancelled():
+                        raise ScanCancelled()
+                    tool_label = raw_result.tool.value
+                    try:
+                        finalized = _finalize_scanner_result(
+                            raw_result,
+                            snapshot_root=snapshot_root,
+                            output=output,
+                            spec=spec,
+                            run_id=run_id,
                         )
-                    for observation in result.observations:
-                        observation.rule_pack_version = spec.rules_packs_version
-                    units = {
-                        (c.unit_language.value, c.unit_path): c
-                        for c in result.coverage_records
-                        if c.eligible
-                    }
-                    result.eligible_units = len(units)
-                    result.analyzed_units = sum(
-                        c.status.value == "analyzed" for c in units.values()
-                    )
-                    result.failed_units = sum(
-                        c.status.value in {"failed", "not_processed"} for c in units.values()
-                    )
-                    result.skipped_units = sum(
-                        c.status.value in {"skipped", "unsupported"} for c in units.values()
-                    )
-                    result.coverage_percent = (
-                        100.0 * result.analyzed_units / len(units) if units else 0.0
-                    )
-                    artifact = output / f"scanner-{cfg.tool.value}.json"
-                    for observation in result.observations:
-                        observation.raw_output_ref = str(artifact)
-                    artifact.write_text(result.model_dump_json(indent=2), encoding="utf-8")
-                    from vulnscan.contracts.artifact import ArtifactReference
-
-                    result.raw_output_refs.append(
-                        ArtifactReference(
-                            path=str(artifact),
-                            checksum_sha256=hashlib.sha256(artifact.read_bytes()).hexdigest(),
-                            mime_type="application/json",
-                            size_bytes=artifact.stat().st_size,
+                        results.append(finalized)
+                        for scan_error in finalized.errors:
+                            errors.append(f"{tool_label}: {scan_error}")
+                        findings = pipeline.build_findings(results, run_id)
+                        persist(
+                            tool_label,
+                            finalized.status.value,
+                            f"AI-orchestrated ({len(finalized.observations)} observations)",
                         )
+                    except Exception as exc:  # noqa: BLE001
+                        errors.append(f"{tool_label}: {type(exc).__name__}: {exc}")
+                        persist(tool_label, "failed", errors[-1])
+                tool_outcomes = [r.status.value for r in results]
+                if any(s == "failed" for s in tool_outcomes):
+                    persist("scanners", "failed", "; ".join(errors[-len(results) :]))
+                elif any(s != "completed" for s in tool_outcomes):
+                    persist(
+                        "scanners",
+                        "partial",
+                        f"AI-orchestrated: {len(results)} scanner(s) invoked ({', '.join(ai_invoked_tools)})",
                     )
-                    results.append(result)
-                    # A scanner that reports internal errors (a ruleset that
-                    # failed to load, a tool that could not run) must not be
-                    # allowed to look like a clean repository: Semgrep exits 0
-                    # in that case, and the gate would pass on zero findings.
-                    for scan_error in result.errors:
-                        errors.append(f"{cfg.tool.value}: {scan_error}")
-                    findings = pipeline.build_findings(results, run_id)
-                    persist(cfg.tool.value, result.status.value, "; ".join(result.errors))
-                except Exception as exc:  # noqa: BLE001 ? application boundary preserves partial evidence
-                    errors.append(f"{cfg.tool.value}: {type(exc).__name__}: {exc}")
-                    persist(cfg.tool.value, "failed", errors[-1])
-            # Aggregate rail node: web runs pre-create a "scanners" placeholder
-            # row, so mark it from the per-tool outcomes instead of leaving it
-            # pending forever while semgrep/gitleaks show completed.
-            tool_outcomes = [r.status.value for r in results]
-            if len(tool_outcomes) < len(spec.tools):
-                tool_outcomes.append("failed")
-            if any(s == "failed" for s in tool_outcomes):
-                persist("scanners", "failed", "; ".join(errors[-len(spec.tools) :]))
-            elif any(s != "completed" for s in tool_outcomes):
-                persist(
-                    "scanners", "partial", f"{len(results)}/{len(spec.tools)} scanners completed"
-                )
+                else:
+                    persist(
+                        "scanners",
+                        "completed",
+                        f"AI-orchestrated: {len(results)} scanner(s) invoked ({', '.join(ai_invoked_tools)})",
+                    )
             else:
-                persist(
-                    "scanners", "completed", f"{len(results)}/{len(spec.tools)} scanners completed"
+                orchestration_mode = (
+                    "deterministic_fallback" if config.mode == "hunt" else "deterministic"
                 )
+                for cfg in spec.tools:
+                    if cancelled():
+                        raise ScanCancelled()
+                    remaining = config.timeout - (time.monotonic() - started)
+                    if remaining <= 0:
+                        raise TimeoutError("scan wall-clock limit exceeded")
+                    persist(cfg.tool.value, "running")
+                    adapter = self.registry.get(cfg.tool)
+                    if adapter is None:
+                        errors.append(f"{cfg.tool.value}: adapter unavailable")
+                        persist(cfg.tool.value, "failed", errors[-1])
+                        continue
+                    adapter.default_timeout = remaining
+                    try:
+                        if config.profile == "full" and cfg.tool.value in {
+                            "spotbugs",
+                            "owasp-dependency-check",
+                        }:
+                            from vulnscan.infra.full_scan import run_isolated_tool
+                            from vulnscan.scanners.platform import which
+
+                            if which("docker") is None:
+                                # No Docker on this host: run the adapter in-process
+                                # instead of the isolated container. ODC without an
+                                # NVD DB degrades to the OSV.dev fallback inside
+                                # its own adapter; nothing fails the scan.
+                                if cfg.tool.value == "spotbugs":
+                                    from vulnscan.infra.full_scan import ensure_maven_build
+
+                                    build_issue = ensure_maven_build(
+                                        str(snapshot_root), min(600.0, remaining)
+                                    )
+                                    if build_issue is not None:
+                                        from vulnscan.contracts import RunStatus
+
+                                        now = datetime.now(UTC)
+                                        persist(cfg.tool.value, "skipped", build_issue)
+                                        results.append(
+                                            ScannerResult(
+                                                run_id=run_id,
+                                                tool=cfg.tool,
+                                                tool_version="unknown",
+                                                adapter_version="0.2.0",
+                                                status=RunStatus.SKIPPED,
+                                                started_at=now,
+                                                finished_at=now,
+                                                errors=[build_issue],
+                                            )
+                                        )
+                                        continue
+                                result = adapter.run(execution_spec, workdir=str(snapshot_root))
+                            else:
+                                result = run_isolated_tool(cfg.tool, execution_spec, remaining)
+                        else:
+                            result = adapter.run(execution_spec, workdir=str(snapshot_root))
+                        if result.tool != cfg.tool:
+                            raise ValueError(
+                                "scanner result identity does not match the scan specification"
+                            )
+                        result = _finalize_scanner_result(
+                            result,
+                            snapshot_root=snapshot_root,
+                            output=output,
+                            spec=spec,
+                            run_id=run_id,
+                        )
+                        results.append(result)
+                        # A scanner that reports internal errors (a ruleset that
+                        # failed to load, a tool that could not run) must not be
+                        # allowed to look like a clean repository: Semgrep exits 0
+                        # in that case, and the gate would pass on zero findings.
+                        for scan_error in result.errors:
+                            errors.append(f"{cfg.tool.value}: {scan_error}")
+                        findings = pipeline.build_findings(results, run_id)
+                        persist(cfg.tool.value, result.status.value, "; ".join(result.errors))
+                    except Exception as exc:  # noqa: BLE001 ? application boundary preserves partial evidence
+                        errors.append(f"{cfg.tool.value}: {type(exc).__name__}: {exc}")
+                        persist(cfg.tool.value, "failed", errors[-1])
+                # Aggregate rail node: web runs pre-create a "scanners" placeholder
+                # row, so mark it from the per-tool outcomes instead of leaving it
+                # pending forever while semgrep/gitleaks show completed.
+                tool_outcomes = [r.status.value for r in results]
+                if len(tool_outcomes) < len(spec.tools):
+                    tool_outcomes.append("failed")
+                if any(s == "failed" for s in tool_outcomes):
+                    persist("scanners", "failed", "; ".join(errors[-len(spec.tools) :]))
+                elif any(s != "completed" for s in tool_outcomes):
+                    persist(
+                        "scanners",
+                        "partial",
+                        f"{len(results)}/{len(spec.tools)} scanners completed",
+                    )
+                else:
+                    persist(
+                        "scanners",
+                        "completed",
+                        f"{len(results)}/{len(spec.tools)} scanners completed",
+                    )
             if cancelled():
                 raise ScanCancelled()
             # Detect modifications during scanning instead of claiming the original revision.
@@ -1062,12 +1175,23 @@ class ScanService:
         finally:
             _cancel_check.reset(token)
             snapshot.cleanup()
+        if orchestration_mode == "ai_orchestrated":
+            required_tools = [r.tool.value for r in results if r.is_complete] or [
+                r.tool.value for r in results
+            ]
+            coverage_errors = [
+                e for e in reconcile(results, manifest) if "missing coverage" not in e
+            ]
+        else:
+            required_tools = [t.tool.value for t in spec.tools]
+            coverage_errors = reconcile(results, manifest)
+
         policy = gate(
             findings,
             results,
-            [t.tool.value for t in spec.tools],
+            required_tools,
             config.fail_on,
-            reconcile(results, manifest),
+            coverage_errors,
             cancelled=was_cancelled,
             errors=errors,
         )
@@ -1080,6 +1204,10 @@ class ScanService:
                 "commit": spec.target_commit_sha,
                 "manifest": manifest,
                 "configuration": config.model_dump(),
+                "orchestration": {
+                    "mode": orchestration_mode,
+                    "ai_invoked_tools": ai_invoked_tools,
+                },
                 "status": "cancelled"
                 if was_cancelled
                 else "failed"

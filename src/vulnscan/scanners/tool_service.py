@@ -31,12 +31,14 @@ from typing import Any
 from vulnscan.contracts import (
     Finding,
     Observation,
+    RunStatus,
     ScannerResult,
     ScanSpecification,
     ToolConfig,
     ToolName,
 )
 
+from .base import AdapterRegistry, ScannerAdapter
 from .codeql_adapter import CodeQLAdapter
 from .dependency_check_adapter import DependencyCheckAdapter
 from .extractor import (
@@ -171,25 +173,53 @@ class ScannerToolService:
         findings: Sequence[Finding] = (),
         run_id: str = "agent-adhoc",
         commit_sha: str = _ADHOC_COMMIT_SHA,
-        semgrep_adapter: SemgrepAdapter | None = None,
-        codeql_adapter: CodeQLAdapter | None = None,
-        owasp_adapter: DependencyCheckAdapter | None = None,
-        gitleaks_adapter: GitleaksAdapter | None = None,
-        spotbugs_adapter: SpotBugsAdapter | None = None,
-        trivy_adapter: TrivyAdapter | None = None,
+        semgrep_adapter: ScannerAdapter | None = None,
+        codeql_adapter: ScannerAdapter | None = None,
+        owasp_adapter: ScannerAdapter | None = None,
+        gitleaks_adapter: ScannerAdapter | None = None,
+        spotbugs_adapter: ScannerAdapter | None = None,
+        trivy_adapter: ScannerAdapter | None = None,
     ) -> None:
         self.snapshot_root = Path(snapshot_root).resolve()
         self.findings = list(findings)
         self.run_id = run_id
-        self.commit_sha = commit_sha if len(commit_sha) >= 7 and commit_sha.upper() != "HEAD" else _ADHOC_COMMIT_SHA
-        self.semgrep = semgrep_adapter or SemgrepAdapter()
-        self.codeql = codeql_adapter or CodeQLAdapter()
-        self.owasp = owasp_adapter or DependencyCheckAdapter()
-        self.gitleaks = gitleaks_adapter or GitleaksAdapter()
-        self.spotbugs = spotbugs_adapter or SpotBugsAdapter()
-        self.trivy = trivy_adapter or TrivyAdapter()
+        self.commit_sha = (
+            commit_sha
+            if len(commit_sha) >= 7 and commit_sha.upper() != "HEAD"
+            else _ADHOC_COMMIT_SHA
+        )
+        self.semgrep: ScannerAdapter = semgrep_adapter or SemgrepAdapter()
+        self.codeql: ScannerAdapter = codeql_adapter or CodeQLAdapter()
+        self.owasp: ScannerAdapter = owasp_adapter or DependencyCheckAdapter()
+        self.gitleaks: ScannerAdapter = gitleaks_adapter or GitleaksAdapter()
+        self.spotbugs: ScannerAdapter = spotbugs_adapter or SpotBugsAdapter()
+        self.trivy: ScannerAdapter = trivy_adapter or TrivyAdapter()
         self._cached_results: dict[str, ScannerResult] = {}
         self._cached_observations: list[Observation] = []
+
+    @classmethod
+    def from_registry(
+        cls,
+        snapshot_root: str | Path,
+        registry: AdapterRegistry,
+        *,
+        findings: Sequence[Finding] = (),
+        run_id: str = "agent-adhoc",
+        commit_sha: str = _ADHOC_COMMIT_SHA,
+    ) -> ScannerToolService:
+        """Create a service wired to adapters from an existing :class:`AdapterRegistry`."""
+        return cls(
+            snapshot_root,
+            findings=findings,
+            run_id=run_id,
+            commit_sha=commit_sha,
+            semgrep_adapter=registry.get(ToolName.SEMGREP),
+            codeql_adapter=registry.get(ToolName.CODEQL),
+            owasp_adapter=registry.get(ToolName.OWASP_DEPENDENCY_CHECK),
+            gitleaks_adapter=registry.get(ToolName.GITLEAKS),
+            spotbugs_adapter=registry.get(ToolName.SPOTBUGS),
+            trivy_adapter=registry.get(ToolName.TRIVY),
+        )
 
     # ------------------------------------------------------------------ #
     # Internal helpers
@@ -521,6 +551,72 @@ class ScannerToolService:
     def explain_rule(self, *, rule_id: str, tool: str | None = None) -> dict[str, Any]:
         """Explain a scanner rule ID with CWE metadata and remediation guidance."""
         return explain_scanner_rule(rule_id, tool=tool)
+
+    def executed_tools(self) -> list[ToolName]:
+        """Return the distinct scanner tools actually invoked during this session."""
+        seen: list[ToolName] = []
+        for result in self._cached_results.values():
+            if result.tool not in seen:
+                seen.append(result.tool)
+        return seen
+
+    def executed_results(self) -> list[ScannerResult]:
+        """Return merged :class:`ScannerResult` objects produced during this session.
+
+        When the AI invokes the same scanner multiple times (e.g. different
+        languages or subdirectories), observations and coverage records are
+        merged per :class:`ToolName` so downstream reporting and policy gates
+        reuse the exact evidence without re-running scanners.
+        """
+        grouped: dict[ToolName, list[ScannerResult]] = {}
+        for result in self._cached_results.values():
+            grouped.setdefault(result.tool, []).append(result)
+
+        status_rank = {
+            RunStatus.COMPLETED: 4,
+            RunStatus.COMPLETED_WITH_ERRORS: 3,
+            RunStatus.SKIPPED: 2,
+            RunStatus.FAILED: 1,
+        }
+        merged: list[ScannerResult] = []
+        for batch in grouped.values():
+            if len(batch) == 1:
+                merged.append(batch[0])
+                continue
+            primary = max(batch, key=lambda r: status_rank.get(r.status, 0))
+            obs_seen: set[str] = set()
+            all_obs: list[Observation] = []
+            cov_seen: set[tuple[str, str]] = set()
+            all_cov = []
+            all_errors: list[str] = []
+            all_warnings: list[str] = []
+            for item in batch:
+                for obs in item.observations:
+                    if obs.observation_id not in obs_seen:
+                        obs_seen.add(obs.observation_id)
+                        all_obs.append(obs)
+                for cov in item.coverage_records:
+                    key = (cov.unit_language.value, cov.unit_path)
+                    if key not in cov_seen:
+                        cov_seen.add(key)
+                        all_cov.append(cov)
+                for err in item.errors:
+                    if err not in all_errors:
+                        all_errors.append(err)
+                for warn in item.warnings:
+                    if warn not in all_warnings:
+                        all_warnings.append(warn)
+            merged.append(
+                primary.model_copy(
+                    update={
+                        "observations": all_obs,
+                        "coverage_records": all_cov,
+                        "errors": all_errors,
+                        "warnings": all_warnings,
+                    }
+                )
+            )
+        return merged
 
 
 __all__ = [

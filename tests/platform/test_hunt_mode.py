@@ -213,3 +213,132 @@ def test_hunt_mode_without_provider_falls_back_to_deterministic(service, checkou
     assert "laya_verification" not in stages
     assert "model_scanner_compare" not in stages
     assert "hunt" not in result["reports"]
+    assert result["orchestration"]["mode"] == "deterministic_fallback"
+
+
+def test_hunt_mode_ai_orchestrates_scanners_without_duplicate_runs(checkout, tmp_path, monkeypatch):
+    """Unified Phase 1 + Phase 2: AI invokes scanners directly; Phase 2 does NOT re-run them."""
+    import vulnscan.ai.laya_verify as verify_mod
+    import vulnscan.providers.client as client_mod
+    import vulnscan.providers.profile_store as store_mod
+    from vulnscan.providers.client import ChatResponse
+
+    class CountingAdapter(FixtureAdapter):
+        def __init__(self, tool_name: ToolName) -> None:
+            self.tool = tool_name
+            self.calls = 0
+
+        def run(self, spec, *, workdir):
+            self.calls += 1
+            return super().run(spec, workdir=workdir)
+
+    semgrep_adapter = CountingAdapter(ToolName.SEMGREP)
+    gitleaks_adapter = CountingAdapter(ToolName.GITLEAKS)
+    registry = AdapterRegistry()
+    registry.register(semgrep_adapter)
+    registry.register(gitleaks_adapter)
+    svc = ScanService(str(tmp_path / "runs.db"), registry)
+
+    calls_seen: list[dict] = []
+
+    def _fake_chat(self, messages, *, model=None, temperature=0.0, max_tokens=4096, tools=None, tool_choice="auto"):
+        calls_seen.append({"has_tools": bool(tools), "n_messages": len(messages)})
+        # First turn of the java pass: AI invokes run_semgrep_scan directly
+        if tools and semgrep_adapter.calls == 0:
+            return ChatResponse(
+                content="",
+                tool_calls=[
+                    {
+                        "id": "tc-semgrep-1",
+                        "type": "function",
+                        "function": {
+                            "name": "run_semgrep_scan",
+                            "arguments": json.dumps({"target_path": ".", "language": "java"}),
+                        },
+                    }
+                ],
+                finish_reason="tool_calls",
+                model="v0-pro",
+            )
+        # After receiving extracted scanner output, AI returns analyzed JSON findings
+        return ChatResponse(
+            content=json.dumps(
+                [
+                    {
+                        "title": "SQL injection confirmed via Semgrep",
+                        "file": "Example.java",
+                        "line": 1,
+                        "cwe": "CWE-89",
+                        "severity": "low",
+                        "rationale": "Verified from Semgrep finding test-low",
+                        "evidence": "class Example {}",
+                    }
+                ]
+            ),
+            finish_reason="stop",
+            model="v0-pro",
+        )
+
+    monkeypatch.setattr(client_mod.ProviderClient, "chat", _fake_chat)
+    monkeypatch.setattr(store_mod, "load_profile", lambda _pid: _profile())
+    monkeypatch.setattr(
+        verify_mod,
+        "laya_verify_candidates",
+        lambda candidates, *, snapshot_root, laya_config=None: [
+            {**c, "laya_route": "deep", "laya_confidence": 0.9, "laya_status": "completed"}
+            for c in candidates
+        ],
+    )
+
+    result = svc.run(str(checkout), settings(tmp_path, mode="hunt", provider_profile="test"))
+
+    # Tool-first orchestration: Turn 1 received tools immediately (no no-tools fast path)
+    assert calls_seen and calls_seen[0]["has_tools"] is True
+    # AI invoked Semgrep once and Phase 2 reused it without re-running Semgrep or Gitleaks
+    assert semgrep_adapter.calls == 1
+    assert gitleaks_adapter.calls == 0
+    assert result["orchestration"] == {
+        "mode": "ai_orchestrated",
+        "ai_invoked_tools": ["semgrep"],
+    }
+    assert result["status"] == "completed"
+    assert result["exit_code"] == 0
+    assert result["comparison"]["counts"]["agreed"] >= 1
+    assert (tmp_path / "reports" / result["run_id"] / "scanner-semgrep.json").is_file()
+
+
+def test_hunt_mode_falls_back_to_static_scanners_on_ai_error(checkout, tmp_path, monkeypatch):
+    """If the AI provider errors (e.g. HTTP 429), ScanService falls back to static scanners."""
+    import vulnscan.providers.client as client_mod
+    import vulnscan.providers.profile_store as store_mod
+    from vulnscan.providers.client import ProviderError
+
+    class CountingAdapter(FixtureAdapter):
+        def __init__(self, tool_name: ToolName) -> None:
+            self.tool = tool_name
+            self.calls = 0
+
+        def run(self, spec, *, workdir):
+            self.calls += 1
+            return super().run(spec, workdir=workdir)
+
+    semgrep_adapter = CountingAdapter(ToolName.SEMGREP)
+    gitleaks_adapter = CountingAdapter(ToolName.GITLEAKS)
+    registry = AdapterRegistry()
+    registry.register(semgrep_adapter)
+    registry.register(gitleaks_adapter)
+    svc = ScanService(str(tmp_path / "runs.db"), registry)
+
+    def _failing_chat(self, *args, **kwargs):
+        raise ProviderError("HTTP 429: daily message limit")
+
+    monkeypatch.setattr(client_mod.ProviderClient, "chat", _failing_chat)
+    monkeypatch.setattr(store_mod, "load_profile", lambda _pid: _profile())
+
+    result = svc.run(str(checkout), settings(tmp_path, mode="hunt", provider_profile="test"))
+
+    assert result["orchestration"]["mode"] == "deterministic_fallback"
+    assert semgrep_adapter.calls == 1
+    assert gitleaks_adapter.calls == 1
+    assert result["status"] == "completed"
+    assert result["exit_code"] == 0

@@ -82,6 +82,8 @@ def build_tool_handlers(
     snapshot_root: str | Path,
     findings: Sequence[Finding],
     coverage_summary: dict[str, Any] | None = None,
+    *,
+    scanner_service: Any | None = None,
 ) -> dict[str, Any]:
     """Local, read-only handlers for the agent's registered tools."""
     root = Path(snapshot_root)
@@ -221,7 +223,7 @@ def build_tool_handlers(
 
     from vulnscan.agent.scanner_handlers import build_scanner_tool_handlers
 
-    scanner_handlers = build_scanner_tool_handlers(root, findings)
+    scanner_handlers = build_scanner_tool_handlers(root, findings, service=scanner_service)
     return {
         "inspect_code": inspect_code,
         "get_evidence": get_evidence,
