@@ -850,11 +850,13 @@ class ScanService:
                         ai_invoked_tools = list(hunt_out.get("tools_invoked") or []) or [
                             r.tool.value for r in ai_scanner_results
                         ]
-                        tools_note = (
-                            f"; scanners={','.join(ai_invoked_tools)}"
-                            if ai_invoked_tools
-                            else ""
+                        tool_counts = dict(hunt_out.get("tool_call_counts") or {})
+                        all_called_str = (
+                            ", ".join(f"{k}:{v}" for k, v in tool_counts.items())
+                            if tool_counts
+                            else ",".join(ai_invoked_tools)
                         )
+                        tools_note = f"; tools=[{all_called_str}]" if all_called_str else ""
                         hunt_detail = (
                             f"{len(hunt_candidates)} candidates "
                             f"in {hunt_out.get('rounds', 0)} rounds"
@@ -1230,6 +1232,7 @@ class ScanService:
                     "ai_added_logic_findings": len(locals().get("promoted", [])),
                     "ai_filtered_out": locals().get("ai_filtered_out_count", 0),
                     "final_findings": len(findings),
+                    "tool_call_counts": dict((hunt_out or {}).get("tool_call_counts") or {}),
                 },
                 "status": "cancelled"
                 if was_cancelled

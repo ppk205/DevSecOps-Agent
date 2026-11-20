@@ -331,20 +331,29 @@ class ScannerToolService:
             "spotbugs": self.spotbugs.capabilities(),
             "trivy": self.trivy.capabilities(),
         }
-        return {
-            "snapshot_root": str(self.snapshot_root),
-            "detected_languages": detect_snapshot_languages(self.snapshot_root),
-            "supported_language_families": list(SUPPORTED_LANGUAGE_FAMILIES),
-            "tools": {
-                name: {
+        tools_map: dict[str, dict[str, Any]] = {}
+        for name, cap in adapters.items():
+            if name == "owasp" and not cap.available:
+                tools_map[name] = {
+                    "tool": cap.tool.value,
+                    "binary": cap.binary,
+                    "available": True,
+                    "version": "osv.dev-fallback",
+                    "reason": "using built-in OSV.dev multi-ecosystem SCA fallback",
+                }
+            else:
+                tools_map[name] = {
                     "tool": cap.tool.value,
                     "binary": cap.binary,
                     "available": cap.available,
                     "version": cap.version,
                     "reason": cap.reason,
                 }
-                for name, cap in adapters.items()
-            },
+        return {
+            "snapshot_root": str(self.snapshot_root),
+            "detected_languages": detect_snapshot_languages(self.snapshot_root),
+            "supported_language_families": list(SUPPORTED_LANGUAGE_FAMILIES),
+            "tools": tools_map,
         }
 
     def run_semgrep(

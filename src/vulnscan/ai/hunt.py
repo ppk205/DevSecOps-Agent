@@ -483,6 +483,34 @@ def hunt_vulns(
                         cap_summary = "\nAvailable local scanners: " + ", ".join(tool_bits)
                 except Exception as exc:  # noqa: BLE001 - capability hint is best-effort
                     logger.debug("scanner capability probe failed: %s", exc)
+            manifest_globs = (
+                "pom.xml",
+                "package-lock.json",
+                "package.json",
+                "requirements.txt",
+                "composer.lock",
+                "composer.json",
+                "go.mod",
+                "conanfile.txt",
+                "vcpkg.json",
+                "*.csproj",
+                "Dockerfile*",
+                "docker-compose*",
+            )
+            extra_files: list[str] = []
+            for mglob in manifest_globs:
+                mout = handlers["list_files"]({"dir": ".", "glob": mglob})
+                if isinstance(mout, dict) and mout.get("files"):
+                    for mf in mout["files"][:10]:
+                        s_mf = str(mf)
+                        if s_mf not in extra_files:
+                            extra_files.append(s_mf)
+            manifest_preview = (
+                "\nDependency manifests & IaC config files detected:\n"
+                + "\n".join(extra_files[:25])
+                if extra_files
+                else ""
+            )
             file_preview = "\n".join(str(f)[:200] for f in tree_files[:100]) or "(use list_files)"
             messages = [
                 ChatMessage(
@@ -490,21 +518,28 @@ def hunt_vulns(
                     content=(
                         _HUNT_SYSTEM
                         + f" Focus on {focus}. "
-                        + "You are the unified scan orchestrator: invoke the appropriate "
-                        + "security scanner tools first (run_semgrep_scan, run_codeql_scan, "
-                        + "run_owasp_scan, run_secret_scan, run_config_audit), then inspect "
-                        + "source code and scanner findings to filter false positives and "
-                        + "confirm real vulnerabilities before outputting the final JSON array."
+                        + "You are the unified scan orchestrator with 12 tools: "
+                        + "5 scanner tools (run_semgrep_scan for SAST, run_codeql_scan for dataflow, "
+                        + "run_owasp_scan for dependency/SCA on pom.xml/manifests, "
+                        + "run_secret_scan for hardcoded secrets, run_config_audit for bytecode/IaC/Dockerfile), "
+                        + "2 scanner query/explain tools (query_scanner_findings, explain_scanner_rule), "
+                        + "and 5 code/triage tools (list_files, grep_code, inspect_code, get_evidence, check_coverage). "
+                        + "Invoke the applicable scanner tools (including run_owasp_scan when manifests exist), "
+                        + "query/explain findings and inspect source code to filter false positives, "
+                        + "and conclude with ONLY the final verified JSON array."
                     ),
                 ),
                 ChatMessage(
                     role="user",
                     content=(
                         f"Snapshot file tree ({family} files):\n{file_preview}"
+                        f"{manifest_preview}"
                         f"{cap_summary}\n\n"
-                        "Start by calling the relevant scanner tools for this repository, "
-                        "analyze the extracted results alongside inspect_code/grep_code, "
-                        "and conclude with ONLY the final verified JSON array."
+                        "Start by calling the relevant scanner tools for this repository "
+                        "(e.g. run_semgrep_scan, run_owasp_scan on dependency manifests, "
+                        "run_secret_scan, run_config_audit), then use query_scanner_findings, "
+                        "explain_scanner_rule, inspect_code, and grep_code to verify and filter "
+                        "the results before outputting ONLY the final verified JSON array."
                     ),
                 ),
             ]
@@ -913,6 +948,14 @@ def hunt_all(
         if shared_service is not None and hasattr(shared_service, "executed_tools")
         else []
     )
+    tool_call_counts: dict[str, int] = {}
+    for entry in trace:
+        if not isinstance(entry, dict):
+            continue
+        for tc in entry.get("tool_calls") or []:
+            if isinstance(tc, dict) and tc.get("name"):
+                tname = str(tc["name"])
+                tool_call_counts[tname] = tool_call_counts.get(tname, 0) + 1
     status = (
         "completed"
         if (merged or executed_results) and ok
@@ -931,4 +974,5 @@ def hunt_all(
         "trace": trace,
         "scanner_results": executed_results,
         "tools_invoked": tools_invoked,
+        "tool_call_counts": tool_call_counts,
     }
