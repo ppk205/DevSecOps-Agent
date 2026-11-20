@@ -336,6 +336,7 @@ class ProviderProtocol(str, Enum):
     OPENAI_RESPONSES = "openai_responses"
     ANTHROPIC_MESSAGES = "anthropic_messages"
     OPENAI_COMPATIBLE = "openai_compatible"
+    V0_PLATFORM_API = "v0_platform_api"
 
 
 class RoleKind(str, Enum):

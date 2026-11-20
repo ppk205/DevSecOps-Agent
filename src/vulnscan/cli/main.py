@@ -290,29 +290,46 @@ def env_unset(
 @app.command("provider-add")
 def provider_add(
     profile_id: str = typer.Option(..., "--id", help="Stable profile slug, e.g. 'kios-free'."),
-    base_url: str = typer.Option(..., "--base-url", help="Chat Completions endpoint."),
+    base_url: str = typer.Option(..., "--base-url", help="Chat Completions or v0 API endpoint."),
     api_key_env: str = typer.Option(..., "--api-key-env", help="Env var holding the key (BYOK)."),
     label: str = typer.Option("", "--label", help="Human-readable label."),
     models: str = typer.Option("", "--models", help="Comma-separated allowed model ids."),
     default_model: str | None = typer.Option(None, "--default-model"),
+    protocol: str | None = typer.Option(
+        None,
+        "--protocol",
+        help="Wire protocol (openai_compatible, v0_platform_api, ...). Auto-detects api.v0.dev.",
+    ),
 ) -> None:
     """Register a BYOK provider profile (key stays in env, never on disk)."""
+    from urllib.parse import urlparse
+
     from ..contracts.enums import ProviderProtocol
     from ..contracts.provider import ProviderProfile
     from ..providers.profile_store import save_profile
+
+    if protocol:
+        resolved_protocol = ProviderProtocol(protocol)
+    elif (urlparse(base_url).hostname or "").lower() == "api.v0.dev":
+        resolved_protocol = ProviderProtocol.V0_PLATFORM_API
+    else:
+        resolved_protocol = ProviderProtocol.OPENAI_COMPATIBLE
 
     model_list = [m.strip() for m in models.split(",") if m.strip()]
     profile = ProviderProfile(
         id=profile_id,
         label=label or profile_id,
-        protocol=ProviderProtocol.OPENAI_COMPATIBLE,
+        protocol=resolved_protocol,
         base_url=base_url,
         api_key_env=api_key_env,
         models=model_list,
         default_model=default_model or (next(iter(model_list), None)),
     )
     path = save_profile(profile)
-    typer.echo(f"provider profile saved: {path} (set {api_key_env} in env before scanning)")
+    typer.echo(
+        f"provider profile saved: {path} (protocol={resolved_protocol.value}; "
+        f"set {api_key_env} in env before scanning)"
+    )
 
 
 @app.command("serve")
