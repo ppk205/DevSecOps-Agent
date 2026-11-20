@@ -832,9 +832,13 @@ class ScanService:
                             "logic_pass": True,
                         }
                         hunt_sig_params = _inspect.signature(hunt_all).parameters
-                        if "scanner_service" in hunt_sig_params:
+                        has_var_kw = any(
+                            p.kind == _inspect.Parameter.VAR_KEYWORD
+                            for p in hunt_sig_params.values()
+                        )
+                        if "scanner_service" in hunt_sig_params or has_var_kw:
                             hunt_kwargs["scanner_service"] = hunt_scanner_service
-                        if "tool_first" in hunt_sig_params:
+                        if "tool_first" in hunt_sig_params or has_var_kw:
                             hunt_kwargs["tool_first"] = True
 
                         hunt_out = hunt_all(**hunt_kwargs)
@@ -1094,6 +1098,8 @@ class ScanService:
 
             compared: dict[str, Any] = comparison
             promoted: list[Finding] = []
+            raw_scanner_findings_count = len(findings)
+            ai_filtered_out_count = 0
             if hunt_active:
                 agreed_findings = [pair["finding"] for pair in compared.get("agreed", [])]
                 agreed_ids = {id(finding) for finding in agreed_findings}
@@ -1108,7 +1114,12 @@ class ScanService:
                     snapshot_root=str(snapshot_root),
                     run_id=run_id,
                 )
-                findings = [*findings, *promoted]
+                ai_curated = [*agreed_findings, *promoted]
+                if orchestration_mode == "ai_orchestrated" and ai_curated:
+                    ai_filtered_out_count = len(compared.get("scanner_only", []))
+                    findings = ai_curated
+                else:
+                    findings = [*findings, *promoted]
             else:
                 agreed_findings = []
                 for scanner_finding in findings:
@@ -1122,18 +1133,23 @@ class ScanService:
             review_profile = (
                 config.provider_profile if (config.ai_review or config.mode == "hunt") else None
             )
-            review = run_ai_review(
-                review_findings,
-                routing,
-                snapshot_root=str(snapshot_root),
-                coverage_summary={
+            review_kwargs: dict[str, Any] = {
+                "snapshot_root": str(snapshot_root),
+                "coverage_summary": {
                     r.tool.value: [c.model_dump(mode="json") for c in r.coverage_records]
                     for r in results
                 },
-                profile_id=review_profile,
-                model=config.provider_model,
-                max_findings=config.max_ai_findings,
-            )
+                "profile_id": review_profile,
+                "model": config.provider_model,
+                "max_findings": config.max_ai_findings,
+            }
+            if locals().get("hunt_scanner_service") is not None:
+                import inspect as _rev_inspect
+
+                rev_params = _rev_inspect.signature(run_ai_review).parameters
+                if "scanner_service" in rev_params:
+                    review_kwargs["scanner_service"] = locals()["hunt_scanner_service"]
+            review = run_ai_review(review_findings, routing, **review_kwargs)
             persist("targeted_deep_analysis", review["status"], review["detail"])
             decisions = review["decisions"]
             if decisions:
@@ -1207,6 +1223,13 @@ class ScanService:
                 "orchestration": {
                     "mode": orchestration_mode,
                     "ai_invoked_tools": ai_invoked_tools,
+                },
+                "ai_filtering": {
+                    "raw_scanner_findings": locals().get("raw_scanner_findings_count", len(findings)),
+                    "ai_confirmed_from_scanners": len(locals().get("agreed_findings", [])),
+                    "ai_added_logic_findings": len(locals().get("promoted", [])),
+                    "ai_filtered_out": locals().get("ai_filtered_out_count", 0),
+                    "final_findings": len(findings),
                 },
                 "status": "cancelled"
                 if was_cancelled

@@ -596,6 +596,7 @@ def hunt_vulns(
                             )
                 except Exception as exc:  # noqa: BLE001 - fast path is best-effort
                     logger.warning("hunt fast path failed: %s", exc)
+        exhausted_rounds = True
         for _ in range(max(1, max_rounds)):
             resp = client.chat(messages, model=model, tools=TOOL_SCHEMAS, tool_choice="auto")
             rounds += 1
@@ -620,6 +621,7 @@ def hunt_vulns(
                     pass
             last_content = resp.content or ""
             if not resp.tool_calls:
+                exhausted_rounds = False
                 break
             messages.append(
                 ChatMessage(
@@ -657,7 +659,7 @@ def hunt_vulns(
                         tool_call_id=tc.get("id") if isinstance(tc, dict) else None,
                     )
                 )
-        else:
+        if exhausted_rounds and not tool_first:
             candidates = dedupe_candidates(
                 [*fast_candidates, *parse_hunt_list(last_content, max_findings)]
             )[: max(1, max_findings)]
@@ -672,36 +674,73 @@ def hunt_vulns(
         )[: max(1, max_findings)]
         detail = f"loop ended with {len(candidates)} candidates"
         if not candidates:
-            # Reasoning-only gateways return no usable content when tools are
-            # attached: one final no-tools call over the gathered evidence.
-            # A deterministic sink sweep tops up the evidence map so the
-            # verdict still has sinks to judge; the MODEL decides what is a
-            # vuln, the sweep only points at lines.
+            # Reasoning-only gateways or tool loops that used all rounds on
+            # tool calls: run one final synthesis & filtering call over the
+            # gathered scanner observations + code inspection evidence.
             try:
+                scanner_digest_lines: list[str] = []
+                if scanner_service is not None and hasattr(scanner_service, "query_findings"):
+                    try:
+                        q_out = scanner_service.query_findings(max_items=80)
+                        for idx, item in enumerate(q_out.get("findings") or [], 1):
+                            if not isinstance(item, dict):
+                                continue
+                            snip = str(item.get("snippet") or "").strip().splitlines()
+                            first_line = snip[-1].strip()[:140] if snip else ""
+                            scanner_digest_lines.append(
+                                f"{idx}. [{item.get('tool')}] file={item.get('file')} "
+                                f"line={item.get('line_start')} cwe={item.get('cwe')} "
+                                f"severity={item.get('severity')} rule={item.get('rule_id')} "
+                                f"msg={str(item.get('message', ''))[:120]} "
+                                f"code={first_line}"
+                            )
+                    except Exception as exc:  # noqa: BLE001
+                        logger.debug("scanner digest query failed: %s", exc)
+
                 closing_sweep = _sweep_sinks(handlers, family)
-                evidence_text = "\n".join(tool_evidence[:12])[:6000]
+                evidence_parts: list[str] = []
+                if scanner_digest_lines:
+                    evidence_parts.append(
+                        "Raw observations from the security scanner tools you invoked "
+                        "(FILTER these: keep genuine vulnerabilities using their exact "
+                        "file, line, and cwe; drop false positives / benign patterns):\n"
+                        + "\n".join(scanner_digest_lines[:60])
+                    )
+                if tool_evidence:
+                    evidence_parts.append(
+                        "Tool & code inspection trace:\n" + "\n".join(tool_evidence[:10])[:4000]
+                    )
                 if closing_sweep:
-                    evidence_text += (
-                        "\nSink sweep (context only, judge each line yourself):\n"
+                    evidence_parts.append(
+                        "Sink sweep (context only, judge each line yourself):\n"
                         + "\n".join(closing_sweep[:20])
                     )
+                evidence_text = "\n\n".join(evidence_parts)[:12000]
                 closing = client.chat(
                     [
                         ChatMessage(
                             role="system",
-                            content=_HUNT_SYSTEM + f" Focus on {focus}.",
+                            content=(
+                                _HUNT_SYSTEM
+                                + f" Focus on {focus}. "
+                                + "Filter the raw scanner tool observations and code evidence: "
+                                + "confirm and include every genuine vulnerability (preserving "
+                                + "exact file path, line number, and CWE for confirmed scanner "
+                                + "hits, plus any additional logic vulnerabilities you found), "
+                                + "and exclude false positives. Up to 50 items allowed."
+                            ),
                         ),
                         ChatMessage(
                             role="user",
                             content=(
-                                "Read-only exploration found:\n"
-                                + evidence_text[:6000]
-                                + "\n\nNow output the JSON array and nothing else."
+                                "Exploration & scanner tool outputs:\n"
+                                + evidence_text
+                                + "\n\nNow output ONLY the final filtered JSON array and nothing else."
                             ),
                         ),
                     ],
                     model=model,
-                    max_tokens=4000,
+                    max_tokens=8000,
                 )
                 if closing.usage:
                     try:
