@@ -23,6 +23,8 @@ jobs:
         with:
           python-version: '3.11'
       - run: python ci/install_action.py
+        env:
+          SCAN_PROFILE: full
       - run: python ci/build_image.py
       - run: python ci/fixture_scan.py --full
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

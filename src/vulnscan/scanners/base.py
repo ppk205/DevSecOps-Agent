@@ -176,6 +176,7 @@ class AdapterRegistry:
         from .native_hunt_adapter import NativeHuntAdapter
         from .semgrep_adapter import SemgrepAdapter
         from .spotbugs_adapter import SpotBugsAdapter
+        from .trivy_adapter import TrivyAdapter
 
         registry = cls()
         for adapter in (
@@ -185,6 +186,7 @@ class AdapterRegistry:
             DependencyCheckAdapter(),
             GitleaksAdapter(),
             CodeQLAdapter(),
+            TrivyAdapter(),
         ):
             registry.register(adapter)
         return registry

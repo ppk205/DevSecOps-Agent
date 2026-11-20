@@ -449,6 +449,7 @@ def run_ai_review(
     model: str | None = None,
     max_findings: int = 10,
     budget: BudgetManager | None = None,
+    scanner_service: Any | None = None,
 ) -> dict[str, Any]:
     """Điều tra các mục tiêu có giới hạn bằng mô hình, xác thực, áp dụng trạng thái.
 
@@ -478,7 +479,12 @@ def run_ai_review(
     try:
         loop, client, profile, own_budget = build_review_agent(
             profile_id,
-            build_tool_handlers(snapshot_root, findings, coverage_summary),
+            build_tool_handlers(
+                snapshot_root,
+                findings,
+                coverage_summary,
+                scanner_service=scanner_service,
+            ),
             model,
             budget,
         )

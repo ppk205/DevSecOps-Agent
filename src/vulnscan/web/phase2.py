@@ -121,7 +121,7 @@ def unset_key(env_name: str, env: EnvFile | None = None) -> bool:
 
 
 def _scanner_image_present() -> bool:
-    """True when Docker has the scanner image that full scans run SpotBugs/ODC in."""
+    """True when Docker has the image for isolated Dependency-Check."""
     from vulnscan.infra.full_scan import IMAGE
     from vulnscan.scanners.process import run_command
 
@@ -134,14 +134,14 @@ def _scanner_image_present() -> bool:
 def probe_tools(with_versions: bool = False) -> list[dict[str, Any]]:
     """Fast tool health: ``which`` on PATH; versions only when asked.
 
-    SpotBugs and Dependency-Check also count as available when Docker has the
+    Dependency-Check also counts as available when Docker has the
     scanner image, because full-profile scans run them in that container.
     """
     from vulnscan.scanners.base import AdapterRegistry
     from vulnscan.scanners.platform import which
 
     registry = AdapterRegistry.default()
-    order = ["semgrep", "native-hunt", "gitleaks", "spotbugs", "owasp-dependency-check"]
+    order = ["semgrep", "native-hunt", "gitleaks", "trivy", "owasp-dependency-check", "codeql"]
     out: list[dict[str, Any]] = []
     image: bool | None = None
     for name in order:
@@ -164,7 +164,7 @@ def probe_tools(with_versions: bool = False) -> list[dict[str, Any]]:
             continue
         resolved = which(binary)
         version: str | None = None
-        if resolved is None and name in {"spotbugs", "owasp-dependency-check"} and which("docker"):
+        if resolved is None and name == "owasp-dependency-check" and which("docker"):
             if image is None:
                 image = _scanner_image_present()
             if image:

@@ -134,7 +134,7 @@ func TestPythonSrcDirAnchorsOnVenv(t *testing.T) {
 }
 
 func TestPythonSrcDirIgnoresPATHFallback(t *testing.T) {
-	t.Setenv("DEVSECOPS_PYTHON", "")
+	useSystemPythonOnPATH(t)
 	if got := pythonSrcDir(); got != "" {
 		t.Fatalf("pythonSrcDir() = %q, want empty for PATH fallback", got)
 	}
@@ -158,13 +158,13 @@ func TestPythonEnvironmentFiltersAndReaddsPythonPath(t *testing.T) {
 		counts[key]++
 	}
 	if counts["PYTHONPATH"] != 1 {
-		t.Fatalf("PYTHONPATH appears %d times, want exactly 1: %v", counts["PYTHONPATH"], env)
+		t.Fatalf("PYTHONPATH appears %d times, want exactly 1", counts["PYTHONPATH"])
 	}
 	if counts["DEVSECOPS_PYTHON_ONLY"] != 1 {
-		t.Fatalf("DEVSECOPS_PYTHON_ONLY appears %d times, want exactly 1: %v", counts["DEVSECOPS_PYTHON_ONLY"], env)
+		t.Fatalf("DEVSECOPS_PYTHON_ONLY appears %d times, want exactly 1", counts["DEVSECOPS_PYTHON_ONLY"])
 	}
 	if counts["KEEP_ME"] != 1 {
-		t.Fatalf("unrelated env vars must pass through untouched, got: %v", env)
+		t.Fatalf("KEEP_ME appears %d times, want exactly 1", counts["KEEP_ME"])
 	}
 	found := false
 	for _, entry := range env {
@@ -173,12 +173,12 @@ func TestPythonEnvironmentFiltersAndReaddsPythonPath(t *testing.T) {
 		}
 	}
 	if !found {
-		t.Fatalf("expected PYTHONPATH=%s in env: %v", src, env)
+		t.Fatalf("expected PYTHONPATH=%s in child environment", src)
 	}
 }
 
 func TestPythonEnvironmentPreservesUserPathWhenNoVenv(t *testing.T) {
-	t.Setenv("DEVSECOPS_PYTHON", "")
+	useSystemPythonOnPATH(t)
 	t.Setenv("PYTHONPATH", "C:\\user\\src")
 	env := pythonEnvironment()
 	got := ""
@@ -188,6 +188,21 @@ func TestPythonEnvironmentPreservesUserPathWhenNoVenv(t *testing.T) {
 		}
 	}
 	if got != "PYTHONPATH=C:\\user\\src" {
-		t.Fatalf("user PYTHONPATH not preserved when no venv anchor: got %q in %v", got, env)
+		t.Fatalf("user PYTHONPATH not preserved when no venv anchor: got %q", got)
 	}
+}
+
+func useSystemPythonOnPATH(t *testing.T) {
+	t.Helper()
+	t.Chdir(t.TempDir())
+	t.Setenv("DEVSECOPS_PYTHON", "")
+	t.Setenv("VIRTUAL_ENV", "")
+	bin := t.TempDir()
+	name := "python3"
+	if runtime.GOOS == "windows" {
+		name = "python.exe"
+		t.Setenv("PATHEXT", ".EXE")
+	}
+	writePythonFixture(t, filepath.Join(bin, name))
+	t.Setenv("PATH", bin)
 }

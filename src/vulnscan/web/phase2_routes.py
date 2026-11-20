@@ -168,7 +168,12 @@ def _tallies_for_run(
 
 @router.get("/api/tools")
 def api_tools(verify: bool = Query(default=False)) -> dict[str, Any]:
-    return {"tools": probe_tools(with_versions=verify)}
+    from vulnscan.core.config import PROFILES
+
+    return {
+        "tools": probe_tools(with_versions=verify),
+        "profiles": {name: [tool.value for tool in tools] for name, tools in PROFILES.items()},
+    }
 
 
 @router.get("/api/settings")

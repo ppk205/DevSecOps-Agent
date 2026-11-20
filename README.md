@@ -24,8 +24,8 @@ Separate action: fix proposal -> isolated overlay -> verify private file copies
 ## Quickstart
 
 Prerequisites: Python 3.11+, Node 18+ (web UI only). Git is needed for URLs,
-commit verification and CI; plain local folders work without it. Java 11+ only if
-you want the DEEP profile (SpotBugs). Semgrep and Gitleaks resolve via `PATH`
+commit verification and CI; plain local folders work without it. The DEEP
+profile adds Trivy and Dependency-Check. Semgrep and Gitleaks resolve via `PATH`
 with a `sys.prefix` fallback (`pip install semgrep`, Gitleaks binary next to
 the venv).
 
@@ -244,7 +244,7 @@ DevSecOps-Agent/
 
 | Area | Status |
 |------|--------|
-| Java Servlet/JSP | Native-hunt 30 rules on `.java`, `.jsp`, `.jspx`; Semgrep 25 rules; SpotBugs and Dependency-Check on `full`. A retained 2026-11-01 run shows Semgrep analyzing 101 Java files and marking all 38 JSP files unsupported. Native-hunt reads JSP by pattern; JSP accuracy is not measured separately. |
+| Java Servlet/JSP | Native-hunt 30 rules on `.java`, `.jsp`, `.jspx`; Semgrep 25 rules; Dependency-Check on `full`. A retained 2026-11-01 run shows Semgrep analyzing 101 Java files and marking all 38 JSP files unsupported. Native-hunt reads JSP by pattern; JSP accuracy is not measured separately. |
 | JavaScript/TypeScript | Native-hunt 25 rules; Semgrep 20 rules. No answer-key measurement yet. |
 | Python | Native-hunt 23 rules; Semgrep 20 rules. Measured on OWASP BenchmarkPython. |
 | PHP | Native-hunt 23 rules; Semgrep 20 rules. No answer-key measurement yet. |
@@ -438,10 +438,10 @@ This section follows `ScanService._run`. Both modes share one path:
 2. **Model hunt** (`--mode hunt`, the Python default): the model explores the snapshot in
    sequential passes with `list_files`, `grep_code` and `inspect_code`. It is skipped with a
    reason when no provider is available. In `--mode deterministic` this stage is skipped.
-3. **Scanners**: each selected tool scans the whole snapshot. Scanners do not receive the
-   model's candidates. `fast` selects Semgrep, native-hunt and Gitleaks; `full` adds SpotBugs
-   and Dependency-Check; a config file can select `tools: ["native-hunt"]`. For comparison
-   work, the product scanners are baselines and native-hunt is the project's analyzer.
+3. **Scanners**: deterministic scans and Hunt fallback use the configured scanner
+   profile. `fast` selects Semgrep, native-hunt and Gitleaks. `full` adds Trivy and
+   Dependency-Check. Hunt can invoke a targeted subset during its model stage.
+   The web scan form shows the backend presets and supports explicit tool selection.
 4. **Normalization and dedup**, then **Laya routing**. Laya is advisory and only sees scanner
    findings at this point. `ScanConfig` enables it by default, but the shipped
    `config/laya.json` is disabled.

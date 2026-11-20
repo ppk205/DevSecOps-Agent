@@ -6,14 +6,13 @@ import type {
   KeyEntry,
   ReportFormat,
   ScanSummary,
-  ToolHealth,
   UsageSummary,
 } from "../api/types";
 import { MOCK_EVENTS } from "./mockEvents";
 import { mockFilteredFindings, mockFindingDetail } from "./mockFindingDetails";
 import { MOCK_FINDINGS, MOCK_SCANS, mockCounts } from "./mockRun";
 import { mockLiveEventsHistory, mockLiveFindings, mockLiveScan } from "./mockLive";
-import { MOCK_GENERAL, MOCK_KEYS, MOCK_TOOLS, MOCK_USAGE } from "./mockPhase2";
+import { MOCK_GENERAL, MOCK_KEYS, MOCK_SCANNER_PROFILES, MOCK_TOOLS, MOCK_USAGE } from "./mockPhase2";
 import { mockCompare, mockLogs, mockReports } from "./mockReportsLogs";
 
 /** True khi bundle chạy không có backend (VITE_MOCK=1 / --mode mock). */
@@ -53,8 +52,9 @@ export const mockApi = {
     params: { level?: string; source?: string; q?: string; since?: number } = {},
   ) => delay(mockLogs(scanId, params)),
   // ---- Phase 2 (Home / New Scan / Keys): scripted fixtures, in-memory writes ----
-  tools: (verify?: boolean): Promise<{ tools: ToolHealth[] }> =>
+  tools: (verify?: boolean) =>
     delay({
+      profiles: MOCK_SCANNER_PROFILES,
       tools: verify
         ? MOCK_TOOLS
         : MOCK_TOOLS.map((t) => ({ ...t, version: t.available ? t.version : null })),

@@ -32,7 +32,7 @@ def review_summary(checkout: str, config: ScanConfig, manifest: dict[str, Any]) 
     if config.tools is not None:
         scanners = ", ".join(config.tools) or "No scanners selected"
     elif config.profile == "full":
-        scanners += " + isolated Maven, SpotBugs/FindSecBugs, Dependency-Check"
+        scanners += " + Trivy, Dependency-Check"
     unversioned = manifest["commit"] == "no-revision"
     source = (
         "Repository URL"

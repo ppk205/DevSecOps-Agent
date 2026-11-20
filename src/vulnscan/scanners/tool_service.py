@@ -192,6 +192,7 @@ class ScannerToolService:
         )
         self.semgrep: ScannerAdapter = semgrep_adapter or SemgrepAdapter()
         self.codeql: ScannerAdapter = codeql_adapter or CodeQLAdapter()
+        self.codeql.default_timeout = 75.0
         self.owasp: ScannerAdapter = owasp_adapter or DependencyCheckAdapter()
         self.gitleaks: ScannerAdapter = gitleaks_adapter or GitleaksAdapter()
         self.spotbugs: ScannerAdapter = spotbugs_adapter or SpotBugsAdapter()
@@ -337,20 +338,29 @@ class ScannerToolService:
             "spotbugs": self.spotbugs.capabilities(),
             "trivy": self.trivy.capabilities(),
         }
-        return {
-            "snapshot_root": str(self.snapshot_root),
-            "detected_languages": detect_snapshot_languages(self.snapshot_root),
-            "supported_language_families": list(SUPPORTED_LANGUAGE_FAMILIES),
-            "tools": {
-                name: {
+        tools_map: dict[str, dict[str, Any]] = {}
+        for name, cap in adapters.items():
+            if name == "owasp" and not cap.available:
+                tools_map[name] = {
+                    "tool": cap.tool.value,
+                    "binary": cap.binary,
+                    "available": True,
+                    "version": "osv.dev-fallback",
+                    "reason": "using built-in OSV.dev multi-ecosystem SCA fallback",
+                }
+            else:
+                tools_map[name] = {
                     "tool": cap.tool.value,
                     "binary": cap.binary,
                     "available": cap.available,
                     "version": cap.version,
                     "reason": cap.reason,
                 }
-                for name, cap in adapters.items()
-            },
+        return {
+            "snapshot_root": str(self.snapshot_root),
+            "detected_languages": detect_snapshot_languages(self.snapshot_root),
+            "supported_language_families": list(SUPPORTED_LANGUAGE_FAMILIES),
+            "tools": tools_map,
         }
 
     def run_semgrep(
@@ -425,15 +435,35 @@ class ScannerToolService:
                 "findings": [],
             }
 
-        options: dict[str, Any] = {"language": fam}
+        import hashlib as _hashlib
+        import tempfile as _tempfile
+
+        target_fs = self.snapshot_root / rel
+        codeql_workdir = str(target_fs if target_fs.is_dir() else self.snapshot_root)
+        rel_hash = _hashlib.sha1(f"{self.snapshot_root}:{rel}".encode()).hexdigest()[:10]
+        db_cache_dir = (
+            Path(_tempfile.gettempdir())
+            / "vulnscan-codeql-db"
+            / f"{self.commit_sha[:12]}-{rel_hash}"
+        )
+        options: dict[str, Any] = {
+            "language": fam,
+            "database_dir": str(db_cache_dir),
+        }
         if query_suite and query_suite.strip():
             options["suite"] = query_suite.strip()
 
         spec = self._build_spec(ToolName.CODEQL, language=fam, options=options)
-        result = self.codeql.run(spec, workdir=str(self.snapshot_root))
+        result = self.codeql.run(spec, workdir=codeql_workdir)
+        if rel != "." and target_fs.is_dir():
+            prefix = f"{rel.rstrip('/')}/"
+            for obs in result.observations:
+                fp = obs.location.file_path
+                if not fp.startswith(prefix) and not Path(fp).is_absolute():
+                    obs.location.file_path = f"{prefix}{fp}"
         self._record_result(f"codeql:{rel}:{fam}", result)
 
-        file_filter = None if rel == "." else rel
+        file_filter = None if (rel == "." or target_fs.is_dir()) else rel
         payload = extract_scanner_result(
             result,
             snapshot_root=self.snapshot_root,
@@ -527,11 +557,6 @@ class ScannerToolService:
             return {"tool": "config_audit", "status": "error", "error": err}
 
         mode = (check_type or "auto").strip().lower()
-        if mode == "auto":
-            has_java_classes = (self.snapshot_root / "target" / "classes").is_dir() or (
-                self.snapshot_root / "build" / "classes"
-            ).is_dir()
-            mode = "bytecode" if has_java_classes else "iac_config"
 
         if mode == "bytecode":
             spec = self._build_spec(ToolName.SPOTBUGS, language="java")

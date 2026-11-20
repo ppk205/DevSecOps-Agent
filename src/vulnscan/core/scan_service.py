@@ -260,10 +260,14 @@ def reconcile(results: list[ScannerResult], manifest: dict[str, Any]) -> list[st
         if not result.is_complete:
             continue
         records = {c.unit_path.replace("\\", "/"): c for c in result.coverage_records}
-        # Phân tích dependency bao gồm các artifact phụ thuộc, không phải các đơn vị mã nguồn Java.
-        expected = (
-            manifest["inventory"] if result.tool.value != "owasp-dependency-check" else ["pom.xml"]
-        )
+        # Dependency/IaC/dataflow analyzers cover manifests, config files, or
+        # analyzed units rather than every source file in inventory.
+        if result.tool.value in {"trivy", "codeql"}:
+            expected = [c.unit_path for c in result.coverage_records if c.eligible]
+        elif result.tool.value == "owasp-dependency-check":
+            expected = ["pom.xml"] if "pom.xml" in manifest.get("files", {}) else []
+        else:
+            expected = manifest["inventory"]
         for name in expected:
             coverage = records.get(name)
             if coverage is None:
@@ -863,6 +867,7 @@ class ScanService:
         }
         orchestration_mode = "deterministic"
         ai_invoked_tools: list[str] = []
+        hunt_scanner_service: ScannerToolService | None = None
         try:
             persist("intake", "running")
             # Giá trị mặc định cho từng giai đoạn bên dưới: khối tóm tắt sau khối
@@ -982,9 +987,13 @@ class ScanService:
                         ai_invoked_tools = list(hunt_out.get("tools_invoked") or []) or [
                             r.tool.value for r in ai_scanner_results
                         ]
-                        tools_note = (
-                            f"; scanners={','.join(ai_invoked_tools)}" if ai_invoked_tools else ""
+                        tool_counts = dict(hunt_out.get("tool_call_counts") or {})
+                        all_called_str = (
+                            ", ".join(f"{k}:{v}" for k, v in tool_counts.items())
+                            if tool_counts
+                            else ",".join(ai_invoked_tools)
                         )
+                        tools_note = f"; tools=[{all_called_str}]" if all_called_str else ""
                         hunt_detail = (
                             f"{len(hunt_candidates)} candidates "
                             f"in {hunt_out.get('rounds', 0)} rounds"
@@ -1257,18 +1266,19 @@ class ScanService:
                 config.provider_profile if (config.ai_review or config.mode == "hunt") else None
             )
             model_stage = "targeted_deep_analysis"
-            review = run_ai_review(
-                review_findings,
-                routing,
-                snapshot_root=str(snapshot_root),
-                coverage_summary={
+            review_kwargs: dict[str, Any] = {
+                "snapshot_root": str(snapshot_root),
+                "coverage_summary": {
                     r.tool.value: [c.model_dump(mode="json") for c in r.coverage_records]
                     for r in results
                 },
-                profile_id=review_profile,
-                model=config.provider_model,
-                max_findings=config.max_ai_findings,
-            )
+                "profile_id": review_profile,
+                "model": config.provider_model,
+                "max_findings": config.max_ai_findings,
+            }
+            if hunt_scanner_service is not None:
+                review_kwargs["scanner_service"] = hunt_scanner_service
+            review = run_ai_review(review_findings, routing, **review_kwargs)
             persist("targeted_deep_analysis", review["status"], review["detail"])
             decisions = review["decisions"]
             if decisions:
@@ -1345,6 +1355,7 @@ class ScanService:
                     "mode": orchestration_mode,
                     "ai_invoked_tools": ai_invoked_tools,
                 },
+                "model_hunt_tool_calls": dict(hunt_out.get("tool_call_counts") or {}),
                 "status": "cancelled"
                 if was_cancelled
                 else "failed"

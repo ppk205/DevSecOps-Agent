@@ -104,6 +104,29 @@ describe("Phase 2 pages (mock mode, standalone)", () => {
     expect(await screen.findByText(/Scan queued #8/, {}, { timeout: 5000 })).toBeInTheDocument();
   });
 
+  it("shows backend profile defaults and submits only deliberate scanner overrides", async () => {
+    const spy = vi.spyOn(mockApi, "createScan");
+    renderAt("/scans/new");
+    expect(await screen.findByRole("switch", { name: "semgrep" })).toHaveAttribute("aria-checked", "true");
+    expect(screen.getByRole("switch", { name: "trivy" })).toHaveAttribute("aria-checked", "false");
+    expect(screen.queryByRole("switch", { name: "spotbugs" })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("radio", { name: /DEEP/ }));
+    expect(screen.getByRole("switch", { name: "trivy" })).toHaveAttribute("aria-checked", "true");
+    expect(screen.getByText(/devsecops-agent scan-run.*--profile full/)).toBeInTheDocument();
+    const start = screen.getByRole("button", { name: "Start scan" });
+    fireEvent.click(start);
+    await waitFor(() => expect(spy).toHaveBeenLastCalledWith(expect.objectContaining({ profile: "full", tools: null })));
+    await screen.findByText(/Scan queued/);
+
+    fireEvent.click(screen.getByRole("switch", { name: "trivy" }));
+    expect(screen.queryByText(/devsecops-agent scan-run/)).not.toBeInTheDocument();
+    fireEvent.click(start);
+    await waitFor(() => expect(spy).toHaveBeenLastCalledWith(expect.objectContaining({
+      profile: "full", tools: ["semgrep", "native-hunt", "gitleaks", "owasp-dependency-check"],
+    })));
+    spy.mockRestore();
+  });
+
   it("keys page renders provider, scanners, usage, general sections masked", async () => {
     renderAt("/keys");
     expect(await screen.findByText("AI provider", {}, { timeout: 5000 })).toBeInTheDocument();

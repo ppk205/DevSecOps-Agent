@@ -17,7 +17,7 @@ PROFILES = {
         ToolName.SEMGREP,
         ToolName.NATIVE_HUNT,
         ToolName.GITLEAKS,
-        ToolName.SPOTBUGS,
+        ToolName.TRIVY,
         ToolName.OWASP_DEPENDENCY_CHECK,
     ],
 }

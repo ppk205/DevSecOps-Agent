@@ -97,7 +97,7 @@ func reviewSummary(checkout string, cfg service.Config, result map[string]any) s
 			tools = "No scanners selected"
 		}
 	} else if cfg.Profile == "full" {
-		tools += " + isolated Maven, SpotBugs/FindSecBugs, Dependency-Check"
+		tools += " + Trivy, Dependency-Check"
 	}
 	model := "Disabled"
 	if cfg.Laya {

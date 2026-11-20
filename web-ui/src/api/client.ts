@@ -404,10 +404,10 @@ export function openLiveStream(
 
 export async function fetchTools(
   verify = false,
-): Promise<{ tools: import("../api/types").ToolHealth[] }> {
+): Promise<import("../api/types").ScannerOptions> {
   if (isMock) return mockApi.tools(verify);
   const query = verify ? "?verify=true" : "";
-  return get<{ tools: import("../api/types").ToolHealth[] }>(`/api/tools${query}`);
+  return get<import("../api/types").ScannerOptions>(`/api/tools${query}`);
 }
 
 export async function fetchGeneralSettings(): Promise<
@@ -464,7 +464,7 @@ export async function fetchUsage(): Promise<import("../api/types").UsageSummary>
 export async function createScan(body: {
   repository_url: string;
   profile?: string;
-  tools?: string[];
+  tools?: string[] | null;
   commit_sha?: string | null;
   ai_review?: boolean;
   ai_report?: boolean;

@@ -304,6 +304,8 @@ class TestScannerToolService:
         assert (
             svc.run_config_audit(target_path="Dockerfile", check_type="iac_config")["returned"] == 1
         )
+        (tmp_path / "target" / "classes").mkdir(parents=True)
+        assert svc.run_config_audit(target_path="Dockerfile")["tool"] == "trivy"
 
         # PHP CodeQL gracefully skips with actionable Semgrep hint
         php_cql = svc.run_codeql(language="php")

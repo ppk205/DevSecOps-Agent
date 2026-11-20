@@ -125,6 +125,11 @@ export type LiveConnection =
 
 /** Các định dạng dùng chung Phase 2 (Home / New Scan / Keys). */
 
+export interface ScannerOptions {
+  tools: ToolHealth[];
+  profiles: Record<"fast" | "full", string[]>;
+}
+
 export interface ToolHealth {
   tool: string;
   binary: string;

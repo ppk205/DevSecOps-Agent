@@ -13,6 +13,10 @@
 - Direct the Python web root to the React application, show notification
   settings in its navigation, and expose webhook event switches in the Go TUI.
   The native dashboard still uses the older server-rendered pages.
+- Use Trivy in the full scanner profile and keep SpotBugs available for
+  explicit legacy scans. Show backend scanner presets in the web form and
+  preserve scanner-only findings through model Hunt and validation.
+
 
 - Remove the legacy `WEBHOOK_URL` send triggered by reading the notification
   feed. Local feed entries remain available. Add an opt-in signed generic webhook

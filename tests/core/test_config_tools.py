@@ -11,7 +11,7 @@ def test_default_tools_come_from_profile() -> None:
     assert [config.tool for config in fast.tools] == fast_tools
     assert [config.tool for config in full.tools] == [
         *fast_tools,
-        ToolName.SPOTBUGS,
+        ToolName.TRIVY,
         ToolName.OWASP_DEPENDENCY_CHECK,
     ]
 

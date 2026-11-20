@@ -63,8 +63,18 @@ describe("Phase 6 responsive + motion", () => {
     // mà không tạo thanh cuộn cho navbar; cuộn ngang nằm trên
     // container chứa các liên kết bên trong.
     expect(nav?.className).toContain("overflow-visible");
+    expect(nav?.className).toContain("flex-wrap");
     const linksScroller = nav?.querySelector("div.overflow-x-auto");
     expect(linksScroller).not.toBeNull();
+  });
+
+  it("keeps long scan commands inside the mobile review column", async () => {
+    renderAt("/scans/new");
+    const command = await screen.findByText(/devsecops-agent scan-run/);
+    expect(command.className).toContain("overflow-x-auto");
+    const review = command.closest("aside");
+    expect(review?.className).toContain("min-w-0");
+    expect(review?.parentElement?.className).toContain("grid-cols-1");
   });
 
   it("motion budget: 150-250ms ease-out only, single sweep, reduced-motion honored", () => {

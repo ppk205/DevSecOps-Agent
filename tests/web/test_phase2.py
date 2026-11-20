@@ -42,14 +42,24 @@ class TestTools:
         assert response.headers["X-Contract-Version"] == "1"
         tools = response.json()["tools"]
         names = {t["tool"] for t in tools}
-        assert names == {"native-hunt", "semgrep", "gitleaks", "spotbugs", "owasp-dependency-check"}
+        assert names == {
+            "native-hunt",
+            "semgrep",
+            "gitleaks",
+            "trivy",
+            "owasp-dependency-check",
+            "codeql",
+        }
+        assert response.json()["profiles"] == {
+            "fast": ["semgrep", "native-hunt", "gitleaks"],
+            "full": ["semgrep", "native-hunt", "gitleaks", "trivy", "owasp-dependency-check"],
+        }
         assert next(item for item in tools if item["tool"] == "native-hunt")["available"] is True
         for item in tools:
             assert set(item) >= {"tool", "binary", "available", "path", "hint"}
 
     def test_container_scanners_count_when_image_present(self, monkeypatch) -> None:  # type: ignore[no-untyped-def]
-        # Full scans run SpotBugs and Dependency-Check in the scanner image, so a
-        # host without those binaries but with Docker and the image can use them.
+        # Full scans can run Dependency-Check in the scanner image.
         from vulnscan.scanners import platform
         from vulnscan.web import phase2
 
@@ -58,15 +68,16 @@ class TestTools:
         )
         monkeypatch.setattr(phase2, "_scanner_image_present", lambda: True)
         tools = {t["tool"]: t for t in phase2.probe_tools()}
-        for name in ("spotbugs", "owasp-dependency-check"):
-            assert tools[name]["available"] is True
-            assert tools[name]["path"] == "docker:devsecops-agent-scanners:0.2.0"
-            assert "full profile" in tools[name]["hint"]
+        dependency_check = tools["owasp-dependency-check"]
+        assert dependency_check["available"] is True
+        assert dependency_check["path"] == "docker:devsecops-agent-scanners:0.2.0"
+        assert "full profile" in dependency_check["hint"]
+        assert tools["trivy"]["available"] is False
         assert tools["gitleaks"]["available"] is False
 
         monkeypatch.setattr(phase2, "_scanner_image_present", lambda: False)
         tools = {t["tool"]: t for t in phase2.probe_tools()}
-        assert tools["spotbugs"]["available"] is False
+        assert tools["owasp-dependency-check"]["available"] is False
 
 
 class TestSettings:

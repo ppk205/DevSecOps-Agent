@@ -12,12 +12,6 @@ import { Banner } from "../components/Banner";
 import { Button } from "../components/Button";
 import { useStrings } from "../i18n/lang";
 
-const SCANNERS = ["native-hunt"] as const;
-const PROFILE_SCANNERS: Record<"fast" | "full", readonly string[]> = {
-  fast: SCANNERS,
-  full: SCANNERS,
-};
-
 const FAIL_ON = ["critical", "high", "medium", "low", "info", "none"] as const;
 
 function Toggle(props: { label: string; detail: string; on: boolean; onChange: (next: boolean) => void }) {
@@ -44,9 +38,7 @@ export function NewScanPage() {
   const en = useStrings();
   const [repo, setRepo] = useState("https://github.com/example/jva-bookstore");
   const [profile, setProfile] = useState<"fast" | "full">("fast");
-  const [tools, setTools] = useState<Record<string, boolean>>({
-    "native-hunt": true,
-  });
+  const [toolOverrides, setToolOverrides] = useState<string[] | null>(null);
   // Off by default: no source excerpt goes to a provider until the user allows it.
   const [allowCloud, setAllowCloud] = useState(false);
   const [aiReview, setAiReview] = useState(true);
@@ -69,13 +61,16 @@ export function NewScanPage() {
   const useReview = allowCloud && aiReview;
   const useReport = allowCloud && aiReport;
   const usesModel = useHunt || useReview || useReport;
+  const profiles = toolsQuery.data?.profiles;
+  const selectedTools = toolOverrides ?? profiles?.[profile] ?? [];
+  const cliNeedsConfig = toolOverrides !== null || maxFiles !== 100000;
   const startMutation = useMutation({
     mutationFn: () =>
       createScan({
         repository_url: repo.trim(),
         commit_sha: commit.trim() || null,
         profile,
-        tools: SCANNERS.filter((t) => tools[t]),
+        tools: toolOverrides,
         ai_review: useReview,
         ai_report: useReport,
         laya,
@@ -90,14 +85,6 @@ export function NewScanPage() {
       }),
   });
 
-  const toolStatus = useMemo(() => {
-    const map = new Map<string, { available: boolean; version: string | null; hint: string | null }>();
-    for (const t of toolsQuery.data?.tools ?? []) {
-      map.set(t.tool, { available: t.available, version: t.version, hint: t.hint });
-    }
-    return map;
-  }, [toolsQuery.data]);
-
   const recentTargets = useMemo(() => {
     const seen = new Set<string>();
     for (const s of scansQuery.data ?? []) {
@@ -111,12 +98,9 @@ export function NewScanPage() {
   const remaining = usageQuery.data?.available;
 
   const cli = useMemo(() => {
-    const parts = ["devsecops-agent scan", `--checkout ${shellQuote(repo.trim() || "<repo>")}`, `--profile ${profile}`];
-    const enabled = SCANNERS.filter((t) => tools[t]);
-    if (enabled.length > 0) parts.push(`--tools ${enabled.join(",")}`);
+    const parts = ["devsecops-agent scan-run", `--checkout ${shellQuote(repo.trim() || "<repo>")}`, `--profile ${profile}`];
     if (commit.trim()) parts.push(`--commit ${shellQuote(commit.trim())}`);
     if (timeout !== 600) parts.push(`--timeout ${timeout}`);
-    if (maxFiles !== 100000) parts.push(`--max-files ${maxFiles}`);
     if (failOn !== "high") parts.push(`--fail-on ${failOn}`);
     if (!laya) parts.push("--no-laya");
     parts.push(useHunt ? "--mode hunt" : "--mode deterministic");
@@ -127,7 +111,7 @@ export function NewScanPage() {
       if (providerModel) parts.push(`--model ${shellQuote(providerModel)}`);
     }
     return parts.join(" ");
-  }, [repo, profile, tools, commit, timeout, maxFiles, failOn, laya, useHunt, useReview, useReport, usesModel, providerProfile, providerModel, maxAi]);
+  }, [repo, profile, commit, timeout, failOn, laya, useHunt, useReview, useReport, usesModel, providerProfile, providerModel, maxAi]);
 
   return (
     <div>
@@ -136,7 +120,7 @@ export function NewScanPage() {
         <p className="mt-2 text-body">{en.newScan.subtitle}</p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
         <div className="space-y-6">
           {/* Target */}
           <section className="card p-6">
@@ -181,12 +165,12 @@ export function NewScanPage() {
                 aria-checked={profile === "fast"}
                 onClick={() => {
                   setProfile("fast");
-                  setTools({ "native-hunt": true });
+                  setToolOverrides(null);
                 }}
                 className={`border p-4 text-left ${profile === "fast" ? "border-ink" : "border-hairline"}`}
               >
                 <div className="label-m text-sm text-ink">{en.newScan.fast}</div>
-                <div className="mt-1 text-xs text-muted">{en.newScan.fastDetail}</div>
+                <div className="mt-1 text-xs text-muted">{profiles?.fast.join(" · ")}</div>
               </button>
               <button
                 type="button"
@@ -194,12 +178,12 @@ export function NewScanPage() {
                 aria-checked={profile === "full"}
                 onClick={() => {
                   setProfile("full");
-                  setTools({ "native-hunt": true });
+                  setToolOverrides(null);
                 }}
                 className={`border p-4 text-left ${profile === "full" ? "border-ink" : "border-hairline"}`}
               >
                 <div className="label-m text-sm text-ink">{en.newScan.deep}</div>
-                <div className="mt-1 text-xs text-muted">{en.newScan.deepDetail}</div>
+                <div className="mt-1 text-xs text-muted">{profiles?.full.join(" · ")}</div>
               </button>
             </div>
           </section>
@@ -208,9 +192,9 @@ export function NewScanPage() {
           <section className="card p-6">
             <h2 className="label-m mb-4 text-xs text-muted">{en.newScan.scanners}</h2>
             <div className="grid gap-3 sm:grid-cols-2">
-              {PROFILE_SCANNERS[profile].map((name) => {
-                const status = toolStatus.get(name);
-                const on = tools[name] ?? false;
+              {toolsQuery.data?.tools.map((status) => {
+                const name = status.tool;
+                const on = selectedTools.includes(name);
                 return (
                   <button
                     key={name}
@@ -218,7 +202,9 @@ export function NewScanPage() {
                     role="switch"
                     aria-checked={on}
                     aria-label={name}
-                    onClick={() => setTools((prev) => ({ ...prev, [name]: !prev[name] }))}
+                    onClick={() => setToolOverrides(
+                      on ? selectedTools.filter((tool) => tool !== name) : [...selectedTools, name],
+                    )}
                     className={`border p-4 text-left ${on ? "border-ink" : "border-hairline"}`}
                   >
                     <div className="flex items-center gap-2">
@@ -364,7 +350,7 @@ export function NewScanPage() {
         </div>
 
         {/* Sticky review panel */}
-        <aside className="lg:sticky lg:top-6 lg:self-start">
+        <aside className="min-w-0 lg:sticky lg:top-6 lg:self-start">
           <div className="card space-y-4 p-6">
             <h2 className="label-m text-xs text-muted">{en.newScan.review}</h2>
             <dl className="space-y-2 text-sm">
@@ -379,7 +365,7 @@ export function NewScanPage() {
               <div className="flex justify-between gap-4">
                 <dt className="text-muted">{en.newScan.reviewScanners}</dt>
                 <dd className="text-right text-ink">
-                  {SCANNERS.filter((t) => tools[t]).join(", ") || "—"}
+                  {selectedTools.join(", ") || "—"}
                 </dd>
               </div>
               <div className="flex justify-between gap-4">
@@ -393,12 +379,15 @@ export function NewScanPage() {
                 </dd>
               </div>
             </dl>
-            <div>
+            {useHunt && <p className="text-xs text-muted">{en.newScan.huntScannerScope}</p>}
+            {cliNeedsConfig ? (
+              <p className="text-xs text-muted">{en.newScan.cliConfigRequired}</p>
+            ) : <div>
               <div className="label-m mb-2 text-[11px] text-muted">{en.newScan.cliPreview}</div>
               <pre className="overflow-x-auto border border-hairline bg-canvas p-3 font-mono text-xs text-body">
                 {cli}
               </pre>
-            </div>
+            </div>}
             {startMutation.isError && (
               <Banner tone="error" title={en.newScan.startFailed}>
                 {String(startMutation.error)}

@@ -2,11 +2,11 @@
 
 The Ubuntu composite Action installs the Python package from its own checked-out
 revision and uses locked Python dependencies, Semgrep 1.178.0, Gitleaks 8.24.2,
-SpotBugs 4.10.4 with FindSecBugs 1.14.0, Dependency-Check 13.0.0,
+Trivy 0.76.2 for full scans, Dependency-Check 13.0.0,
 and the packaged 0.2.0 Java rule set. It never uses Semgrep `--config auto`. The bundled initial rules cover SQL query
 concatenation, `Runtime.exec` calls and weak message digests; this is a bounded
 rule set, not a claim of coverage for every Java weakness. Full scans add
-FindSecBugs and dependency analysis.
+configuration and dependency analysis.
 
 Copy [the PR workflow](examples/security-pr.yml) into `.github/workflows/`.
 For trusted branches, copy [the scheduled workflow](examples/security-scheduled.yml).
@@ -16,7 +16,7 @@ release; a commit SHA can be used before or after publication.
 | Input | Default | Meaning |
 | --- | --- | --- |
 | `checkout-path` | `.` | Clean Git working tree to scan |
-| `profile` | `fast` | `fast`: Semgrep, native-hunt and Gitleaks. `full` also uses isolated Maven, SpotBugs/FindSecBugs and Dependency-Check. |
+| `profile` | `fast` | `fast`: Semgrep, native-hunt and Gitleaks. `full` also runs Trivy and isolated Dependency-Check. |
 | `config` | empty | Versioned JSON configuration file |
 | `fail-on` | `high` | Minimum severity: critical, high, medium, low, info, none |
 | `output-directory` | runner temporary directory | Sanitized evidence destination, preferably outside the checkout |

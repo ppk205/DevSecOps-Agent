@@ -863,28 +863,60 @@ def hunt_vulns(
                         cap_summary = "\nAvailable local scanners: " + ", ".join(tool_bits)
                 except Exception as exc:  # noqa: BLE001 - capability hint is best-effort
                     logger.debug("scanner capability probe failed: %s", exc)
+            manifest_globs = (
+                "pom.xml",
+                "package-lock.json",
+                "package.json",
+                "requirements.txt",
+                "composer.lock",
+                "composer.json",
+                "go.mod",
+                "conanfile.txt",
+                "vcpkg.json",
+                "*.csproj",
+                "Dockerfile*",
+                "docker-compose*",
+            )
+            extra_files: list[str] = []
+            for mglob in manifest_globs:
+                mout = handlers["list_files"]({"dir": ".", "glob": mglob})
+                if isinstance(mout, dict) and mout.get("files"):
+                    for mf in mout["files"][:10]:
+                        s_mf = str(mf)
+                        if s_mf not in extra_files:
+                            extra_files.append(s_mf)
+            manifest_preview = (
+                "\nDependency manifests & IaC config files detected:\n"
+                + "\n".join(extra_files[:25])
+                if extra_files
+                else ""
+            )
             file_preview = "\n".join(str(f)[:200] for f in tree_files[:100]) or "(use list_files)"
             messages = [
                 ChatMessage(
                     role="system",
                     content=(
                         system_content
-                        + " "
-                        + "You are the unified scan orchestrator: invoke the appropriate "
-                        + "security scanner tools first (run_semgrep_scan, run_codeql_scan, "
-                        + "run_owasp_scan, run_secret_scan, run_config_audit), then inspect "
-                        + "source code and scanner findings to filter false positives and "
-                        + "confirm real vulnerabilities before outputting the final JSON array."
+                        + " Use the registered scanner and evidence tools. "
+                        + "Scanner tools include run_semgrep_scan for SAST, run_codeql_scan for dataflow, "
+                        + "run_owasp_scan for dependency/SCA on pom.xml/manifests, "
+                        + "run_secret_scan for hardcoded secrets, and run_config_audit for configuration checks. "
+                        + "Invoke the applicable scanner tools (including run_owasp_scan when manifests exist), "
+                        + "query/explain findings and inspect source code to filter false positives, "
+                        + "and conclude with ONLY the final verified JSON array."
                     ),
                 ),
                 ChatMessage(
                     role="user",
                     content=(
                         f"Snapshot file tree ({family} files):\n{file_preview}"
+                        f"{manifest_preview}"
                         f"{cap_summary}\n\n"
-                        "Start by calling the relevant scanner tools for this repository, "
-                        "analyze the extracted results alongside inspect_code/grep_code, "
-                        "and conclude with ONLY the final verified JSON array."
+                        "Start by calling the relevant scanner tools for this repository "
+                        "(e.g. run_semgrep_scan, run_owasp_scan on dependency manifests, "
+                        "run_secret_scan, run_config_audit), then use query_scanner_findings, "
+                        "explain_scanner_rule, inspect_code, and grep_code to verify and filter "
+                        "the results before outputting ONLY the final verified JSON array."
                     ),
                 ),
             ]
@@ -991,6 +1023,7 @@ def hunt_vulns(
                             )
                 except Exception as exc:  # noqa: BLE001 - fast path is best-effort
                     logger.warning("hunt fast path failed: %s", exc)
+        exhausted_rounds = True
         for _ in range(max(1, max_rounds)):
             try:
                 resp = client.chat(messages, model=model, tools=TOOL_SCHEMAS, tool_choice="auto")
@@ -1020,6 +1053,7 @@ def hunt_vulns(
                     pass
             last_content = resp.content or ""
             if not resp.tool_calls:
+                exhausted_rounds = False
                 break
             messages.append(
                 ChatMessage(
@@ -1063,7 +1097,7 @@ def hunt_vulns(
                         tool_call_id=tc.get("id") if isinstance(tc, dict) else None,
                     )
                 )
-        else:
+        if exhausted_rounds and not tool_first:
             candidates = dedupe_candidates(
                 [*fast_candidates, *parse_hunt_list(last_content, max_findings)]
             )[: max(1, max_findings)]
@@ -1078,38 +1112,66 @@ def hunt_vulns(
         )[: max(1, max_findings)]
         detail = f"loop ended with {len(candidates)} candidates"
         if not candidates:
-            # Các gateway chuyên lập luận không trả về nội dung khả dụng khi gắn kèm
-            # công cụ: thực hiện một lệnh gọi không dùng công cụ cuối cùng trên bằng chứng thu thập được.
-            # Lượt quét sink xác định bổ sung vào bản đồ bằng chứng để
-            # phán quyết vẫn có sink để đánh giá; MÔ HÌNH quyết định cái gì là
-            # lỗ hổng, lượt quét chỉ chỉ ra các dòng code.
+            # Reasoning-only gateways or tool loops that used all rounds on
+            # tool calls: run one final synthesis & filtering call over the
+            # gathered scanner observations + code inspection evidence.
             try:
+                scanner_digest_lines: list[str] = []
+                if scanner_service is not None and hasattr(scanner_service, "query_findings"):
+                    try:
+                        q_out = scanner_service.query_findings(max_items=50)
+                        for idx, item in enumerate(q_out.get("findings") or [], 1):
+                            if not isinstance(item, dict):
+                                continue
+                            scanner_digest_lines.append(
+                                f"{idx}. [{item.get('tool')}] file={item.get('file')} "
+                                f"line={item.get('line_start')} cwe={item.get('cwe')} "
+                                f"severity={item.get('severity')} rule={item.get('rule_id')} "
+                                f"msg={str(item.get('message', ''))[:120]}"
+                            )
+                    except Exception as exc:  # noqa: BLE001
+                        logger.debug("scanner digest query failed: %s", exc)
+
                 closing_sweep = _sweep_sinks(handlers, family)
-                closing_excerpts = _sweep_excerpts(snapshot_root, closing_sweep)
-                evidence_text = "\n".join(tool_evidence[:16])[:8000]
+                evidence_parts: list[str] = []
+                if scanner_digest_lines:
+                    evidence_parts.append(
+                        "Raw observations from the security scanner tools you invoked "
+                        "(FILTER these: keep genuine vulnerabilities using their exact "
+                        "file, line, and cwe; drop false positives / benign patterns):\n"
+                        + "\n".join(scanner_digest_lines[:60])
+                    )
+                if tool_evidence:
+                    evidence_parts.append(
+                        "Tool & code inspection trace:\n" + "\n".join(tool_evidence[:10])[:4000]
+                    )
                 if closing_sweep:
-                    evidence_text += (
-                        "\nSink sweep (context only, judge each line yourself):\n"
-                        + "\n".join(closing_sweep[:60])
+                    evidence_parts.append(
+                        "Sink sweep (context only, judge each line yourself):\n"
+                        + "\n".join(closing_sweep[:20])
                     )
+                closing_excerpts = _sweep_excerpts(snapshot_root, closing_sweep)
                 if closing_excerpts:
-                    evidence_text += (
-                        "\nSource excerpts around top hits "
-                        "(numbered, ±12 lines — cite exact file+line):\n"
-                        + "\n\n".join(closing_excerpts[:12])
+                    evidence_parts.append(
+                        "Source excerpts around sink hits:\n" + "\n\n".join(closing_excerpts[:12])
                     )
+                evidence_text = "\n\n".join(evidence_parts)[:12000]
                 closing = client.chat(
                     [
                         ChatMessage(
                             role="system",
-                            content=system_content,
+                            content=(
+                                system_content
+                                + " Review the scanner observations and source evidence. "
+                                + "Report candidate findings with their exact file, line, and CWE."
+                            ),
                         ),
                         ChatMessage(
                             role="user",
                             content=(
-                                "Read-only exploration found:\n"
-                                + evidence_text[:12000]
-                                + "\n\nNow output the JSON array and nothing else."
+                                "Exploration & scanner tool outputs:\n"
+                                + evidence_text
+                                + "\n\nNow output ONLY the final filtered JSON array and nothing else."
                             ),
                         ),
                     ],
@@ -1305,6 +1367,14 @@ def hunt_all(
         if shared_service is not None and hasattr(shared_service, "executed_tools")
         else []
     )
+    tool_call_counts: dict[str, int] = {}
+    for entry in trace:
+        if not isinstance(entry, dict):
+            continue
+        for tc in entry.get("tool_calls") or []:
+            if isinstance(tc, dict) and tc.get("name"):
+                tname = str(tc["name"])
+                tool_call_counts[tname] = tool_call_counts.get(tname, 0) + 1
     status = (
         "completed"
         if (merged or executed_results) and ok
@@ -1323,4 +1393,5 @@ def hunt_all(
         "trace": trace,
         "scanner_results": executed_results,
         "tools_invoked": tools_invoked,
+        "tool_call_counts": tool_call_counts,
     }

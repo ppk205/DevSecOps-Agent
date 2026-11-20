@@ -42,6 +42,7 @@ runs:
       shell: bash
       env:
         ACTION_ROOT: ${{ github.action_path }}
+        SCAN_PROFILE: ${{ inputs.profile }}
       run: |
         test "$RUNNER_OS-$RUNNER_ARCH" = Linux-X64 || { echo 'This Action supports Ubuntu x64 only'; exit 2; }
         python "$ACTION_ROOT/ci/install_action.py"

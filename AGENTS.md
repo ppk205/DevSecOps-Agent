@@ -103,7 +103,7 @@ Python tool-scan CLI -> ScannerToolService -> individual scanner adapters
   `src/vulnscan/ai/hunt.py`. C/C++ inventory and model-Hunt support do not imply
   a native-hunt pack or native-executable coverage.
 - **A5.** The shared `fast` profile selects Semgrep, native-hunt and Gitleaks.
-  `full` also selects SpotBugs/FindSecBugs and Dependency-Check. Third-party
+  `full` also selects Trivy and Dependency-Check. Third-party
   scanners remain adapters and comparison baselines. Select a subset through
   `tools`. Dependency-Check can fall back to OSV. Preserve `scan-run`, explicit
   tool selection, coverage records and baseline comparisons.

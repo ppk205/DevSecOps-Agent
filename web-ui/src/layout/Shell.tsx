@@ -24,11 +24,11 @@ export function Shell() {
   return (
     <div className="flex min-h-screen flex-col bg-canvas">
       <header className="bg-canvas">
-        <nav aria-label="Primary" className="mx-auto flex h-16 max-w-pitwall items-center gap-2 overflow-visible px-6">
-          <NavLink to="/" className="label-m mr-8 shrink-0 text-sm text-ink no-underline">
+        <nav aria-label="Primary" className="mx-auto flex min-h-16 max-w-pitwall flex-wrap items-center gap-2 overflow-visible px-3 py-2 sm:flex-nowrap sm:px-6 sm:py-0">
+          <NavLink to="/" className="label-m mr-2 shrink-0 text-sm text-ink no-underline sm:mr-8">
             PIT&nbsp;WALL
           </NavLink>
-          <div className="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto">
+          <div className="flex min-w-0 flex-1 basis-24 items-center gap-2 overflow-x-auto sm:basis-0">
           {NAV.map((item) => (
             <NavLink
               key={item.to}
@@ -47,7 +47,7 @@ export function Shell() {
             </NavLink>
           ))}
           </div>
-          <div className="ml-auto flex shrink-0 items-center gap-3">
+          <div className="ml-auto flex max-w-full flex-wrap items-center justify-end gap-2 sm:shrink-0 sm:flex-nowrap sm:gap-3">
             <NotificationsBell />
             <OutboundNotifications />
             <div role="group" aria-label={en.shell.language} className="flex items-center border border-hairline">

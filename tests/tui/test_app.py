@@ -100,8 +100,12 @@ async def test_fr71_configure_scan_inspect_export_restart(service, checkout, tmp
                 break
         app.query_one("#finding-table", DataTable).focus()
         await pilot.press("enter")
-        await pilot.pause()
-        assert "Example.java" in str(app.query_one("#evidence", Static).render())
+        evidence = app.query_one("#evidence", Static)
+        for _ in range(100):
+            await pilot.pause(0.05)
+            if "Example.java" in str(evidence.render()):
+                break
+        assert "Example.java" in str(evidence.render())
         await pilot.resize_terminal(75, 26)
         app.query_one(TabbedContent).active = "settings"
         app.query_one("#export", Button).press()

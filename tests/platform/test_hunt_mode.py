@@ -232,7 +232,19 @@ def test_hunt_mode_ai_orchestrates_scanners_without_duplicate_runs(checkout, tmp
 
         def run(self, spec, *, workdir):
             self.calls += 1
-            return super().run(spec, workdir=workdir)
+            result = super().run(spec, workdir=workdir)
+            original = result.observations[0]
+            result.observations.append(
+                original.model_copy(
+                    update={
+                        "observation_id": "unmatched-scan-observation",
+                        "rule_id": "scanner-only",
+                        "cwe_category": CWECategory.XSS,
+                        "severity": Severity.HIGH,
+                    }
+                )
+            )
+            return result
 
     semgrep_adapter = CountingAdapter(ToolName.SEMGREP)
     gitleaks_adapter = CountingAdapter(ToolName.GITLEAKS)
@@ -313,7 +325,8 @@ def test_hunt_mode_ai_orchestrates_scanners_without_duplicate_runs(checkout, tmp
         "ai_invoked_tools": ["semgrep"],
     }
     assert result["status"] == "completed"
-    assert result["exit_code"] == 0
+    assert result["exit_code"] == 1
+    assert result["findings"] == 2
     assert result["comparison"]["counts"]["agreed"] >= 1
     assert (tmp_path / "reports" / result["run_id"] / "scanner-semgrep.json").is_file()
 

@@ -1,11 +1,18 @@
 import type {
   GeneralSettings,
   KeyEntry,
+  ScannerOptions,
   ToolHealth,
   UsageSummary,
 } from "../api/types";
 
 /** Fixture Phase 2 đơn định: tools, settings, keys, usage. */
+
+const fast = ["semgrep", "native-hunt", "gitleaks"];
+export const MOCK_SCANNER_PROFILES: ScannerOptions["profiles"] = {
+  fast,
+  full: [...fast, "trivy", "owasp-dependency-check"],
+};
 
 export const MOCK_TOOLS: ToolHealth[] = [
   {
@@ -16,6 +23,14 @@ export const MOCK_TOOLS: ToolHealth[] = [
     version: "0.2.0",
     hint: null,
   },
+  ...["semgrep", "gitleaks", "trivy", "owasp-dependency-check", "codeql"].map((tool) => ({
+    tool,
+    binary: tool,
+    path: null,
+    available: false,
+    version: null,
+    hint: `Install ${tool} on PATH`,
+  })),
 ];
 
 export const MOCK_GENERAL: GeneralSettings = {
