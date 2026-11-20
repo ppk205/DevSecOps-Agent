@@ -468,6 +468,11 @@ def evidence_manifest(
     typer.echo(rendered)
 
 
+from .tool_scan import tool_scan_app
+
+app.add_typer(tool_scan_app, name="tool-scan")
+
+
 def main() -> None:
     """Console-script entry point (pyproject: vulnscan.cli.main:main)."""
     import os

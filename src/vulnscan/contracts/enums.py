@@ -200,6 +200,7 @@ class ToolName(str, Enum):
     OWASP_DEPENDENCY_CHECK = "owasp-dependency-check"
     GITLEAKS = "gitleaks"
     CODEQL = "codeql"
+    TRIVY = "trivy"
 
 
 class ExtractionMode(str, Enum):
@@ -234,21 +235,27 @@ class CoverageUnitStatus(str, Enum):
 
 
 class LanguageKind(str, Enum):
-    """Source language of an analysis unit; each web language reconciles separately."""
+    """Source language of an analysis unit; each language family reconciles separately."""
 
     JAVA = "java"
+    KOTLIN = "kotlin"
     JSP = "jsp"
     JAVASCRIPT = "javascript"
     TYPESCRIPT = "typescript"
     PYTHON = "python"
     PHP = "php"
+    GO = "go"
+    CPP = "cpp"
+    CSHARP = "csharp"
     OTHER = "other"
 
 
-#: File extensions scanned as web source (inventory + coverage).
+#: File extensions scanned as source across the 7 supported language families.
 WEB_SOURCE_EXTENSIONS = frozenset(
     {
         ".java",
+        ".kt",
+        ".kts",
         ".jsp",
         ".jspx",
         ".js",
@@ -260,11 +267,24 @@ WEB_SOURCE_EXTENSIONS = frozenset(
         ".vue",
         ".py",
         ".php",
+        ".phtml",
+        ".go",
+        ".c",
+        ".cc",
+        ".cpp",
+        ".cxx",
+        ".h",
+        ".hh",
+        ".hpp",
+        ".hxx",
+        ".cs",
     }
 )
 
 _EXTENSION_LANGUAGE: dict[str, LanguageKind] = {
     ".java": LanguageKind.JAVA,
+    ".kt": LanguageKind.KOTLIN,
+    ".kts": LanguageKind.KOTLIN,
     ".jsp": LanguageKind.JSP,
     ".jspx": LanguageKind.JSP,
     ".js": LanguageKind.JAVASCRIPT,
@@ -276,11 +296,22 @@ _EXTENSION_LANGUAGE: dict[str, LanguageKind] = {
     ".tsx": LanguageKind.TYPESCRIPT,
     ".py": LanguageKind.PYTHON,
     ".php": LanguageKind.PHP,
+    ".phtml": LanguageKind.PHP,
+    ".go": LanguageKind.GO,
+    ".c": LanguageKind.CPP,
+    ".cc": LanguageKind.CPP,
+    ".cpp": LanguageKind.CPP,
+    ".cxx": LanguageKind.CPP,
+    ".h": LanguageKind.CPP,
+    ".hh": LanguageKind.CPP,
+    ".hpp": LanguageKind.CPP,
+    ".hxx": LanguageKind.CPP,
+    ".cs": LanguageKind.CSHARP,
 }
 
 
 def language_from_extension(path: str) -> LanguageKind:
-    """Map a file path to its web language; unknown extensions are OTHER."""
+    """Map a file path to its language kind; unknown extensions are OTHER."""
     from pathlib import Path
 
     return _EXTENSION_LANGUAGE.get(Path(path).suffix.lower(), LanguageKind.OTHER)

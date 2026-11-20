@@ -153,8 +153,199 @@ def parse_requirements_txt(text: str, *, manifest: str) -> list[OsvPackage]:
     return packages
 
 
-def collect_packages(workdir: str | Path) -> tuple[list[OsvPackage], list[str]]:
+def parse_go_mod(text: str, *, manifest: str) -> list[OsvPackage]:
+    """Parse ``go.mod`` require directives (ecosystem Go)."""
+    packages: list[OsvPackage] = []
+    in_block = False
+    for raw_line in text.splitlines():
+        line = raw_line.split("//", 1)[0].strip()
+        if not line:
+            continue
+        if line.startswith("require (") or line == "require(":
+            in_block = True
+            continue
+        if in_block and line == ")":
+            in_block = False
+            continue
+        entry = line[len("require ") :].strip() if line.startswith("require ") else (line if in_block else "")
+        if not entry:
+            continue
+        parts = entry.split()
+        if len(parts) >= 2:
+            name, version = parts[0], parts[1].lstrip("v")
+            if name and version and version[0].isdigit():
+                packages.append(
+                    OsvPackage(ecosystem="Go", name=name, version=f"v{version}", manifest=manifest)
+                )
+    return packages
+
+
+def parse_composer_lock(data: dict[str, Any], *, manifest: str) -> list[OsvPackage]:
+    """Parse PHP ``composer.lock`` packages (ecosystem Packagist)."""
+    packages: list[OsvPackage] = []
+    for section in ("packages", "packages-dev"):
+        entries = data.get(section)
+        if not isinstance(entries, list):
+            continue
+        for item in entries:
+            if not isinstance(item, dict):
+                continue
+            name = str(item.get("name") or "").strip()
+            version = str(item.get("version") or "").strip().lstrip("v")
+            if name and version:
+                packages.append(
+                    OsvPackage(ecosystem="Packagist", name=name, version=version, manifest=manifest)
+                )
+    return packages
+
+
+def parse_composer_json(data: dict[str, Any], *, manifest: str) -> list[OsvPackage]:
+    """Parse pinned entries from PHP ``composer.json`` (ecosystem Packagist)."""
+    packages: list[OsvPackage] = []
+    for section in ("require", "require-dev"):
+        entries = data.get(section)
+        if not isinstance(entries, dict):
+            continue
+        for name, raw_ver in entries.items():
+            if not isinstance(name, str) or "/" not in name:
+                continue
+            ver = str(raw_ver or "").strip().lstrip("^~>=<v ")
+            if ver and ver[0].isdigit() and "*" not in ver and " " not in ver:
+                packages.append(
+                    OsvPackage(ecosystem="Packagist", name=name, version=ver, manifest=manifest)
+                )
+    return packages
+
+
+def parse_csproj(text: str, *, manifest: str) -> list[OsvPackage]:
+    """Parse .NET ``*.csproj`` PackageReference entries (ecosystem NuGet)."""
+    if "<!ENTITY" in text.upper():
+        return []
+    try:
+        root = ET.fromstring(text)
+    except ET.ParseError:
+        return []
+    packages: list[OsvPackage] = []
+    for node in root.iter():
+        if _local(node.tag) != "PackageReference":
+            continue
+        name = (node.attrib.get("Include") or node.attrib.get("Update") or "").strip()
+        version = (node.attrib.get("Version") or "").strip()
+        if not version:
+            for child in node:
+                if _local(child.tag) == "Version" and child.text:
+                    version = child.text.strip()
+                    break
+        if name and version and "$" not in version and "*" not in version:
+            packages.append(
+                OsvPackage(ecosystem="NuGet", name=name, version=version, manifest=manifest)
+            )
+    return packages
+
+
+def parse_conanfile_txt(text: str, *, manifest: str) -> list[OsvPackage]:
+    """Parse C/C++ ``conanfile.txt`` [requires] entries (ecosystem ConanCenter)."""
+    packages: list[OsvPackage] = []
+    in_requires = False
+    for raw_line in text.splitlines():
+        line = raw_line.split("#", 1)[0].strip()
+        if not line:
+            continue
+        if line.startswith("[") and line.endswith("]"):
+            in_requires = line.lower() == "[requires]"
+            continue
+        if not in_requires or "/" not in line:
+            continue
+        pkg_spec = line.split("@", 1)[0]
+        parts = pkg_spec.split("/", 1)
+        if len(parts) == 2:
+            name, version = parts[0].strip(), parts[1].strip()
+            if name and version and "[" not in version:
+                packages.append(
+                    OsvPackage(
+                        ecosystem="ConanCenter", name=name, version=version, manifest=manifest
+                    )
+                )
+    return packages
+
+
+def parse_vcpkg_json(data: dict[str, Any], *, manifest: str) -> list[OsvPackage]:
+    """Parse C/C++ ``vcpkg.json`` overrides/dependencies with explicit versions."""
+    packages: list[OsvPackage] = []
+    for section in ("overrides", "dependencies"):
+        entries = data.get(section)
+        if not isinstance(entries, list):
+            continue
+        for item in entries:
+            if not isinstance(item, dict):
+                continue
+            name = str(item.get("name") or "").strip()
+            version = str(
+                item.get("version") or item.get("version>=") or item.get("version-semver") or ""
+            ).strip()
+            if name and version:
+                packages.append(
+                    OsvPackage(ecosystem="OSS-Fuzz", name=name, version=version, manifest=manifest)
+                )
+    return packages
+
+
+def _parse_manifest_file(path: Path, rel: str) -> list[OsvPackage]:
+    import json as _json
+
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return []
+    name = path.name.lower()
+    if name == "pom.xml":
+        return parse_pom_xml(text, manifest=rel)
+    if name == "package-lock.json":
+        try:
+            data = _json.loads(text)
+        except ValueError:
+            return []
+        return parse_package_lock(data, manifest=rel) if isinstance(data, dict) else []
+    if name == "requirements.txt":
+        return parse_requirements_txt(text, manifest=rel)
+    if name == "go.mod":
+        return parse_go_mod(text, manifest=rel)
+    if name == "composer.lock":
+        try:
+            data = _json.loads(text)
+        except ValueError:
+            return []
+        return parse_composer_lock(data, manifest=rel) if isinstance(data, dict) else []
+    if name == "composer.json":
+        try:
+            data = _json.loads(text)
+        except ValueError:
+            return []
+        return parse_composer_json(data, manifest=rel) if isinstance(data, dict) else []
+    if name.endswith(".csproj"):
+        return parse_csproj(text, manifest=rel)
+    if name == "conanfile.txt":
+        return parse_conanfile_txt(text, manifest=rel)
+    if name == "vcpkg.json":
+        try:
+            data = _json.loads(text)
+        except ValueError:
+            return []
+        return parse_vcpkg_json(data, manifest=rel) if isinstance(data, dict) else []
+    return []
+
+
+def collect_packages(
+    workdir: str | Path,
+    *,
+    manifest_path: str | None = None,
+) -> tuple[list[OsvPackage], list[str]]:
     """Collect pinned packages from every manifest under *workdir*.
+
+    Supports all 7 language families: Maven (``pom.xml``), npm
+    (``package-lock.json``), PyPI (``requirements.txt``), Go (``go.mod``),
+    PHP (``composer.lock``/``composer.json``), .NET (``*.csproj``), and
+    C/C++ (``conanfile.txt``/``vcpkg.json``).
 
     Returns ``(packages, manifests)`` where ``manifests`` are the
     checkout-relative POSIX paths of manifest files found (even unparsable
@@ -163,35 +354,45 @@ def collect_packages(workdir: str | Path) -> tuple[list[OsvPackage], list[str]]:
     root = Path(workdir)
     packages: list[OsvPackage] = []
     manifests: list[str] = []
-    try:
-        pom_files = sorted(root.rglob("pom.xml"))
-        lock_files = sorted(root.rglob("package-lock.json"))
-        req_files = sorted(root.rglob("requirements.txt"))
-    except OSError:
-        return [], []
-    for path in pom_files + lock_files + req_files:
-        try:
-            rel = path.relative_to(root).as_posix()
-        except ValueError:
-            continue
-        manifests.append(rel)
-        try:
-            text = path.read_text(encoding="utf-8", errors="replace")
-        except OSError:
-            continue
-        if path.name == "pom.xml":
-            packages.extend(parse_pom_xml(text, manifest=rel))
-        elif path.name == "package-lock.json":
-            import json as _json
 
+    if manifest_path:
+        candidate = (root / manifest_path).resolve()
+        try:
+            rel = candidate.relative_to(root.resolve()).as_posix()
+        except ValueError:
+            return [], []
+        if not candidate.is_file():
+            return [], []
+        manifests.append(rel)
+        packages.extend(_parse_manifest_file(candidate, rel))
+    else:
+        patterns = (
+            "pom.xml",
+            "package-lock.json",
+            "requirements.txt",
+            "go.mod",
+            "composer.lock",
+            "composer.json",
+            "*.csproj",
+            "conanfile.txt",
+            "vcpkg.json",
+        )
+        found_paths: list[Path] = []
+        try:
+            for pattern in patterns:
+                found_paths.extend(sorted(root.rglob(pattern)))
+        except OSError:
+            return [], []
+        for path in found_paths:
+            if not path.is_file():
+                continue
             try:
-                data = _json.loads(text)
+                rel = path.relative_to(root).as_posix()
             except ValueError:
                 continue
-            if isinstance(data, dict):
-                packages.extend(parse_package_lock(data, manifest=rel))
-        else:
-            packages.extend(parse_requirements_txt(text, manifest=rel))
+            manifests.append(rel)
+            packages.extend(_parse_manifest_file(path, rel))
+
     seen: dict[tuple[str, str, str], OsvPackage] = {}
     for pkg in packages:
         seen.setdefault((pkg.ecosystem, pkg.name, pkg.version), pkg)
@@ -418,7 +619,13 @@ class OSVAdapter(ScannerAdapter):
         if tool_cfg and not tool_cfg.enabled:
             return self._skipped_result(spec, started, "disabled in scan spec")
 
-        packages, manifests = collect_packages(workdir)
+        manifest_path: str | None = None
+        if tool_cfg and isinstance(tool_cfg.options, dict):
+            raw_mp = tool_cfg.options.get("manifest_path")
+            if isinstance(raw_mp, str) and raw_mp.strip():
+                manifest_path = raw_mp.strip()
+
+        packages, manifests = collect_packages(workdir, manifest_path=manifest_path)
         if not packages:
             finished = datetime.now(UTC)
             return ScannerResult(

@@ -21,8 +21,12 @@ def probe_version(binary: str) -> str | None:
     resolved = which(binary)
     if resolved is None:
         return None
+    probe_env = {
+        "SEMGREP_ENABLE_VERSION_CHECK": "0",
+        "SEMGREP_SEND_METRICS": "off",
+    }
     for flag in ("--version", "-version"):
-        result = run_command((binary, flag), timeout=30)
+        result = run_command((binary, flag), timeout=30, env=probe_env)
         if result.succeeded and result.stdout.strip():
             return result.stdout.strip().splitlines()[0]
     return None

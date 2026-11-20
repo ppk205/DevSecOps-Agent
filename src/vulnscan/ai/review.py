@@ -219,6 +219,9 @@ def build_tool_handlers(
         except Exception as exc:  # noqa: BLE001 - tool boundary never raises
             return {"error": str(exc)[:500]}
 
+    from vulnscan.agent.scanner_handlers import build_scanner_tool_handlers
+
+    scanner_handlers = build_scanner_tool_handlers(root, findings)
     return {
         "inspect_code": inspect_code,
         "get_evidence": get_evidence,
@@ -227,6 +230,7 @@ def build_tool_handlers(
         "propose_verification": propose_verification,
         "list_files": list_files,
         "grep_code": grep_code,
+        **scanner_handlers,
     }
 
 

@@ -16,8 +16,11 @@ from .base import AdapterCapability, AdapterRegistry, ScannerAdapter
 from .codeql_adapter import CodeQLAdapter
 from .dependency_check_adapter import DependencyCheckAdapter
 from .gitleaks_adapter import GitleaksAdapter
+from .osv_adapter import OSVAdapter
 from .semgrep_adapter import SemgrepAdapter
 from .spotbugs_adapter import SpotBugsAdapter
+from .tool_service import ScannerToolService
+from .trivy_adapter import TrivyAdapter
 
 __all__ = [
     "AdapterCapability",
@@ -25,7 +28,10 @@ __all__ = [
     "CodeQLAdapter",
     "DependencyCheckAdapter",
     "GitleaksAdapter",
+    "OSVAdapter",
     "ScannerAdapter",
+    "ScannerToolService",
     "SemgrepAdapter",
     "SpotBugsAdapter",
+    "TrivyAdapter",
 ]

@@ -48,7 +48,32 @@ ADAPTER_VERSION = "0.3.0"
 _DB_MARKER = "codeql-database.yml"
 
 #: Languages this adapter can request from ``codeql database create``.
-_SUPPORTED_LANGUAGES = ("java", "javascript")
+_SUPPORTED_LANGUAGES = ("java", "javascript", "python", "go", "cpp", "csharp")
+
+_LANGUAGE_ALIASES: dict[str, str] = {
+    "java": "java",
+    "jvm": "java",
+    "kotlin": "java",
+    "kt": "java",
+    "jsp": "java",
+    "javascript": "javascript",
+    "typescript": "javascript",
+    "js": "javascript",
+    "ts": "javascript",
+    "node": "javascript",
+    "python": "python",
+    "py": "python",
+    "go": "go",
+    "golang": "go",
+    "c": "cpp",
+    "cpp": "cpp",
+    "c++": "cpp",
+    "c/c++": "cpp",
+    "csharp": "csharp",
+    "c#": "csharp",
+    "dotnet": "csharp",
+    ".net": "csharp",
+}
 
 #: Install guidance surfaced whenever the binary is absent.
 _MISSING_BINARY_REASON = (
@@ -73,13 +98,15 @@ def _codeql_languages(spec: ScanSpecification) -> list[str]:
     override = options.get("languages") or options.get("language")
     if override:
         wanted = [override] if isinstance(override, str) else list(override)
-        return [str(w).lower() for w in wanted if str(w).lower() in _SUPPORTED_LANGUAGES] or [
-            "java"
-        ]
-    lang = (spec.language or "java").lower()
-    if lang in ("javascript", "typescript", "js", "ts"):
-        return ["javascript"]
-    return ["java"]
+        resolved = []
+        for item in wanted:
+            mapped = _LANGUAGE_ALIASES.get(str(item).strip().lower())
+            if mapped and mapped in _SUPPORTED_LANGUAGES and mapped not in resolved:
+                resolved.append(mapped)
+        return resolved or ["java"]
+    lang = (spec.language or "java").strip().lower()
+    mapped = _LANGUAGE_ALIASES.get(lang)
+    return [mapped] if mapped else ["java"]
 
 
 def _suite_for(language: str, spec: ScanSpecification) -> str:

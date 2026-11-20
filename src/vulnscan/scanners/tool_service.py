@@ -1,0 +1,531 @@
+"""Unified Scanner Tool Service — on-demand scanner hub for AI Agents and CLI.
+
+Decouples targeted scanner invocations from the monolithic full-scan pipeline so
+both the AI Agent (via OpenAI function calling) and CLI commands can invoke any
+of the 5 security tools across all 7 language families, cache observations in
+session, and return token-optimized JSON payloads.
+
+Supported 5 Tool Groups:
+1. Semgrep CE (SAST / AST pattern matching)
+2. CodeQL (deep inter-procedural dataflow & taint tracking)
+3. OWASP Dependency-Check / OSV.dev (SCA dependency vulnerabilities)
+4. Gitleaks (secret & credential detection)
+5. SpotBugs + FindSecBugs / Trivy (Java bytecode & IaC/Container config audit)
+
+Supported 7 Language Families:
+1. Java / JVM (Java, Kotlin, JSP)
+2. JavaScript / TypeScript / Node.js
+3. Python
+4. PHP
+5. Go
+6. C / C++
+7. C# / .NET
+"""
+
+from __future__ import annotations
+
+from collections.abc import Sequence
+from pathlib import Path
+from typing import Any
+
+from vulnscan.contracts import (
+    Finding,
+    Observation,
+    ScannerResult,
+    ScanSpecification,
+    ToolConfig,
+    ToolName,
+)
+
+from .codeql_adapter import CodeQLAdapter
+from .dependency_check_adapter import DependencyCheckAdapter
+from .extractor import (
+    explain_scanner_rule,
+    extract_findings_query,
+    extract_scanner_result,
+)
+from .gitleaks_adapter import GitleaksAdapter
+from .semgrep_adapter import SemgrepAdapter
+from .spotbugs_adapter import SpotBugsAdapter
+from .trivy_adapter import TrivyAdapter
+
+SUPPORTED_LANGUAGE_FAMILIES: tuple[str, ...] = (
+    "java",
+    "javascript",
+    "python",
+    "php",
+    "go",
+    "cpp",
+    "csharp",
+)
+
+#: Maps language family -> bundled Semgrep YAML rule pack filename (if present).
+_BUNDLED_SEMGREP_RULES: dict[str, str] = {
+    "java": "java.yml",
+    "javascript": "javascript.yml",
+    "python": "python.yml",
+    "php": "php.yml",
+}
+
+#: Default community/registry Semgrep pack names for families without bundled YAML.
+_SEMGREP_COMMUNITY_PACKS: dict[str, str] = {
+    "go": "p/golang",
+    "cpp": "p/c",
+    "csharp": "p/csharp",
+}
+
+#: File extensions mapped to one of the 7 language families.
+_EXT_TO_FAMILY: dict[str, str] = {
+    ".java": "java",
+    ".kt": "java",
+    ".kts": "java",
+    ".jsp": "java",
+    ".jspx": "java",
+    ".js": "javascript",
+    ".jsx": "javascript",
+    ".ts": "javascript",
+    ".tsx": "javascript",
+    ".mjs": "javascript",
+    ".cjs": "javascript",
+    ".vue": "javascript",
+    ".py": "python",
+    ".php": "php",
+    ".phtml": "php",
+    ".go": "go",
+    ".c": "cpp",
+    ".cc": "cpp",
+    ".cpp": "cpp",
+    ".cxx": "cpp",
+    ".h": "cpp",
+    ".hh": "cpp",
+    ".hpp": "cpp",
+    ".hxx": "cpp",
+    ".cs": "csharp",
+}
+
+_LANGUAGE_NORMALIZE: dict[str, str] = {
+    "java": "java",
+    "jvm": "java",
+    "kotlin": "java",
+    "jsp": "java",
+    "javascript": "javascript",
+    "typescript": "javascript",
+    "js": "javascript",
+    "ts": "javascript",
+    "node": "javascript",
+    "python": "python",
+    "py": "python",
+    "php": "php",
+    "go": "go",
+    "golang": "go",
+    "c": "cpp",
+    "cpp": "cpp",
+    "c++": "cpp",
+    "c/c++": "cpp",
+    "csharp": "csharp",
+    "c#": "csharp",
+    "dotnet": "csharp",
+    ".net": "csharp",
+}
+
+#: Dummy 40-char commit SHA used for ad-hoc local/snapshot tool invocations.
+_ADHOC_COMMIT_SHA = "0" * 40
+
+
+def normalize_language_family(raw: str | None) -> str | None:
+    """Normalize a user/LLM language string into one of the 7 canonical families."""
+    if not raw:
+        return None
+    return _LANGUAGE_NORMALIZE.get(str(raw).strip().lower())
+
+
+def detect_snapshot_languages(snapshot_root: Path, max_files: int = 2000) -> list[str]:
+    """Detect which of the 7 language families exist inside *snapshot_root*."""
+    found: set[str] = set()
+    count = 0
+    try:
+        for path in snapshot_root.rglob("*"):
+            if not path.is_file():
+                continue
+            parts = path.parts
+            if any(p in {".git", ".venv", "node_modules", "target", "dist", "build"} for p in parts):
+                continue
+            fam = _EXT_TO_FAMILY.get(path.suffix.lower())
+            if fam:
+                found.add(fam)
+            count += 1
+            if count >= max_files:
+                break
+    except OSError:
+        pass
+    return [f for f in SUPPORTED_LANGUAGE_FAMILIES if f in found]
+
+
+class ScannerToolService:
+    """Facade executing on-demand security scans jailed to *snapshot_root*."""
+
+    def __init__(
+        self,
+        snapshot_root: str | Path,
+        *,
+        findings: Sequence[Finding] = (),
+        run_id: str = "agent-adhoc",
+        commit_sha: str = _ADHOC_COMMIT_SHA,
+        semgrep_adapter: SemgrepAdapter | None = None,
+        codeql_adapter: CodeQLAdapter | None = None,
+        owasp_adapter: DependencyCheckAdapter | None = None,
+        gitleaks_adapter: GitleaksAdapter | None = None,
+        spotbugs_adapter: SpotBugsAdapter | None = None,
+        trivy_adapter: TrivyAdapter | None = None,
+    ) -> None:
+        self.snapshot_root = Path(snapshot_root).resolve()
+        self.findings = list(findings)
+        self.run_id = run_id
+        self.commit_sha = commit_sha if len(commit_sha) >= 7 and commit_sha.upper() != "HEAD" else _ADHOC_COMMIT_SHA
+        self.semgrep = semgrep_adapter or SemgrepAdapter()
+        self.codeql = codeql_adapter or CodeQLAdapter()
+        self.owasp = owasp_adapter or DependencyCheckAdapter()
+        self.gitleaks = gitleaks_adapter or GitleaksAdapter()
+        self.spotbugs = spotbugs_adapter or SpotBugsAdapter()
+        self.trivy = trivy_adapter or TrivyAdapter()
+        self._cached_results: dict[str, ScannerResult] = {}
+        self._cached_observations: list[Observation] = []
+
+    # ------------------------------------------------------------------ #
+    # Internal helpers
+    # ------------------------------------------------------------------ #
+
+    def _jail_path(self, rel_path: str | None) -> tuple[str | None, str | None]:
+        """Resolve *rel_path* inside ``snapshot_root``.
+
+        Returns ``(posix_rel, None)`` on success or ``(None, error_message)``
+        when the path escapes the snapshot or does not exist.
+        """
+        raw = (rel_path or ".").strip() or "."
+        try:
+            resolved = (self.snapshot_root / raw).resolve()
+            rel = resolved.relative_to(self.snapshot_root).as_posix()
+        except (OSError, ValueError):
+            return None, f"path escapes the scan snapshot: {raw[:200]}"
+        if not resolved.exists():
+            return None, f"path does not exist inside snapshot: {raw[:200]}"
+        return (rel or "."), None
+
+    def _build_spec(
+        self,
+        tool: ToolName,
+        *,
+        language: str = "java",
+        rule_paths: list[str] | None = None,
+        options: dict[str, Any] | None = None,
+    ) -> ScanSpecification:
+        return ScanSpecification(
+            run_id=self.run_id,
+            target_repository_url=f"local://{self.snapshot_root.name}",
+            target_commit_sha=self.commit_sha,
+            language=language,
+            tools=[
+                ToolConfig(
+                    tool=tool,
+                    enabled=True,
+                    rule_paths=rule_paths or [],
+                    options=options or {},
+                )
+            ],
+        )
+
+    def _record_result(self, cache_key: str, result: ScannerResult) -> None:
+        self._cached_results[cache_key] = result
+        existing_ids = {o.observation_id for o in self._cached_observations}
+        for obs in result.observations:
+            if obs.observation_id not in existing_ids:
+                self._cached_observations.append(obs)
+                existing_ids.add(obs.observation_id)
+
+    def _resolve_semgrep_rule_paths(
+        self,
+        ruleset: str | None,
+        language: str | None,
+    ) -> list[str]:
+        rules_dir = Path(__file__).with_name("rules")
+        if ruleset and ruleset.strip():
+            raw = ruleset.strip()
+            local_pack = rules_dir / (raw if raw.endswith(".yml") else f"{raw}.yml")
+            if local_pack.is_file():
+                return [str(local_pack)]
+            # Allow bundled file path inside rules_dir or Semgrep registry pack (e.g. p/owasp-top-ten)
+            if raw.startswith(("p/", "r/", "auto")):
+                return [raw]
+            return [raw]
+
+        fam = normalize_language_family(language)
+        if fam:
+            bundled = _BUNDLED_SEMGREP_RULES.get(fam)
+            if bundled and (rules_dir / bundled).is_file():
+                return [str(rules_dir / bundled)]
+            community = _SEMGREP_COMMUNITY_PACKS.get(fam)
+            if community:
+                return [community]
+        return []
+
+    # ------------------------------------------------------------------ #
+    # Public Tool Operations (5 Scanner Groups + Query + Explain)
+    # ------------------------------------------------------------------ #
+
+    def capabilities(self) -> dict[str, Any]:
+        """Report installed availability and version of all 5 security tools."""
+        adapters = {
+            "semgrep": self.semgrep.capabilities(),
+            "codeql": self.codeql.capabilities(),
+            "owasp": self.owasp.capabilities(),
+            "gitleaks": self.gitleaks.capabilities(),
+            "spotbugs": self.spotbugs.capabilities(),
+            "trivy": self.trivy.capabilities(),
+        }
+        return {
+            "snapshot_root": str(self.snapshot_root),
+            "detected_languages": detect_snapshot_languages(self.snapshot_root),
+            "supported_language_families": list(SUPPORTED_LANGUAGE_FAMILIES),
+            "tools": {
+                name: {
+                    "tool": cap.tool.value,
+                    "binary": cap.binary,
+                    "available": cap.available,
+                    "version": cap.version,
+                    "reason": cap.reason,
+                }
+                for name, cap in adapters.items()
+            },
+        }
+
+    def run_semgrep(
+        self,
+        *,
+        target_path: str = ".",
+        ruleset: str | None = None,
+        cwe: str | None = None,
+        language: str | None = None,
+        max_items: int = 15,
+    ) -> dict[str, Any]:
+        """Run Semgrep AST/pattern scan on a jailed file or directory."""
+        rel, err = self._jail_path(target_path)
+        if err or rel is None:
+            return {"tool": "semgrep", "status": "error", "error": err}
+
+        fam = normalize_language_family(language)
+        if fam is None and rel != ".":
+            fam = _EXT_TO_FAMILY.get(Path(rel).suffix.lower())
+        rule_paths = self._resolve_semgrep_rule_paths(ruleset, fam)
+
+        spec = self._build_spec(
+            ToolName.SEMGREP,
+            language=fam or "java",
+            rule_paths=rule_paths,
+            options={"target_path": rel},
+        )
+        result = self.semgrep.run(spec, workdir=str(self.snapshot_root))
+        self._record_result(f"semgrep:{rel}:{ruleset or fam or 'default'}", result)
+        payload = extract_scanner_result(
+            result,
+            snapshot_root=self.snapshot_root,
+            cwe=cwe,
+            max_items=max_items,
+        )
+        payload["target_path"] = rel
+        if fam:
+            payload["language"] = fam
+        return payload
+
+    def run_codeql(
+        self,
+        *,
+        target_path: str = ".",
+        query_suite: str | None = None,
+        cwe: str | None = None,
+        language: str | None = None,
+        max_items: int = 15,
+    ) -> dict[str, Any]:
+        """Run CodeQL inter-procedural dataflow/taint analysis across supported families."""
+        rel, err = self._jail_path(target_path)
+        if err or rel is None:
+            return {"tool": "codeql", "status": "error", "error": err}
+
+        fam = normalize_language_family(language)
+        if fam is None:
+            detected = detect_snapshot_languages(self.snapshot_root)
+            fam = detected[0] if detected else "java"
+
+        if fam == "php":
+            return {
+                "tool": "codeql",
+                "status": "skipped",
+                "language": "php",
+                "target_path": rel,
+                "errors": [
+                    (
+                        "CodeQL does not natively support PHP dataflow; use run_semgrep_scan "
+                        "with language='php' for PHP AST/taint rules."
+                    )
+                ],
+                "findings": [],
+            }
+
+        options: dict[str, Any] = {"language": fam}
+        if query_suite and query_suite.strip():
+            options["suite"] = query_suite.strip()
+
+        spec = self._build_spec(ToolName.CODEQL, language=fam, options=options)
+        result = self.codeql.run(spec, workdir=str(self.snapshot_root))
+        self._record_result(f"codeql:{rel}:{fam}", result)
+
+        file_filter = None if rel == "." else rel
+        payload = extract_scanner_result(
+            result,
+            snapshot_root=self.snapshot_root,
+            cwe=cwe,
+            file_path=file_filter,
+            max_items=max_items,
+        )
+        payload["target_path"] = rel
+        payload["language"] = fam
+        return payload
+
+    def run_owasp(
+        self,
+        *,
+        manifest_path: str | None = None,
+        min_cvss: float | None = None,
+        max_items: int = 15,
+    ) -> dict[str, Any]:
+        """Run OWASP Dependency-Check (or OSV.dev fallback) across 7 language manifests."""
+        rel_manifest: str | None = None
+        if manifest_path and manifest_path.strip():
+            rel, err = self._jail_path(manifest_path)
+            if err or rel is None:
+                return {"tool": "owasp-dependency-check", "status": "error", "error": err}
+            rel_manifest = rel
+
+        options: dict[str, Any] = {}
+        if rel_manifest:
+            options["manifest_path"] = rel_manifest
+
+        spec = self._build_spec(ToolName.OWASP_DEPENDENCY_CHECK, options=options)
+        result = self.owasp.run(spec, workdir=str(self.snapshot_root))
+        self._record_result(f"owasp:{rel_manifest or 'all'}", result)
+
+        payload = extract_scanner_result(
+            result,
+            snapshot_root=self.snapshot_root,
+            min_cvss=min_cvss,
+            file_path=rel_manifest,
+            max_items=max_items,
+        )
+        if rel_manifest:
+            payload["manifest_path"] = rel_manifest
+        if isinstance(result.metadata, dict):
+            if "manifests" in result.metadata:
+                payload["manifests"] = result.metadata["manifests"]
+            if "advisory_data_source" in result.metadata:
+                payload["advisory_data_source"] = result.metadata["advisory_data_source"]
+        return payload
+
+    def run_secret_scan(
+        self,
+        *,
+        target_path: str = ".",
+        scan_git_history: bool = False,
+        max_items: int = 15,
+    ) -> dict[str, Any]:
+        """Run Gitleaks secret detection on source files or git history."""
+        rel, err = self._jail_path(target_path)
+        if err or rel is None:
+            return {"tool": "gitleaks", "status": "error", "error": err}
+
+        spec = self._build_spec(
+            ToolName.GITLEAKS,
+            options={
+                "target_path": rel,
+                "scan_git_history": bool(scan_git_history),
+            },
+        )
+        result = self.gitleaks.run(spec, workdir=str(self.snapshot_root))
+        self._record_result(f"gitleaks:{rel}:{scan_git_history}", result)
+        payload = extract_scanner_result(
+            result,
+            snapshot_root=self.snapshot_root,
+            max_items=max_items,
+        )
+        payload["target_path"] = rel
+        payload["scan_git_history"] = bool(scan_git_history)
+        return payload
+
+    def run_config_audit(
+        self,
+        *,
+        target_path: str = ".",
+        check_type: str = "auto",
+        max_items: int = 15,
+    ) -> dict[str, Any]:
+        """Run SpotBugs (Java bytecode) or Trivy (IaC/Dockerfile/K8s config audit)."""
+        rel, err = self._jail_path(target_path)
+        if err or rel is None:
+            return {"tool": "config_audit", "status": "error", "error": err}
+
+        mode = (check_type or "auto").strip().lower()
+        if mode == "auto":
+            has_java_classes = (self.snapshot_root / "target" / "classes").is_dir() or (
+                self.snapshot_root / "build" / "classes"
+            ).is_dir()
+            mode = "bytecode" if has_java_classes else "iac_config"
+
+        if mode == "bytecode":
+            spec = self._build_spec(ToolName.SPOTBUGS, language="java")
+            result = self.spotbugs.run(spec, workdir=str(self.snapshot_root))
+            self._record_result(f"spotbugs:{rel}", result)
+        else:
+            spec = self._build_spec(ToolName.TRIVY, options={"target_path": rel})
+            result = self.trivy.run(spec, workdir=str(self.snapshot_root))
+            self._record_result(f"trivy:{rel}", result)
+
+        payload = extract_scanner_result(
+            result,
+            snapshot_root=self.snapshot_root,
+            file_path=None if rel == "." else rel,
+            max_items=max_items,
+        )
+        payload["check_type"] = mode
+        payload["target_path"] = rel
+        return payload
+
+    def query_findings(
+        self,
+        *,
+        tool: str = "all",
+        cwe: str | None = None,
+        file_path: str | None = None,
+        min_severity: str | None = None,
+        max_items: int = 20,
+    ) -> dict[str, Any]:
+        """Query consolidated findings and cached ad-hoc scanner observations."""
+        return extract_findings_query(
+            self.findings,
+            self._cached_observations,
+            snapshot_root=self.snapshot_root,
+            tool=tool,
+            cwe=cwe,
+            file_path=file_path,
+            min_severity=min_severity,
+            max_items=max_items,
+        )
+
+    def explain_rule(self, *, rule_id: str, tool: str | None = None) -> dict[str, Any]:
+        """Explain a scanner rule ID with CWE metadata and remediation guidance."""
+        return explain_scanner_rule(rule_id, tool=tool)
+
+
+__all__ = [
+    "SUPPORTED_LANGUAGE_FAMILIES",
+    "ScannerToolService",
+    "detect_snapshot_languages",
+    "normalize_language_family",
+]

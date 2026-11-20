@@ -20,10 +20,13 @@ from vulnscan.providers.client import ChatMessage, ProviderClient
 logger = logging.getLogger(__name__)
 
 _HUNT_SYSTEM = (
-    "You are a security hunter reviewing a Java Servlet/JSP source snapshot. "
-    "You have read-only tools only (list_files, grep_code, inspect_code): "
-    "use them to discover sources and confirm tainted flows into dangerous "
-    "sinks (SQL, XSS, XXE, deserialization, missing auth). Do not invent "
+    "You are a security hunter reviewing a multi-language source snapshot. "
+    "You have read-only code tools (list_files, grep_code, inspect_code) AND "
+    "security scanner tools (run_semgrep_scan, run_codeql_scan, run_owasp_scan, "
+    "run_secret_scan, run_config_audit, query_scanner_findings, explain_scanner_rule): "
+    "use them to discover sources, invoke targeted scanners, and confirm tainted flows "
+    "into dangerous sinks (SQL, XSS, CMDi, XXE, deserialization, memory safety, "
+    "hardcoded secrets, vulnerable dependencies, missing auth). Do not invent "
     "code, files, or evidence. End with a single JSON array and nothing "
     "else, schema: [{"
     '"title": str, "file": str (repo-relative), "line": int, '
@@ -35,12 +38,11 @@ _HUNT_SYSTEM = (
 
 _HUNT_USER = (
     "Hunt for vulnerabilities in this snapshot. Start with list_files "
-    "to discover sources, then you MUST call grep_code at least twice "
-    "with different sink patterns (e.g. executeQuery, getWriter, exec, "
-    "Runtime, decode, deserialize) before finishing, and use inspect_code "
-    "to confirm each tainted flow. Never end with an empty exploration: "
-    "if tools stop yielding, end with your best JSON array from what "
-    "you have seen, then the JSON array and nothing else."
+    "to discover sources, then use grep_code, inspect_code, and targeted scanner "
+    "tools (run_semgrep_scan, run_codeql_scan, run_owasp_scan, run_secret_scan, "
+    "run_config_audit) to confirm tainted flows and security issues before finishing. "
+    "Never end with an empty exploration: if tools stop yielding, end with your best "
+    "JSON array from what you have seen, then the JSON array and nothing else."
 )
 
 _SINK_SEEDS = (
@@ -142,6 +144,64 @@ _HUNT_FAMILIES: dict[str, _FamilySpec] = {
         ),
         "focus": "PHP sources",
     },
+    "go": {
+        "globs": ["*.go"],
+        "seeds": (
+            "exec.Command",
+            "db.Query",
+            "db.Exec",
+            "QueryRow(",
+            "http.Get(",
+            "template.HTML",
+            "unsafe.Pointer",
+            "filepath.Join",
+            "crypto/md5",
+            "crypto/sha1",
+            "math/rand",
+            "InsecureSkipVerify",
+            "os.Open(",
+            "ioutil.ReadFile",
+        ),
+        "focus": "Go (Golang) sources",
+    },
+    "cpp": {
+        "globs": ["*.c", "*.cc", "*.cpp", "*.cxx", "*.h", "*.hpp"],
+        "seeds": (
+            "strcpy(",
+            "strcat(",
+            "sprintf(",
+            "vsprintf(",
+            "gets(",
+            "memcpy(",
+            "system(",
+            "popen(",
+            "scanf(",
+            "sscanf(",
+            "printf(",
+            "execve(",
+            "rand(",
+        ),
+        "focus": "C/C++ sources (memory safety, injection, format strings)",
+    },
+    "csharp": {
+        "globs": ["*.cs"],
+        "seeds": (
+            "SqlCommand",
+            "ExecuteReader",
+            "ExecuteNonQuery",
+            "Process.Start",
+            "BinaryFormatter",
+            "SoapFormatter",
+            "XmlDocument",
+            "Html.Raw",
+            "File.ReadAllText",
+            "MD5.Create",
+            "SHA1.Create",
+            "new Random(",
+            "ServerCertificateCustomValidationCallback",
+        ),
+        "focus": "C#/.NET sources",
+    },
     "generic": {
         "globs": ["*"],
         "seeds": (
@@ -190,6 +250,8 @@ _HUNT_FAMILIES: dict[str, _FamilySpec] = {
 
 _SUFFIX_FAMILY: tuple[tuple[str, str], ...] = (
     (".java", "java"),
+    (".kt", "java"),
+    (".kts", "java"),
     (".jsp", "java"),
     (".jspx", "java"),
     (".js", "javascript"),
@@ -202,17 +264,27 @@ _SUFFIX_FAMILY: tuple[tuple[str, str], ...] = (
     (".py", "python"),
     (".php", "php"),
     (".phtml", "php"),
+    (".go", "go"),
+    (".c", "cpp"),
+    (".cc", "cpp"),
+    (".cpp", "cpp"),
+    (".cxx", "cpp"),
+    (".h", "cpp"),
+    (".hh", "cpp"),
+    (".hpp", "cpp"),
+    (".hxx", "cpp"),
+    (".cs", "csharp"),
 )
 
-_FAMILY_ORDER = ("java", "javascript", "python", "php")
+_FAMILY_ORDER = ("java", "javascript", "python", "php", "go", "cpp", "csharp")
 
 
-def detect_families(inventory: list[str], cap: int = 5) -> list[str]:
+def detect_families(inventory: list[str], cap: int = 7) -> list[str]:
     """Map snapshot inventory files to hunt families, in stable order.
 
-    Known web families present win first (java/js/python/php order);
-    anything else falls back to one "generic" pass so no web-hostable
-    source is ever skipped. Pure function, never raises.
+    All 7 language families (java/javascript/python/php/go/cpp/csharp) win
+    first in stable order; anything else falls back to one "generic" pass so
+    no source is ever skipped. Pure function, never raises.
     """
     found: set[str] = set()
     other = False
@@ -403,7 +475,7 @@ def hunt_vulns(
                         ChatMessage(
                             role="user",
                             content=(
-                                "Snapshot file tree (Java files):\n"
+                                f"Snapshot file tree ({family} files):\n"
                                 + "\n".join(str(f)[:200] for f in tree_files[:100])
                                 + "\n\nSink sweep (context only, judge each line yourself):\n"
                                 + "\n".join(sweep_lines[:20])
@@ -459,7 +531,9 @@ def hunt_vulns(
                                 role="user",
                                 content=(
                                     f"Good start: {len(candidates)} candidates. "
-                                    "Now use list_files/grep_code/inspect_code "
+                                    "Now use list_files/grep_code/inspect_code and scanner tools "
+                                    "(run_semgrep_scan, run_codeql_scan, run_owasp_scan, "
+                                    "run_secret_scan, run_config_audit) "
                                     "to hunt for MORE vulnerabilities in parts "
                                     "of the snapshot you have not examined yet "
                                     "(different files, sinks, and CWE classes). "
