@@ -398,17 +398,25 @@ class CodeQLAdapter(ScannerAdapter):
                 shutil.rmtree(db_dir)
             except OSError:
                 return False
-        create = self._invoke(
-            [
-                self.binary_name,
-                "database",
-                "create",
-                str(db_dir),
-                f"--language={language}",
-                f"--source-root={workdir}",
-            ],
-            cwd=workdir,
-        )
+        try:
+            db_dir.parent.mkdir(parents=True, exist_ok=True)
+        except OSError:
+            return False
+        base_argv = [
+            self.binary_name,
+            "database",
+            "create",
+            str(db_dir),
+            f"--language={language}",
+            f"--source-root={workdir}",
+        ]
+        if language in {"java", "csharp"}:
+            create = self._invoke([*base_argv, "--build-mode=none"], cwd=workdir)
+            if create.succeeded and (db_dir / _DB_MARKER).is_file():
+                return True
+            if db_dir.exists():
+                shutil.rmtree(db_dir, ignore_errors=True)
+        create = self._invoke(base_argv, cwd=workdir)
         return create.succeeded and (db_dir / _DB_MARKER).is_file()
 
 

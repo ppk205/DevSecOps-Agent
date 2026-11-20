@@ -546,7 +546,13 @@ def query_osv(
                 for pkg in chunk
             ]
         }
-        response = httpx.post(OSV_QUERYBATCH_URL, json=payload, timeout=timeout)
+        try:
+            response = httpx.post(OSV_QUERYBATCH_URL, json=payload, timeout=timeout)
+        except httpx.InvalidURL:
+            from vulnscan.providers.client import _make_http_client
+
+            with _make_http_client(timeout) as client:
+                response = client.post(OSV_QUERYBATCH_URL, json=payload)
         response.raise_for_status()
         data = response.json()
         results = data.get("results", []) if isinstance(data, dict) else []
@@ -600,7 +606,9 @@ class OSVAdapter(ScannerAdapter):
             reason=None,
         )
 
-    def _skipped_offline(self, spec: ScanSpecification, started: Any, reason: str) -> Any:
+    def _skipped_offline(
+        self, spec: ScanSpecification, started: Any, reason: str
+    ) -> ScannerResult:
         return ScannerResult(
             run_id=spec.run_id or "unassigned",
             tool=self.tool,
