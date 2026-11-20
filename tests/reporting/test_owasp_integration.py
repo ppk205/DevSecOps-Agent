@@ -30,6 +30,8 @@ def check_exports(summary):
         assert "OWASP Top 10:2025" in text and "CWE-89" in text
     word = Document(io.BytesIO(Path(summary["reports"]["docx"]).read_bytes()))
     assert any("OWASP Top 10:2025" in paragraph.text for paragraph in word.paragraphs)
+    narrative = Path(summary["reports"]["final-report"]).read_text(encoding="utf-8")
+    assert "## OWASP Top 10:2025" in narrative and "CWE-89" in narrative
 
 
 def test_fr61_scan_service_exports_mapping_and_final_fallback(service, checkout, tmp_path):
@@ -39,8 +41,6 @@ def test_fr61_scan_service_exports_mapping_and_final_fallback(service, checkout,
     )
     assert summary["status"] == "completed"
     check_exports(summary)
-    narrative = Path(summary["reports"]["final-report"]).read_text(encoding="utf-8")
-    assert "## OWASP Top 10:2025" in narrative and "CWE-89" in narrative
 
 
 @pytest.mark.skipif(not BINARY.is_file(), reason="Build native binary for the real bridge test")

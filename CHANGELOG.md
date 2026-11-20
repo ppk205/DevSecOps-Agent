@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Restore the FR-72 scanner lists for the fast and full profiles and run them
+  deterministically in CI. Show the built-in native-hunt adapter in the web
+  scanner health list. Update the React build plugin for Vite 8.
+- Run exact-rule Semgrep fix verification on private copies of the baseline and
+  patched files. This preserves byte-level checks with the locked Semgrep CLI.
+- Include the deterministic final Markdown narrative in native scan exports.
+- Serve the registration form when the React bundle has not been built.
+
 - Direct the Python web root to the React application, show notification
   settings in its navigation, and expose webhook event switches in the Go TUI.
   The native dashboard still uses the older server-rendered pages.

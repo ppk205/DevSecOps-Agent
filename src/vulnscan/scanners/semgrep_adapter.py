@@ -61,7 +61,9 @@ def _map_severity(raw: str) -> Severity:
 
 
 # The bundled rule packs have no rules for these languages.
-_NO_RULE_LANGUAGES = frozenset({LanguageKind.GO, LanguageKind.RUBY, LanguageKind.CSHARP})
+_NO_RULE_LANGUAGES = frozenset(
+    {LanguageKind.GO, LanguageKind.RUBY, LanguageKind.CPP, LanguageKind.CSHARP}
+)
 
 _TIMEOUT_RE = re.compile(r"Timeout when running \S+ on (\S+?)(?::\s*$|\s*$)")
 
@@ -358,6 +360,7 @@ class SemgrepAdapter(ScannerAdapter):
         if tool_cfg and tool_cfg.rule_paths:
             for rp in tool_cfg.rule_paths:
                 argv += ["--config", rp]
+        target = "."
         if tool_cfg:
             for k, v in (tool_cfg.options or {}).items():
                 if k == "severity":
@@ -366,8 +369,10 @@ class SemgrepAdapter(ScannerAdapter):
                     argv += ["--max-target-bytes", str(v)]
                 elif k == "jobs":
                     argv += ["--jobs", str(v)]
-                # các tùy chọn không xác định khác bị bỏ qua
-        argv += ["."]
+                elif k == "target_path" and isinstance(v, str) and v.strip():
+                    target = v.strip()
+                # other unknown options are skipped
+        argv += [target]
 
         result = self._invoke(argv, cwd=workdir)
         finished = datetime.now(UTC)

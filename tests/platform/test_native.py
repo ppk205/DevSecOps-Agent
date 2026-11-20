@@ -222,7 +222,7 @@ def test_fr70_native_scan_matches_python_findings_policy_and_history(
 ):
     # Compare the same advisory configuration; Python and native CLI defaults
     # differ after URL-scan support was added on main.
-    baseline = service.run(str(checkout), settings(tmp_path, laya=laya))
+    baseline = service.run(str(checkout), settings(tmp_path, mode="deterministic", laya=laya))
     baseline_detail = service.detail(baseline["id"])
     path = tmp_path / "native.db"
     result = native(
@@ -248,7 +248,10 @@ def test_fr70_native_scan_matches_python_findings_policy_and_history(
     assert actual["manifest"]["files"] == baseline["manifest"]["files"]
     for fmt in baseline["reports"]:
         assert Path(actual["reports"][fmt]).is_file()
-    assert [e["stage"] for e in detail["events"]] == [e["stage"] for e in baseline_detail["events"]]
+    python_only_stages = {"model_hunt", "scanners", "final_report"}
+    assert [e["stage"] for e in detail["events"]] == [
+        e["stage"] for e in baseline_detail["events"] if e["stage"] not in python_only_stages
+    ]
     history = native("scan-list", "--db-path", str(path), "--json")
     assert json.loads(history.stdout)[0]["run_id"] == actual["run_id"]
     retry = native("scan-retry", actual["run_id"], "--db-path", str(path))

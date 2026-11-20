@@ -1,4 +1,4 @@
-"""Native-hunt adapter: livesqli must yield the known SQLi + XSS."""
+"""Native-hunt adapter coverage using tracked fixtures."""
 
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ from vulnscan.core.scan_service import ScanService
 from vulnscan.scanners.base import AdapterRegistry
 from vulnscan.scanners.native_hunt_adapter import NativeHuntAdapter
 
-FIXTURES = Path(__file__).resolve().parents[1] / "native_hunt" / "fixtures"
+FIXTURES = Path(__file__).resolve().parents[1] / "native_hunt" / "testdata"
 
 
 def test_registered_in_default_registry() -> None:
@@ -26,14 +26,17 @@ def test_profiles_include_native_hunt() -> None:
     assert ToolName.NATIVE_HUNT in PROFILES["full"]
 
 
-def test_livesqli_finds_known_vulns(tmp_path) -> None:
+def test_java_fixtures_find_known_vulns(tmp_path) -> None:
     from vulnscan.contracts import ToolConfig
 
-    checkout = tmp_path / "livesqli"
-    shutil.copytree("D:/livesqli", checkout)
+    tests = FIXTURES.parents[1]
+    checkout = tmp_path / "java-fixtures"
+    checkout.mkdir()
+    shutil.copy2(tests / "fixtures/java/vulnerable/src/main/java/Vulnerable.java", checkout)
+    shutil.copy2(tests / "scanners/fixtures/java/VulnXss.java", checkout)
     spec = ScanSpecification(
         run_id="run-native-test",
-        target_repository_url="https://example.invalid/livesqli.git",
+        target_repository_url="https://example.invalid/java-fixtures.git",
         target_commit_sha="abc123",
         repository_checkout_path=str(checkout),
         tools=[ToolConfig(tool=ToolName.NATIVE_HUNT)],

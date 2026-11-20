@@ -180,19 +180,36 @@ class GitleaksAdapter(ScannerAdapter):
         if not cap.available:
             return self._skipped_result(spec, started, cap.unavailable_message())
 
+        source_target = workdir
+        scan_git_history = False
+        if tool_cfg and isinstance(tool_cfg.options, dict):
+            scan_git_history = bool(tool_cfg.options.get("scan_git_history", False))
+            tp = tool_cfg.options.get("target_path")
+            if isinstance(tp, str) and tp.strip() and tp.strip() != ".":
+                candidate = (Path(workdir) / tp.strip()).resolve()
+                try:
+                    candidate.relative_to(Path(workdir).resolve())
+                    if candidate.exists():
+                        source_target = str(candidate)
+                except ValueError:
+                    pass
+
         with tempfile.TemporaryDirectory(prefix="vulnscan-gitleaks-") as temporary:
             report_path = Path(temporary) / "report.json"
             argv = [
                 self.binary_name,
                 "detect",
-                "--no-git",
+            ]
+            if not scan_git_history:
+                argv.append("--no-git")
+            argv += [
                 "--redact=100",
                 "--report-format",
                 "json",
                 "--report-path",
                 str(report_path),
                 "--source",
-                workdir,
+                source_target,
             ]
             result = self._invoke(argv, cwd=workdir)
             finished = datetime.now(UTC)
@@ -214,6 +231,8 @@ class GitleaksAdapter(ScannerAdapter):
             source_snapshot=spec.target_commit_sha,
         )
 
+        from vulnscan.contracts import language_from_extension
+
         coverage_records = [
             CoverageRecord(
                 run_id=spec.run_id or "unassigned",
@@ -221,9 +240,7 @@ class GitleaksAdapter(ScannerAdapter):
                 tool_version=cap.version or "unknown",
                 source_snapshot=spec.target_commit_sha,
                 unit_path=path,
-                unit_language=LanguageKind.JSP
-                if path.lower().endswith(".jsp")
-                else LanguageKind.JAVA,
+                unit_language=language_from_extension(path),
                 eligible=True,
                 status=CoverageUnitStatus.ANALYZED,
                 analyzed_at=finished,

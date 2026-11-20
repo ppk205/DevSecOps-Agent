@@ -16,7 +16,7 @@ release; a commit SHA can be used before or after publication.
 | Input | Default | Meaning |
 | --- | --- | --- |
 | `checkout-path` | `.` | Clean Git working tree to scan |
-| `profile` | `fast` | `fast`: Semgrep/Gitleaks; `full`: also isolated Maven, SpotBugs/FindSecBugs, Dependency-Check |
+| `profile` | `fast` | `fast`: Semgrep, native-hunt and Gitleaks. `full` also uses isolated Maven, SpotBugs/FindSecBugs and Dependency-Check. |
 | `config` | empty | Versioned JSON configuration file |
 | `fail-on` | `high` | Minimum severity: critical, high, medium, low, info, none |
 | `output-directory` | runner temporary directory | Sanitized evidence destination, preferably outside the checkout |
@@ -28,6 +28,8 @@ configuration/execution/required scanner/coverage failures, and 130 for cancella
 Unknown severities are listed explicitly. Unprocessed and unresolved findings count;
 only a recorded independent rejection excludes a finding. Missing scanners never pass.
 `none` disables only the severity gate, not execution or coverage checks.
+CI executes the configured scanners deterministically and disables model Hunt,
+AI review and AI report, even if a scan configuration enables those stages.
 
 Full scans build the target in a container. The build receives an isolated source
 snapshot, temporary home, bounded CPU/memory/process count, no host environment

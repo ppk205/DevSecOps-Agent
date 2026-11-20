@@ -37,6 +37,10 @@ def main(*, notification_settings=None):
         from vulnscan.scanners.native_hunt_adapter import NativeHuntAdapter
 
         registry.register(NativeHuntAdapter())
+    else:
+        native = FixtureAdapter()
+        native.tool = ToolName.NATIVE_HUNT
+        registry.register(native)
     with redirect_stdout(sys.stderr):
         service = ScanService(args.db_path, registry)
     ServiceRPC(service).serve()

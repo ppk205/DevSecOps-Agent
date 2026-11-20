@@ -16,6 +16,7 @@ from vulnscan.contracts import (
     ToolConfig,
     ToolName,
 )
+from vulnscan.scanners.base import AdapterCapability
 from vulnscan.scanners.process import CommandResult
 from vulnscan.scanners.spotbugs_adapter import SpotBugsAdapter
 
@@ -76,6 +77,9 @@ def test_clean_compiled_files_marked_analyzed(tmp_path: Path, monkeypatch) -> No
     (classes / "Clean.class").write_bytes(b"\xca\xfe\xba\xbe")
     (tmp_path / "target" / "spotbugs-report.xml").write_text(_BUGGY_XML, encoding="utf-8")
     adapter = SpotBugsAdapter()
+    monkeypatch.setattr(
+        adapter, "capabilities", lambda: AdapterCapability(ToolName.SPOTBUGS, available=True)
+    )
 
     def fake_invoke(argv, **kw):
         (tmp_path / "target" / "spotbugs-report.xml").write_text(_BUGGY_XML, encoding="utf-8")
@@ -83,7 +87,7 @@ def test_clean_compiled_files_marked_analyzed(tmp_path: Path, monkeypatch) -> No
 
     monkeypatch.setattr(adapter, "_invoke", fake_invoke)
     result = adapter.run(_spec(tmp_path), workdir=str(tmp_path))
-    assert result.status.value == "completed"
+    assert result.status.value == "completed", result.errors
     by_path = {c.unit_path: c.status for c in result.coverage_records}
     assert by_path.get("src/main/java/org/example/Holder.java") == CoverageUnitStatus.ANALYZED
     assert by_path.get("src/main/java/org/example/Clean.java") == CoverageUnitStatus.ANALYZED

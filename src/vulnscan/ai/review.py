@@ -82,6 +82,8 @@ def build_tool_handlers(
     snapshot_root: str | Path,
     findings: Sequence[Finding],
     coverage_summary: dict[str, Any] | None = None,
+    *,
+    scanner_service: Any | None = None,
 ) -> dict[str, Any]:
     """Các hàm xử lý cục bộ, chỉ đọc cho những công cụ đã đăng ký của agent."""
     root = Path(snapshot_root)
@@ -238,6 +240,9 @@ def build_tool_handlers(
         except Exception as exc:  # noqa: BLE001 - tool boundary never raises
             return {"error": str(exc)[:500]}
 
+    from vulnscan.agent.scanner_handlers import build_scanner_tool_handlers
+
+    scanner_handlers = build_scanner_tool_handlers(root, findings, service=scanner_service)
     return {
         "inspect_code": inspect_code,
         "get_evidence": get_evidence,
@@ -246,6 +251,7 @@ def build_tool_handlers(
         "propose_verification": propose_verification,
         "list_files": list_files,
         "grep_code": grep_code,
+        **scanner_handlers,
     }
 
 

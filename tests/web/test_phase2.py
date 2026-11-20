@@ -42,7 +42,8 @@ class TestTools:
         assert response.headers["X-Contract-Version"] == "1"
         tools = response.json()["tools"]
         names = {t["tool"] for t in tools}
-        assert names == {"native-hunt"}
+        assert names == {"native-hunt", "semgrep", "gitleaks", "spotbugs", "owasp-dependency-check"}
+        assert next(item for item in tools if item["tool"] == "native-hunt")["available"] is True
         for item in tools:
             assert set(item) >= {"tool", "binary", "available", "path", "hint"}
 

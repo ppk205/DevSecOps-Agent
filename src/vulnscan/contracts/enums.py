@@ -201,6 +201,7 @@ class ToolName(str, Enum):
     OWASP_DEPENDENCY_CHECK = "owasp-dependency-check"
     GITLEAKS = "gitleaks"
     CODEQL = "codeql"
+    TRIVY = "trivy"
 
 
 class ExtractionMode(str, Enum):
@@ -235,9 +236,10 @@ class CoverageUnitStatus(str, Enum):
 
 
 class LanguageKind(str, Enum):
-    """Ngôn ngữ nguồn của một đơn vị phân tích; mỗi ngôn ngữ web được đối chiếu riêng biệt."""
+    """Source language of an analysis unit; each language family reconciles separately."""
 
     JAVA = "java"
+    KOTLIN = "kotlin"
     JSP = "jsp"
     JAVASCRIPT = "javascript"
     TYPESCRIPT = "typescript"
@@ -245,14 +247,17 @@ class LanguageKind(str, Enum):
     PHP = "php"
     GO = "go"
     RUBY = "ruby"
+    CPP = "cpp"
     CSHARP = "csharp"
     OTHER = "other"
 
 
-#: Phần mở rộng tệp được quét dưới dạng mã nguồn web (inventory + coverage).
+#: File extensions scanned as source across the 7 supported language families.
 WEB_SOURCE_EXTENSIONS = frozenset(
     {
         ".java",
+        ".kt",
+        ".kts",
         ".jsp",
         ".jspx",
         ".js",
@@ -264,7 +269,16 @@ WEB_SOURCE_EXTENSIONS = frozenset(
         ".vue",
         ".py",
         ".php",
+        ".phtml",
         ".go",
+        ".c",
+        ".cc",
+        ".cpp",
+        ".cxx",
+        ".h",
+        ".hh",
+        ".hpp",
+        ".hxx",
         ".rb",
         ".erb",
         ".cs",
@@ -275,6 +289,8 @@ WEB_SOURCE_EXTENSIONS = frozenset(
 
 _EXTENSION_LANGUAGE: dict[str, LanguageKind] = {
     ".java": LanguageKind.JAVA,
+    ".kt": LanguageKind.KOTLIN,
+    ".kts": LanguageKind.KOTLIN,
     ".jsp": LanguageKind.JSP,
     ".jspx": LanguageKind.JSP,
     ".js": LanguageKind.JAVASCRIPT,
@@ -286,7 +302,16 @@ _EXTENSION_LANGUAGE: dict[str, LanguageKind] = {
     ".tsx": LanguageKind.TYPESCRIPT,
     ".py": LanguageKind.PYTHON,
     ".php": LanguageKind.PHP,
+    ".phtml": LanguageKind.PHP,
     ".go": LanguageKind.GO,
+    ".c": LanguageKind.CPP,
+    ".cc": LanguageKind.CPP,
+    ".cpp": LanguageKind.CPP,
+    ".cxx": LanguageKind.CPP,
+    ".h": LanguageKind.CPP,
+    ".hh": LanguageKind.CPP,
+    ".hpp": LanguageKind.CPP,
+    ".hxx": LanguageKind.CPP,
     ".rb": LanguageKind.RUBY,
     ".erb": LanguageKind.RUBY,
     ".cs": LanguageKind.CSHARP,
@@ -296,7 +321,7 @@ _EXTENSION_LANGUAGE: dict[str, LanguageKind] = {
 
 
 def language_from_extension(path: str) -> LanguageKind:
-    """Ánh xạ đường dẫn file tới ngôn ngữ web của nó; các phần mở rộng không xác định là OTHER."""
+    """Map a file path to its language kind; unknown extensions are OTHER."""
     from pathlib import Path
 
     return _EXTENSION_LANGUAGE.get(Path(path).suffix.lower(), LanguageKind.OTHER)
@@ -321,6 +346,7 @@ class ProviderProtocol(str, Enum):
     OPENAI_RESPONSES = "openai_responses"
     ANTHROPIC_MESSAGES = "anthropic_messages"
     OPENAI_COMPATIBLE = "openai_compatible"
+    V0_PLATFORM_API = "v0_platform_api"
 
 
 class RoleKind(str, Enum):

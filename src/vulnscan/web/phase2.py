@@ -141,7 +141,7 @@ def probe_tools(with_versions: bool = False) -> list[dict[str, Any]]:
     from vulnscan.scanners.platform import which
 
     registry = AdapterRegistry.default()
-    order = ["semgrep", "gitleaks", "spotbugs", "owasp-dependency-check"]
+    order = ["semgrep", "native-hunt", "gitleaks", "spotbugs", "owasp-dependency-check"]
     out: list[dict[str, Any]] = []
     image: bool | None = None
     for name in order:
@@ -149,6 +149,19 @@ def probe_tools(with_versions: bool = False) -> list[dict[str, Any]]:
         if adapter is None:
             continue
         binary = adapter.binary_name
+        if name == "native-hunt":
+            capability = adapter.capabilities()
+            out.append(
+                {
+                    "tool": name,
+                    "binary": binary,
+                    "path": None,
+                    "available": capability.available,
+                    "version": capability.version if with_versions else None,
+                    "hint": capability.reason,
+                }
+            )
+            continue
         resolved = which(binary)
         version: str | None = None
         if resolved is None and name in {"spotbugs", "owasp-dependency-check"} and which("docker"):

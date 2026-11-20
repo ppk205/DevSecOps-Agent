@@ -158,13 +158,17 @@ class ServiceRPC:
                 "advisory_configuration": asdict(advisory),
             }
         if method == "reports":
+            from pathlib import Path
+
             from vulnscan.contracts import Finding
+            from vulnscan.reporting.final_report import deterministic_narrative
             from vulnscan.reporting.reporter import ReportGenerator
 
             summary = params["summary"]
+            findings = [Finding.model_validate(f) for f in params["findings"]]
             generator = ReportGenerator(
                 str(summary["run_id"]),
-                [Finding.model_validate(f) for f in params["findings"]],
+                findings,
                 coverage_summary=summary.get("coverage", {}),
                 routing_payloads=summary.get("routing", []),
                 run_metadata={
@@ -184,6 +188,17 @@ class ServiceRPC:
                     )
                 except (OSError, ValueError) as exc:
                     export_errors.append(f"{fmt.value} export failed: {exc}")
+            try:
+                output = Path(params["output"]) / "final-report.md"
+                metadata = {
+                    "target": summary.get("manifest", {}).get("repo_url", "local"),
+                    "commit": summary.get("commit"),
+                    "gate": summary.get("gate"),
+                }
+                output.write_text(deterministic_narrative(findings, [], metadata), encoding="utf-8")
+                reports["final-report"] = str(output)
+            except (OSError, ValueError) as exc:
+                export_errors.append(f"final-report export failed: {exc}")
             return {"reports": reports, "errors": export_errors}
         if method == "hello":
             self.service.recover()

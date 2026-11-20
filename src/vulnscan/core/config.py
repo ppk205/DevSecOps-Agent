@@ -12,8 +12,14 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_valida
 from vulnscan.contracts import ScanSpecification, ToolConfig, ToolName
 
 PROFILES = {
-    "fast": [ToolName.NATIVE_HUNT],
-    "full": [ToolName.NATIVE_HUNT],
+    "fast": [ToolName.SEMGREP, ToolName.NATIVE_HUNT, ToolName.GITLEAKS],
+    "full": [
+        ToolName.SEMGREP,
+        ToolName.NATIVE_HUNT,
+        ToolName.GITLEAKS,
+        ToolName.SPOTBUGS,
+        ToolName.OWASP_DEPENDENCY_CHECK,
+    ],
 }
 
 
@@ -95,6 +101,10 @@ def resolve_config(
 
 def resolve_model_config(config: ScanConfig) -> ScanConfig:
     """Resolve an explicitly enabled model stage without changing offline defaults."""
+    if config.ci:
+        return config.model_copy(
+            update={"mode": "deterministic", "ai_review": False, "ai_report": False}
+        )
     if config.mode != "hunt" and not config.ai_review and not config.ai_report:
         return config
     from vulnscan.infra.envfile import EnvFile

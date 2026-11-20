@@ -83,7 +83,8 @@ $env:DEVSECOPS_NATIVE = 'python'
 The native application keeps the existing command names and exit statuses:
 0 passed, 1 threshold exceeded, 2 configuration/execution failure, 130
 cancelled. Scanner and coverage failures take precedence over threshold
-results. Missing tools remain explicit.
+results. Missing tools remain explicit. Deterministic native runs include the
+shared Markdown final narrative as `final-report` alongside the standard exports.
 
 ## AI support
 

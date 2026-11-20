@@ -1,10 +1,9 @@
 """Dashboard FastAPI cho việc tiếp nhận scan, tiến độ, finding và bằng chứng.
 
-The root redirects to the React SPA ("PIT WALL") at ``/app/*``. The older
-``/runs/*`` and ``/findings/*`` pages remain available for compatibility and
-the native dashboard until those flows have equivalent replacements. The SPA
-has a fallback once ``web-ui/dist`` has been built (see static mount at the
-bottom of :func:`create_app`). New JSON surface lives under ``/api``.
+The root redirects to ``/app/``. That route serves the React SPA ("PIT WALL")
+when the bundle exists and the registration form when it is absent.
+The older ``/runs/*`` and ``/findings/*`` pages remain available. New JSON
+surface lives under ``/api``.
 """
 
 import csv
@@ -2028,7 +2027,10 @@ def create_app(
     # vẫn phục vụ) — chỉ mount khi thư mục tồn tại.
     _dist = Path(__file__).with_name("static") / "app"
     _dev_dist = Path(__file__).resolve().parents[3] / "web-ui" / "dist"
-    _spa_dir = _dist if _dist.is_dir() else (_dev_dist if _dev_dist.is_dir() else None)
+    _spa_dir = next(
+        (path for path in (_dist, _dev_dist) if path.is_dir() and (path / "index.html").is_file()),
+        None,
+    )
     if _spa_dir is not None:
         _assets = _spa_dir / "assets"
         if _assets.is_dir():
@@ -2040,6 +2042,12 @@ def create_app(
             if full_path and candidate.is_file():
                 return Response(content=candidate.read_bytes())
             return Response(content=(_spa_dir / "index.html").read_bytes(), media_type="text/html")
+    else:
+
+        @app.get("/app/", include_in_schema=False)
+        def registration_fallback(request: Request, session: SessionDep) -> HTMLResponse:
+            runs = session.query(RunORM).order_by(RunORM.created_at.desc()).limit(10).all()
+            return render(request, "targets.html", runs=runs)
 
     return app
 

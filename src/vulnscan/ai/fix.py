@@ -17,6 +17,7 @@ import uuid
 from contextlib import ExitStack
 from dataclasses import dataclass
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import Any
 
 from vulnscan.contracts.enums import language_from_extension
@@ -534,10 +535,17 @@ def verify_fixed(
                 r"(?m)^\s*-\s+id:\s+([\w.-]+)\s*$", rule_file.read_text(encoding="utf-8")
             )
             artifacts = stack.enter_context(patched_root.new_directory(".fix-verification-"))
-            for stage, target, held_file, expected in (
-                ("baseline", original, original_file, before),
-                ("patched", patched, patched_file, after),
+            verification_root = Path(
+                stack.enter_context(TemporaryDirectory(prefix="vulnscan-verify-"))
+            )
+            for stage, held_file, expected in (
+                ("baseline", original_file, before),
+                ("patched", patched_file, after),
             ):
+                scan_root = verification_root / stage
+                target = scan_root / relative
+                target.parent.mkdir(parents=True)
+                target.write_bytes(expected)
                 argv = [
                     semgrep_bin,
                     "--metrics",
@@ -553,16 +561,14 @@ def verify_fixed(
                 for other in excluded:
                     if other != identity:
                         argv.extend(["--exclude-rule", other])
-                argv.extend(["--stdin-filename", str(target), "--json", "-"])
+                argv.extend(["--json", str(target)])
                 artifact = artifacts.path / f"{stage}.json"
                 if stage == "baseline":
                     verification.baseline_artifact = str(artifact)
                 else:
                     verification.patched_artifact = str(artifact)
                 try:
-                    result = run_command(
-                        argv, cwd=rule_file.parent, timeout=300, input_text=expected.decode("utf-8")
-                    )
+                    result = run_command(argv, cwd=scan_root, timeout=300)
                 except (ScanCancelled, KeyboardInterrupt):
                     _write_artifact(
                         artifacts, artifact.name, {"outcome": "cancelled", "command": argv}
@@ -573,14 +579,14 @@ def verify_fixed(
                     verification.outcome = "unavailable"
                     verification.detail = "Semgrep executable is unavailable"
                     return verification.model_dump()
-                data, matches = _scan_results(result, target, rule_file.parent)
+                data, matches = _scan_results(result, target, scan_root)
                 version = data.get("version")
                 if not isinstance(version, str) or not version:
                     raise ValueError("Semgrep tool version is unavailable")
                 if verification.tool_version is not None and version != verification.tool_version:
                     raise ValueError("Semgrep version changed between scans")
                 verification.tool_version = version
-                if _read_file(held_file) != expected:
+                if target.read_bytes() != expected or _read_file(held_file) != expected:
                     raise ValueError("Source changed during verification")
                 refires = [match for match in matches if match["check_id"] == identity]
                 if stage == "baseline" and not refires:

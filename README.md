@@ -10,15 +10,15 @@ profiles contain credential variable references.
 ```text
 CLI / Textual TUI / web UI / Go TUI
   intake
-    -> model hunt (only with --mode hunt, the Python default)
-    -> scanners (native-hunt alone, or a profile that adds Semgrep and Gitleaks)
+    -> model Hunt with a provider can dispatch targeted scanners on the snapshot
+    -> deterministic mode or Hunt fallback uses the configured scanner profile
     -> normalize and dedup -> Laya routing (advisory)
     -> only when the hunt returned candidates:
          Laya candidate check -> compare -> promote model-only candidates
     -> targeted AI review -> independent validation -> AI narrative report
     -> policy gate -> report exports -> optional notifications
 
-Separate action: fix proposal -> isolated overlay -> rescan
+Separate action: fix proposal -> isolated overlay -> verify private file copies
 ```
 
 ## Quickstart
@@ -378,7 +378,8 @@ the native Go dashboard still uses those templates.
 
 ### Web UI (PIT WALL)
 
-The React SPA is at `/app/` (FastAPI serves `web-ui/dist`).
+The React SPA is at `/app/` (FastAPI serves `web-ui/dist`). Before building the
+SPA, that route serves the server-rendered registration form.
 
 ```bash
 cd web-ui

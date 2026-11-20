@@ -11,7 +11,7 @@ from pathlib import Path
 
 from vulnscan.native_hunt import FAMILY_EXTENSIONS, load_rules, scan_file, scan_snapshot
 
-FIXTURES = Path(__file__).resolve().parent / "fixtures"
+FIXTURES = Path(__file__).resolve().parent / "testdata"
 
 GO_EXPECTED = {
     "go-sql-concatenation",

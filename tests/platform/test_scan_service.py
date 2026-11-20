@@ -167,6 +167,25 @@ def test_fr72_missing_coverage_cannot_pass(service, checkout, tmp_path, monkeypa
     assert any("missing coverage" in e for e in result["errors"])
 
 
+def test_fr72_ci_runs_the_configured_scanners_without_a_provider(
+    service, checkout, tmp_path, monkeypatch
+):
+    from vulnscan.providers import profile_store
+
+    def unexpected_provider_lookup():
+        pytest.fail("CI must not look up a model provider")
+
+    monkeypatch.setattr(profile_store, "default_profile", unexpected_provider_lookup)
+    result = service.run(str(checkout), settings(tmp_path, ci=True))
+
+    assert result["exit_code"] == 0
+    assert {scanner["tool"] for scanner in result["scanner_results"]} == {
+        "semgrep",
+        "native-hunt",
+        "gitleaks",
+    }
+
+
 def test_fr73_dirty_checkout_requires_explicit_manifest(checkout, tmp_path):
     (checkout / "Example.java").write_text("class Changed {}")
     with pytest.raises(ValueError, match="dirty checkout"):

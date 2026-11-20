@@ -23,15 +23,14 @@ from vulnscan.providers.events import emit_model_event
 logger = logging.getLogger(__name__)
 
 _HUNT_SYSTEM = (
-    "You are a security hunter reviewing a source snapshot. "
-    "You have read-only tools only (list_files, grep_code, inspect_code): "
-    "use them to discover sources and confirm tainted flows into dangerous "
-    "sinks (SQL, XSS, XXE, deserialization, missing auth) as well as "
-    "directly visible weaknesses (hardcoded secrets, weak crypto/hashing, "
-    "insecure randomness, default-charset conversions, stack-trace leaks, "
-    "open redirects, SSRF, log injection, debug leftovers). Do not invent "
-    "code, files, or evidence — every item needs a real file+line you saw "
-    "via a tool. End with a single JSON array and nothing "
+    "You are a security hunter reviewing a multi-language source snapshot. "
+    "You have read-only code tools (list_files, grep_code, inspect_code) AND "
+    "security scanner tools (run_semgrep_scan, run_codeql_scan, run_owasp_scan, "
+    "run_secret_scan, run_config_audit, query_scanner_findings, explain_scanner_rule): "
+    "use them to discover sources, invoke targeted scanners, and confirm tainted flows "
+    "into dangerous sinks (SQL, XSS, CMDi, XXE, deserialization, memory safety, "
+    "hardcoded secrets, vulnerable dependencies, missing auth). Do not invent "
+    "code, files, or evidence. Each candidate needs a real file and line. End with a single JSON array and nothing "
     "else, schema: [{"
     '"title": str, "file": str (repo-relative), "line": int, '
     "\"cwe\": str like 'CWE-89', "
@@ -245,6 +244,64 @@ _HUNT_FAMILIES: dict[str, _FamilySpec] = {
             "rand(",
         ),
         "focus": "PHP sources",
+    },
+    "go": {
+        "globs": ["*.go"],
+        "seeds": (
+            "exec.Command",
+            "db.Query",
+            "db.Exec",
+            "QueryRow(",
+            "http.Get(",
+            "template.HTML",
+            "unsafe.Pointer",
+            "filepath.Join",
+            "crypto/md5",
+            "crypto/sha1",
+            "math/rand",
+            "InsecureSkipVerify",
+            "os.Open(",
+            "ioutil.ReadFile",
+        ),
+        "focus": "Go (Golang) sources",
+    },
+    "cpp": {
+        "globs": ["*.c", "*.cc", "*.cpp", "*.cxx", "*.h", "*.hpp"],
+        "seeds": (
+            "strcpy(",
+            "strcat(",
+            "sprintf(",
+            "vsprintf(",
+            "gets(",
+            "memcpy(",
+            "system(",
+            "popen(",
+            "scanf(",
+            "sscanf(",
+            "printf(",
+            "execve(",
+            "rand(",
+        ),
+        "focus": "C/C++ sources (memory safety, injection, format strings)",
+    },
+    "csharp": {
+        "globs": ["*.cs"],
+        "seeds": (
+            "SqlCommand",
+            "ExecuteReader",
+            "ExecuteNonQuery",
+            "Process.Start",
+            "BinaryFormatter",
+            "SoapFormatter",
+            "XmlDocument",
+            "Html.Raw",
+            "File.ReadAllText",
+            "MD5.Create",
+            "SHA1.Create",
+            "new Random(",
+            "ServerCertificateCustomValidationCallback",
+        ),
+        "focus": "C#/.NET sources",
     },
     "generic": {
         "globs": list(_SOURCE_GLOBS),
@@ -483,6 +540,8 @@ def brief_for(family: str) -> str:
 
 _SUFFIX_FAMILY: tuple[tuple[str, str], ...] = (
     (".java", "java"),
+    (".kt", "java"),
+    (".kts", "java"),
     (".jsp", "java"),
     (".jspx", "java"),
     (".js", "javascript"),
@@ -495,17 +554,27 @@ _SUFFIX_FAMILY: tuple[tuple[str, str], ...] = (
     (".py", "python"),
     (".php", "php"),
     (".phtml", "php"),
+    (".go", "go"),
+    (".c", "cpp"),
+    (".cc", "cpp"),
+    (".cpp", "cpp"),
+    (".cxx", "cpp"),
+    (".h", "cpp"),
+    (".hh", "cpp"),
+    (".hpp", "cpp"),
+    (".hxx", "cpp"),
+    (".cs", "csharp"),
 )
 
-_FAMILY_ORDER = ("java", "javascript", "python", "php")
+_FAMILY_ORDER = ("java", "javascript", "python", "php", "go", "cpp", "csharp")
 
 
-def detect_families(inventory: list[str], cap: int = 5) -> list[str]:
-    """Ánh xạ các tệp trong danh mục snapshot sang các họ săn tìm, theo thứ tự ổn định.
+def detect_families(inventory: list[str], cap: int = 7) -> list[str]:
+    """Map snapshot inventory files to hunt families, in stable order.
 
-    Các họ web đã biết hiện diện được ưu tiên trước (thứ tự java/js/python/php);
-    bất kỳ thứ gì khác fallback về một lượt "generic" để không bỏ sót bất kỳ mã nguồn
-    lưu trữ được trên web nào. Hàm thuần túy, không bao giờ ném ngoại lệ.
+    All 7 language families (java/javascript/python/php/go/cpp/csharp) win
+    first in stable order; anything else falls back to one "generic" pass so
+    no source is ever skipped. Pure function, never raises.
     """
     found: set[str] = set()
     other = False
@@ -736,6 +805,8 @@ def hunt_vulns(
     max_rounds: int = 16,
     max_findings: int = 80,
     deep: bool = False,
+    scanner_service: Any | None = None,
+    tool_first: bool = False,
 ) -> dict[str, Any]:
     """Một vòng lặp công cụ: mô hình khám phá thông qua công cụ, kết thúc bằng danh sách JSON.
 
@@ -743,15 +814,21 @@ def hunt_vulns(
     "status": "completed"|"partial"|"failed"}. Mỗi ứng viên chứa
     title, file, line, cwe, severity, rationale, evidence.
 
-    Khi deep=True, kết luận của tuyến nhanh trở thành điểm xuất phát chứ không phải
-    điểm kết thúc: mô hình sau đó phải vận hành vòng lặp công cụ để đào sâu hơn,
-    và cả hai đợt sẽ được hợp nhất (đã lọc trùng) ở cuối.
+    With ``deep=True`` the fast-path verdict becomes the starting point,
+    not the finish: the model must then drive the tool loop to dig for
+    more, and both batches merge (deduped) at the end.
+
+    With ``tool_first=True`` (unified AI-orchestrated scan), the no-tools
+    fast-path is skipped so the AI immediately receives the snapshot file
+    tree and available scanner capabilities with ``tools=TOOL_SCHEMAS`` and
+    drives the scanners (Semgrep, CodeQL, OWASP/OSV, Gitleaks, Trivy/SpotBugs)
+    directly before analyzing their extracted findings.
     """
     fam = _HUNT_FAMILIES.get(family, _HUNT_FAMILIES["generic"])
     focus = str(fam["focus"])
     brief = brief_for(family)
     system_content = _HUNT_SYSTEM + f" Focus on {focus}.\n{brief}"
-    handlers = build_tool_handlers(snapshot_root, [])
+    handlers = build_tool_handlers(snapshot_root, [], scanner_service=scanner_service)
     messages = [
         ChatMessage(role="system", content=system_content),
         ChatMessage(role="user", content=_HUNT_USER),
@@ -763,9 +840,6 @@ def hunt_vulns(
     tool_evidence: list[str] = []
     trace: list[dict[str, Any]] = []
     try:
-        # Tuyến nhanh trước: cây tệp + quét sink ngay từ đầu trong một
-        # lệnh gọi không dùng công cụ (no-tools). Các gateway chuyên lập luận trả lời những phần này rất tin cậy
-        # (đã chứng minh thực tế), các mô hình hỗ trợ công cụ vẫn có thể vận hành vòng lặp bên dưới.
         fam_globs = fam["globs"]
         tree_files: list[str] = []
         for _glob in fam_globs:
@@ -774,106 +848,149 @@ def hunt_vulns(
                 tree_files.extend(str(f) for f in tree_out["files"][:150])
             if len(tree_files) >= 150:
                 break
-        sweep_lines = _sweep_sinks(handlers, family)
-        sweep_excerpts = _sweep_excerpts(snapshot_root, sweep_lines, max_excerpts=10)
-        if tree_files or sweep_lines:
-            try:
-                opening = client.chat(
-                    [
-                        ChatMessage(
-                            role="system",
-                            content=system_content,
-                        ),
-                        ChatMessage(
-                            role="user",
-                            content=(
-                                "Snapshot file tree:\n"
-                                + "\n".join(str(f)[:200] for f in tree_files[:150])
-                                + "\n\nSink sweep (context only, judge each line yourself):\n"
-                                + "\n".join(sweep_lines[:50])
-                                + (
-                                    "\n\nSource excerpts around top hits "
-                                    "(numbered, ±12 lines — cite exact file+line):\n"
-                                    + "\n\n".join(sweep_excerpts[:10])
-                                    if sweep_excerpts
-                                    else ""
-                                )
-                                + (
-                                    f"\n\nThe sweep found {len(sweep_lines)} candidate "
-                                    "lines. Confirm each against the excerpts and "
-                                    "report ALL confirmed ones — a short array "
-                                    "means you skipped real findings."
-                                    if len(sweep_lines) > 10
-                                    else ""
-                                )
-                                + "\n\nNow output the JSON array and nothing else."
+
+        if tool_first:
+            cap_summary = ""
+            if scanner_service is not None and hasattr(scanner_service, "capabilities"):
+                try:
+                    caps = scanner_service.capabilities()
+                    tool_bits = [
+                        f"{t_name}={'available' if info.get('available') else 'unavailable'}"
+                        for t_name, info in (caps.get("tools") or {}).items()
+                        if isinstance(info, dict)
+                    ]
+                    if tool_bits:
+                        cap_summary = "\nAvailable local scanners: " + ", ".join(tool_bits)
+                except Exception as exc:  # noqa: BLE001 - capability hint is best-effort
+                    logger.debug("scanner capability probe failed: %s", exc)
+            file_preview = "\n".join(str(f)[:200] for f in tree_files[:100]) or "(use list_files)"
+            messages = [
+                ChatMessage(
+                    role="system",
+                    content=(
+                        system_content
+                        + " "
+                        + "You are the unified scan orchestrator: invoke the appropriate "
+                        + "security scanner tools first (run_semgrep_scan, run_codeql_scan, "
+                        + "run_owasp_scan, run_secret_scan, run_config_audit), then inspect "
+                        + "source code and scanner findings to filter false positives and "
+                        + "confirm real vulnerabilities before outputting the final JSON array."
+                    ),
+                ),
+                ChatMessage(
+                    role="user",
+                    content=(
+                        f"Snapshot file tree ({family} files):\n{file_preview}"
+                        f"{cap_summary}\n\n"
+                        "Start by calling the relevant scanner tools for this repository, "
+                        "analyze the extracted results alongside inspect_code/grep_code, "
+                        "and conclude with ONLY the final verified JSON array."
+                    ),
+                ),
+            ]
+        else:
+            sweep_lines = _sweep_sinks(handlers, family)
+            sweep_excerpts = _sweep_excerpts(snapshot_root, sweep_lines, max_excerpts=10)
+            if tree_files or sweep_lines:
+                try:
+                    opening = client.chat(
+                        [
+                            ChatMessage(
+                                role="system",
+                                content=system_content,
                             ),
-                        ),
-                    ],
-                    model=model,
-                    max_tokens=8000,
-                )
-                rounds += 1
-                if opening.usage:
-                    try:
-                        total_tokens += int(opening.usage.get("total_tokens", 0))
-                    except (TypeError, ValueError):
-                        pass
-                trace.append(
-                    {
-                        "turn": 0,
-                        "content": (opening.content or "")[:1000],
-                        "tool_calls": [],
-                        "fast_path": True,
-                    }
-                )
-                if opening.tool_calls:
-                    messages.append(
-                        ChatMessage(
-                            role="assistant",
-                            content=opening.content or "",
-                            tool_calls=opening.tool_calls,
-                        )
-                    )
-                else:
-                    candidates = parse_hunt_list(opening.content or "", max_findings)
-                    if candidates and not deep:
-                        return {
-                            "candidates": candidates,
-                            "rounds": rounds,
-                            "usage": {"total_tokens": total_tokens},
-                            "status": "completed",
-                            "detail": f"fast path parsed {len(candidates)} candidates",
-                            "trace": trace,
-                        }
-                    last_content = opening.content or ""
-                    if candidates:
-                        # Chế độ Deep: tuyến nhanh là điểm khởi đầu (seed), không phải phán quyết. Giữ lại
-                        # mẻ dữ liệu và buộc mô hình đi vào vòng lặp công cụ.
-                        tool_evidence.append(f"fast-path batch -> {json.dumps(candidates)[:1500]}")
-                        fast_candidates = list(candidates)
-                        messages.append(ChatMessage(role="assistant", content=last_content))
-                        messages.append(
                             ChatMessage(
                                 role="user",
                                 content=(
-                                    f"Good start: {len(candidates)} candidates. "
-                                    "Now use list_files/grep_code/inspect_code "
-                                    "to hunt for MORE vulnerabilities in parts "
-                                    "of the snapshot you have not examined yet "
-                                    "(different files, sinks, and CWE classes). "
-                                    "Also grep pattern-visible seeds (new String, "
-                                    "getBytes, printStackTrace, Random, password, "
-                                    "secret, sendRedirect, MessageDigest, console.log, "
-                                    "debugger) and inspect_code each hit. "
-                                    "Do not stop after one or two files — keep "
-                                    "digging until the tools stop yielding new "
-                                    "leads, then end with the full JSON array."
+                                    "Snapshot file tree:\n"
+                                    + "\n".join(str(f)[:200] for f in tree_files[:150])
+                                    + "\n\nSink sweep (context only, judge each line yourself):\n"
+                                    + "\n".join(sweep_lines[:50])
+                                    + (
+                                        "\n\nSource excerpts around top hits "
+                                        "(numbered, ±12 lines — cite exact file+line):\n"
+                                        + "\n\n".join(sweep_excerpts[:10])
+                                        if sweep_excerpts
+                                        else ""
+                                    )
+                                    + (
+                                        f"\n\nThe sweep found {len(sweep_lines)} candidate "
+                                        "lines. Confirm each against the excerpts and "
+                                        "report ALL confirmed ones — a short array "
+                                        "means you skipped real findings."
+                                        if len(sweep_lines) > 10
+                                        else ""
+                                    )
+                                    + "\n\nNow output the JSON array and nothing else."
                                 ),
+                            ),
+                        ],
+                        model=model,
+                        max_tokens=8000,
+                    )
+                    rounds += 1
+                    if opening.usage:
+                        try:
+                            total_tokens += int(opening.usage.get("total_tokens", 0))
+                        except (TypeError, ValueError):
+                            pass
+                    trace.append(
+                        {
+                            "turn": 0,
+                            "content": (opening.content or "")[:1000],
+                            "tool_calls": [],
+                            "fast_path": True,
+                        }
+                    )
+                    if opening.tool_calls:
+                        messages.append(
+                            ChatMessage(
+                                role="assistant",
+                                content=opening.content or "",
+                                tool_calls=opening.tool_calls,
                             )
                         )
-            except Exception as exc:  # noqa: BLE001 - fast path is best-effort
-                logger.warning("hunt fast path failed: %s", exc)
+                    else:
+                        candidates = parse_hunt_list(opening.content or "", max_findings)
+                        if candidates and not deep:
+                            return {
+                                "candidates": candidates,
+                                "rounds": rounds,
+                                "usage": {"total_tokens": total_tokens},
+                                "status": "completed",
+                                "detail": f"fast path parsed {len(candidates)} candidates",
+                                "trace": trace,
+                            }
+                        last_content = opening.content or ""
+                        if candidates:
+                            # Chế độ Deep: tuyến nhanh là điểm khởi đầu (seed), không phải phán quyết. Giữ lại
+                            # mẻ dữ liệu và buộc mô hình đi vào vòng lặp công cụ.
+                            tool_evidence.append(
+                                f"fast-path batch -> {json.dumps(candidates)[:1500]}"
+                            )
+                            fast_candidates = list(candidates)
+                            messages.append(ChatMessage(role="assistant", content=last_content))
+                            messages.append(
+                                ChatMessage(
+                                    role="user",
+                                    content=(
+                                        f"Good start: {len(candidates)} candidates. "
+                                        "Now use list_files/grep_code/inspect_code "
+                                        "to hunt for MORE vulnerabilities in parts "
+                                        "of the snapshot you have not examined yet "
+                                        "(different files, sinks, and CWE classes). "
+                                        "Also grep pattern-visible seeds (new String, "
+                                        "getBytes, printStackTrace, Random, password, "
+                                        "secret, sendRedirect, MessageDigest, console.log, "
+                                        "debugger) and inspect_code each hit. "
+                                        "Do not stop after one or two files — keep "
+                                        "digging until the tools stop yielding new "
+                                        "leads, then end with the full JSON array."
+                                    ),
+                                )
+                            )
+                except Exception as exc:  # noqa: BLE001 - fast path is best-effort
+                    logger.warning("hunt fast path failed: %s", exc)
         for _ in range(max(1, max_rounds)):
             try:
                 resp = client.chat(messages, model=model, tools=TOOL_SCHEMAS, tool_choice="auto")
@@ -1085,19 +1202,27 @@ def hunt_all(
     max_rounds: int = 16,
     max_findings: int = 200,
     deep: bool = True,
+    scanner_service: Any | None = None,
+    tool_first: bool = False,
 ) -> dict[str, Any]:
-    """Săn tìm ưu tiên mô hình trên mọi họ phần mở rộng trong snapshot.
+    """Model-first / AI-orchestrated hunt over every extension family in the snapshot.
 
-    Mỗi họ chạy một lượt tuần tự (tự phục hồi lỗi cho từng họ), sau đó lọc trùng giữa
-    các lượt. Chế độ Deep (mặc định): mẻ tuyến nhanh sẽ làm seed cho một vòng lặp công cụ
-    đầy đủ theo từng lượt thay vì kết thúc nó. Với broad_pass=True, lượt cơ hội thứ hai
-    "rộng" cuối cùng sẽ quét lại toàn bộ tệp để tìm các điểm yếu nhận diện được qua mẫu
-    (encoding, secrets, weak crypto, debug leftovers) mà các lượt tập trung vào sink báo cáo thiếu.
-    Với micro_passes=True, ba lượt vi quét chỉ chạy nhanh (secrets/encoding/debuglog, không có
-    vòng lặp công cụ) sẽ chạy cuối cùng: prompt nhỏ của chúng tồn tại được trước các upstream
-    chập chờn từ chối các lệnh gọi gắn kèm công cụ. Mô hình là bên tìm kiếm chính; các scanner
-    xác định sẽ xác thực chứng thực ở hạ nguồn. Không bao giờ ném ngoại lệ khi gặp vấn đề từ provider.
+    One sequential pass per family (fail-soft each), then dedupe across
+    passes. When ``tool_first=True`` (unified Phase 1 + Phase 2 orchestration),
+    all passes share a single :class:`ScannerToolService` so the AI invokes
+    local scanners directly, inspects extracted findings, and returns both its
+    analyzed candidates and the raw ``scanner_results`` produced without
+    duplicate downstream scanning. Never raises for provider problems.
+
+    Deep mode keeps the initial findings as tool-loop seeds. The optional
+    broad and micro passes add coverage for visible code weaknesses.
     """
+    shared_service = scanner_service
+    if shared_service is None and tool_first:
+        from vulnscan.scanners.tool_service import ScannerToolService
+
+        shared_service = ScannerToolService(snapshot_root)
+
     inventory: list[str] = []
     try:
         # File names only, for family detection. Not the list_files tool: its
@@ -1135,6 +1260,8 @@ def hunt_all(
                 max_rounds=fam_rounds,
                 max_findings=max_findings,
                 deep=fam_deep,
+                scanner_service=shared_service,
+                tool_first=tool_first,
             )
         except Exception as exc:  # noqa: BLE001 - one family never kills the hunt
             logger.warning("hunt pass %s failed: %s", fam, exc)
@@ -1168,7 +1295,23 @@ def hunt_all(
         time.sleep(3)
     merged = dedupe_candidates(all_candidates)[: max(1, max_findings)]
     ok = [p for p in passes if p["status"] == "completed"]
-    status = "completed" if merged and ok else "partial" if merged or ok else "failed"
+    executed_results = (
+        shared_service.executed_results()
+        if shared_service is not None and hasattr(shared_service, "executed_results")
+        else []
+    )
+    tools_invoked = (
+        [t.value for t in shared_service.executed_tools()]
+        if shared_service is not None and hasattr(shared_service, "executed_tools")
+        else []
+    )
+    status = (
+        "completed"
+        if (merged or executed_results) and ok
+        else "partial"
+        if (merged or ok or executed_results)
+        else "failed"
+    )
     return {
         "candidates": merged,
         "passes": passes,
@@ -1178,4 +1321,6 @@ def hunt_all(
         "detail": f"{len(merged)} candidates from {len(passes)} passes "
         f"({', '.join(p['family'] + ':' + str(p['candidates']) for p in passes)})",
         "trace": trace,
+        "scanner_results": executed_results,
+        "tools_invoked": tools_invoked,
     }

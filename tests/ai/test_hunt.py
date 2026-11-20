@@ -299,18 +299,21 @@ class TestDetectFamilies:
     def test_known_families_in_stable_order(self):
         from vulnscan.ai.hunt import detect_families
 
-        assert detect_families(["a.php", "b.java", "c.py", "d.ts"]) == [
+        assert detect_families(["a.php", "b.java", "c.py", "d.ts", "e.cs", "f.go", "g.cpp"]) == [
             "java",
             "javascript",
             "python",
             "php",
+            "go",
+            "cpp",
+            "csharp",
         ]
 
     def test_unknown_extension_falls_back_to_generic(self):
         from vulnscan.ai.hunt import detect_families
 
-        assert detect_families(["main.go", "README.md"]) == ["generic"]
-        assert detect_families(["a.java", "main.go"]) == ["java", "generic"]
+        assert detect_families(["main.rb", "README.md"]) == ["generic"]
+        assert detect_families(["a.java", "main.rb"]) == ["java", "generic"]
 
     def test_empty_inventory_still_hunts_generic(self):
         from vulnscan.ai.hunt import detect_families

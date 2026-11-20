@@ -38,7 +38,8 @@ def test_dr09_additive_migration_preserves_integer_history(tmp_path):
         assert (
             conn.execute("SELECT created_at FROM runs WHERE id=9").fetchone()[0].endswith("+00:00")
         )
-        assert conn.execute("SELECT count(*) FROM schema_migrations").fetchone()[0] == 7
+        versions = conn.execute("SELECT version FROM schema_migrations ORDER BY version").fetchall()
+        assert versions == [(version,) for version in range(1, 10)]
         assert conn.execute("SELECT count(*) FROM notification_deliveries").fetchone()[0] == 0
         assert any(row[2] for row in conn.execute("PRAGMA index_list(notification_deliveries)"))
 

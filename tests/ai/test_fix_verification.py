@@ -16,10 +16,6 @@ from vulnscan.scanners.process import CommandResult, ScanCancelled
 RULE = "py-sql-injection"
 
 
-def target_arg(argv):
-    return argv[argv.index("--stdin-filename") + 1] if "--stdin-filename" in argv else argv[-1]
-
-
 @pytest.fixture
 def files(tmp_path):
     original = tmp_path / "original"
@@ -69,12 +65,16 @@ def runner(
 
     def run(argv, **kwargs):
         calls.append((argv, kwargs))
-        is_original = Path(target_arg(argv)) == original / "src/app.py"
+        is_original = Path(kwargs["cwd"]).name == "baseline"
         if cancel_at == ("baseline" if is_original else "patched"):
             raise ScanCancelled()
+        source = (original if is_original else overlay) / "src/app.py"
+        payload = (baseline if is_original else patched).replace(
+            json.dumps(str(source)), json.dumps(argv[-1])
+        )
         return CommandResult(
             baseline_code if is_original else patched_code,
-            baseline if is_original else patched,
+            payload,
             stderr="password=synthetic-value",
             command=tuple(argv),
         )
@@ -247,15 +247,18 @@ def test_exact_bundled_namespace_preserves_identity(monkeypatch, files, prefix):
 
 
 @pytest.mark.parametrize("stage", ["baseline", "patched"])
-def test_source_mutation_during_scan_never_passes(monkeypatch, files, stage):
+@pytest.mark.parametrize("mutate_copy", [False, True])
+def test_source_mutation_during_scan_never_passes(monkeypatch, files, stage, mutate_copy):
     runner(monkeypatch, files)
     previous = fix.run_command
 
     def mutate(argv, **kwargs):
         result = previous(argv, **kwargs)
-        is_original = Path(target_arg(argv)) == files[0] / "src/app.py"
-        if (stage == "baseline") == is_original:
-            Path(target_arg(argv)).write_bytes(b"changed\n")
+        if Path(kwargs["cwd"]).name == stage:
+            target = (
+                Path(argv[-1]) if mutate_copy else files[int(stage == "patched")] / "src/app.py"
+            )
+            target.write_bytes(b"changed\n")
         return result
 
     monkeypatch.setattr(fix, "run_command", mutate)
@@ -341,9 +344,18 @@ def test_baseline_aliases_rejected_before_filesystem(monkeypatch, files, name):
 
 
 def test_scanner_receives_validated_bytes_not_a_racy_source_path(monkeypatch, files):
-    calls = runner(monkeypatch, files)
+    runner(monkeypatch, files)
+    previous = fix.run_command
+    scanned = []
+
+    def capture(argv, **kwargs):
+        target = Path(argv[-1])
+        assert target.relative_to(kwargs["cwd"]).as_posix() == "src/app.py"
+        assert all(not target.is_relative_to(source) for source in files)
+        scanned.append((target, target.read_bytes()))
+        return previous(argv, **kwargs)
+
+    monkeypatch.setattr(fix, "run_command", capture)
     assert verify(files)["fixed"] is True
-    assert len(calls) == 2
-    for (argv, kwargs), expected in zip(calls, ["old\n", "new\n"], strict=True):
-        assert kwargs.get("input_text") == expected
-        assert "--stdin-filename" in argv and argv[-1] == "-"
+    assert [data for _, data in scanned] == [b"old\n", b"new\n"]
+    assert all(not target.exists() for target, _ in scanned)
