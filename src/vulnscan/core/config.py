@@ -16,7 +16,7 @@ PROFILES = {
     "full": [
         ToolName.SEMGREP,
         ToolName.GITLEAKS,
-        ToolName.SPOTBUGS,
+        ToolName.TRIVY,
         ToolName.OWASP_DEPENDENCY_CHECK,
     ],
 }

@@ -159,10 +159,14 @@ def reconcile(results: list[ScannerResult], manifest: dict[str, Any]) -> list[st
         if not result.is_complete:
             continue
         records = {c.unit_path.replace("\\", "/"): c for c in result.coverage_records}
-        # Dependency analysis covers dependency artifacts, not Java source units.
-        expected = (
-            manifest["inventory"] if result.tool.value != "owasp-dependency-check" else ["pom.xml"]
-        )
+        # Dependency/IaC/dataflow analyzers cover manifests, config files, or
+        # analyzed units rather than every source file in inventory.
+        if result.tool.value in {"trivy", "codeql"}:
+            expected: list[str] = []
+        elif result.tool.value == "owasp-dependency-check":
+            expected = ["pom.xml"] if "pom.xml" in manifest.get("files", {}) else []
+        else:
+            expected = manifest["inventory"]
         for name in expected:
             coverage = records.get(name)
             if coverage is None:
