@@ -262,7 +262,17 @@ class ProviderClient:
         headers: dict[str, str],
     ) -> dict[str, Any]:
         resp = None
-        attempts = max(1, self.profile.max_retries + 1)
+        # Ensure at least 1 retry after a 60s idle on HTTP 429 before falling back
+        # (unless profile.metadata explicitly disables it via rate_limit_idle_seconds=0
+        # AND max_retries=0).
+        raw_idle = (self.profile.metadata or {}).get("rate_limit_idle_seconds", 60.0)
+        try:
+            idle_seconds = max(0.0, float(raw_idle))
+        except (TypeError, ValueError):
+            idle_seconds = 60.0
+        max_429_retries = max(1, self.profile.max_retries) if idle_seconds > 0 else self.profile.max_retries
+        attempts = max(1, max_429_retries + 1)
+
         for attempt in range(attempts):
             try:
                 with _make_http_client(self.profile.timeout_seconds) as client:
@@ -273,9 +283,10 @@ class ProviderClient:
                 if exc.response.status_code == 429 and attempt < attempts - 1:
                     retry_after = exc.response.headers.get("retry-after")
                     try:
-                        wait = float(retry_after) if retry_after else 20.0 * (attempt + 1)
+                        header_wait = float(retry_after) if retry_after else 0.0
                     except (TypeError, ValueError):
-                        wait = 20.0 * (attempt + 1)
+                        header_wait = 0.0
+                    wait = max(idle_seconds, header_wait) if idle_seconds > 0 else header_wait
                     time.sleep(min(wait, 120.0))
                     continue
                 raise ProviderError(
