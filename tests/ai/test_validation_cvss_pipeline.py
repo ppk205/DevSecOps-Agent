@@ -9,6 +9,7 @@ from tests.ai.test_review_wiring import _finding
 from vulnscan.agent.loop import AgentLoop
 from vulnscan.ai import review
 from vulnscan.contracts import FindingStatus
+from vulnscan.providers.budget import BudgetManager
 from vulnscan.providers.client import ChatResponse
 
 BASE = "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N"
@@ -115,3 +116,21 @@ def test_review_persists_validator_provenance_and_computed_cvss(monkeypatch, tmp
     assert finding.metadata["validation_decision"]["new_status"] == "unresolved"
     assert finding.metadata["ai_assessments"][0]["cvss"]["metric_assumptions_verified"] is False
     assert loop.client.chat.call_count == 1
+
+
+def test_review_at_request_cap_leaves_unattempted_finding_unprocessed(monkeypatch, tmp_path):
+    budget = BudgetManager(max_requests=0)
+    loop = MagicMock()
+    loop.investigate.side_effect = AssertionError("must not review an unattempted finding")
+    monkeypatch.setattr(
+        review,
+        "build_review_agent",
+        lambda *args, **kwargs: (loop, loop.client, SimpleNamespace(id="fixture"), budget),
+    )
+    finding = _finding()
+    result = review.run_ai_review(
+        [finding], [], snapshot_root=str(tmp_path), profile_id="fixture", budget=budget
+    )
+    loop.investigate.assert_not_called()
+    assert result["status"] == "skipped" and result["decisions"] == []
+    assert finding.status == FindingStatus.UNPROCESSED

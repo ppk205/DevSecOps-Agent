@@ -289,6 +289,8 @@ class ProviderClient:
         for attempt in range(attempts):
             try:
                 with _make_http_client(self.profile.timeout_seconds) as client:
+                    if self.budget is not None:
+                        self.budget.reserve_request()
                     resp = client.post(url, json=payload, headers=headers)
                     resp.raise_for_status()
                 break
@@ -524,17 +526,25 @@ class ProviderClient:
         url = f"{self.profile.base_url.rstrip('/')}/chat/completions"
 
         resp = None
+        budget = self.budget
         attempts = max(1, self.profile.max_retries + 1)
         for attempt in range(attempts):
-            emit_model_event(
-                "call",
-                "running",
-                f"Calling {self.profile.id} / {use_model} (attempt {attempt + 1})",
-                provider=self.profile.id,
-                model=use_model,
-            )
             try:
                 with _make_http_client(self.profile.timeout_seconds) as client:
+                    if budget is not None:
+                        budget.reserve_request()
+                    try:
+                        emit_model_event(
+                            "call",
+                            "running",
+                            f"Calling {self.profile.id} / {use_model} (attempt {attempt + 1})",
+                            provider=self.profile.id,
+                            model=use_model,
+                        )
+                    except BaseException:
+                        if budget is not None:
+                            budget.release_request()
+                        raise
                     resp = client.post(url, json=payload, headers=headers)
                     resp.raise_for_status()
                 break

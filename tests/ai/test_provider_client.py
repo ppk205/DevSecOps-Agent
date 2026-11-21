@@ -8,13 +8,16 @@ import pytest
 
 from vulnscan.contracts.enums import ProviderProtocol
 from vulnscan.contracts.provider import ProviderProfile
-from vulnscan.providers.budget import BudgetManager
+from vulnscan.providers.budget import BudgetExhausted, BudgetManager
 from vulnscan.providers.client import (
     ChatMessage,
     ProviderClient,
     _extract_v0_tool_calls,
     _make_http_client,
 )
+from vulnscan.providers.credentials import CredentialError
+from vulnscan.providers.events import model_progress
+from vulnscan.scanners.process import ScanCancelled
 
 
 def _profile(**overrides) -> ProviderProfile:
@@ -96,20 +99,100 @@ class TestProviderClient:
 
     def test_missing_api_key(self):
         """Missing env var raises CredentialError."""
+        budget = BudgetManager(max_requests=0)
         with patch.dict("os.environ", {}, clear=True):
-            client = ProviderClient(_profile())
-            with pytest.raises(Exception, match="TEST_API_KEY"):
+            client = ProviderClient(_profile(), budget=budget)
+            with pytest.raises(CredentialError, match="TEST_API_KEY"):
                 client.chat([ChatMessage(role="user", content="hi")])
+        assert budget.attempts == 0
 
     def test_budget_enforcement(self):
         """Budget exhaustion prevents the request."""
         bm = BudgetManager(total_usd=-1.0, reserve_usd=0.0)
         with patch.dict("os.environ", {"TEST_API_KEY": "sk-test123456789"}):
             client = ProviderClient(_profile(), budget=bm)
-            from vulnscan.providers.budget import BudgetExhausted
-
             with pytest.raises(BudgetExhausted):
                 client.chat([ChatMessage(role="user", content="hi")])
+
+
+@pytest.mark.parametrize("retry_v0", [False, True])
+@pytest.mark.parametrize("max_requests", [2, 3])
+def test_provider_request_limit_counts_retries_across_models_and_protocols(
+    monkeypatch, retry_v0, max_requests
+):
+    budget = BudgetManager(max_requests=max_requests)
+    monkeypatch.setenv("TEST_API_KEY", "synthetic-key")
+    sent_paths = []
+
+    def respond(request: httpx.Request) -> httpx.Response:
+        sent_paths.append(request.url.path)
+        if len(sent_paths) == 2:
+            return httpx.Response(429, headers={"retry-after": "0"})
+        return httpx.Response(
+            200,
+            json={"choices": [{"message": {"content": "ok"}}], "text": "ok"},
+        )
+
+    transport = httpx.MockTransport(respond)
+    monkeypatch.setattr(
+        "vulnscan.providers.client._make_http_client",
+        lambda timeout: httpx.Client(transport=transport, timeout=timeout),
+    )
+    openai = ProviderClient(_profile(), budget=budget)
+    v0 = ProviderClient(
+        _profile(id="v0-test", protocol=ProviderProtocol.V0_PLATFORM_API), budget=budget
+    )
+    first, retried = (openai, v0) if retry_v0 else (v0, openai)
+    messages = [ChatMessage(role="user", content="hi")]
+
+    assert first.chat(messages, model="first-model").content == "ok"
+    if max_requests == 2:
+        with pytest.raises(BudgetExhausted):
+            retried.chat(messages, model="second-model")
+    else:
+        assert retried.chat(messages, model="second-model").content == "ok"
+    with pytest.raises(BudgetExhausted):
+        first.chat(messages, model="third-model")
+
+    chat, v0_chat = "/v1/chat/completions", "/v1/chats"
+    first_path, retry_path = (chat, v0_chat) if retry_v0 else (v0_chat, chat)
+    assert sent_paths == [first_path] + [retry_path] * (max_requests - 1)
+    assert budget.attempts == max_requests
+    assert budget.max_requests == max_requests
+
+
+def test_cancelled_before_provider_post_leaves_request_slot_available(monkeypatch):
+    budget = BudgetManager(max_requests=1)
+    monkeypatch.setenv("TEST_API_KEY", "synthetic-key")
+    requests = []
+
+    def respond(request: httpx.Request) -> httpx.Response:
+        requests.append(request)
+        return httpx.Response(200, json={"choices": [{"message": {"content": "ok"}}]})
+
+    transport = httpx.MockTransport(respond)
+    monkeypatch.setattr(
+        "vulnscan.providers.client._make_http_client",
+        lambda timeout: httpx.Client(transport=transport, timeout=timeout),
+    )
+    client = ProviderClient(_profile(), budget=budget)
+    messages = [ChatMessage(role="user", content="hi")]
+
+    def cancel_before_post(event):
+        if event["status"] == "running":
+            raise ScanCancelled()
+
+    token = model_progress.set(cancel_before_post)
+    try:
+        with pytest.raises(ScanCancelled):
+            client.chat(messages)
+    finally:
+        model_progress.reset(token)
+
+    assert requests == []
+    assert budget.attempts == 0
+    assert client.chat(messages).content == "ok"
+    assert len(requests) == budget.attempts == 1
 
 
 class TestV0PlatformClient:

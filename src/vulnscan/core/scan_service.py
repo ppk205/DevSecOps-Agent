@@ -29,6 +29,7 @@ from vulnscan.contracts import (
 from vulnscan.contracts.enums import WEB_SOURCE_EXTENSIONS
 from vulnscan.decisions.config import LayaConfig
 from vulnscan.pipeline.runner import ScanPipeline
+from vulnscan.providers.budget import BudgetManager
 from vulnscan.providers.events import model_progress
 from vulnscan.reporting.reporter import ReportGenerator
 from vulnscan.scanners.base import AdapterRegistry
@@ -58,12 +59,14 @@ class ProgressEvent:
 _TEST_SEGMENTS = frozenset({"test", "tests", "it", "e2e"})
 
 
-def _model_usage(calls: list[dict[str, Any]]) -> dict[str, Any]:
+def _model_usage(calls: list[dict[str, Any]], budget: BudgetManager) -> dict[str, Any]:
     usage: dict[str, Any] = {
         "requests": len(calls),
         "completed_requests": sum(call["status"] == "completed" for call in calls),
         "failed_requests": sum(call["status"] == "failed" for call in calls),
         "usage_reported_requests": sum(bool(call.get("usage")) for call in calls),
+        "http_attempts": budget.attempts,
+        "max_model_requests": budget.max_requests,
         "cost_usd": None,
     }
     for name in ("prompt_tokens", "completion_tokens", "total_tokens"):
@@ -696,6 +699,7 @@ class ScanService:
             session.flush()
             pk = row.id
         started = time.monotonic()
+        budget = BudgetManager(max_requests=config.max_model_requests)
 
         def cancelled() -> bool:
             if cancel_signal and cancel_signal():
@@ -730,7 +734,7 @@ class ScanService:
                                 for r in results
                             },
                             "model_calls": model_calls,
-                            "ai_usage": _model_usage(model_calls),
+                            "ai_usage": _model_usage(model_calls, budget),
                             "assessments": review["assessments"],
                             "validation_decisions": review["decisions"],
                         }
@@ -948,13 +952,12 @@ class ScanService:
                     hunt_client: Any = None
                     try:
                         from vulnscan.ai.hunt import detect_families, hunt_all
-                        from vulnscan.providers.budget import BudgetManager
                         from vulnscan.providers.client import ProviderClient
                         from vulnscan.providers.profile_store import load_profile
                         from vulnscan.scanners.tool_service import ScannerToolService
 
                         hunt_profile = load_profile(config.provider_profile)
-                        hunt_client = ProviderClient(hunt_profile, BudgetManager())
+                        hunt_client = ProviderClient(hunt_profile, budget)
                         hunt_scanner_service = ScannerToolService.from_registry(
                             snapshot_root,
                             self.registry,
@@ -1266,6 +1269,8 @@ class ScanService:
                 config.provider_profile if (config.ai_review or config.mode == "hunt") else None
             )
             model_stage = "targeted_deep_analysis"
+            if review_profile and review_findings:
+                persist("targeted_deep_analysis", "running", "Reviewing selected findings")
             review_kwargs: dict[str, Any] = {
                 "snapshot_root": str(snapshot_root),
                 "coverage_summary": {
@@ -1275,6 +1280,7 @@ class ScanService:
                 "profile_id": review_profile,
                 "model": config.provider_model,
                 "max_findings": config.max_ai_findings,
+                "budget": budget,
             }
             if hunt_scanner_service is not None:
                 review_kwargs["scanner_service"] = hunt_scanner_service
@@ -1296,6 +1302,11 @@ class ScanService:
                     review["detail"] or "no assessment evidence supplied",
                 )
             model_stage = "final_report"
+            report_profile = (
+                config.provider_profile if (config.ai_report or config.mode == "hunt") else None
+            )
+            if report_profile:
+                persist("final_report", "running", "Writing the final narrative")
             final = run_final_report(
                 findings,
                 decisions,
@@ -1305,10 +1316,9 @@ class ScanService:
                     "gate": "pending",
                     "status": "pending",
                 },
-                profile_id=config.provider_profile
-                if (config.ai_report or config.mode == "hunt")
-                else None,
+                profile_id=report_profile,
                 model=config.provider_model,
+                budget=budget,
                 comparison=comparison if hunt_active else None,
             )
             persist("final_report", final["status"], final["detail"] or "narrative ready")
@@ -1372,7 +1382,7 @@ class ScanService:
                 "assessments": review["assessments"],
                 "validation_decisions": decisions,
                 "model_calls": model_calls,
-                "ai_usage": {**review["usage"], **_model_usage(model_calls)},
+                "ai_usage": {**review["usage"], **_model_usage(model_calls, budget)},
                 "final_report": {
                     "status": final["status"],
                     "ai_written": final["ai_written"],
@@ -1456,6 +1466,7 @@ class ScanService:
                 summary["reports"]["hunt"] = str(output / "hunt.json")
             except OSError as exc:
                 summary["errors"].append(sanitize(f"hunt export failed: {exc}"))
+        summary["duration_seconds"] = round(time.monotonic() - started, 3)
         summary["summary_path"] = str(output / "summary.json")
         try:
             (output / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")

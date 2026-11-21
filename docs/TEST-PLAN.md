@@ -189,6 +189,14 @@ Measured per CWE and aggregate:
 - Dependency findings and natural findings — separate tracks.
 - CWE-862 and CWE-639 — reported separately and combined.
 
+The AI efficiency pilot uses a shared clean source revision and scanner set.
+Compare scanner-only, review capped at ten findings, review capped at five,
+and review capped at five with Laya priority. Record the configured request
+limit, actual HTTP attempts including retries, stage outcomes, elapsed time,
+reported tokens, and returned validation decisions. Keep incomplete usage and
+missing prices explicit. Compare one run per scenario as a pilot. Repeat runs
+under the same conditions before drawing stable performance conclusions.
+
 **Interpretation rules:**
 
 - The 24 planned held-out vulnerable cases imply ~4.17 percentage points per miss; the 5-point criterion is descriptive, not a statistical guarantee.

@@ -8,6 +8,7 @@ from vulnscan.contracts.decision import (
     DecisionStatus,
     DecisionType,
 )
+from vulnscan.decisions.config import LayaConfig
 from vulnscan.decisions.laya import LayaDecisionBackend
 
 
@@ -74,10 +75,13 @@ class TestLayaVerify:
 
         def _fake_predict_many(self, requests):
             assert len(requests) == 2
+            assert self.device == "cpu"
             return [_completed("fast_verification"), _completed("human_review", 0.6)]
 
         monkeypatch.setattr(LayaDecisionBackend, "predict_many", _fake_predict_many)
-        out = mod.laya_verify_candidates(_candidates(), snapshot_root=str(tmp_path))
+        out = mod.laya_verify_candidates(
+            _candidates(), snapshot_root=str(tmp_path), laya_config=LayaConfig(device="cpu")
+        )
         assert len(out) == 2
         assert out[0]["laya_route"] == "fast_verification"
         assert out[0]["laya_confidence"] == 0.8

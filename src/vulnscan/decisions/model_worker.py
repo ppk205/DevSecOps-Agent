@@ -13,22 +13,28 @@ from typing import Any
 from vulnscan.core.stdio_worker import MAX_MESSAGE_BYTES, PROTOCOL_VERSION
 
 
-def _resolve_device(requested: str) -> str:
-    """Chọn một thiết bị torch, tự động chuyển xuống CPU khi cần.
-
-    Hàm helper thuần túy để các bài test có thể ghim ma trận mà không cần tải model.
-    """
+def _device_candidates(requested: str) -> tuple[str, ...]:
+    """Probe accelerators in the interpreter that will run inference."""
+    requested = requested.strip().lower()
+    accelerators = ("cuda", "vulkan")
+    if requested not in (*accelerators, "auto"):
+        return ("cpu",)
     try:
         torch = importlib.import_module("torch")
-    except ImportError:
-        return "cpu"
-    if str(requested or "").lower() == "cuda" and torch.cuda.is_available():
-        return "cuda"
-    return "cpu"
+    except (ImportError, OSError, RuntimeError):
+        return ("cpu",)
+    available = []
+    for device in accelerators if requested == "auto" else (requested,):
+        try:
+            probe = torch.cuda.is_available if device == "cuda" else torch.is_vulkan_available
+            if probe():
+                available.append(device)
+        except (AttributeError, OSError, RuntimeError):
+            continue
+    return (*available, "cpu")
 
 
-def load_checkpoint(model_id: str, revision: str | None, device: str) -> tuple[Any, str]:
-    laya = importlib.import_module("laya")
+def _checkpoint(model_id: str, revision: str | None) -> tuple[Path, str]:
     root = Path(model_id)
     if root.is_dir():
         digest = hashlib.sha256()
@@ -43,20 +49,36 @@ def load_checkpoint(model_id: str, revision: str | None, device: str) -> tuple[A
         hub = importlib.import_module("huggingface_hub")
         root = Path(hub.snapshot_download(repo_id=model_id, revision=revision))
         identity = root.name
-    # Laya ~0.4B (ModernBERT-large + heads). Tôn trọng yêu cầu CUDA khi
-    # venv của worker thực sự có CUDA; checkpoint 842MB đã huấn luyện vừa vặn với
-    # GPU laptop 4GB (đã chứng minh chạy thực tế 0.9s/dự đoán), còn bản base 3.7GB thì không.
-    # Mọi lỗi tải (bao gồm cả OOM) đều chuyển xuống CPU, không bao giờ làm dừng lượt quét.
-    want = _resolve_device(device)
-    try:
-        agent = laya.load(str(root), device=want)
-    except Exception:  # noqa: BLE001 - OOM/load failure degrades to CPU
-        agent = laya.load(str(root), device="cpu")
-    return agent, identity
+    return root, identity
+
+
+def _on_cpu(agent: Any) -> bool:
+    return str(agent.device).split(":", 1)[0] == "cpu"
+
+
+def _load_agent(laya: Any, root: Path, devices: tuple[str, ...]) -> tuple[Any, tuple[str, ...]]:
+    for index, device in enumerate(devices):
+        remaining = devices[index + 1 :]
+        try:
+            agent = laya.load(str(root), device=device)
+        except Exception:
+            if not remaining:
+                raise
+            continue
+        if not _on_cpu(agent):
+            return agent, remaining
+        if "vulkan" not in remaining:
+            return agent, ()
+        # Laya can fall back to CPU inside load(). Give Vulkan its turn first.
+        agent.__exit__(None, None, None)
+    raise RuntimeError("no Laya device could load the checkpoint")
 
 
 def main() -> None:
     agent: Any = None
+    laya: Any = None
+    root = Path()
+    remaining: tuple[str, ...] = ()
     key: tuple[str, str | None, str] | None = None
     identity = ""
     while True:
@@ -74,17 +96,31 @@ def main() -> None:
             params = request["params"]
             current = (str(params["model_id"]), params.get("revision"), str(params["device"]))
             with redirect_stdout(sys.stderr):
-                if current != key:
+                if current != key or agent is None:
                     if agent is not None:
                         agent.__exit__(None, None, None)
-                    agent, identity = load_checkpoint(*current)
+                        agent = None
+                    laya = importlib.import_module("laya")
+                    root, identity = _checkpoint(*current[:2])
+                    agent, remaining = _load_agent(laya, root, _device_candidates(current[2]))
                     key = current
-                raw = agent.predict_batch(
-                    params["states"],
-                    params["questions"],
-                    batch_size=len(params["states"]),
-                    max_len=int(params["max_input_tokens"]),
-                )
+                while True:
+                    try:
+                        raw = agent.predict_batch(
+                            params["states"],
+                            params["questions"],
+                            batch_size=len(params["states"]),
+                            max_len=int(params["max_input_tokens"]),
+                        )
+                    except RuntimeError:
+                        if not remaining or (_on_cpu(agent) and "vulkan" not in remaining):
+                            raise
+                    else:
+                        if "vulkan" not in remaining or not _on_cpu(agent):
+                            break
+                    agent.__exit__(None, None, None)
+                    agent = None
+                    agent, remaining = _load_agent(laya, root, remaining)
             response.update(
                 ok=True,
                 result={

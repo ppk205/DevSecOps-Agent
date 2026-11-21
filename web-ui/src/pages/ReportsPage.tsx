@@ -7,7 +7,7 @@ import {
   fetchScans,
   generateReport,
 } from "../api/client";
-import type { ReportDescriptor, ReportFormat } from "../api/types";
+import type { BenchmarkRow, CompareResult, ReportDescriptor, ReportFormat } from "../api/types";
 import { Button } from "../components/Button";
 import { DataTable } from "../components/DataTable";
 import { EmptyState } from "../components/EmptyState";
@@ -183,7 +183,157 @@ function ReportRows({ runId }: { runId: number }) {
   );
 }
 
-function ComparePanel({ scanIds }: { scanIds: number[] }) {
+function BenchmarkCard({
+  row,
+  reference,
+  onOpenReport,
+}: {
+  row: BenchmarkRow;
+  reference: boolean;
+  onOpenReport: (id: number) => void;
+}) {
+  const en = useStrings();
+  const labels = en.reports.benchmark;
+  const titleId = `benchmark-run-${row.run_id}`;
+  const metric = (value: number | string | null | undefined) => value ?? labels.unknown;
+  const percentage = (value: number | null) => value === null ? labels.unknown : `${Number(value.toFixed(1))}%`;
+  const seconds = (value: number | null) => value === null ? labels.unknown : `${Number(value.toFixed(2))} s`;
+  const metrics = [
+    [en.reports.cols.status, row.status],
+    [labels.gate, row.gate],
+    [labels.commit, row.commit],
+    [labels.profile, row.profile],
+    [labels.model, row.model],
+    [labels.duration, seconds(row.duration_seconds)],
+    [labels.reviewLimit, row.review_limit],
+    [labels.requests, row.requests],
+    [labels.completed, row.completed_requests],
+    [labels.failed, row.failed_requests],
+    [labels.httpAttempts, row.max_model_requests == null
+      ? row.http_attempts
+      : `${metric(row.http_attempts)} / ${row.max_model_requests}`],
+    [labels.promptTokens, row.prompt_tokens],
+    [labels.completionTokens, row.completion_tokens],
+    [labels.totalTokens, row.total_tokens],
+    [labels.cost, row.cost_usd == null ? null : `$${row.cost_usd}`],
+    [labels.reviewed, row.reviewed],
+    [labels.validated, row.validated],
+    [labels.layaDevices, row.laya_devices.join(", ") || null],
+    [labels.layaTimeouts, row.laya_timeouts],
+  ] as const;
+
+  return (
+    <article aria-labelledby={titleId} className="card min-w-0 p-5 text-sm text-body">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h4 id={titleId} className="label-m text-sm text-ink">{row.scenario} · #{row.run_id}</h4>
+        <Button type="button" variant="secondary" size="sm" onClick={() => onOpenReport(row.run_id)}>
+          {labels.openReport.replace("{run}", String(row.run_id))}
+        </Button>
+      </div>
+      <dl className="my-4 grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-x-3 gap-y-1">
+        {metrics.map(([label, value]) => (
+          <div className="contents" key={label}>
+            <dt className="text-muted">{label}</dt>
+            <dd className="break-words text-ink">{metric(value)}</dd>
+          </div>
+        ))}
+      </dl>
+      <p className="label-m text-xs text-muted">{labels.coverage}</p>
+      {row.scanners.length === 0 ? <p>{labels.unknown}</p> : (
+        <ul className="mt-1 space-y-1">
+          {row.scanners.map((scanner) => (
+            <li key={scanner.tool} className="break-words">
+              {scanner.tool} · {scanner.status} · {metric(scanner.analyzed_units)}/{metric(scanner.eligible_units)} {labels.analyzed} · {metric(scanner.skipped_units)} {labels.skipped}
+            </li>
+          ))}
+        </ul>
+      )}
+      {row.stage_durations && row.stage_durations.length > 0 && (
+        <details className="mt-4">
+          <summary className="label-m cursor-pointer text-xs text-muted">{labels.stageTimings}</summary>
+          <ul className="mt-1 space-y-1">
+            {row.stage_durations.map((stage, i) => (
+              <li key={`${stage.name}-${i}`}>{stage.name} · {stage.status} · {seconds(stage.duration_seconds)}</li>
+            ))}
+          </ul>
+        </details>
+      )}
+      {row.limitations && row.limitations.length > 0 && (
+        <div className="mt-4">
+          <p className="label-m text-xs text-muted">{labels.limitations}</p>
+          <ul className="mt-1 list-disc space-y-1 pl-5">
+            {row.limitations.map((limitation) => <li key={limitation}>{limitation}</li>)}
+          </ul>
+        </div>
+      )}
+      {row.comparable && row.savings && !reference && (
+        <div className="mt-4">
+          <p className="label-m text-xs text-muted">{labels.savings}</p>
+          <dl className="mt-1 grid grid-cols-2 gap-x-3 gap-y-1">
+            <dt>{labels.duration}</dt><dd>{percentage(row.savings.duration_percent)}</dd>
+            <dt>{labels.httpAttempts}</dt><dd>{percentage(row.savings.requests_percent)}</dd>
+            <dt>{labels.totalTokens}</dt><dd>{percentage(row.savings.tokens_percent)}</dd>
+            <dt>{labels.cost}</dt><dd>{percentage(row.savings.cost_percent)}</dd>
+          </dl>
+        </div>
+      )}
+      {!reference && !row.comparable && (
+        <p className="mt-4 border-t border-hairline pt-2 text-muted">
+          <strong>{labels.incompatible}</strong>{row.comparison_reason && ` · ${row.comparison_reason}`}
+        </p>
+      )}
+    </article>
+  );
+}
+
+function BenchmarkPanel({
+  benchmark,
+  onOpenReport,
+}: {
+  benchmark: CompareResult["benchmark"];
+  onOpenReport: (id: number) => void;
+}) {
+  const labels = useStrings().reports.benchmark;
+  const rows = benchmark?.rows ?? [];
+  const referenceId = benchmark?.reference_run_id;
+  const scenarios = ["A0", "A1", "A2", "A3"] as const;
+  const hunt = rows.filter((row) => row.scenario === "A4");
+
+  return (
+    <section className="mb-6" aria-labelledby="benchmark-title">
+      <h3 id="benchmark-title" className="label-m mb-3 text-sm text-ink">{labels.title}</h3>
+      <dl className="mb-4 grid gap-2 text-sm text-body md:grid-cols-2">
+        {scenarios.map((scenario) => (
+          <div key={scenario} className="flex gap-2">
+            <dt className="font-mono text-ink">{scenario}</dt>
+            <dd>{labels.scenario[scenario]}</dd>
+          </div>
+        ))}
+      </dl>
+      <p className="mb-3 text-sm text-muted">
+        {rows.length === 0 ? labels.unavailable : referenceId == null ? labels.noReference : `${labels.reference} #${referenceId}`}
+      </p>
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {rows.filter((row) => row.scenario !== "A4").map((row) => (
+          <BenchmarkCard key={row.run_id} row={row} reference={row.run_id === referenceId} onOpenReport={onOpenReport} />
+        ))}
+      </div>
+      <div className="mt-4">
+        <h4 className="label-m text-xs text-muted">A4 · {labels.hunt}</h4>
+        <p className="mt-1 text-sm text-body">{labels.scenario.A4}</p>
+        {hunt.length > 0 && (
+          <div className="mt-3 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {hunt.map((row) => (
+              <BenchmarkCard key={row.run_id} row={row} reference={false} onOpenReport={onOpenReport} />
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function ComparePanel({ scanIds, onOpenReport }: { scanIds: number[]; onOpenReport: (id: number) => void }) {
   const en = useStrings();
   const [selected, setSelected] = useState<number[]>(scanIds.slice(0, 2));
   const ready = selected.length >= 2;
@@ -217,6 +367,7 @@ function ComparePanel({ scanIds }: { scanIds: number[] }) {
       {ready && compare.isLoading && <p className="text-body">{en.common.loading}</p>}
       {ready && compare.data && (
         <div>
+          <BenchmarkPanel benchmark={compare.data.benchmark} onOpenReport={onOpenReport} />
           <div className="grid gap-6 lg:grid-cols-2">
             <div className="card p-6">
               <div className="label-m mb-3 text-xs text-muted">{en.reports.perScanner}</div>
@@ -320,6 +471,7 @@ export function ReportsPage() {
   const ids = useMemo(() => (scans.data ?? []).map((s) => s.run_id), [scans.data]);
   const [runId, setRunId] = useState<number | null>(null);
   const active = runId ?? ids[0] ?? null;
+  const reportSelect = useRef<HTMLSelectElement>(null);
 
   return (
     <div>
@@ -333,6 +485,7 @@ export function ReportsPage() {
           </label>
           <select
             id="report-scan"
+            ref={reportSelect}
             className="mb-6 border border-hairline bg-canvas px-3 py-2 text-sm text-ink"
             value={active}
             onChange={(e) => setRunId(Number(e.target.value))}
@@ -344,7 +497,10 @@ export function ReportsPage() {
             ))}
           </select>
           <ReportRows key={active} runId={active} />
-          <ComparePanel scanIds={ids} />
+          <ComparePanel scanIds={ids} onOpenReport={(id) => {
+            setRunId(id);
+            reportSelect.current?.focus();
+          }} />
         </div>
       )}
     </div>

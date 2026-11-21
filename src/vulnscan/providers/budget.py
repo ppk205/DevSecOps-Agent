@@ -28,9 +28,19 @@ class BudgetManager:
         làm chi tiêu vượt quá *total_usd - reserve_usd* sẽ bị từ chối.
     """
 
-    def __init__(self, total_usd: float = 50.0, reserve_usd: float = 10.0) -> None:
+    def __init__(
+        self,
+        total_usd: float = 50.0,
+        reserve_usd: float = 10.0,
+        *,
+        max_requests: int | None = None,
+    ) -> None:
+        if max_requests is not None and max_requests < 0:
+            raise ValueError("max_requests must be non-negative")
         self._total = total_usd
         self._reserve = reserve_usd
+        self._max_requests = max_requests
+        self._attempts = 0
         self._spent: dict[str, float] = {}  # provider_id -> USD
         self._lock = threading.Lock()
 
@@ -40,6 +50,15 @@ class BudgetManager:
     @property
     def total_budget(self) -> float:
         return self._total
+
+    @property
+    def max_requests(self) -> int | None:
+        return self._max_requests
+
+    @property
+    def attempts(self) -> int:
+        with self._lock:
+            return self._attempts
 
     @property
     def available(self) -> float:
@@ -68,6 +87,18 @@ class BudgetManager:
                     f"budget ${remaining - self._reserve:.4f} (total=${self._total}, "
                     f"spent=${sum(self._spent.values()):.4f}, reserve=${self._reserve})"
                 )
+
+    def reserve_request(self) -> None:
+        """Count one provider POST attempt independently of monetary usage."""
+        with self._lock:
+            if self._max_requests is not None and self._attempts >= self._max_requests:
+                raise BudgetExhausted(f"Model request limit reached ({self._attempts} attempts)")
+            self._attempts += 1
+
+    def release_request(self) -> None:
+        """Release a reservation when its POST has yet to start."""
+        with self._lock:
+            self._attempts -= 1
 
     def record(self, usage: ProviderUsage) -> None:
         """Ghi lại mục sử dụng đã hoàn thành và cập nhật tổng chi tiêu của provider."""

@@ -5,7 +5,6 @@ from pathlib import Path
 
 import pytest
 
-from vulnscan.decisions import config as config_module
 from vulnscan.decisions.config import LayaConfig, load_config
 
 REPO_CONFIG = Path(__file__).resolve().parents[2] / "config" / "laya.json"
@@ -21,22 +20,14 @@ def test_defaults_are_disabled_and_advisory() -> None:
     assert config.affects_finding_status is False
 
 
-def test_qr18_optional_torch_is_not_required_for_default_configuration(mocker) -> None:
-    load = mocker.patch.object(config_module.importlib, "import_module", side_effect=ImportError)
-    LayaConfig().validate()
-    load.assert_not_called()
-    assert config_module._import_torch() is False
-    assert config_module._torch_cuda_ok() is False
-    with pytest.raises(ValueError, match="CUDA|cuda"):
-        LayaConfig(device="cuda").validate()
+@pytest.mark.parametrize("device", ["auto", "cuda", "vulkan", "cpu"])
+def test_qr18_config_accepts_device_preferences_without_loading_torch(device: str) -> None:
+    LayaConfig(device=device).validate()
 
 
-def test_qr18_cuda_configuration_uses_optional_module_loading(mocker) -> None:
-    torch = mocker.Mock()
-    torch.cuda.is_available.return_value = True
-    load = mocker.patch.object(config_module.importlib, "import_module", return_value=torch)
-    LayaConfig(device="cuda").validate()
-    assert all(call.args == ("torch",) for call in load.call_args_list)
+def test_qr18_config_rejects_unknown_device() -> None:
+    with pytest.raises(ValueError, match="device must be"):
+        LayaConfig(device="unsupported").validate()
 
 
 def test_repo_config_is_shipped_disabled() -> None:

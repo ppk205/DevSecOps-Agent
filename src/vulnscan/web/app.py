@@ -33,6 +33,7 @@ from vulnscan.contracts.finding import Finding
 from vulnscan.core.config import ScanConfig
 from vulnscan.core.finding_view import project_finding
 from vulnscan.core.scan_service import ScanService
+from vulnscan.evaluation.benchmark import BenchmarkRun, compare_benchmark
 from vulnscan.reporting.reporter import ReportGenerator
 from vulnscan.storage.database import get_engine, get_session, migrate
 from vulnscan.storage.models import (
@@ -1746,12 +1747,25 @@ def create_app(
         per_run: dict[int, list[Finding]] = {}
         gates: dict[int, Any] = {}
         statuses: dict[int, str] = {}
+        benchmark_runs: list[BenchmarkRun] = []
         for run_id in ordered:
             run = session.get(RunORM, run_id)
             if run is None:
                 raise HTTPException(404, f"Run not found: {run_id}")
             per_run[run_id] = _findings_for_run(session, run_id)
-            snapshot = json.loads(run.result_json or "{}")
+            try:
+                snapshot = json.loads(run.result_json or "{}")
+            except json.JSONDecodeError:
+                snapshot = {}
+            if not isinstance(snapshot, dict):
+                snapshot = {}
+            try:
+                spec = json.loads(run.scan_spec_json or "{}")
+            except json.JSONDecodeError:
+                spec = {}
+            benchmark_runs.append(
+                (run_id, run.status, spec if isinstance(spec, dict) else {}, snapshot)
+            )
             gates[run_id] = snapshot.get("gate")
             statuses[run_id] = run.status
         by_scanner: dict[str, dict[str, int]] = {}
@@ -1808,6 +1822,7 @@ def create_app(
                 for run_id in ordered
             ],
             "ai": [_ai_summary(session, run_id) for run_id in ordered],
+            "benchmark": compare_benchmark(benchmark_runs),
             "by_scanner": [
                 {"tool": tool, "counts": counts} for tool, counts in sorted(by_scanner.items())
             ],

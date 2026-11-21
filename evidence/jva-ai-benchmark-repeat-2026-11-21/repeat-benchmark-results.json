@@ -1,0 +1,1737 @@
+{
+  "target": "https://github.com/ppk205/JVA-bookstore-testsuite",
+  "methodology": {
+    "target_pin": "9ec0084431feac073924938d00f6a66991eb51bf",
+    "wall_limit_seconds": 1200,
+    "laya_worker_seconds": 180,
+    "additional_model_http_attempts": 132,
+    "per_repetition_limits": {
+      "A1": 20,
+      "A2": 12,
+      "A3": 12
+    },
+    "sequence": [
+      [
+        1,
+        "A1"
+      ],
+      [
+        1,
+        "A2"
+      ],
+      [
+        1,
+        "A3"
+      ],
+      [
+        2,
+        "A2"
+      ],
+      [
+        2,
+        "A3"
+      ],
+      [
+        2,
+        "A1"
+      ],
+      [
+        3,
+        "A3"
+      ],
+      [
+        3,
+        "A1"
+      ],
+      [
+        3,
+        "A2"
+      ]
+    ],
+    "notes": [
+      "A0 runs were measured before the AI runs.",
+      "Model-enabled runs started in fresh Python processes and their order was rotated within the repetitions.",
+      "Only completed, scanner-comparable pairs contribute to savings."
+    ]
+  },
+  "offline_readiness": {
+    "scanners": {
+      "semgrep": {
+        "available": true,
+        "version": null
+      },
+      "native-hunt": {
+        "available": true,
+        "version": "1.0"
+      },
+      "gitleaks": {
+        "available": true,
+        "version": "gitleaks version 8.24.2"
+      }
+    },
+    "laya": {
+      "status": "completed",
+      "error_code": null,
+      "device": "cuda",
+      "wall_seconds": 99.626,
+      "timeout_seconds": 180
+    }
+  },
+  "http_attempts": 118,
+  "accuracy_status": "unavailable: independently adjudicated labels not supplied",
+  "usd_status": "unavailable: no verified billing data was recorded or supplied",
+  "results": {
+    "A0": {
+      "terminal_runs": 3,
+      "completed_runs": 3,
+      "completed_laya_stages": 0,
+      "median_completed_laya_seconds": null,
+      "completed_laya_seconds_range": null,
+      "median_seconds": 84.531,
+      "seconds_samples": 3,
+      "seconds_range": [
+        74.7,
+        86.938
+      ],
+      "median_attempts": 0,
+      "attempts_samples": 3,
+      "attempts_range": [
+        0,
+        0
+      ],
+      "median_reviewed": 0,
+      "reviewed_samples": 3,
+      "reviewed_range": [
+        0,
+        0
+      ],
+      "median_tokens_with_complete_request_ledger": null,
+      "tokens_with_complete_request_ledger_samples": 0,
+      "tokens_with_complete_request_ledger_range": null
+    },
+    "A1": {
+      "terminal_runs": 3,
+      "completed_runs": 3,
+      "completed_laya_stages": 0,
+      "median_completed_laya_seconds": null,
+      "completed_laya_seconds_range": null,
+      "median_seconds": 414.352,
+      "seconds_samples": 3,
+      "seconds_range": [
+        387.813,
+        447.978
+      ],
+      "median_attempts": 20,
+      "attempts_samples": 3,
+      "attempts_range": [
+        20,
+        20
+      ],
+      "median_reviewed": 2,
+      "reviewed_samples": 3,
+      "reviewed_range": [
+        2,
+        2
+      ],
+      "median_tokens_with_complete_request_ledger": null,
+      "tokens_with_complete_request_ledger_samples": 0,
+      "tokens_with_complete_request_ledger_range": null
+    },
+    "A2": {
+      "terminal_runs": 3,
+      "completed_runs": 3,
+      "completed_laya_stages": 0,
+      "median_completed_laya_seconds": null,
+      "completed_laya_seconds_range": null,
+      "median_seconds": 252.902,
+      "seconds_samples": 3,
+      "seconds_range": [
+        251.862,
+        307.842
+      ],
+      "median_attempts": 12,
+      "attempts_samples": 3,
+      "attempts_range": [
+        12,
+        12
+      ],
+      "median_reviewed": 1,
+      "reviewed_samples": 3,
+      "reviewed_range": [
+        1,
+        1
+      ],
+      "median_tokens_with_complete_request_ledger": 173366,
+      "tokens_with_complete_request_ledger_samples": 3,
+      "tokens_with_complete_request_ledger_range": [
+        91784,
+        447700
+      ]
+    },
+    "A3": {
+      "terminal_runs": 3,
+      "completed_runs": 0,
+      "completed_laya_stages": 3,
+      "median_completed_laya_seconds": 946.233,
+      "completed_laya_seconds_range": [
+        938.105005,
+        963.416334
+      ],
+      "median_seconds": null,
+      "seconds_samples": 0,
+      "seconds_range": null,
+      "median_attempts": null,
+      "attempts_samples": 0,
+      "attempts_range": null,
+      "median_reviewed": null,
+      "reviewed_samples": 0,
+      "reviewed_range": null,
+      "median_tokens_with_complete_request_ledger": null,
+      "tokens_with_complete_request_ledger_samples": 0,
+      "tokens_with_complete_request_ledger_range": null
+    }
+  },
+  "pairs": {
+    "A2_vs_A1": [
+      {
+        "repetition": 1,
+        "seconds_savings_percent": 34.788,
+        "attempts_savings_percent": 40.0,
+        "tokens_with_complete_request_ledger_savings_percent": null
+      },
+      {
+        "repetition": 2,
+        "seconds_savings_percent": 31.282,
+        "attempts_savings_percent": 40.0,
+        "tokens_with_complete_request_ledger_savings_percent": null
+      },
+      {
+        "repetition": 3,
+        "seconds_savings_percent": 39.215,
+        "attempts_savings_percent": 40.0,
+        "tokens_with_complete_request_ledger_savings_percent": null
+      }
+    ],
+    "A3_vs_A2": []
+  },
+  "repetitions": {
+    "1": {
+      "observations": {
+        "A0": {
+          "status": "completed",
+          "gate": "failed",
+          "seconds": 84.531,
+          "attempts": 0,
+          "report_written": false,
+          "provider_reported_tokens": null,
+          "tokens_with_complete_request_ledger": null,
+          "reviewed": 0,
+          "laya_devices": [],
+          "laya_completed": null,
+          "laya_timeouts": null,
+          "laya_seconds": null,
+          "original_summary": "/home/ppk123/devsecops-runs/jva-ai-benchmark-repeat-2026-11-21.tGcpU1XG/reports/jva-repeat-r1-a0/summary.json"
+        },
+        "A1": {
+          "status": "completed",
+          "gate": "failed",
+          "seconds": 387.813,
+          "attempts": 20,
+          "report_written": false,
+          "provider_reported_tokens": 222416,
+          "tokens_with_complete_request_ledger": null,
+          "reviewed": 2,
+          "laya_devices": [],
+          "laya_completed": 0,
+          "laya_timeouts": 0,
+          "laya_seconds": null,
+          "original_summary": "/home/ppk123/devsecops-runs/jva-ai-benchmark-repeat-2026-11-21.tGcpU1XG/reports/jva-repeat-r1-a1/summary.json"
+        },
+        "A2": {
+          "status": "completed",
+          "gate": "failed",
+          "seconds": 252.902,
+          "attempts": 12,
+          "report_written": false,
+          "provider_reported_tokens": 173366,
+          "tokens_with_complete_request_ledger": 173366,
+          "reviewed": 1,
+          "laya_devices": [],
+          "laya_completed": 0,
+          "laya_timeouts": 0,
+          "laya_seconds": null,
+          "original_summary": "/home/ppk123/devsecops-runs/jva-ai-benchmark-repeat-2026-11-21.tGcpU1XG/reports/jva-repeat-r1-a2/summary.json"
+        },
+        "A3": {
+          "status": "cancelled",
+          "gate": "failed",
+          "seconds": 1204.706,
+          "attempts": 10,
+          "report_written": false,
+          "provider_reported_tokens": 264428,
+          "tokens_with_complete_request_ledger": 264428,
+          "reviewed": 0,
+          "laya_devices": [
+            "cuda"
+          ],
+          "laya_completed": 341,
+          "laya_timeouts": 0,
+          "laya_seconds": 938.105005,
+          "original_summary": "/home/ppk123/devsecops-runs/jva-ai-benchmark-repeat-2026-11-21.tGcpU1XG/reports/jva-repeat-r1-a3/summary.json"
+        }
+      },
+      "comparison": {
+        "reference_run_id": 4,
+        "rows": [
+          {
+            "run_id": 1,
+            "scenario": "A0",
+            "profile": "fast",
+            "commit": "9ec0084431feac073924938d00f6a66991eb51bf",
+            "model": null,
+            "review_limit": 10,
+            "status": "completed",
+            "gate": "failed",
+            "duration_seconds": 84.531,
+            "stage_durations": [
+              {
+                "name": "intake",
+                "status": "completed",
+                "duration_seconds": 1.53889
+              },
+              {
+                "name": "model_hunt",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "semgrep",
+                "status": "completed",
+                "duration_seconds": 49.566863
+              },
+              {
+                "name": "native-hunt",
+                "status": "completed",
+                "duration_seconds": 20.438805
+              },
+              {
+                "name": "gitleaks",
+                "status": "completed",
+                "duration_seconds": 2.414319
+              },
+              {
+                "name": "scanners",
+                "status": "completed",
+                "duration_seconds": null
+              },
+              {
+                "name": "laya_batch_routing",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "targeted_deep_analysis",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "independent_validation",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "final_report",
+                "status": "skipped",
+                "duration_seconds": null
+              }
+            ],
+            "limitations": [],
+            "scanners": [
+              {
+                "tool": "semgrep",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 122,
+                "skipped_units": 38
+              },
+              {
+                "tool": "native-hunt",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              },
+              {
+                "tool": "gitleaks",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              }
+            ],
+            "requests": 0,
+            "http_attempts": 0,
+            "max_model_requests": 0,
+            "completed_requests": 0,
+            "failed_requests": 0,
+            "prompt_tokens": null,
+            "completion_tokens": null,
+            "total_tokens": null,
+            "cost_usd": null,
+            "reviewed": 0,
+            "validated": 0,
+            "laya_devices": [],
+            "laya_timeouts": 0,
+            "comparable": true,
+            "comparison_reason": null,
+            "savings": {
+              "duration_percent": 78.20315461317696,
+              "requests_percent": 100.0,
+              "tokens_percent": null,
+              "cost_percent": null
+            }
+          },
+          {
+            "run_id": 4,
+            "scenario": "A1",
+            "profile": "fast",
+            "commit": "9ec0084431feac073924938d00f6a66991eb51bf",
+            "model": "deepseek/deepseek-v4.1-flash",
+            "review_limit": 10,
+            "status": "completed",
+            "gate": "failed",
+            "duration_seconds": 387.813,
+            "stage_durations": [
+              {
+                "name": "intake",
+                "status": "completed",
+                "duration_seconds": 0.718709
+              },
+              {
+                "name": "model_hunt",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "semgrep",
+                "status": "completed",
+                "duration_seconds": 49.202792
+              },
+              {
+                "name": "native-hunt",
+                "status": "completed",
+                "duration_seconds": 22.934304
+              },
+              {
+                "name": "gitleaks",
+                "status": "completed",
+                "duration_seconds": 2.58616
+              },
+              {
+                "name": "scanners",
+                "status": "completed",
+                "duration_seconds": null
+              },
+              {
+                "name": "laya_batch_routing",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "targeted_deep_analysis",
+                "status": "partial",
+                "duration_seconds": 300.144001
+              },
+              {
+                "name": "independent_validation",
+                "status": "partial",
+                "duration_seconds": null
+              },
+              {
+                "name": "final_report",
+                "status": "failed",
+                "duration_seconds": 0.942436
+              }
+            ],
+            "limitations": [
+              "AI review or report was incomplete. Time and attempts describe the observed execution."
+            ],
+            "scanners": [
+              {
+                "tool": "semgrep",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 122,
+                "skipped_units": 38
+              },
+              {
+                "tool": "native-hunt",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              },
+              {
+                "tool": "gitleaks",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              }
+            ],
+            "requests": 20,
+            "http_attempts": 20,
+            "max_model_requests": 20,
+            "completed_requests": 19,
+            "failed_requests": 1,
+            "prompt_tokens": null,
+            "completion_tokens": null,
+            "total_tokens": null,
+            "cost_usd": null,
+            "reviewed": 2,
+            "validated": 3,
+            "laya_devices": [],
+            "laya_timeouts": 0,
+            "comparable": true,
+            "comparison_reason": null,
+            "savings": {
+              "duration_percent": 0.0,
+              "requests_percent": 0.0,
+              "tokens_percent": null,
+              "cost_percent": null
+            }
+          },
+          {
+            "run_id": 5,
+            "scenario": "A2",
+            "profile": "fast",
+            "commit": "9ec0084431feac073924938d00f6a66991eb51bf",
+            "model": "deepseek/deepseek-v4.1-flash",
+            "review_limit": 5,
+            "status": "completed",
+            "gate": "failed",
+            "duration_seconds": 252.902,
+            "stage_durations": [
+              {
+                "name": "intake",
+                "status": "completed",
+                "duration_seconds": 0.981565
+              },
+              {
+                "name": "model_hunt",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "semgrep",
+                "status": "completed",
+                "duration_seconds": 52.713861
+              },
+              {
+                "name": "native-hunt",
+                "status": "completed",
+                "duration_seconds": 21.596487
+              },
+              {
+                "name": "gitleaks",
+                "status": "completed",
+                "duration_seconds": 2.496481
+              },
+              {
+                "name": "scanners",
+                "status": "completed",
+                "duration_seconds": null
+              },
+              {
+                "name": "laya_batch_routing",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "targeted_deep_analysis",
+                "status": "partial",
+                "duration_seconds": 163.750977
+              },
+              {
+                "name": "independent_validation",
+                "status": "partial",
+                "duration_seconds": null
+              },
+              {
+                "name": "final_report",
+                "status": "failed",
+                "duration_seconds": 0.919433
+              }
+            ],
+            "limitations": [
+              "AI review or report was incomplete. Time and attempts describe the observed execution."
+            ],
+            "scanners": [
+              {
+                "tool": "semgrep",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 122,
+                "skipped_units": 38
+              },
+              {
+                "tool": "native-hunt",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              },
+              {
+                "tool": "gitleaks",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              }
+            ],
+            "requests": 12,
+            "http_attempts": 12,
+            "max_model_requests": 12,
+            "completed_requests": 12,
+            "failed_requests": 0,
+            "prompt_tokens": null,
+            "completion_tokens": null,
+            "total_tokens": null,
+            "cost_usd": null,
+            "reviewed": 1,
+            "validated": 2,
+            "laya_devices": [],
+            "laya_timeouts": 0,
+            "comparable": true,
+            "comparison_reason": null,
+            "savings": {
+              "duration_percent": 34.78764249780178,
+              "requests_percent": 40.0,
+              "tokens_percent": null,
+              "cost_percent": null
+            }
+          },
+          {
+            "run_id": 6,
+            "scenario": "A3",
+            "profile": "fast",
+            "commit": "9ec0084431feac073924938d00f6a66991eb51bf",
+            "model": "deepseek/deepseek-v4.1-flash",
+            "review_limit": 5,
+            "status": "cancelled",
+            "gate": "failed",
+            "duration_seconds": 1204.706,
+            "stage_durations": [
+              {
+                "name": "intake",
+                "status": "completed",
+                "duration_seconds": 0.696077
+              },
+              {
+                "name": "model_hunt",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "semgrep",
+                "status": "completed",
+                "duration_seconds": 45.869096
+              },
+              {
+                "name": "native-hunt",
+                "status": "completed",
+                "duration_seconds": 19.494811
+              },
+              {
+                "name": "gitleaks",
+                "status": "completed",
+                "duration_seconds": 2.185186
+              },
+              {
+                "name": "scanners",
+                "status": "completed",
+                "duration_seconds": null
+              },
+              {
+                "name": "laya_batch_routing",
+                "status": "completed",
+                "duration_seconds": 938.105005
+              },
+              {
+                "name": "targeted_deep_analysis",
+                "status": "running",
+                "duration_seconds": null
+              },
+              {
+                "name": "execution",
+                "status": "cancelled",
+                "duration_seconds": null
+              }
+            ],
+            "limitations": [
+              "AI review or report was incomplete. Time and attempts describe the observed execution."
+            ],
+            "scanners": [
+              {
+                "tool": "semgrep",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 122,
+                "skipped_units": 38
+              },
+              {
+                "tool": "native-hunt",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              },
+              {
+                "tool": "gitleaks",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              }
+            ],
+            "requests": 10,
+            "http_attempts": 10,
+            "max_model_requests": 12,
+            "completed_requests": 10,
+            "failed_requests": 0,
+            "prompt_tokens": null,
+            "completion_tokens": null,
+            "total_tokens": null,
+            "cost_usd": null,
+            "reviewed": 0,
+            "validated": 0,
+            "laya_devices": [
+              "cuda"
+            ],
+            "laya_timeouts": 0,
+            "comparable": false,
+            "comparison_reason": "The scan did not complete successfully.",
+            "savings": {
+              "duration_percent": null,
+              "requests_percent": null,
+              "tokens_percent": null,
+              "cost_percent": null
+            }
+          }
+        ]
+      }
+    },
+    "2": {
+      "observations": {
+        "A0": {
+          "status": "completed",
+          "gate": "failed",
+          "seconds": 74.7,
+          "attempts": 0,
+          "report_written": false,
+          "provider_reported_tokens": null,
+          "tokens_with_complete_request_ledger": null,
+          "reviewed": 0,
+          "laya_devices": [],
+          "laya_completed": null,
+          "laya_timeouts": null,
+          "laya_seconds": null,
+          "original_summary": "/home/ppk123/devsecops-runs/jva-ai-benchmark-repeat-2026-11-21.tGcpU1XG/reports/jva-repeat-r2-a0/summary.json"
+        },
+        "A1": {
+          "status": "completed",
+          "gate": "failed",
+          "seconds": 447.978,
+          "attempts": 20,
+          "report_written": false,
+          "provider_reported_tokens": 680474,
+          "tokens_with_complete_request_ledger": null,
+          "reviewed": 2,
+          "laya_devices": [],
+          "laya_completed": 0,
+          "laya_timeouts": 0,
+          "laya_seconds": null,
+          "original_summary": "/home/ppk123/devsecops-runs/jva-ai-benchmark-repeat-2026-11-21.tGcpU1XG/reports/jva-repeat-r2-a1/summary.json"
+        },
+        "A2": {
+          "status": "completed",
+          "gate": "failed",
+          "seconds": 307.842,
+          "attempts": 12,
+          "report_written": false,
+          "provider_reported_tokens": 447700,
+          "tokens_with_complete_request_ledger": 447700,
+          "reviewed": 1,
+          "laya_devices": [],
+          "laya_completed": 0,
+          "laya_timeouts": 0,
+          "laya_seconds": null,
+          "original_summary": "/home/ppk123/devsecops-runs/jva-ai-benchmark-repeat-2026-11-21.tGcpU1XG/reports/jva-repeat-r2-a2/summary.json"
+        },
+        "A3": {
+          "status": "cancelled",
+          "gate": "failed",
+          "seconds": 1206.56,
+          "attempts": 4,
+          "report_written": false,
+          "provider_reported_tokens": 25087,
+          "tokens_with_complete_request_ledger": 25087,
+          "reviewed": 0,
+          "laya_devices": [
+            "cuda"
+          ],
+          "laya_completed": 341,
+          "laya_timeouts": 0,
+          "laya_seconds": 963.416334,
+          "original_summary": "/home/ppk123/devsecops-runs/jva-ai-benchmark-repeat-2026-11-21.tGcpU1XG/reports/jva-repeat-r2-a3/summary.json"
+        }
+      },
+      "comparison": {
+        "reference_run_id": 9,
+        "rows": [
+          {
+            "run_id": 2,
+            "scenario": "A0",
+            "profile": "fast",
+            "commit": "9ec0084431feac073924938d00f6a66991eb51bf",
+            "model": null,
+            "review_limit": 10,
+            "status": "completed",
+            "gate": "failed",
+            "duration_seconds": 74.7,
+            "stage_durations": [
+              {
+                "name": "intake",
+                "status": "completed",
+                "duration_seconds": 0.756123
+              },
+              {
+                "name": "model_hunt",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "semgrep",
+                "status": "completed",
+                "duration_seconds": 45.618782
+              },
+              {
+                "name": "native-hunt",
+                "status": "completed",
+                "duration_seconds": 21.248158
+              },
+              {
+                "name": "gitleaks",
+                "status": "completed",
+                "duration_seconds": 1.89892
+              },
+              {
+                "name": "scanners",
+                "status": "completed",
+                "duration_seconds": null
+              },
+              {
+                "name": "laya_batch_routing",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "targeted_deep_analysis",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "independent_validation",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "final_report",
+                "status": "skipped",
+                "duration_seconds": null
+              }
+            ],
+            "limitations": [],
+            "scanners": [
+              {
+                "tool": "semgrep",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 122,
+                "skipped_units": 38
+              },
+              {
+                "tool": "native-hunt",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              },
+              {
+                "tool": "gitleaks",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              }
+            ],
+            "requests": 0,
+            "http_attempts": 0,
+            "max_model_requests": 0,
+            "completed_requests": 0,
+            "failed_requests": 0,
+            "prompt_tokens": null,
+            "completion_tokens": null,
+            "total_tokens": null,
+            "cost_usd": null,
+            "reviewed": 0,
+            "validated": 0,
+            "laya_devices": [],
+            "laya_timeouts": 0,
+            "comparable": true,
+            "comparison_reason": null,
+            "savings": {
+              "duration_percent": 83.3250739991696,
+              "requests_percent": 100.0,
+              "tokens_percent": null,
+              "cost_percent": null
+            }
+          },
+          {
+            "run_id": 9,
+            "scenario": "A1",
+            "profile": "fast",
+            "commit": "9ec0084431feac073924938d00f6a66991eb51bf",
+            "model": "deepseek/deepseek-v4.1-flash",
+            "review_limit": 10,
+            "status": "completed",
+            "gate": "failed",
+            "duration_seconds": 447.978,
+            "stage_durations": [
+              {
+                "name": "intake",
+                "status": "completed",
+                "duration_seconds": 0.89788
+              },
+              {
+                "name": "model_hunt",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "semgrep",
+                "status": "completed",
+                "duration_seconds": 52.81761
+              },
+              {
+                "name": "native-hunt",
+                "status": "completed",
+                "duration_seconds": 22.757907
+              },
+              {
+                "name": "gitleaks",
+                "status": "completed",
+                "duration_seconds": 3.498786
+              },
+              {
+                "name": "scanners",
+                "status": "completed",
+                "duration_seconds": null
+              },
+              {
+                "name": "laya_batch_routing",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "targeted_deep_analysis",
+                "status": "partial",
+                "duration_seconds": 354.141269
+              },
+              {
+                "name": "independent_validation",
+                "status": "partial",
+                "duration_seconds": null
+              },
+              {
+                "name": "final_report",
+                "status": "failed",
+                "duration_seconds": 1.163065
+              }
+            ],
+            "limitations": [
+              "AI review or report was incomplete. Time and attempts describe the observed execution."
+            ],
+            "scanners": [
+              {
+                "tool": "semgrep",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 122,
+                "skipped_units": 38
+              },
+              {
+                "tool": "native-hunt",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              },
+              {
+                "tool": "gitleaks",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              }
+            ],
+            "requests": 20,
+            "http_attempts": 20,
+            "max_model_requests": 20,
+            "completed_requests": 17,
+            "failed_requests": 3,
+            "prompt_tokens": null,
+            "completion_tokens": null,
+            "total_tokens": null,
+            "cost_usd": null,
+            "reviewed": 2,
+            "validated": 3,
+            "laya_devices": [],
+            "laya_timeouts": 0,
+            "comparable": true,
+            "comparison_reason": null,
+            "savings": {
+              "duration_percent": 0.0,
+              "requests_percent": 0.0,
+              "tokens_percent": null,
+              "cost_percent": null
+            }
+          },
+          {
+            "run_id": 7,
+            "scenario": "A2",
+            "profile": "fast",
+            "commit": "9ec0084431feac073924938d00f6a66991eb51bf",
+            "model": "deepseek/deepseek-v4.1-flash",
+            "review_limit": 5,
+            "status": "completed",
+            "gate": "failed",
+            "duration_seconds": 307.842,
+            "stage_durations": [
+              {
+                "name": "intake",
+                "status": "completed",
+                "duration_seconds": 0.690615
+              },
+              {
+                "name": "model_hunt",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "semgrep",
+                "status": "completed",
+                "duration_seconds": 42.724362
+              },
+              {
+                "name": "native-hunt",
+                "status": "completed",
+                "duration_seconds": 19.780732
+              },
+              {
+                "name": "gitleaks",
+                "status": "completed",
+                "duration_seconds": 2.246624
+              },
+              {
+                "name": "scanners",
+                "status": "completed",
+                "duration_seconds": null
+              },
+              {
+                "name": "laya_batch_routing",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "targeted_deep_analysis",
+                "status": "partial",
+                "duration_seconds": 230.546652
+              },
+              {
+                "name": "independent_validation",
+                "status": "partial",
+                "duration_seconds": null
+              },
+              {
+                "name": "final_report",
+                "status": "failed",
+                "duration_seconds": 1.324232
+              }
+            ],
+            "limitations": [
+              "AI review or report was incomplete. Time and attempts describe the observed execution."
+            ],
+            "scanners": [
+              {
+                "tool": "semgrep",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 122,
+                "skipped_units": 38
+              },
+              {
+                "tool": "native-hunt",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              },
+              {
+                "tool": "gitleaks",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              }
+            ],
+            "requests": 12,
+            "http_attempts": 12,
+            "max_model_requests": 12,
+            "completed_requests": 12,
+            "failed_requests": 0,
+            "prompt_tokens": null,
+            "completion_tokens": null,
+            "total_tokens": null,
+            "cost_usd": null,
+            "reviewed": 1,
+            "validated": 2,
+            "laya_devices": [],
+            "laya_timeouts": 0,
+            "comparable": true,
+            "comparison_reason": null,
+            "savings": {
+              "duration_percent": 31.281893307260628,
+              "requests_percent": 40.0,
+              "tokens_percent": null,
+              "cost_percent": null
+            }
+          },
+          {
+            "run_id": 8,
+            "scenario": "A3",
+            "profile": "fast",
+            "commit": "9ec0084431feac073924938d00f6a66991eb51bf",
+            "model": "deepseek/deepseek-v4.1-flash",
+            "review_limit": 5,
+            "status": "cancelled",
+            "gate": "failed",
+            "duration_seconds": 1206.56,
+            "stage_durations": [
+              {
+                "name": "intake",
+                "status": "completed",
+                "duration_seconds": 0.799942
+              },
+              {
+                "name": "model_hunt",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "semgrep",
+                "status": "completed",
+                "duration_seconds": 66.335323
+              },
+              {
+                "name": "native-hunt",
+                "status": "completed",
+                "duration_seconds": 28.716675
+              },
+              {
+                "name": "gitleaks",
+                "status": "completed",
+                "duration_seconds": 3.74643
+              },
+              {
+                "name": "scanners",
+                "status": "completed",
+                "duration_seconds": null
+              },
+              {
+                "name": "laya_batch_routing",
+                "status": "completed",
+                "duration_seconds": 963.416334
+              },
+              {
+                "name": "targeted_deep_analysis",
+                "status": "running",
+                "duration_seconds": null
+              },
+              {
+                "name": "execution",
+                "status": "cancelled",
+                "duration_seconds": null
+              }
+            ],
+            "limitations": [
+              "AI review or report was incomplete. Time and attempts describe the observed execution."
+            ],
+            "scanners": [
+              {
+                "tool": "semgrep",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 122,
+                "skipped_units": 38
+              },
+              {
+                "tool": "native-hunt",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              },
+              {
+                "tool": "gitleaks",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              }
+            ],
+            "requests": 4,
+            "http_attempts": 4,
+            "max_model_requests": 12,
+            "completed_requests": 4,
+            "failed_requests": 0,
+            "prompt_tokens": null,
+            "completion_tokens": null,
+            "total_tokens": null,
+            "cost_usd": null,
+            "reviewed": 0,
+            "validated": 0,
+            "laya_devices": [
+              "cuda"
+            ],
+            "laya_timeouts": 0,
+            "comparable": false,
+            "comparison_reason": "The scan did not complete successfully.",
+            "savings": {
+              "duration_percent": null,
+              "requests_percent": null,
+              "tokens_percent": null,
+              "cost_percent": null
+            }
+          }
+        ]
+      }
+    },
+    "3": {
+      "observations": {
+        "A0": {
+          "status": "completed",
+          "gate": "failed",
+          "seconds": 86.938,
+          "attempts": 0,
+          "report_written": false,
+          "provider_reported_tokens": null,
+          "tokens_with_complete_request_ledger": null,
+          "reviewed": 0,
+          "laya_devices": [],
+          "laya_completed": null,
+          "laya_timeouts": null,
+          "laya_seconds": null,
+          "original_summary": "/home/ppk123/devsecops-runs/jva-ai-benchmark-repeat-2026-11-21.tGcpU1XG/reports/jva-repeat-r3-a0/summary.json"
+        },
+        "A1": {
+          "status": "completed",
+          "gate": "failed",
+          "seconds": 414.352,
+          "attempts": 20,
+          "report_written": false,
+          "provider_reported_tokens": 534270,
+          "tokens_with_complete_request_ledger": null,
+          "reviewed": 2,
+          "laya_devices": [],
+          "laya_completed": 0,
+          "laya_timeouts": 0,
+          "laya_seconds": null,
+          "original_summary": "/home/ppk123/devsecops-runs/jva-ai-benchmark-repeat-2026-11-21.tGcpU1XG/reports/jva-repeat-r3-a1/summary.json"
+        },
+        "A2": {
+          "status": "completed",
+          "gate": "failed",
+          "seconds": 251.862,
+          "attempts": 12,
+          "report_written": false,
+          "provider_reported_tokens": 91784,
+          "tokens_with_complete_request_ledger": 91784,
+          "reviewed": 1,
+          "laya_devices": [],
+          "laya_completed": 0,
+          "laya_timeouts": 0,
+          "laya_seconds": null,
+          "original_summary": "/home/ppk123/devsecops-runs/jva-ai-benchmark-repeat-2026-11-21.tGcpU1XG/reports/jva-repeat-r3-a2/summary.json"
+        },
+        "A3": {
+          "status": "cancelled",
+          "gate": "failed",
+          "seconds": 1211.417,
+          "attempts": 8,
+          "report_written": false,
+          "provider_reported_tokens": 525334,
+          "tokens_with_complete_request_ledger": null,
+          "reviewed": 0,
+          "laya_devices": [
+            "cuda"
+          ],
+          "laya_completed": 341,
+          "laya_timeouts": 0,
+          "laya_seconds": 946.232672,
+          "original_summary": "/home/ppk123/devsecops-runs/jva-ai-benchmark-repeat-2026-11-21.tGcpU1XG/reports/jva-repeat-r3-a3/summary.json"
+        }
+      },
+      "comparison": {
+        "reference_run_id": 11,
+        "rows": [
+          {
+            "run_id": 3,
+            "scenario": "A0",
+            "profile": "fast",
+            "commit": "9ec0084431feac073924938d00f6a66991eb51bf",
+            "model": null,
+            "review_limit": 10,
+            "status": "completed",
+            "gate": "failed",
+            "duration_seconds": 86.938,
+            "stage_durations": [
+              {
+                "name": "intake",
+                "status": "completed",
+                "duration_seconds": 0.683512
+              },
+              {
+                "name": "model_hunt",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "semgrep",
+                "status": "completed",
+                "duration_seconds": 57.397267
+              },
+              {
+                "name": "native-hunt",
+                "status": "completed",
+                "duration_seconds": 22.51614
+              },
+              {
+                "name": "gitleaks",
+                "status": "completed",
+                "duration_seconds": 2.018053
+              },
+              {
+                "name": "scanners",
+                "status": "completed",
+                "duration_seconds": null
+              },
+              {
+                "name": "laya_batch_routing",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "targeted_deep_analysis",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "independent_validation",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "final_report",
+                "status": "skipped",
+                "duration_seconds": null
+              }
+            ],
+            "limitations": [],
+            "scanners": [
+              {
+                "tool": "semgrep",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 122,
+                "skipped_units": 38
+              },
+              {
+                "tool": "native-hunt",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              },
+              {
+                "tool": "gitleaks",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              }
+            ],
+            "requests": 0,
+            "http_attempts": 0,
+            "max_model_requests": 0,
+            "completed_requests": 0,
+            "failed_requests": 0,
+            "prompt_tokens": null,
+            "completion_tokens": null,
+            "total_tokens": null,
+            "cost_usd": null,
+            "reviewed": 0,
+            "validated": 0,
+            "laya_devices": [],
+            "laya_timeouts": 0,
+            "comparable": true,
+            "comparison_reason": null,
+            "savings": {
+              "duration_percent": 79.01832258562767,
+              "requests_percent": 100.0,
+              "tokens_percent": null,
+              "cost_percent": null
+            }
+          },
+          {
+            "run_id": 11,
+            "scenario": "A1",
+            "profile": "fast",
+            "commit": "9ec0084431feac073924938d00f6a66991eb51bf",
+            "model": "deepseek/deepseek-v4.1-flash",
+            "review_limit": 10,
+            "status": "completed",
+            "gate": "failed",
+            "duration_seconds": 414.352,
+            "stage_durations": [
+              {
+                "name": "intake",
+                "status": "completed",
+                "duration_seconds": 0.74457
+              },
+              {
+                "name": "model_hunt",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "semgrep",
+                "status": "completed",
+                "duration_seconds": 45.438187
+              },
+              {
+                "name": "native-hunt",
+                "status": "completed",
+                "duration_seconds": 19.891606
+              },
+              {
+                "name": "gitleaks",
+                "status": "completed",
+                "duration_seconds": 2.442923
+              },
+              {
+                "name": "scanners",
+                "status": "completed",
+                "duration_seconds": null
+              },
+              {
+                "name": "laya_batch_routing",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "targeted_deep_analysis",
+                "status": "partial",
+                "duration_seconds": 333.112294
+              },
+              {
+                "name": "independent_validation",
+                "status": "partial",
+                "duration_seconds": null
+              },
+              {
+                "name": "final_report",
+                "status": "failed",
+                "duration_seconds": 1.250132
+              }
+            ],
+            "limitations": [
+              "AI review or report was incomplete. Time and attempts describe the observed execution."
+            ],
+            "scanners": [
+              {
+                "tool": "semgrep",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 122,
+                "skipped_units": 38
+              },
+              {
+                "tool": "native-hunt",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              },
+              {
+                "tool": "gitleaks",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              }
+            ],
+            "requests": 20,
+            "http_attempts": 20,
+            "max_model_requests": 20,
+            "completed_requests": 19,
+            "failed_requests": 1,
+            "prompt_tokens": null,
+            "completion_tokens": null,
+            "total_tokens": null,
+            "cost_usd": null,
+            "reviewed": 2,
+            "validated": 3,
+            "laya_devices": [],
+            "laya_timeouts": 0,
+            "comparable": true,
+            "comparison_reason": null,
+            "savings": {
+              "duration_percent": 0.0,
+              "requests_percent": 0.0,
+              "tokens_percent": null,
+              "cost_percent": null
+            }
+          },
+          {
+            "run_id": 12,
+            "scenario": "A2",
+            "profile": "fast",
+            "commit": "9ec0084431feac073924938d00f6a66991eb51bf",
+            "model": "deepseek/deepseek-v4.1-flash",
+            "review_limit": 5,
+            "status": "completed",
+            "gate": "failed",
+            "duration_seconds": 251.862,
+            "stage_durations": [
+              {
+                "name": "intake",
+                "status": "completed",
+                "duration_seconds": 0.765559
+              },
+              {
+                "name": "model_hunt",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "semgrep",
+                "status": "completed",
+                "duration_seconds": 47.508908
+              },
+              {
+                "name": "native-hunt",
+                "status": "completed",
+                "duration_seconds": 20.5121
+              },
+              {
+                "name": "gitleaks",
+                "status": "completed",
+                "duration_seconds": 2.271153
+              },
+              {
+                "name": "scanners",
+                "status": "completed",
+                "duration_seconds": null
+              },
+              {
+                "name": "laya_batch_routing",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "targeted_deep_analysis",
+                "status": "partial",
+                "duration_seconds": 170.86575
+              },
+              {
+                "name": "independent_validation",
+                "status": "partial",
+                "duration_seconds": null
+              },
+              {
+                "name": "final_report",
+                "status": "failed",
+                "duration_seconds": 0.897884
+              }
+            ],
+            "limitations": [
+              "AI review or report was incomplete. Time and attempts describe the observed execution."
+            ],
+            "scanners": [
+              {
+                "tool": "semgrep",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 122,
+                "skipped_units": 38
+              },
+              {
+                "tool": "native-hunt",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              },
+              {
+                "tool": "gitleaks",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              }
+            ],
+            "requests": 12,
+            "http_attempts": 12,
+            "max_model_requests": 12,
+            "completed_requests": 12,
+            "failed_requests": 0,
+            "prompt_tokens": null,
+            "completion_tokens": null,
+            "total_tokens": null,
+            "cost_usd": null,
+            "reviewed": 1,
+            "validated": 2,
+            "laya_devices": [],
+            "laya_timeouts": 0,
+            "comparable": true,
+            "comparison_reason": null,
+            "savings": {
+              "duration_percent": 39.21544966598447,
+              "requests_percent": 40.0,
+              "tokens_percent": null,
+              "cost_percent": null
+            }
+          },
+          {
+            "run_id": 10,
+            "scenario": "A3",
+            "profile": "fast",
+            "commit": "9ec0084431feac073924938d00f6a66991eb51bf",
+            "model": "deepseek/deepseek-v4.1-flash",
+            "review_limit": 5,
+            "status": "cancelled",
+            "gate": "failed",
+            "duration_seconds": 1211.417,
+            "stage_durations": [
+              {
+                "name": "intake",
+                "status": "completed",
+                "duration_seconds": 0.804636
+              },
+              {
+                "name": "model_hunt",
+                "status": "skipped",
+                "duration_seconds": null
+              },
+              {
+                "name": "semgrep",
+                "status": "completed",
+                "duration_seconds": 50.433376
+              },
+              {
+                "name": "native-hunt",
+                "status": "completed",
+                "duration_seconds": 21.730048
+              },
+              {
+                "name": "gitleaks",
+                "status": "completed",
+                "duration_seconds": 3.086151
+              },
+              {
+                "name": "scanners",
+                "status": "completed",
+                "duration_seconds": null
+              },
+              {
+                "name": "laya_batch_routing",
+                "status": "completed",
+                "duration_seconds": 946.232672
+              },
+              {
+                "name": "targeted_deep_analysis",
+                "status": "running",
+                "duration_seconds": null
+              },
+              {
+                "name": "execution",
+                "status": "cancelled",
+                "duration_seconds": null
+              }
+            ],
+            "limitations": [
+              "AI review or report was incomplete. Time and attempts describe the observed execution."
+            ],
+            "scanners": [
+              {
+                "tool": "semgrep",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 122,
+                "skipped_units": 38
+              },
+              {
+                "tool": "native-hunt",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              },
+              {
+                "tool": "gitleaks",
+                "status": "completed",
+                "eligible_units": 160,
+                "analyzed_units": 160,
+                "skipped_units": 0
+              }
+            ],
+            "requests": 8,
+            "http_attempts": 8,
+            "max_model_requests": 12,
+            "completed_requests": 7,
+            "failed_requests": 1,
+            "prompt_tokens": null,
+            "completion_tokens": null,
+            "total_tokens": null,
+            "cost_usd": null,
+            "reviewed": 0,
+            "validated": 0,
+            "laya_devices": [
+              "cuda"
+            ],
+            "laya_timeouts": 0,
+            "comparable": false,
+            "comparison_reason": "The scan did not complete successfully.",
+            "savings": {
+              "duration_percent": null,
+              "requests_percent": null,
+              "tokens_percent": null,
+              "cost_percent": null
+            }
+          }
+        ]
+      }
+    }
+  }
+}

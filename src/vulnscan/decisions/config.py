@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import importlib
 import json
 from dataclasses import dataclass
 from pathlib import Path
@@ -17,25 +16,6 @@ from vulnscan.decisions.protocol import (
 
 _TRUE_MODES = {"shadow", "advisory", "off"}
 _FALSE_MODES = {"off", "disabled"}
-
-
-def _import_torch() -> bool:
-    """Import torch theo cơ chế lazy; các unit test không bao giờ được yêu cầu phụ thuộc nặng này."""
-    try:
-        importlib.import_module("torch")
-    except ImportError:
-        return False
-    return True
-
-
-def _torch_cuda_ok() -> bool:
-    """True chỉ khi CUDA có thể import được *và* một thiết bị phản hồi."""
-    try:
-        torch = importlib.import_module("torch")
-
-        return bool(torch.cuda.is_available())
-    except (ImportError, RuntimeError):
-        return False
 
 
 @dataclass(frozen=True)
@@ -59,12 +39,8 @@ class LayaConfig:
         """Từ chối các cấu hình có thể cấp cho Laya quyền quyết định trạng thái."""
         if self.mode not in _TRUE_MODES | _FALSE_MODES:
             raise ValueError(f"unsupported Laya mode: {self.mode!r}")
-        if self.device not in {"auto", "cuda", "cpu"}:
-            raise ValueError("device must be one of: auto, cuda, cpu")
-        if self.device == "cuda":
-            _import_torch()
-            if not _torch_cuda_ok():
-                raise ValueError("device 'cuda' requested but torch.cuda is unavailable")
+        if self.device not in {"auto", "cuda", "vulkan", "cpu"}:
+            raise ValueError("device must be one of: auto, cuda, vulkan, cpu")
         if self.batch_size < 1:
             raise ValueError("batch_size must be >= 1")
         if self.max_input_tokens < 1:

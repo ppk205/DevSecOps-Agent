@@ -474,6 +474,7 @@ export async function createScan(body: {
   provider_profile?: string | null;
   provider_model?: string | null;
   max_ai_findings?: number;
+  max_model_requests?: number;
   timeout?: number;
   max_files?: number;
   mode?: string;

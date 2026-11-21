@@ -215,11 +215,54 @@ export interface CompareResult {
   baseline: number;
   scans: CompareScanRow[];
   ai?: CompareAiRow[];
+  benchmark?: { reference_run_id: number | null; rows: BenchmarkRow[] };
   by_scanner: { tool: string; counts: Record<string, number> }[];
   by_cwe: { cwe: string; counts: Record<string, number> }[];
   new: CompareEntry[];
   fixed: CompareEntry[];
   changed: CompareEntry[];
+}
+
+export interface BenchmarkRow {
+  run_id: number;
+  scenario: "A0" | "A1" | "A2" | "A3" | "A4" | "custom";
+  profile: string | null;
+  commit: string | null;
+  model: string | null;
+  review_limit: number | null;
+  status: string;
+  gate: string | null;
+  duration_seconds: number | null;
+  stage_durations?: { name: string; status: string; duration_seconds: number | null }[];
+  scanners: {
+    tool: string;
+    status: string;
+    eligible_units: number | null;
+    analyzed_units: number | null;
+    skipped_units: number | null;
+  }[];
+  requests: number | null;
+  completed_requests: number | null;
+  failed_requests: number | null;
+  http_attempts?: number | null;
+  max_model_requests?: number | null;
+  prompt_tokens: number | null;
+  completion_tokens: number | null;
+  total_tokens: number | null;
+  cost_usd: number | null;
+  reviewed: number | null;
+  validated: number | null;
+  laya_devices: string[];
+  laya_timeouts: number | null;
+  comparable: boolean;
+  comparison_reason: string | null;
+  limitations?: string[];
+  savings: {
+    duration_percent: number | null;
+    requests_percent: number | null;
+    tokens_percent: number | null;
+    cost_percent: number | null;
+  } | null;
 }
 
 export interface CompareAiRow {

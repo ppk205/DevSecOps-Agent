@@ -18,6 +18,14 @@ Laya disabled. The loader now resolves the requested revision, or hashes a
 local checkpoint, and records the actual device. Inference uses a persistent
 Python child, real batches, bounded inputs and enforceable cancellation.
 
+The default `device="auto"` prefers CUDA, then Vulkan, then CPU. The worker
+probes its own PyTorch runtime. A system Vulkan driver alone cannot run the
+checkpoint. The worker can fall back when a GPU cannot load or run the model.
+An explicit device in the scan configuration takes precedence over
+`LAYA_DEVICE`. With `auto`, `LAYA_DEVICE` can select an explicit device.
+`LAYA_WORKER_PYTHON` can select a separate environment with Laya, PyTorch and
+the application package installed.
+
 ## What the existing experiment shows
 
 `evidence/t09/eval_agentlabels.json` contains 29 findings from one project. Its

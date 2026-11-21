@@ -130,6 +130,7 @@ func run(args []string) int {
 	aiReview := flags.Bool("ai-review", false, "Enable AI finding review")
 	aiReport := flags.Bool("ai-report", false, "Enable an AI-written report")
 	maxAI := flags.Int("max-ai-findings", 0, "Maximum findings sent for AI review")
+	maxModelRequests := flags.Int("max-model-requests", 0, "Maximum model POST attempts per scan (unset means unlimited)")
 	format := flags.String("fmt", "json", "Report format")
 	host := flags.String("host", "127.0.0.1", "Local dashboard host")
 	port := flags.Int("port", 8000, "Dashboard port")
@@ -268,6 +269,8 @@ func run(args []string) int {
 				values["ai_report"] = *aiReport
 			case "max-ai-findings":
 				values["max_ai_findings"] = *maxAI
+			case "max-model-requests":
+				values["max_model_requests"] = *maxModelRequests
 			}
 		})
 		cfg, e := service.Resolve(*profile, *configPath, values)

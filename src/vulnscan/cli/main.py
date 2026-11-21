@@ -122,6 +122,12 @@ def scan_run(
     max_ai_findings: int | None = typer.Option(
         None, "--max-ai-findings", help="Cap on model-reviewed findings per run."
     ),
+    max_model_requests: int | None = typer.Option(
+        None,
+        "--max-model-requests",
+        min=0,
+        help="Cap on provider HTTP attempts per run, including retries.",
+    ),
     mode: str | None = typer.Option(
         None, "--mode", help="Scan mode: hunt (default) or deterministic."
     ),
@@ -150,6 +156,7 @@ def scan_run(
             provider_model=model,
             ai_report=ai_report,
             max_ai_findings=max_ai_findings,
+            max_model_requests=max_model_requests,
             mode=mode,
         )
         if not json_output:

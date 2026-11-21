@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Add an AI benchmark comparison to Reports, including scanner coverage,
+  measured time, request activity, and savings against the review baseline.
+- Allow an optional provider request cap shared across all model stages and
+  retries. Preserve finding evidence and distinguish unavailable prices.
+
+- Select the Laya worker device automatically in CUDA, Vulkan and CPU order.
+  Retain the actual device in routing results and fall back on GPU failures.
+
 - Restore the FR-72 scanner lists for the fast and full profiles and run them
   deterministically in CI. Show the built-in native-hunt adapter in the web
   scanner health list. Update the React build plugin for Vite 8.
@@ -10,13 +18,13 @@
 - Include the deterministic final Markdown narrative in native scan exports.
 - Serve the registration form when the React bundle has not been built.
 
-- Direct the Python web root to the React application, show notification
-  settings in its navigation, and expose webhook event switches in the Go TUI.
-  The native dashboard still uses the older server-rendered pages.
 - Use Trivy in the full scanner profile and keep SpotBugs available for
   explicit legacy scans. Show backend scanner presets in the web form and
   preserve scanner-only findings through model Hunt and validation.
 
+- Direct the Python web root to the React application, show notification
+  settings in its navigation, and expose webhook event switches in the Go TUI.
+  The native dashboard still uses the older server-rendered pages.
 
 - Remove the legacy `WEBHOOK_URL` send triggered by reading the notification
   feed. Local feed entries remain available. Add an opt-in signed generic webhook

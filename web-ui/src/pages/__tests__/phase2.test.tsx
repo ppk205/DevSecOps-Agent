@@ -104,6 +104,29 @@ describe("Phase 2 pages (mock mode, standalone)", () => {
     expect(await screen.findByText(/Scan queued #8/, {}, { timeout: 5000 })).toBeInTheDocument();
   });
 
+  it("passes an explicit zero HTTP request cap without inventing a price", async () => {
+    const spy = vi.spyOn(mockApi, "createScan");
+    try {
+      renderAt("/scans/new");
+      expect(screen.queryByLabelText("Maximum model HTTP attempts")).not.toBeInTheDocument();
+      fireEvent.click(screen.getByRole("switch", { name: "Allow cloud model" }));
+      expect(screen.getByText(/Estimated cost.*Unavailable/)).toBeInTheDocument();
+      fireEvent.click(screen.getByText("Advanced options"));
+      const requestCap = screen.getByLabelText("Maximum model HTTP attempts");
+      const start = screen.getByRole("button", { name: "Start scan" });
+      fireEvent.change(requestCap, { target: { value: "1.5" } });
+      expect(start).toBeDisabled();
+      fireEvent.change(requestCap, { target: { value: "0" } });
+      expect(screen.getByText(/--max-model-requests 0/)).toBeInTheDocument();
+      fireEvent.click(start);
+      await waitFor(() =>
+        expect(spy).toHaveBeenLastCalledWith(expect.objectContaining({ max_model_requests: 0 })),
+      );
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
   it("shows backend profile defaults and submits only deliberate scanner overrides", async () => {
     const spy = vi.spyOn(mockApi, "createScan");
     renderAt("/scans/new");

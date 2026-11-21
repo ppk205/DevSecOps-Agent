@@ -56,3 +56,36 @@ func TestFR48BlankProviderOverrideRestoresAutomaticSelection(t *testing.T) {
 		t.Fatal("an explicit automatic-provider selection retained the file's profile")
 	}
 }
+
+func TestFR49NativeRequestLimit(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "settings.json")
+	if err := os.WriteFile(path, []byte(`{"schema_version":1,"max_model_requests":12}`), 0600); err != nil {
+		t.Fatal(err)
+	}
+	cfg, err := Resolve("fast", path, nil)
+	if err != nil {
+		t.Fatalf("request limit from JSON was not retained: %v", err)
+	}
+	assertRequestLimitJSON(t, cfg, "12")
+	cfg, err = Resolve("fast", path, map[string]any{"max_model_requests": 0})
+	if err != nil {
+		t.Fatalf("explicit zero did not override the JSON request limit: %v", err)
+	}
+	assertRequestLimitJSON(t, cfg, "0")
+	assertRequestLimitJSON(t, Defaults(), "")
+	if _, err := Resolve("fast", "", map[string]any{"max_model_requests": -1}); err == nil {
+		t.Fatal("negative request limit was accepted")
+	}
+}
+
+func assertRequestLimitJSON(t *testing.T, cfg Config, want string) {
+	t.Helper()
+	data, err := json.Marshal(cfg)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &fields); err != nil || string(fields["max_model_requests"]) != want {
+		t.Fatalf("serialized request limit = %q, want %q (decode error: %v)", fields["max_model_requests"], want, err)
+	}
+}

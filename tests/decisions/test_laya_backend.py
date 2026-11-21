@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import io
+import json
 from datetime import UTC, datetime
+from types import SimpleNamespace
 from typing import Any
 
 import pytest
@@ -80,6 +83,29 @@ def test_laya_backend_reports_unavailable_without_raising() -> None:
     assert result.status is DecisionStatus.UNAVAILABLE
     assert result.error_code == "dependency_unavailable"
     assert result.answers == {}
+
+
+def test_laya_backend_accepts_a_separate_worker_environment(monkeypatch, mocker) -> None:
+    from vulnscan.decisions import laya as backend_module
+
+    monkeypatch.delenv("LAYA_DEVICE", raising=False)
+    monkeypatch.setattr(backend_module, "_WORKER_PYTHON", "separate-python")
+    mocker.patch.object(backend_module.importlib.util, "find_spec", return_value=None)
+    call = mocker.patch.object(
+        backend_module._process_worker,
+        "call",
+        return_value={
+            "rows": [{"answers": {"route": {"choice": "verify", "confidence": 0.84}}}],
+            "model_revision": "test-revision",
+            "device": "cuda:0",
+        },
+    )
+
+    result = LayaDecisionBackend().predict(_request())
+
+    assert call.call_args.args[1]["device"] == "auto"
+    assert result.status is DecisionStatus.COMPLETED
+    assert result.device == "cuda:0"
 
 
 def test_laya_backend_marks_malformed_output_incomplete() -> None:
@@ -200,20 +226,97 @@ def test_laya_backend_ignores_missing_env_dir(monkeypatch) -> None:  # type: ign
 
 class TestResolveDevice:
     def test_unknown_and_empty_fall_back_to_cpu(self):
-        from vulnscan.decisions.model_worker import _resolve_device
+        from vulnscan.decisions.model_worker import _device_candidates
 
-        assert _resolve_device("") == "cpu"
-        assert _resolve_device("unknown") == "cpu"
-        assert _resolve_device("cpu") == "cpu"
+        assert _device_candidates("") == ("cpu",)
+        assert _device_candidates("unknown") == ("cpu",)
+        assert _device_candidates("cpu") == ("cpu",)
 
     def test_cuda_honored_only_with_cuda_torch(self):
-        from vulnscan.decisions.model_worker import _resolve_device
+        from vulnscan.decisions.model_worker import _device_candidates
 
         try:
             import torch
         except ImportError:
-            assert _resolve_device("cuda") == "cpu"
+            assert _device_candidates("cuda") == ("cpu",)
         else:
-            expected = "cuda" if torch.cuda.is_available() else "cpu"
-            assert _resolve_device("cuda") == expected
-            assert _resolve_device("CUDA") == expected
+            expected = ("cuda", "cpu") if torch.cuda.is_available() else ("cpu",)
+            assert _device_candidates("cuda") == expected
+            assert _device_candidates("CUDA") == expected
+
+    def test_default_device_and_overrides(self, monkeypatch):
+        monkeypatch.delenv("LAYA_DEVICE", raising=False)
+        assert LayaDecisionBackend().device == "auto"
+        monkeypatch.setenv("LAYA_DEVICE", "vulkan")
+        assert LayaDecisionBackend(device="auto").device == "vulkan"
+        assert LayaDecisionBackend(device="cpu").device == "cpu"
+
+    @pytest.mark.parametrize(
+        ("cuda", "vulkan", "failures", "expected"),
+        [
+            (True, True, {}, ["cuda"]),
+            (False, True, {}, ["vulkan"]),
+            (False, False, {}, ["cpu"]),
+            (True, True, {"cuda": "fallback"}, ["cuda", "vulkan"]),
+            (True, True, {"cuda": "predict_fallback"}, ["cuda", "vulkan"]),
+            (True, True, {"cuda": "load", "vulkan": "predict"}, ["cuda", "vulkan", "cpu"]),
+        ],
+    )
+    def test_auto_worker_uses_supported_devices_in_priority_order(
+        self, tmp_path, monkeypatch, cuda, vulkan, failures, expected
+    ):
+        from vulnscan.decisions import model_worker
+
+        class Agent:
+            def __init__(self, device):
+                self.device = device
+
+            def predict_batch(self, *args, **kwargs):
+                if failures.get(self.device) == "predict":
+                    raise NotImplementedError("unsupported operator on this backend")
+                if failures.get(self.device) == "predict_fallback":
+                    self.device = "cpu"
+                return []
+
+            def __exit__(self, *args):
+                pass
+
+        loads = []
+
+        def load(path, *, device):
+            loads.append(device)
+            if failures.get(device) == "load":
+                raise RuntimeError("cannot load on this backend")
+            return Agent("cpu" if failures.get(device) == "fallback" else device)
+
+        modules = {
+            "torch": SimpleNamespace(
+                cuda=SimpleNamespace(is_available=lambda: cuda),
+                is_vulkan_available=lambda: vulkan,
+            ),
+            "laya": SimpleNamespace(load=load),
+        }
+        with monkeypatch.context() as patch:
+            patch.setattr(model_worker.importlib, "import_module", modules.__getitem__)
+            request = {
+                "version": model_worker.PROTOCOL_VERSION,
+                "id": "test",
+                "method": "predict_batch",
+                "params": {
+                    "model_id": str(tmp_path),
+                    "device": "auto",
+                    "states": [{}],
+                    "questions": {},
+                    "max_input_tokens": 1,
+                },
+            }
+            stdin = io.BytesIO(json.dumps(request).encode() + b"\n")
+            stdout = io.BytesIO()
+            patch.setattr(model_worker.sys, "stdin", SimpleNamespace(buffer=stdin))
+            patch.setattr(model_worker.sys, "stdout", SimpleNamespace(buffer=stdout))
+            model_worker.main()
+
+        reply = json.loads(stdout.getvalue())
+        assert loads == expected
+        assert reply["ok"] is True
+        assert reply["result"]["device"] == expected[-1]

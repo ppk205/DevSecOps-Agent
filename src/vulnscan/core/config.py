@@ -41,6 +41,7 @@ class ScanConfig(BaseModel):
     provider_model: str | None = None
     ai_report: bool = False
     max_ai_findings: int = Field(default=10, ge=1, le=500)
+    max_model_requests: int | None = Field(default=None, ge=0)
     mode: Literal["deterministic", "hunt"] = "hunt"
     tools: list[str] | None = Field(
         default=None,

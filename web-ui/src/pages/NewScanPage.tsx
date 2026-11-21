@@ -49,6 +49,7 @@ export function NewScanPage() {
   const [providerProfile, setProviderProfile] = useState("");
   const [providerModel, setProviderModel] = useState("");
   const [maxAi, setMaxAi] = useState(10);
+  const [requestCapInput, setRequestCapInput] = useState("");
   const [commit, setCommit] = useState("");
   const [timeout, setTimeout] = useState(600);
   const [maxFiles, setMaxFiles] = useState(100000);
@@ -61,6 +62,10 @@ export function NewScanPage() {
   const useReview = allowCloud && aiReview;
   const useReport = allowCloud && aiReport;
   const usesModel = useHunt || useReview || useReport;
+  const requestCap = usesModel && requestCapInput !== "" ? Number(requestCapInput) : undefined;
+  const requestCapInvalid = requestCap !== undefined && (
+    !/^\d+$/.test(requestCapInput) || !Number.isSafeInteger(requestCap)
+  );
   const profiles = toolsQuery.data?.profiles;
   const selectedTools = toolOverrides ?? profiles?.[profile] ?? [];
   const cliNeedsConfig = toolOverrides !== null || maxFiles !== 100000;
@@ -79,6 +84,7 @@ export function NewScanPage() {
         provider_profile: (usesModel && providerProfile) || null,
         provider_model: (usesModel && providerModel) || null,
         max_ai_findings: maxAi,
+        ...(requestCap !== undefined ? { max_model_requests: requestCap } : {}),
         timeout,
         max_files: maxFiles,
         mode: useHunt ? "hunt" : "deterministic",
@@ -94,7 +100,6 @@ export function NewScanPage() {
     return [...seen];
   }, [scansQuery.data]);
 
-  const estimate = useMemo(() => (useReview ? maxAi * 0.012 : 0), [useReview, maxAi]);
   const remaining = usageQuery.data?.available;
 
   const cli = useMemo(() => {
@@ -109,9 +114,10 @@ export function NewScanPage() {
     if (usesModel) {
       if (providerProfile) parts.push(`--provider ${shellQuote(providerProfile)}`);
       if (providerModel) parts.push(`--model ${shellQuote(providerModel)}`);
+      if (requestCap !== undefined && !requestCapInvalid) parts.push(`--max-model-requests ${requestCap}`);
     }
     return parts.join(" ");
-  }, [repo, profile, commit, timeout, failOn, laya, useHunt, useReview, useReport, usesModel, providerProfile, providerModel, maxAi]);
+  }, [repo, profile, commit, timeout, failOn, laya, useHunt, useReview, useReport, usesModel, providerProfile, providerModel, maxAi, requestCap, requestCapInvalid]);
 
   return (
     <div>
@@ -283,9 +289,9 @@ export function NewScanPage() {
                       />
                     </label>
                   )}
-                  {aiReview && (
+                  {usesModel && (
                     <p className="self-end text-xs text-muted">
-                      {en.newScan.aiEstimate}: ${estimate.toFixed(2)}
+                      {en.newScan.aiEstimate} · {en.newScan.aiPriceUnavailable}
                       {remaining !== undefined && ` · $${remaining.toFixed(2)} ${en.newScan.aiBudget}`}
                     </p>
                   )}
@@ -310,6 +316,25 @@ export function NewScanPage() {
                     placeholder={en.newScan.commitPlaceholder}
                   />
                 </label>
+                {usesModel && (
+                  <div>
+                    <label htmlFor="model-request-cap" className="label-m text-[11px] text-muted">
+                      {en.newScan.requestCap}
+                    </label>
+                    <input
+                      id="model-request-cap"
+                      inputMode="numeric"
+                      className="mt-1 w-full border border-hairline bg-canvas px-3 py-2 text-sm text-ink"
+                      value={requestCapInput}
+                      onChange={(e) => setRequestCapInput(e.target.value)}
+                      aria-describedby="model-request-cap-help"
+                      aria-invalid={requestCapInvalid}
+                    />
+                    <p id="model-request-cap-help" className="mt-1 text-xs text-muted">
+                      {requestCapInvalid ? en.newScan.requestCapInvalid : en.newScan.requestCapHelp}
+                    </p>
+                  </div>
+                )}
                 <label className="block">
                   <span className="label-m text-[11px] text-muted">{en.newScan.timeout}</span>
                   <input
@@ -405,7 +430,7 @@ export function NewScanPage() {
             <Button
               variant="primary"
               className="w-full"
-              disabled={!repo.trim() || startMutation.isPending}
+              disabled={!repo.trim() || startMutation.isPending || requestCapInvalid}
               onClick={() => startMutation.mutate()}
             >
               {startMutation.isPending ? en.common.loading : en.newScan.start}

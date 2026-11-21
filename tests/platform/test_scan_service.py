@@ -119,6 +119,61 @@ def settings(tmp_path, **kwargs):
     return ScanConfig(output_dir=str(tmp_path / "reports"), **kwargs)
 
 
+def test_fr49_scan_keeps_one_request_cap_across_review_and_report(
+    service, checkout, tmp_path, monkeypatch
+):
+    from vulnscan.ai import review
+    from vulnscan.providers.budget import BudgetExhausted
+    from vulnscan.reporting import final_report
+
+    budgets = []
+
+    def review_with_one_attempt(*args, budget, **kwargs):
+        budgets.append(budget)
+        budget.reserve_request()
+        return {
+            "status": "completed",
+            "detail": "fixture",
+            "decisions": [],
+            "usage": {},
+            "assessments": [],
+        }
+
+    def report_with_no_attempts_left(*args, budget, **kwargs):
+        budgets.append(budget)
+        with pytest.raises(BudgetExhausted):
+            budget.reserve_request()
+        return {
+            "status": "skipped",
+            "detail": "request cap",
+            "markdown": "# Fixture",
+            "ai_written": False,
+            "model": "",
+            "provider": "",
+        }
+
+    monkeypatch.setattr(review, "run_ai_review", review_with_one_attempt)
+    monkeypatch.setattr(final_report, "run_final_report", report_with_no_attempts_left)
+    result = service.run(
+        str(checkout),
+        settings(
+            tmp_path,
+            mode="deterministic",
+            laya=False,
+            provider_profile="fake-profile",
+            ai_review=True,
+            ai_report=True,
+            max_model_requests=1,
+        ),
+    )
+    assert result["status"] == "completed"
+    assert len(budgets) == 2 and budgets[0] is budgets[1]
+    assert result["ai_usage"]["http_attempts"] == 1
+    assert result["ai_usage"]["max_model_requests"] == 1
+    assert result["ai_usage"]["cost_usd"] is None
+    assert result["duration_seconds"] >= 0
+
+
 def test_fr70_persist_export_restart_and_retry(service, checkout, tmp_path):
     result = service.run(str(checkout), settings(tmp_path))
     assert result["exit_code"] == 0

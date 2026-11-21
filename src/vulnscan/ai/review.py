@@ -499,6 +499,12 @@ def run_ai_review(
     by_id = {f.finding_id: f for f in findings}
     failures = 0
     for finding in targets:
+        if (
+            budget is not None
+            and budget.max_requests is not None
+            and budget.attempts >= budget.max_requests
+        ):
+            break
         context = {"policy": {}, "source_index": {"snapshot": str(snapshot_root)}}
         assessment = loop.investigate(finding, context)
         _, _, _, explicit = parse_verdict_text(assessment.rationale)
@@ -524,11 +530,17 @@ def run_ai_review(
         if decision.new_status == FindingStatus.UNRESOLVED:
             failures += 1
     report["usage"] = own_budget.summary()
-    report["status"] = "completed" if not failures else "partial"
+    attempted = len(report["targets"])
+    deferred = len(targets) - attempted
+    report["status"] = (
+        "skipped" if not attempted else "partial" if failures or deferred else "completed"
+    )
     report["detail"] = (
-        f"{len(targets)} investigated, "
+        f"{attempted} investigated, "
         f"{sum(1 for d in report['decisions'] if d['new_status'] == 'confirmed')} confirmed, "
         f"{sum(1 for d in report['decisions'] if d['new_status'] == 'rejected')} rejected, "
         f"{failures} unresolved"
     )
+    if deferred:
+        report["detail"] += f", {deferred} deferred at request limit"
     return report

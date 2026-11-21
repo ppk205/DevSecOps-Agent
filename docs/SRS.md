@@ -354,6 +354,9 @@ counts. Omitted usage is unknown. Provider prices are not configured, so monetar
 cost is unavailable and must not be presented as free execution. The existing
 budget tracker only operates on recorded estimates; the monetary requirement is
 not fully implemented or validated by the offline execution checks.
+An optional per-run request limit bounds HTTP attempts across Hunt, AI review,
+and the final report, including retries. The run records this limit and the
+number of attempted submissions separately from completed calls and token usage.
 
 *Evidence*: usage ledger; test `T-CTX-19`.
 
@@ -439,6 +442,13 @@ when a finding has multiple labels. Missing scanner labels retain the existing
 *Evidence*: rendered excerpts with correct positions; test `T-REP-03`.
 
 **FR-63 — Experiment comparison.** The application shall compare two or more scans (e.g., baseline toolset vs. with CodeQL) and report per-CWE and per-finding differences in detections, misses, and assessment changes.
+
+The benchmark view shall describe the scanner-only, AI review, capped review,
+and Laya-prioritized scenarios. It shall show measured time, scanner coverage,
+review and validation outcomes, request counts, and available usage and cost.
+Savings use the AI review scenario as the reference and require comparable
+source revisions and scanner coverage. Hunt is shown separately because it may
+choose a different scanner set.
 
 *Evidence*: comparison report; test `T-REP-04`.
 
@@ -665,6 +675,11 @@ executable as well as the caller's directory, with an explicit
 Python import environment. Launching from `bin` or an unrelated directory shall
 not require activating the application's virtual environment. The native binary
 requires an installed Python application; it does not bundle that runtime.
+
+Optional Laya inference shall automatically prefer CUDA, then Vulkan, then CPU.
+Availability is determined in the model worker. A failed GPU backend shall fall
+back to a lower-priority backend where available. Laya remains advisory and
+records the device that actually ran inference.
 
 ---
 

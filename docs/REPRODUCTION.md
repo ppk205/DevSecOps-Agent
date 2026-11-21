@@ -176,3 +176,25 @@ The conservative default is to leave them alone and keep routing advisory.
 - Laya warns that it cannot run a "targeted deep analysis" stage yet
   (`targeted_deep_analysis: skipped — no AI agent configured`), so the
   third comparison in Phase 5 is not yet measurable.
+
+## 9. AI efficiency pilot
+
+Use an isolated Linux checkout at the same verified revision for every run.
+Keep the scanner profile, rule packs, timeout, and gate fixed. Set
+`--mode deterministic` explicitly for A0 through A3. Use the same configured
+provider and model for A1 through A3. Keep benchmark artifacts and the benchmark
+database in a new run directory.
+
+| Scenario | Model flags | Review limit | Laya |
+| --- | --- | ---: | --- |
+| A0 | `--no-ai-review --no-ai-report --max-model-requests 0` | — | `--no-laya` |
+| A1 | `--ai-review --ai-report` | `--max-ai-findings 10` | `--no-laya` |
+| A2 | `--ai-review --ai-report` | `--max-ai-findings 5` | `--no-laya` |
+| A3 | `--ai-review --ai-report` | `--max-ai-findings 5` | `--laya --laya-config config/laya.json` |
+
+Choose `--max-model-requests` for each AI run before starting it. Each cap
+includes retries and report generation. Users may see a deterministic report
+fallback after the cap. Compare the saved runs in Reports. Review the requested
+and observed toolsets, stage outcomes, token reporting, and reference run before
+interpreting savings. Reports keep provider prices unavailable when no cost
+was recorded. One run per scenario is a pilot measurement.

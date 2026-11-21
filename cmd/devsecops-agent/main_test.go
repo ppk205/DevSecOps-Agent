@@ -8,6 +8,13 @@ import (
 	"testing"
 )
 
+func TestScanRunParsesExplicitZeroModelRequestLimit(t *testing.T) {
+	// Help exits after validating flags and before opening the Python bridge.
+	if code := run([]string{"scan-run", "--max-model-requests=0", "--help"}); code != 0 {
+		t.Fatalf("scan-run rejected a zero model request limit: exit code %d", code)
+	}
+}
+
 func TestQR20PythonExecutableFindsEnvironmentBesideBinary(t *testing.T) {
 	for _, tc := range []struct {
 		platform string

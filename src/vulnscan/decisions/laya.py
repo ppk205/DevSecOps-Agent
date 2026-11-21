@@ -34,7 +34,6 @@ _LOADER_TYPE = Callable[[], Any]
 
 
 _WORKER_PYTHON = os.environ.get("LAYA_WORKER_PYTHON", "").strip() or sys.executable
-_WORKER_DEVICE = os.environ.get("LAYA_DEVICE", "cpu").strip().lower() or "cpu"
 _process_worker = JSONWorker([_WORKER_PYTHON, "-m", "vulnscan.decisions.model_worker"])
 atexit.register(_process_worker.close)
 
@@ -143,7 +142,11 @@ class LayaDecisionBackend:
         self._agent: Any | None = None
         self.model_id = model_id
         self.model_revision = model_revision
-        self.device = device if device != "unknown" else _WORKER_DEVICE
+        self.device = (
+            os.environ.get("LAYA_DEVICE", "").strip().lower() or "auto"
+            if device in {"auto", "unknown"}
+            else device
+        )
         self.max_input_chars = max_input_chars
         self.max_input_tokens = max_input_tokens
         self.timeout_seconds = timeout_seconds
@@ -153,8 +156,6 @@ class LayaDecisionBackend:
     def _load(self) -> Any:
         if self._agent is None:
             if self._agent_loader is None:
-                if self.worker is _process_worker and importlib.util.find_spec("laya") is None:
-                    raise ImportError("Laya optional dependency is not installed")
                 raise RuntimeError("Model loading belongs to the child worker")
             self._agent = self._agent_loader()
         return self._agent
@@ -201,7 +202,11 @@ class LayaDecisionBackend:
             if self._dependency_error is not None:
                 raise ImportError(self._dependency_error)
             if self._agent_loader is None:
-                if self.worker is _process_worker and importlib.util.find_spec("laya") is None:
+                if (
+                    self.worker is _process_worker
+                    and _WORKER_PYTHON == sys.executable
+                    and importlib.util.find_spec("laya") is None
+                ):
                     raise ImportError("Laya optional dependency is not installed")
                 reply = self.worker.call(
                     "predict_batch",

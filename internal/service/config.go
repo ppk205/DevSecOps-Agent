@@ -11,24 +11,25 @@ import (
 )
 
 type Config struct {
-	SchemaVersion   int      `json:"schema_version"`
-	Profile         string   `json:"profile"`
-	FailOn          string   `json:"fail_on"`
-	OutputDir       string   `json:"output_dir"`
-	Timezone        string   `json:"timezone"`
-	Timeout         int      `json:"timeout"`
-	MaxFiles        int      `json:"max_files"`
-	AllowDirty      bool     `json:"allow_dirty"`
-	CI              bool     `json:"ci"`
-	Laya            bool     `json:"laya"`
-	LayaConfigPath  *string  `json:"laya_config_path"`
-	Mode            string   `json:"mode"`
-	AIReview        bool     `json:"ai_review"`
-	AIReport        bool     `json:"ai_report"`
-	ProviderProfile *string  `json:"provider_profile"`
-	ProviderModel   *string  `json:"provider_model"`
-	MaxAIFindings   int      `json:"max_ai_findings"`
-	Tools           []string `json:"tools"`
+	SchemaVersion    int      `json:"schema_version"`
+	Profile          string   `json:"profile"`
+	FailOn           string   `json:"fail_on"`
+	OutputDir        string   `json:"output_dir"`
+	Timezone         string   `json:"timezone"`
+	Timeout          int      `json:"timeout"`
+	MaxFiles         int      `json:"max_files"`
+	AllowDirty       bool     `json:"allow_dirty"`
+	CI               bool     `json:"ci"`
+	Laya             bool     `json:"laya"`
+	LayaConfigPath   *string  `json:"laya_config_path"`
+	Mode             string   `json:"mode"`
+	AIReview         bool     `json:"ai_review"`
+	AIReport         bool     `json:"ai_report"`
+	ProviderProfile  *string  `json:"provider_profile"`
+	ProviderModel    *string  `json:"provider_model"`
+	MaxAIFindings    int      `json:"max_ai_findings"`
+	MaxModelRequests *int     `json:"max_model_requests,omitempty"`
+	Tools            []string `json:"tools"`
 }
 
 func Defaults() Config {
@@ -95,6 +96,9 @@ func Resolve(profile, path string, flags map[string]any) (Config, error) {
 	}
 	if cfg.MaxAIFindings < 1 || cfg.MaxAIFindings > 500 {
 		return cfg, fmt.Errorf("max_ai_findings must be between 1 and 500")
+	}
+	if cfg.MaxModelRequests != nil && *cfg.MaxModelRequests < 0 {
+		return cfg, fmt.Errorf("max_model_requests must be non-negative")
 	}
 	if _, err := time.LoadLocation(cfg.Timezone); err != nil {
 		return cfg, fmt.Errorf("unknown display timezone")

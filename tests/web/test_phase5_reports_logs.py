@@ -238,6 +238,10 @@ class TestCompare:
         assert response.status_code == 200
         body = response.json()
         assert body["baseline"] == client.run1
+        assert body["benchmark"]["reference_run_id"] is None
+        rows = body["benchmark"]["rows"]
+        assert [row["run_id"] for row in rows] == [client.run1, client.run2]
+        assert all(row["scenario"] == "custom" and not row["comparable"] for row in rows)
         assert [scan["total"] for scan in body["scans"]] == [2, 2]
         scanner_tools = {row["tool"] for row in body["by_scanner"]}
         assert "semgrep" in scanner_tools

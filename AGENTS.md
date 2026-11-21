@@ -124,11 +124,10 @@ Python tool-scan CLI -> ScannerToolService -> individual scanner adapters
   finding status.
 - **A8.** Laya is advisory: `affects_finding_status` MUST remain `False`.
   The shipped `config/laya.json` is disabled, uses `device="auto"`, and has a
-  30-second timeout. Runtime dataclass defaults differ. The model worker uses
-  CPU unless CUDA is explicitly requested and available, and falls back to CPU
-  if loading fails. Preserve these distinctions; do not describe this branch
-  as unconditionally GPU-only, CPU-only, enabled or subject to a shipped
-  300-second minimum. Record the actual effective configuration when measuring.
+  30-second timeout. Runtime dataclass defaults differ. The model worker probes
+  CUDA, Vulkan and CPU in that order for `auto`. Vulkan requires worker-side
+  PyTorch support, and a GPU load or inference failure can move to the next
+  backend. Report the actual device and effective settings when measuring.
 
 - **A9.** Source intake uses `core/source.py` for paths, repository URLs and
   shorthand. Preserve local-path precedence and isolate clone caches by URL and

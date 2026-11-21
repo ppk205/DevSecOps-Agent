@@ -515,6 +515,19 @@ or invalid vectors stay unscored. Base and contextual scores are recorded
 separately, with `metric_assumptions_verified=False`. See the
 [validator and CVSS guide](docs/VALIDATOR-CVSS.md) and its verification record.
 
+## Compare AI scan scenarios
+
+Use Reports → Compare to review the benchmark alongside the finding comparison.
+Use the same source revision, scanner set, and coverage settings for A0 through
+A3. A0 runs scanners only. A1 enables review and reporting with up to ten review
+findings. A2 lowers that limit to five. A3 uses the same review limit and adds
+Laya prioritization. The benchmark displays Hunt separately.
+
+The New Scan form and `scan-run --max-model-requests` accept an optional cap on
+HTTP attempts across a run, including retries and AI reporting. With a cap of
+zero, the scan preserves scanner evidence and uses the deterministic report
+fallback. The benchmark displays missing token and price data as unavailable.
+
 ## Training Laya (teach it to route)
 
 Laya is `convaiinnovations/laya` rev `aa8c91ca` (ModernBERT-large 0.4B +
@@ -581,11 +594,10 @@ export LAYA_MODEL_DIR='D:/dev/laya-train/out'
 # Proven live: routing records model_id D:/dev/laya-train/out + sha256 identity.
 
 # 8) GPU (optional, same host): the trained 842MB checkpoint fits a 4GB laptop
-# GPU (0.9s/predict proven live; the 3.7GB base did not). Main venv is
-# CPU torch, so point the worker at the CUDA venv + request cuda; any
-# failure (OOM included) falls back to CPU and never kills a scan.
+# GPU (0.9s/predict was measured on the earlier reference machine).
+# Auto probes CUDA, Vulkan and CPU through the worker's PyTorch installation.
 export LAYA_WORKER_PYTHON='D:/dev/laya-train/.venv/Scripts/python.exe'
-export LAYA_DEVICE='cuda'
+export LAYA_DEVICE='auto'
 ```
 
 Notes: training data, datasets, and weights live **outside the repo**

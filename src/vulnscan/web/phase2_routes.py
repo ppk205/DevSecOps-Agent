@@ -17,7 +17,7 @@ from typing import Any
 
 import httpx
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Query, Request
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, Field, ValidationError
 from sqlalchemy.orm import Session
 
 from vulnscan.infra.envfile import EnvFile
@@ -101,6 +101,7 @@ class ScanCreateIn(BaseModel):
     provider_profile: str | None = None
     provider_model: str | None = None
     max_ai_findings: int | None = 10
+    max_model_requests: int | None = Field(default=None, ge=0)
     timeout: int | None = None
     max_files: int | None = None
     mode: str | None = "deterministic"
@@ -410,6 +411,7 @@ def api_scans_create(
         "provider_profile": body.provider_profile,
         "provider_model": body.provider_model,
         "max_ai_findings": body.max_ai_findings or 10,
+        "max_model_requests": body.max_model_requests,
         "timeout": body.timeout,
         "max_files": body.max_files,
         "mode": (body.mode or "deterministic").strip(),
@@ -519,6 +521,7 @@ def _execute_web_scan(
             if ai_report is None
             else ai_report,
             max_ai_findings=params.get("max_ai_findings") or 10,
+            max_model_requests=params.get("max_model_requests"),
             tools=params.get("tools") or None,
             mode=mode,
         )

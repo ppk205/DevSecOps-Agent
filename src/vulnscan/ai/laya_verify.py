@@ -20,6 +20,7 @@ from typing import Any
 
 from vulnscan.ai.excerpts import code_excerpt
 from vulnscan.contracts.decision import DecisionRequest
+from vulnscan.decisions.config import LayaConfig
 from vulnscan.decisions.laya import LayaDecisionBackend
 from vulnscan.decisions.protocol import QUESTION_SET_VERSION
 from vulnscan.decisions.router import DecisionRouter
@@ -41,7 +42,7 @@ def laya_verify_candidates(
     candidates: list[dict[str, Any]],
     *,
     snapshot_root: str,
-    laya_config: LayaDecisionBackend | Any | None = None,
+    laya_config: LayaDecisionBackend | LayaConfig | None = None,
 ) -> list[dict[str, Any]]:
     """Xác minh các ứng viên săn tìm với Laya; đính kèm route/confidence/status.
 
@@ -49,8 +50,7 @@ def laya_verify_candidates(
         candidates: các mục đầu ra săn tìm (title, file, line, cwe, severity,
             rationale, evidence).
         snapshot_root: snapshot quét bất biến cho các trích đoạn bị cô lập.
-        laya_config: một ``LayaDecisionBackend`` để tái sử dụng, hoặc None để xây dựng
-            backend mặc định. Bất kỳ giá trị nào khác đều bị bỏ qua (sử dụng mặc định).
+        laya_config: backend để tái sử dụng, hoặc cấu hình chỉ định thiết bị.
 
     Returns:
         Các dict mới (không thay đổi đầu vào) được đính kèm ``laya_route``,
@@ -94,7 +94,8 @@ def laya_verify_candidates(
         backend = laya_config
     else:
         try:
-            backend = LayaDecisionBackend()
+            device = laya_config.device if isinstance(laya_config, LayaConfig) else "auto"
+            backend = LayaDecisionBackend(device=device)
         except Exception as exc:  # noqa: BLE001 - verify stage must never raise
             logger.warning("laya backend unavailable, skipping verification: %s", exc)
             return [{**c, "laya_status": _SKIPPED} for c in candidates]
