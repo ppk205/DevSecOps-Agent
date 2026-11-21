@@ -1,0 +1,419 @@
+{
+  "language": "php",
+  "rules": [
+    {
+      "id": "php-sql-concatenation",
+      "languages": [
+        "php"
+      ],
+      "severity": "ERROR",
+      "message": "User input reaches a SQL query; use prepared statements with bound parameters.",
+      "cwe": "89",
+      "attack": "sql_injection",
+      "patterns": [
+        "mysqli?_query\\s*\\(",
+        "\\$DB->query\\s*\\(",
+        "\\$DB->exec\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/php.yml#php-sql-concatenation",
+      "taint_sinks": [
+        "mysqli?_query\\s*\\(",
+        "->query\\s*\\(",
+        "->exec\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "php-reflected-xss",
+      "languages": [
+        "php"
+      ],
+      "severity": "ERROR",
+      "message": "Request data reaches page output without escaping; use htmlspecialchars.",
+      "cwe": "79",
+      "attack": "xss",
+      "patterns": [
+        "\\becho\\b",
+        "\\bprint\\b",
+        "printf\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/php.yml#php-reflected-xss",
+      "taint_sinks": [
+        "echo\\s",
+        "print\\s"
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "php-command-injection",
+      "languages": [
+        "php"
+      ],
+      "severity": "ERROR",
+      "message": "User input reaches a shell command; use escapeshellarg or avoid the shell.",
+      "cwe": "78",
+      "attack": "command_injection",
+      "patterns": [
+        "\\bexec\\s*\\(",
+        "shell_exec\\s*\\(",
+        "\\bsystem\\s*\\(",
+        "passthru\\s*\\(",
+        "\\bpopen\\s*\\(",
+        "proc_open\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/php.yml#php-command-injection",
+      "taint_sinks": [
+        "(?<![\\w:>])(?:system|exec|shell_exec|passthru|popen|proc_open)\\s*\\(",
+        "(?<![\\w:>])(?:passthru|popen|proc_open|pcntl_exec)\\s*\\(",
+        "shell_exec\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "php-path-traversal",
+      "languages": [
+        "php"
+      ],
+      "severity": "ERROR",
+      "message": "User input reaches a filesystem path; validate against an allowlist.",
+      "cwe": "22",
+      "attack": "path_traversal",
+      "patterns": [
+        "\\binclude(_once)?\\b",
+        "\\brequire(_once)?\\b",
+        "file_get_contents\\s*\\(",
+        "\\bfopen\\s*\\(",
+        "\\breadfile\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/php.yml#php-path-traversal",
+      "mode": "taint",
+      "taint_sinks": [
+        "(?:include|require)(?:_once)?\\s*[(\"]",
+        "file_get_contents\\s*\\(",
+        "(?<![\\w>])readfile\\s*\\(",
+        "fopen\\s*\\("
+      ]
+    },
+    {
+      "id": "php-ssrf",
+      "languages": [
+        "php"
+      ],
+      "severity": "ERROR",
+      "message": "User input controls an outbound request URL; restrict to an allowlist.",
+      "cwe": "918",
+      "attack": "ssrf",
+      "patterns": [
+        "curl_init\\s*\\(",
+        "CURLOPT_URL"
+      ],
+      "source": "src/vulnscan/scanners/rules/php.yml#php-ssrf",
+      "mode": "taint",
+      "taint_sinks": [
+        "file_get_contents\\s*\\(",
+        "curl_exec\\s*\\(",
+        "fsockopen\\s*\\("
+      ]
+    },
+    {
+      "id": "php-unsafe-deserialization",
+      "languages": [
+        "php"
+      ],
+      "severity": "ERROR",
+      "message": "unserialize on user input enables object injection; use json_decode.",
+      "cwe": "502",
+      "attack": "deserialization",
+      "patterns": [
+        "\\bunserialize\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/php.yml#php-unsafe-deserialization",
+      "taint_sinks": [
+        "unserialize\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "php-dynamic-eval",
+      "languages": [
+        "php"
+      ],
+      "severity": "ERROR",
+      "message": "User input reaches eval; never execute dynamically built code.",
+      "cwe": "95",
+      "attack": "code_injection",
+      "patterns": [
+        "\\beval\\s*\\(",
+        "\\bassert\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/php.yml#php-dynamic-eval",
+      "taint_sinks": [
+        "(?<![\\w:>])(?:eval|assert|create_function)\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "php-weak-password-hash",
+      "languages": [
+        "php"
+      ],
+      "severity": "WARNING",
+      "message": "md5/sha1 are unsuitable for passwords; use password_hash.",
+      "cwe": "328",
+      "attack": "crypto",
+      "patterns": [
+        "\\bmd5\\s*\\(",
+        "\\bsha1\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/php.yml#php-weak-password-hash",
+      "mode": "search"
+    },
+    {
+      "id": "php-loose-comparison",
+      "languages": [
+        "php"
+      ],
+      "severity": "WARNING",
+      "message": "Loose == comparison with user input allows type juggling; use === or hash_equals.",
+      "cwe": "697",
+      "attack": "comparison",
+      "patterns": [
+        "\\$_(GET|POST|REQUEST|COOKIE)\\b[^;]*==[^=]",
+        "[^=]==[^=]*\\$_(GET|POST|REQUEST|COOKIE)\\b"
+      ],
+      "source": "src/vulnscan/scanners/rules/php.yml#php-loose-comparison",
+      "mode": "search"
+    },
+    {
+      "id": "php-dangerous-extract",
+      "languages": [
+        "php"
+      ],
+      "severity": "WARNING",
+      "message": "extract on user input overwrites variables; assign explicitly instead.",
+      "cwe": "915",
+      "attack": "variable_overwrite",
+      "patterns": [
+        "\\bextract\\s*\\(\\s*\\$_(GET|POST|REQUEST|COOKIE)"
+      ],
+      "source": "src/vulnscan/scanners/rules/php.yml#php-dangerous-extract",
+      "mode": "search"
+    },
+    {
+      "id": "php-xxe-external-entity",
+      "languages": [
+        "php"
+      ],
+      "severity": "ERROR",
+      "message": "XML parser allows external entities; disable them or use LIBXML_NONET.",
+      "cwe": "611",
+      "attack": "xxe",
+      "patterns": [
+        "loadXML\\s*\\(",
+        "\\$DOC->load\\s*\\(",
+        "libxml_disable_entity_loader\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/php.yml#php-xxe-external-entity",
+      "mode": "search"
+    },
+    {
+      "id": "php-open-redirect",
+      "languages": [
+        "php"
+      ],
+      "severity": "ERROR",
+      "message": "User input reaches a Location header; validate against an allowlist.",
+      "cwe": "601",
+      "attack": "open_redirect",
+      "patterns": [
+        "header\\s*\\(\\s*[\\\"']Location"
+      ],
+      "source": "src/vulnscan/scanners/rules/php.yml#php-open-redirect",
+      "mode": "taint",
+      "taint_sinks": [
+        "header\\s*\\(\\s*[\\'\"]Location"
+      ]
+    },
+    {
+      "id": "php-insecure-random",
+      "languages": [
+        "php"
+      ],
+      "severity": "WARNING",
+      "message": "rand/mt_rand are predictable; use random_int or random_bytes.",
+      "cwe": "330",
+      "attack": "crypto",
+      "patterns": [
+        "\\brand\\s*\\(",
+        "mt_rand\\s*\\(",
+        "\\bsrand\\s*\\(",
+        "uniqid\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/php.yml#php-insecure-random",
+      "mode": "search"
+    },
+    {
+      "id": "php-jwt-weak-secret",
+      "languages": [
+        "php"
+      ],
+      "severity": "ERROR",
+      "message": "JWT signed with a hardcoded secret; load the key from the environment.",
+      "cwe": "798",
+      "attack": "secrets",
+      "patterns": [
+        "JWT::(encode|decode)\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/php.yml#php-jwt-weak-secret",
+      "mode": "search"
+    },
+    {
+      "id": "php-create-function-injection",
+      "languages": [
+        "php"
+      ],
+      "severity": "ERROR",
+      "message": "User input reaches create_function; use a closure instead.",
+      "cwe": "95",
+      "attack": "code_injection",
+      "patterns": [
+        "create_function\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/php.yml#php-create-function-injection",
+      "mode": "taint",
+      "taint_sinks": [
+        "create_function\\s*\\("
+      ]
+    },
+    {
+      "id": "php-dynamic-callable",
+      "languages": [
+        "php"
+      ],
+      "severity": "ERROR",
+      "message": "User input selects the called function; dispatch from an allowlist map.",
+      "cwe": "95",
+      "attack": "code_injection",
+      "patterns": [
+        "call_user_func(_array)?\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/php.yml#php-dynamic-callable",
+      "mode": "taint",
+      "taint_sinks": [
+        "call_user_func\\w*\\s*\\("
+      ]
+    },
+    {
+      "id": "php-parse-str-pollution",
+      "languages": [
+        "php"
+      ],
+      "severity": "ERROR",
+      "message": "parse_str on user input overwrites variables; parse explicitly instead.",
+      "cwe": "20",
+      "attack": "code_injection",
+      "patterns": [
+        "(mb_)?parse_str\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/php.yml#php-parse-str-pollution",
+      "mode": "taint",
+      "taint_sinks": [
+        "parse_str\\s*\\(",
+        "mb_parse_str\\s*\\("
+      ]
+    },
+    {
+      "id": "php-preg-replace-eval",
+      "languages": [
+        "php"
+      ],
+      "severity": "ERROR",
+      "message": "preg_replace with /e executes the replacement; use preg_replace_callback.",
+      "cwe": "95",
+      "attack": "code_injection",
+      "patterns": [
+        "preg_replace\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/php.yml#php-preg-replace-eval",
+      "mode": "search"
+    },
+    {
+      "id": "php-dangerous-phar-wrapper",
+      "languages": [
+        "php"
+      ],
+      "severity": "ERROR",
+      "message": "phar/expect wrappers enable deserialization and RCE; avoid them.",
+      "cwe": "98",
+      "attack": "deserialization",
+      "patterns": [
+        "(phar|expect)://"
+      ],
+      "source": "src/vulnscan/scanners/rules/php.yml#php-dangerous-phar-wrapper",
+      "mode": "search"
+    },
+    {
+      "id": "php-session-fixation",
+      "languages": [
+        "php"
+      ],
+      "severity": "ERROR",
+      "message": "User input sets the session id; regenerate it at login instead.",
+      "cwe": "384",
+      "attack": "session",
+      "patterns": [
+        "session_id\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/php.yml#php-session-fixation",
+      "mode": "taint",
+      "taint_sinks": [
+        "session_id\\s*\\("
+      ]
+    },
+    {
+      "id": "php-jwt-token",
+      "languages": [
+        "php"
+      ],
+      "severity": "WARNING",
+      "message": "Hardcoded JWT bearer token.",
+      "cwe": "798",
+      "attack": "hardcoded_secret",
+      "mode": "search",
+      "patterns": [
+        "eyJ[A-Za-z0-9_\\-]{10,}\\.[A-Za-z0-9_\\-]{10,}\\.[A-Za-z0-9_\\-]{8,}"
+      ],
+      "source": "native-addition:gitleaks-jwt"
+    },
+    {
+      "id": "php-private-key",
+      "languages": [
+        "php"
+      ],
+      "severity": "ERROR",
+      "message": "Embedded private key material.",
+      "cwe": "798",
+      "attack": "hardcoded_secret",
+      "mode": "search",
+      "patterns": [
+        "-----BEGIN (?:RSA |EC |DSA |OPENSSH )?PRIVATE KEY"
+      ],
+      "source": "native-addition:gitleaks-private-key"
+    },
+    {
+      "id": "php-generic-api-key",
+      "languages": [
+        "php"
+      ],
+      "severity": "WARNING",
+      "message": "Hardcoded API key/secret assignment.",
+      "cwe": "798",
+      "attack": "hardcoded_secret",
+      "mode": "search",
+      "patterns": [
+        "(?i)(api[_-]?key|client[_-]?secret|auth[_-]?token|access[_-]?token)\\s*[:=]\\s*[\\'\"][A-Za-z0-9_\\-]{16,}[\\'\"]"
+      ],
+      "source": "native-addition:gitleaks-generic-api-key"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-"""Single-source report generation for JSON, SARIF, HTML, and Markdown."""
+"""Tạo báo cáo từ một nguồn duy nhất cho JSON, SARIF, HTML và Markdown."""
 
 from __future__ import annotations
 
@@ -23,6 +23,27 @@ from vulnscan.contracts.report import (
     SarifResult,
 )
 from vulnscan.core.security import sanitize
+from vulnscan.reporting.owasp import (
+    NOTE as OWASP_NOTE,
+)
+from vulnscan.reporting.owasp import (
+    SECTION_TITLE as OWASP_TITLE,
+)
+from vulnscan.reporting.owasp import (
+    SOURCE_URL as OWASP_SOURCE,
+)
+from vulnscan.reporting.owasp import (
+    TABLE_HEADERS as OWASP_HEADERS,
+)
+from vulnscan.reporting.owasp import (
+    build_owasp_summary,
+)
+from vulnscan.reporting.owasp import (
+    markdown_section as owasp_markdown,
+)
+from vulnscan.reporting.owasp import (
+    table_rows as owasp_rows,
+)
 from vulnscan.version import APP_VERSION
 
 _MIME = {
@@ -44,7 +65,7 @@ _SUFFIX = {
 
 
 class ReportGenerator:
-    """Generate consistent, escaped reports from one run's findings."""
+    """Tạo các báo cáo nhất quán, được escape từ các finding của một lượt chạy."""
 
     def __init__(
         self,
@@ -63,11 +84,11 @@ class ReportGenerator:
         self.run_metadata = sanitize(run_metadata or {})
 
     def routing_by_finding(self) -> dict[str, dict[str, Any]]:
-        """Advisory routing payloads keyed by finding id."""
+        """Payload định tuyến tư vấn được lập chỉ mục theo finding id."""
         return {str(p.get("finding_id")): p for p in self.routing_payloads}
 
     def routing_counts(self) -> dict[str, int]:
-        """How many findings took each route, including the fallback."""
+        """Số lượng finding đã đi qua mỗi tuyến, bao gồm cả tuyến dự phòng."""
         counts: dict[str, int] = {}
         for payload in self.routing_payloads:
             route = str(payload.get("route", "unknown"))
@@ -75,14 +96,14 @@ class ReportGenerator:
         return dict(sorted(counts.items(), key=lambda kv: -kv[1]))
 
     def advisory_unavailable(self) -> list[dict[str, Any]]:
-        """Payloads where the model did not return a usable decision."""
+        """Các payload mà model không trả về quyết định có thể sử dụng được."""
         return [
             p for p in self.routing_payloads if str(p.get("decision_status", "")) != "completed"
         ]
 
     @staticmethod
     def counts(findings: list[Finding]) -> FindingCounts:
-        """Partition findings into the four mandatory status buckets."""
+        """Phân chia các finding vào bốn bucket trạng thái bắt buộc."""
         buckets = {
             FindingStatus.CONFIRMED: 0,
             FindingStatus.REJECTED: 0,
@@ -146,13 +167,17 @@ class ReportGenerator:
             tool_name="devsecops-agent",
             tool_version=tool_version,
             results=results,
-            metadata={"counts": cls.counts(findings).model_dump(mode="json")},
+            metadata={
+                "counts": cls.counts(findings).model_dump(mode="json"),
+                "owasp_top10": build_owasp_summary(findings),
+            },
         )
 
     def sarif_document(self) -> dict[str, Any]:
         document = self.to_sarif(self.run_id, self.findings).to_sarif_dict()
         run = document["runs"][0]
         run["properties"].update(self.run_metadata)
+        run["properties"]["owasp_top10"] = build_owasp_summary(self.findings)
         if "status" in self.run_metadata:
             run["invocations"] = [
                 {
@@ -173,6 +198,7 @@ class ReportGenerator:
             "generated_at": datetime.now(UTC).isoformat(),
             "counts": self.counts(self.findings).model_dump(mode="json"),
             "coverage_summary": self.coverage_summary,
+            "owasp_top10": build_owasp_summary(self.findings),
             "findings": [f.model_dump(mode="json") for f in self.findings],
             "advisory_routing": {
                 "is_advisory_only": True,
@@ -190,7 +216,7 @@ class ReportGenerator:
         return json.dumps(data, indent=2, ensure_ascii=False)
 
     def advisory_section(self) -> list[str]:
-        """Markdown for the advisory routing block, or a stated absence."""
+        """Markdown cho khối định tuyến tư vấn, hoặc ghi nhận rõ sự vắng mặt."""
         if not self.routing_payloads:
             absent = (
                 "Laya advisory routing did not run for this scan "
@@ -259,6 +285,7 @@ class ReportGenerator:
         else:
             lines.append("No coverage limitations recorded.")
         lines.extend(self.advisory_section())
+        lines.extend(["", owasp_markdown(self.findings)])
         lines.extend(["", "## Findings", ""])
         routing = self.routing_by_finding()
         for finding in self.findings:
@@ -300,7 +327,7 @@ class ReportGenerator:
         return "\n".join(lines)
 
     def to_txt(self) -> str:
-        """Plain-text rendering of the same single-source report data."""
+        """Bản render dạng plain-text của cùng dữ liệu báo cáo từ một nguồn duy nhất."""
         counts = self.counts(self.findings)
         lines = [
             f"Security assessment — {self.run_id}",
@@ -329,10 +356,12 @@ class ReportGenerator:
                 f"  Findings routed: {len(self.routing_payloads)}",
                 f"  Without a usable model decision: {len(self.advisory_unavailable())}",
                 "  Affects finding status: false",
-                "",
-                "Findings:",
             ]
         )
+        lines.extend(["", OWASP_TITLE, "", OWASP_NOTE, ""])
+        for row in owasp_rows(build_owasp_summary(self.findings)):
+            lines.append(" | ".join(row))
+        lines.extend([f"Mapping source: {OWASP_SOURCE}", "", "Findings:"])
         for finding in self.findings:
             cwe = finding.cwe_category.value if finding.cwe_category else "Unclassified"
             lines.extend(
@@ -358,7 +387,7 @@ class ReportGenerator:
         return "\n".join(lines)
 
     def to_docx_bytes(self) -> bytes:
-        """Word rendering of the same single-source report data."""
+        """Bản render dạng Word của cùng dữ liệu báo cáo từ một nguồn duy nhất."""
         from docx import Document
         from docx.shared import Pt
 
@@ -383,6 +412,16 @@ class ReportGenerator:
                 break
             table.rows[row].cells[0].text = label
             table.rows[row].cells[1].text = str(value)
+        doc.add_heading(OWASP_TITLE, level=2)
+        doc.add_paragraph(OWASP_NOTE)
+        owasp_table = doc.add_table(rows=1, cols=len(OWASP_HEADERS))
+        for cell, header in zip(owasp_table.rows[0].cells, OWASP_HEADERS, strict=True):
+            cell.text = header
+        for values in owasp_rows(build_owasp_summary(self.findings)):
+            cells = owasp_table.add_row().cells
+            for cell, content in zip(cells, values, strict=True):
+                cell.text = content
+        doc.add_paragraph(f"Mapping source: {OWASP_SOURCE}")
         doc.add_heading("Findings", level=2)
         routing = self.routing_by_finding()
         for finding in self.findings:
@@ -415,18 +454,18 @@ class ReportGenerator:
         return buf.getvalue()
 
     def _display_metadata(self) -> dict[str, Any]:
-        """run_metadata with a capped errors list for human formats.
+        """run_metadata với danh sách lỗi được giới hạn số lượng cho các định dạng người đọc.
 
-        Full per-file coverage notes stay in JSON/SARIF; human formats get
-        the first entries plus a count so one scan cannot render a wall of
-        hundreds of lines.
+        Ghi chú đầy đủ về độ bao phủ theo từng file được giữ lại trong JSON/SARIF; các định dạng cho con người đọc
+        chỉ nhận các mục đầu tiên kèm theo tổng số lượng để tránh một lượt quét hiển thị cả
+        hàng trăm dòng lỗi.
         """
         meta = dict(self.run_metadata)
         errors = list(meta.get("errors", []) or [])
         if len(errors) > 10:
-            meta["errors"] = (
-                errors[:10] + [f"... and {len(errors) - 10} more (see JSON/SARIF export)"]
-            )
+            meta["errors"] = errors[:10] + [
+                f"... and {len(errors) - 10} more (see JSON/SARIF export)"
+            ]
         return meta
 
     def to_html(self) -> str:
@@ -441,6 +480,11 @@ class ReportGenerator:
             findings=self.findings,
             coverage_summary=self.coverage_summary,
             coverage_cards=_coverage_cards(self.coverage_summary),
+            owasp_title=OWASP_TITLE,
+            owasp_note=OWASP_NOTE,
+            owasp_source=OWASP_SOURCE,
+            owasp_headers=OWASP_HEADERS,
+            owasp_rows=owasp_rows(build_owasp_summary(self.findings)),
         )
 
     def export(
@@ -485,12 +529,12 @@ class ReportGenerator:
 
 
 def _coverage_cards(coverage_summary: dict[str, Any]) -> list[dict[str, Any]]:
-    """Summarize per-tool coverage for the HTML report.
+    """Tóm tắt độ bao phủ theo từng công cụ cho báo cáo HTML.
 
-    The stored payload is a mapping of tool name to coverage records (or
-    record-like dicts). Dumping it raw produces a wall of repr text, so
-    collapse each tool to unit counts plus the distinct limitation reasons.
-    Unknown shapes degrade to a short record count instead of raising.
+    Payload được lưu trữ là một ánh xạ từ tên công cụ sang các bản ghi độ bao phủ (hoặc
+    các dict dạng bản ghi). Việc dump trực tiếp sẽ tạo ra một khối văn bản repr quá lớn, vì vậy
+    hãy thu gọn mỗi công cụ thành số lượng đơn vị cùng các lý do giới hạn riêng biệt.
+    Các định dạng không xác định sẽ giảm cấp thành số lượng bản ghi ngắn thay vì ném ngoại lệ.
     """
     cards: list[dict[str, Any]] = []
     for tool, records in (coverage_summary or {}).items():
@@ -560,6 +604,8 @@ pre::-webkit-scrollbar-thumb:hover{background:#4d5c6e}
 .cover{background:var(--card);border:1px solid var(--hairline);border-radius:8px;
 padding:12px 16px;margin:10px 0}
 .cover b{color:var(--ink)}.cover ul{margin:6px 0 0;padding-left:20px;color:var(--muted)}
+.owasp{overflow-x:auto}.owasp table{width:100%;border-collapse:collapse;font-size:13px}
+.owasp th,.owasp td{border:1px solid var(--hairline);padding:8px;text-align:left;vertical-align:top;overflow-wrap:anywhere}
 @media print{body{margin:20px;background:#fff;color:#000}.finding,.counts li,.cover{break-inside:avoid}}
 </style></head><body>
 <h1>Security assessment <code>{{ run_id }}</code></h1>
@@ -577,6 +623,11 @@ padding:12px 16px;margin:10px 0}
 <span class="meta"> — {{ card.analyzed }}/{{ card.units }} units analyzed</span>
 {% if card.limitations %}<ul>{% for reason in card.limitations %}<li>{{ reason }}</li>{% endfor %}</ul>{% endif %}</div>{% endfor %}
 {% else %}<p class="meta">No coverage recorded.</p>{% endif %}
+<h2>{{ owasp_title }}</h2>
+<p class="meta">{{ owasp_note }}</p>
+<div class="owasp"><table><thead><tr>{% for header in owasp_headers %}<th scope="col">{{ header }}</th>{% endfor %}</tr></thead>
+<tbody>{% for row in owasp_rows %}<tr>{% for cell in row %}<td>{{ cell }}</td>{% endfor %}</tr>{% endfor %}</tbody></table></div>
+<p class="meta">Mapping source: <a href="{{ owasp_source }}">OWASP Top 10:2025</a></p>
 <h2>Findings</h2>
 {% for f in findings %}<section class="finding"><h3>{{ f.title }}</h3>
 <p><span class="st st-{{ f.status.value }}">{{ f.status.value }}</span><span class="sev-{{ f.severity.value }}">{{ f.severity.value }}</span>

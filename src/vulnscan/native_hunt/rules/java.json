@@ -1,0 +1,490 @@
+{
+  "language": "java",
+  "rules": [
+    {
+      "id": "java-sql-concatenation",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "SQL constructed through concatenation; use a parameterized query.",
+      "cwe": "89",
+      "attack": "sql_injection",
+      "patterns": [
+        "\\.executeQuery\\s*\\([^)]*\\+",
+        "\\.executeUpdate\\s*\\([^)]*\\+",
+        "\\.execute\\s*\\([^)]*\\+"
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-sql-concatenation",
+      "taint_sinks": [
+        "\\.executeQuery\\s*\\(",
+        "\\.executeUpdate\\s*\\(",
+        "\\.execute\\s*\\("
+      ],
+      "mode": "search"
+    },
+    {
+      "id": "java-xss-response-writer",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "Request data reaches an HTTP response without escaping; use a safe encoder.",
+      "cwe": "79",
+      "attack": "xss",
+      "patterns": [
+        "getWriter\\s*\\(\\s*\\)\\s*\\.\\s*(write|print|println)\\s*\\(",
+        "getOutputStream\\s*\\(\\s*\\)\\s*\\.\\s*(write|print)\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-xss-response-writer",
+      "taint_sinks": [
+        "\\.getWriter\\s*\\(\\s*\\)\\s*\\.print",
+        "\\.println\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "java-path-traversal-file",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "File path includes externally controlled input; validate or canonicalize.",
+      "cwe": "22",
+      "attack": "path_traversal",
+      "patterns": [
+        "new\\s+(?:java\\.io\\.)?File\\w*\\s*\\([^)]*\\+",
+        "new\\s+(?:java\\.io\\.)?File(?:Input|Output)Stream\\s*\\([^)]*\\+",
+        "Paths\\.get\\s*\\([^)]*\\+"
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-path-traversal-file",
+      "mode": "search"
+    },
+    {
+      "id": "java-command-execution",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "Review command execution with externally controlled input.",
+      "cwe": "78",
+      "attack": "command_injection",
+      "patterns": [
+        "Runtime\\.getRuntime\\s*\\(\\s*\\)\\s*\\.\\s*exec\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-command-execution",
+      "taint_sinks": [
+        "Runtime\\.getRuntime\\s*\\(\\s*\\)\\s*\\.exec\\s*\\(",
+        "new\\s+ProcessBuilder\\s*\\("
+      ],
+      "mode": "search"
+    },
+    {
+      "id": "java-xxe-document-builder",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "DocumentBuilder without secure processing is vulnerable to XXE.",
+      "cwe": "611",
+      "attack": "xxe",
+      "patterns": [
+        "DocumentBuilderFactory\\s*\\.\\s*newInstance\\s*\\(",
+        "TransformerFactory\\s*\\.\\s*newInstance\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-xxe-document-builder",
+      "mode": "search"
+    },
+    {
+      "id": "java-weak-digest",
+      "languages": [
+        "java"
+      ],
+      "severity": "WARNING",
+      "message": "Replace the weak digest with an appropriate modern algorithm.",
+      "cwe": "327",
+      "attack": "crypto",
+      "patterns": [
+        "MessageDigest\\s*\\.\\s*getInstance\\s*\\(\\s*\"MD5\"",
+        "MessageDigest\\s*\\.\\s*getInstance\\s*\\(\\s*\"SHA-1\""
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-weak-digest",
+      "mode": "search"
+    },
+    {
+      "id": "java-weak-cipher",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "Replace the weak cipher with AES-256-GCM or equivalent.",
+      "cwe": "327",
+      "attack": "crypto",
+      "patterns": [
+        "Cipher\\s*\\.\\s*getInstance\\s*\\(\\s*\"(DES|3DES|DESede|Blowfish)\""
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-weak-cipher",
+      "mode": "search"
+    },
+    {
+      "id": "java-weak-cipher-secret-key",
+      "languages": [
+        "java"
+      ],
+      "severity": "WARNING",
+      "message": "Secret key uses a legacy algorithm; switch to AES-256.",
+      "cwe": "327",
+      "attack": "crypto",
+      "patterns": [
+        "new\\s+[\\w.]+\\.SecretKeySpec\\s*\\([^)]*\\\"(DES|3DES|DESede)\\\"",
+        "new\\s+SecretKeySpec\\s*\\([^)]*\\\"(DES|3DES|DESede)\\\""
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-weak-cipher-secret-key",
+      "mode": "search"
+    },
+    {
+      "id": "java-unsafe-deserialization",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "ObjectInputStream.readObject enables deserialization attacks; use safe data formats.",
+      "cwe": "502",
+      "attack": "deserialization",
+      "patterns": [
+        "\\.readObject\\s*\\(\\s*\\)"
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-unsafe-deserialization",
+      "mode": "search"
+    },
+    {
+      "id": "java-unsafe-deserialization-objectmapper",
+      "languages": [
+        "java"
+      ],
+      "severity": "WARNING",
+      "message": "ObjectMapper default typing allows polymorphic deserialization exploits.",
+      "cwe": "502",
+      "attack": "deserialization",
+      "patterns": [
+        "\\.enableDefaultTyping\\s*\\(",
+        "\\.activateDefaultTyping\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-unsafe-deserialization-objectmapper",
+      "mode": "search"
+    },
+    {
+      "id": "java-insecure-random",
+      "languages": [
+        "java"
+      ],
+      "severity": "WARNING",
+      "message": "java.util.Random is predictable in security contexts; use SecureRandom.",
+      "cwe": "330",
+      "attack": "crypto",
+      "patterns": [
+        "new\\s+(java\\.util\\.)?Random\\s*\\(",
+        "Math\\.random\\s*\\(\\s*\\)"
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-insecure-random",
+      "mode": "search"
+    },
+    {
+      "id": "java-trust-all-certificates",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "Trusting all certificates disables TLS peer verification.",
+      "cwe": "295",
+      "attack": "tls",
+      "patterns": [
+        "setDefaultHostnameVerifier\\s*\\(",
+        "setHostnameVerifier\\s*\\(",
+        "checkServerTrusted\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-trust-all-certificates",
+      "mode": "search"
+    },
+    {
+      "id": "java-permissive-cors",
+      "languages": [
+        "java"
+      ],
+      "severity": "WARNING",
+      "message": "Wildcard CORS origin disables cross-origin protections.",
+      "cwe": "942",
+      "attack": "cors",
+      "patterns": [
+        "Access-Control-Allow-Origin\"\\s*,\\s*\"\\*\""
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-permissive-cors",
+      "mode": "search"
+    },
+    {
+      "id": "java-ldap-injection",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "Request data reaches an LDAP search filter; use a parameterized filter or escape it.",
+      "cwe": "90",
+      "attack": "ldap_injection",
+      "patterns": [
+        "\\.search\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-ldap-injection",
+      "mode": "taint"
+    },
+    {
+      "id": "java-xpath-injection",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "Request data reaches an XPath expression; use a parameterized XPathVariableResolver.",
+      "cwe": "643",
+      "attack": "xpath_injection",
+      "patterns": [
+        "\\.evaluate\\s*\\(",
+        "\\.compile\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-xpath-injection",
+      "mode": "taint"
+    },
+    {
+      "id": "java-ssrf-url-connection",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "Request data reaches an outbound URL connection; restrict to an allowlist.",
+      "cwe": "918",
+      "attack": "ssrf",
+      "patterns": [
+        "new\\s+(java\\.net\\.)?URL\\s*\\([^)]*\\)\\s*\\.\\s*open(Connection|Stream)\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-ssrf-url-connection",
+      "mode": "taint"
+    },
+    {
+      "id": "java-command-injection-processbuilder",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "Request data reaches a process command; use a fixed argument list.",
+      "cwe": "78",
+      "attack": "command_injection",
+      "patterns": [
+        "new\\s+(java\\.lang\\.)?ProcessBuilder\\s*\\(",
+        "\\.command\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-command-injection-processbuilder",
+      "mode": "taint"
+    },
+    {
+      "id": "java-open-redirect",
+      "languages": [
+        "java"
+      ],
+      "severity": "WARNING",
+      "message": "Request data controls a redirect target; validate against an allowlist.",
+      "cwe": "601",
+      "attack": "open_redirect",
+      "patterns": [
+        "\\.sendRedirect\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-open-redirect",
+      "mode": "taint"
+    },
+    {
+      "id": "java-unsafe-reflection",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "Request data selects a class or method reflectively; restrict to an allowlist.",
+      "cwe": "470",
+      "attack": "reflection",
+      "patterns": [
+        "(java\\.lang\\.)?Class\\s*\\.\\s*forName\\s*\\(",
+        "\\.getDeclaredMethod\\s*\\(",
+        "\\.getMethod\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-unsafe-reflection",
+      "mode": "taint"
+    },
+    {
+      "id": "java-log-injection",
+      "languages": [
+        "java"
+      ],
+      "severity": "WARNING",
+      "message": "Request data reaches a log statement; neutralize CRLF sequences first.",
+      "cwe": "117",
+      "attack": "log_injection",
+      "patterns": [
+        "\\.(trace|debug|info|warn|error)\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-log-injection",
+      "mode": "taint"
+    },
+    {
+      "id": "java-insecure-cookie",
+      "languages": [
+        "java"
+      ],
+      "severity": "WARNING",
+      "message": "Cookie explicitly disables Secure or HttpOnly; set both flags.",
+      "cwe": "614",
+      "attack": "cookie",
+      "patterns": [
+        "\\.setSecure\\s*\\(\\s*false\\s*\\)",
+        "\\.setHttpOnly\\s*\\(\\s*false\\s*\\)"
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-insecure-cookie",
+      "mode": "search"
+    },
+    {
+      "id": "java-hardcoded-credentials",
+      "languages": [
+        "java"
+      ],
+      "severity": "WARNING",
+      "message": "Hardcoded credential; load secrets from the environment or a vault.",
+      "cwe": "798",
+      "attack": "secrets",
+      "patterns": [
+        "(?i)(password|passwd|secret|api[_-]?key|access[_-]?token)\\s*=\\s*\\\"[^\\\"]+\\\""
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-hardcoded-credentials",
+      "mode": "search"
+    },
+    {
+      "id": "java-stack-trace-exposure",
+      "languages": [
+        "java"
+      ],
+      "severity": "WARNING",
+      "message": "printStackTrace exposes internals; log through a logger instead.",
+      "cwe": "209",
+      "attack": "error_handling",
+      "patterns": [
+        "\\.printStackTrace\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-stack-trace-exposure",
+      "mode": "search"
+    },
+    {
+      "id": "java-xxe-sax-parser",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "SAX parser without secure processing is vulnerable to XXE.",
+      "cwe": "611",
+      "attack": "xxe",
+      "patterns": [
+        "SAXParserFactory\\s*\\.\\s*newInstance\\s*\\(",
+        "XMLReaderFactory\\s*\\.\\s*createXMLReader\\s*\\("
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-xxe-sax-parser",
+      "mode": "search"
+    },
+    {
+      "id": "java-path-traversal-nio",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "NIO path includes externally controlled input; validate or confine it.",
+      "cwe": "22",
+      "attack": "path_traversal",
+      "patterns": [
+        "Paths\\.get\\s*\\([^)]*\\+",
+        "FileSystems\\.getDefault"
+      ],
+      "source": "src/vulnscan/scanners/rules/java.yml#java-path-traversal-nio",
+      "mode": "search"
+    },
+    {
+      "id": "java-default-encoding",
+      "languages": [
+        "java"
+      ],
+      "severity": "WARNING",
+      "message": "Relies on platform default charset; specify StandardCharsets.UTF_8.",
+      "cwe": "176",
+      "attack": "weak_encoding",
+      "mode": "search",
+      "patterns": [
+        "new\\s+String\\s*\\([^,()]+\\)",
+        "\\.getBytes\\s*\\(\\s*\\)",
+        "new\\s+(?:InputStreamReader|OutputStreamWriter|FileReader|FileWriter)\\s*\\([^,()]+\\)"
+      ],
+      "source": "native-addition:spotbugs-DM_DEFAULT_ENCODING"
+    },
+    {
+      "id": "java-jwt-token",
+      "languages": [
+        "java"
+      ],
+      "severity": "WARNING",
+      "message": "Hardcoded JWT bearer token.",
+      "cwe": "798",
+      "attack": "hardcoded_secret",
+      "mode": "search",
+      "patterns": [
+        "eyJ[A-Za-z0-9_\\-]{10,}\\.[A-Za-z0-9_\\-]{10,}\\.[A-Za-z0-9_\\-]{8,}"
+      ],
+      "source": "native-addition:gitleaks-jwt"
+    },
+    {
+      "id": "java-private-key",
+      "languages": [
+        "java"
+      ],
+      "severity": "ERROR",
+      "message": "Embedded private key material.",
+      "cwe": "798",
+      "attack": "hardcoded_secret",
+      "mode": "search",
+      "patterns": [
+        "-----BEGIN (?:RSA |EC |DSA |OPENSSH )?PRIVATE KEY"
+      ],
+      "source": "native-addition:gitleaks-private-key"
+    },
+    {
+      "id": "java-generic-api-key",
+      "languages": [
+        "java"
+      ],
+      "severity": "WARNING",
+      "message": "Hardcoded API key/secret assignment.",
+      "cwe": "798",
+      "attack": "hardcoded_secret",
+      "mode": "search",
+      "patterns": [
+        "(?i)(api[_-]?key|client[_-]?secret|auth[_-]?token|access[_-]?token)\\s*[:=]\\s*[\\'\"][A-Za-z0-9_\\-]{16,}[\\'\"]"
+      ],
+      "source": "native-addition:gitleaks-generic-api-key"
+    },
+    {
+      "id": "java-unclosed-resource",
+      "languages": [
+        "java"
+      ],
+      "severity": "WARNING",
+      "message": "Resource opened but never closed in-file; use try-with-resources.",
+      "cwe": "404",
+      "attack": "resource_leak",
+      "mode": "search",
+      "resource_check": true,
+      "patterns": [
+        "."
+      ],
+      "source": "native-addition:spotbugs-OBL"
+    }
+  ]
+}

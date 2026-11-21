@@ -1,0 +1,11 @@
+[
+  {
+    "id": "gen-code-exec",
+    "cwe": "CWE-94",
+    "attack": "code",
+    "severity": "medium",
+    "sources": ["request", "input\\s*\\(", "argv", "\\$_(GET|POST|REQUEST)"],
+    "sinks": ["\\beval\\s*\\("],
+    "sanitizers": []
+  }
+]

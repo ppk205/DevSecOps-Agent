@@ -11,7 +11,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
-from pydantic import Field
+from pydantic import Field, field_validator, model_validator
 
 from ._base import VersionedModel
 from .enums import CWECategory, EvidenceStrength, Severity, VerificationOutcome
@@ -28,10 +28,9 @@ class CVSSAssessment(VersionedModel):
         ...,
         description=(
             "CVSS v4.0 vector string, e.g. "
-            "'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H'. "
+            "'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N'. "
             "Malformed vectors are rejected before persistence."
         ),
-        pattern=r"^CVSS:4\.0/AV:[NALP]/AC:[LH]/AT:[NPQ]/PR:[NLH]/UI:[NP]/VC:[HLN]",
     )
     version: str = Field(
         default="4.0",
@@ -55,6 +54,51 @@ class CVSSAssessment(VersionedModel):
         default="",
         description="Rationale for metric choices (e.g. why PR:L).",
     )
+    overall_score: float | None = Field(default=None, ge=0.0, le=10.0)
+    base_rating: str = ""
+    overall_rating: str = ""
+    nomenclature: str = "CVSS-B"
+    calculation_source: str = "FIRST CVSS v4.0"
+    metric_assumptions_verified: bool = False
+
+    @field_validator("vector")
+    @classmethod
+    def valid_vector(cls, value: str) -> str:
+        from vulnscan.assessment.cvss import validate
+
+        errors = validate(value)
+        if errors:
+            raise ValueError("; ".join(errors))
+        return value
+
+    @model_validator(mode="after")
+    def deterministic_scores(self) -> CVSSAssessment:
+        from vulnscan.assessment.cvss import Severity as CVSSSeverity
+        from vulnscan.assessment.cvss import score
+
+        result = score(self.vector)
+        qualitative = (
+            Severity.INFO
+            if result.qualitative == CVSSSeverity.NONE
+            else Severity(result.qualitative.value.lower())
+            if result.qualitative is not None
+            else None
+        )
+        # Assignment validation must not recurse; caller/model numbers never win.
+        for name, value in {
+            "base_score": result.base_score,
+            "qualitative": qualitative,
+            "overall_score": result.overall_score,
+            "base_rating": result.qualitative.value if result.qualitative else "",
+            "overall_rating": result.overall_qualitative.value
+            if result.overall_qualitative
+            else "",
+            "nomenclature": result.nomenclature,
+            "calculation_source": "FIRST CVSS v4.0",
+            "metric_assumptions_verified": False,
+        }.items():
+            object.__setattr__(self, name, value)
+        return self
 
 
 class Assessment(VersionedModel):

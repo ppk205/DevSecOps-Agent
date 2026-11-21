@@ -1,0 +1,250 @@
+{
+  "language": "csharp",
+  "rules": [
+    {
+      "id": "cs-sql-concatenation",
+      "languages": ["csharp"],
+      "severity": "ERROR",
+      "message": "SQL built with string concatenation; use SqlParameter bindings.",
+      "cwe": "89",
+      "attack": "sql_injection",
+      "patterns": [
+        "new\\s+SqlCommand\\s*\\([^)]*\\+",
+        "\\$\"[^\"]*SELECT",
+        "string\\.Format\\s*\\([^)]*SELECT"
+      ],
+      "taint_sinks": [
+        "new\\s+SqlCommand\\s*\\(",
+        "ExecuteReader\\s*\\(",
+        "ExecuteNonQuery\\s*\\(",
+        "ExecuteScalar\\s*\\("
+      ],
+      "mode": "search"
+    },
+    {
+      "id": "cs-command-injection",
+      "languages": ["csharp"],
+      "severity": "ERROR",
+      "message": "Request data reaches a child process; avoid shell strings, pin the binary.",
+      "cwe": "78",
+      "attack": "command_injection",
+      "patterns": [
+        "Process\\.Start\\s*\\(",
+        "new\\s+ProcessStartInfo\\s*\\("
+      ],
+      "taint_sinks": [
+        "Process\\.Start\\s*\\(",
+        "new\\s+ProcessStartInfo\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "cs-reflected-xss",
+      "languages": ["csharp"],
+      "severity": "ERROR",
+      "message": "Request data written to the response; encode with HtmlEncoder/WebUtility.",
+      "cwe": "79",
+      "attack": "xss",
+      "patterns": [
+        "Response\\.Write\\s*\\(",
+        "Html\\.Raw\\s*\\("
+      ],
+      "taint_sinks": [
+        "Response\\.Write\\s*\\(",
+        "Html\\.Raw\\s*\\(",
+        "new\\s+HtmlString\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "cs-path-traversal",
+      "languages": ["csharp"],
+      "severity": "ERROR",
+      "message": "File path includes externally controlled input; validate or confine it.",
+      "cwe": "22",
+      "attack": "path_traversal",
+      "patterns": [
+        "File\\.(ReadAllText|ReadAllBytes|Open|OpenRead|WriteAllText)\\s*\\(",
+        "new\\s+FileStream\\s*\\("
+      ],
+      "taint_sinks": [
+        "File\\.ReadAllText\\s*\\(",
+        "File\\.ReadAllBytes\\s*\\(",
+        "File\\.Open",
+        "new\\s+FileStream\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "cs-ssrf",
+      "languages": ["csharp"],
+      "severity": "ERROR",
+      "message": "Request data used as an outbound URL; allowlist the target host.",
+      "cwe": "918",
+      "attack": "ssrf",
+      "patterns": [
+        "GetAsync\\s*\\(",
+        "PostAsync\\s*\\(",
+        "WebRequest\\.Create\\s*\\(",
+        "DownloadString\\s*\\("
+      ],
+      "taint_sinks": [
+        "GetAsync\\s*\\(",
+        "PostAsync\\s*\\(",
+        "GetStringAsync\\s*\\(",
+        "WebRequest\\.Create\\s*\\(",
+        "DownloadString\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "cs-open-redirect",
+      "languages": ["csharp"],
+      "severity": "WARNING",
+      "message": "Redirect target comes from the request; use LocalRedirect or an allowlist.",
+      "cwe": "601",
+      "attack": "open_redirect",
+      "patterns": [
+        "Redirect\\s*\\(",
+        "RedirectToAction\\s*\\(",
+        "LocalRedirect\\s*\\("
+      ],
+      "taint_sinks": [
+        "Redirect\\s*\\(",
+        "RedirectToAction\\s*\\(",
+        "LocalRedirect\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "cs-ldap-injection",
+      "languages": ["csharp"],
+      "severity": "ERROR",
+      "message": "Request data in an LDAP filter; escape with LdapEncoder or a safe API.",
+      "cwe": "90",
+      "attack": "ldap_injection",
+      "patterns": [
+        "\\.Filter\\s*="
+      ],
+      "taint_sinks": [
+        "\\.Filter\\s*="
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "cs-xpath-injection",
+      "languages": ["csharp"],
+      "severity": "ERROR",
+      "message": "Request data in an XPath expression; parameterize or precompile it.",
+      "cwe": "643",
+      "attack": "xpath_injection",
+      "patterns": [
+        "SelectNodes\\s*\\(",
+        "SelectSingleNode\\s*\\("
+      ],
+      "taint_sinks": [
+        "SelectNodes\\s*\\(",
+        "SelectSingleNode\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "cs-xxe",
+      "languages": ["csharp"],
+      "severity": "ERROR",
+      "message": "XML parsed from the request; prohibit DTDs (DtdProcessing.Prohibit).",
+      "cwe": "611",
+      "attack": "xxe",
+      "patterns": [
+        "\\.LoadXml\\s*\\(",
+        "new\\s+XmlTextReader\\s*\\(",
+        "XmlReader\\.Create\\s*\\("
+      ],
+      "taint_sinks": [
+        "\\.LoadXml\\s*\\(",
+        "new\\s+XmlTextReader\\s*\\(",
+        "XmlReader\\.Create\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "cs-weak-hash",
+      "languages": ["csharp"],
+      "severity": "WARNING",
+      "message": "MD5/SHA-1 is broken for security use; use SHA-256 or better.",
+      "cwe": "327",
+      "attack": "crypto",
+      "patterns": [
+        "MD5\\.Create\\s*\\(",
+        "SHA1\\.Create\\s*\\(",
+        "new\\s+MD5CryptoServiceProvider\\s*\\(",
+        "new\\s+SHA1Managed\\s*\\("
+      ],
+      "mode": "search"
+    },
+    {
+      "id": "cs-deserialization",
+      "languages": ["csharp"],
+      "severity": "ERROR",
+      "message": "BinaryFormatter/JavaScriptSerializer on request data; use System.Text.Json.",
+      "cwe": "502",
+      "attack": "deserialization",
+      "patterns": [
+        "BinaryFormatter",
+        "JavaScriptSerializer",
+        "LosFormatter"
+      ],
+      "taint_sinks": [
+        "\\.Deserialize\\s*\\("
+      ],
+      "mode": "search"
+    },
+    {
+      "id": "cs-insecure-random",
+      "languages": ["csharp"],
+      "severity": "WARNING",
+      "message": "System.Random is not secure for tokens; use RandomNumberGenerator.",
+      "cwe": "330",
+      "attack": "crypto",
+      "patterns": [
+        "new\\s+Random\\s*\\("
+      ],
+      "mode": "search"
+    },
+    {
+      "id": "cs-header-injection",
+      "languages": ["csharp"],
+      "severity": "WARNING",
+      "message": "Request data placed in a response header; strip CR/LF first.",
+      "cwe": "113",
+      "attack": "header_injection",
+      "patterns": [
+        "Headers\\.Add\\s*\\(",
+        "AppendHeader\\s*\\("
+      ],
+      "taint_sinks": [
+        "Headers\\.Add\\s*\\(",
+        "AppendHeader\\s*\\("
+      ],
+      "mode": "taint"
+    },
+    {
+      "id": "cs-code-injection",
+      "languages": ["csharp"],
+      "severity": "ERROR",
+      "message": "Request data compiled as C#; never compile untrusted code.",
+      "cwe": "94",
+      "attack": "code_injection",
+      "patterns": [
+        "CSharpScript\\.Evaluate",
+        "CodeDomProvider",
+        "CSharpCodeProvider"
+      ],
+      "taint_sinks": [
+        "CSharpScript\\.Evaluate\\w*\\s*\\(",
+        "\\.CompileAssemblyFromSource\\s*\\("
+      ],
+      "mode": "taint"
+    }
+  ]
+}

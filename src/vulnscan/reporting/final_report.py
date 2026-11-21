@@ -1,13 +1,13 @@
-"""Final AI-written vulnerability report (+ deterministic fallback).
+"""Báo cáo lỗ hổng cuối cùng do AI viết (+ dự phòng tất định).
 
-The narrative report is the last stage of the pipeline: after scanners,
-Laya routing, model review, and independent validation, one bounded model
-call turns the *validated* findings into a human-readable report
-(txt/md/docx renderings share this single source).
+Báo cáo diễn giải là giai đoạn cuối của pipeline: sau các scanner,
+định tuyến Laya, đánh giá của model, và xác thực độc lập, một lượt gọi
+model có giới hạn sẽ chuyển các finding *đã xác thực* thành báo cáo cho con người đọc
+(các bản render txt/md/docx đều dùng chung nguồn duy nhất này).
 
-When no provider is configured the stage is skipped and the deterministic
-Markdown/HTML/SARIF/JSON renderings remain the report of record — the
-baseline never pretends to be AI-written.
+Khi không có provider nào được cấu hình, giai đoạn này sẽ được bỏ qua và các bản
+render tất định Markdown/HTML/SARIF/JSON vẫn là báo cáo chuẩn — baseline
+không bao giờ giả vờ là do AI viết.
 """
 
 from __future__ import annotations
@@ -18,9 +18,11 @@ from collections.abc import Sequence
 from typing import Any
 
 from vulnscan.contracts.finding import Finding
+from vulnscan.core.security import sanitize
 from vulnscan.providers.budget import BudgetManager
 from vulnscan.providers.client import ChatMessage, ProviderClient
 from vulnscan.providers.profile_store import load_profile
+from vulnscan.reporting.owasp import append_to_narrative, markdown_section
 
 logger = logging.getLogger(__name__)
 
@@ -67,15 +69,16 @@ def model_only_track_paragraph(
     comparison: dict[str, Any] | None,
     run_metadata: dict[str, Any] | None = None,
 ) -> str:
-    """One-paragraph model-only track summary; ``""`` when nothing to say.
+    """Tóm tắt một đoạn về nhánh chỉ có model; trả về ``""`` khi không có gì để thông báo.
 
-    Counts agreed / model-only / scanner-only (from ``counts``, falling back
-    to bucket lengths) plus per-pass candidate counts when the hunt summary
-    carries them. Tolerant of missing keys everywhere — never raises.
+    Đếm các finding agreed / model-only / scanner-only (từ ``counts``, dự phòng
+    bằng độ dài bucket) cộng với số lượng ứng viên theo từng lượt khi phần tóm tắt hunt
+    có chứa chúng. Chấp nhận các khóa bị thiếu ở mọi nơi — không bao giờ ném ngoại lệ.
     """
     comp = comparison if isinstance(comparison, dict) else {}
     meta = run_metadata if isinstance(run_metadata, dict) else {}
-    counts = comp.get("counts") if isinstance(comp.get("counts"), dict) else {}
+    raw_counts = comp.get("counts")
+    counts = raw_counts if isinstance(raw_counts, dict) else {}
 
     def _num(key: str, bucket: Any) -> int:
         try:
@@ -125,7 +128,7 @@ def model_only_track_paragraph(
 
 
 def comparison_section(comparison: dict[str, Any] | None) -> str:
-    """Vietnamese model-vs-scanner compare block; empty when no comparison."""
+    """Khối so sánh model và scanner bằng tiếng Việt; rỗng khi không có so sánh."""
     if not comparison:
         return ""
     counts = comparison.get("counts", {}) or {}
@@ -181,6 +184,8 @@ def build_report_prompt(
         "## Kết luận & bước tiếp theo\n"
         "Keep it factual and bounded: only confirmed/rejected/unresolved "
         "findings listed above."
+        " Do not write an OWASP Top 10 section or invent category mappings or counts; "
+        "the application appends that section deterministically from normalized CWEs."
     )
     if comparison:
         section = comparison_section(comparison)
@@ -205,7 +210,7 @@ def deterministic_narrative(
     *,
     comparison: dict[str, Any] | None = None,
 ) -> str:
-    """Template fallback used when no provider is configured."""
+    """Template dự phòng được sử dụng khi không có provider nào được cấu hình."""
     by_id = {str(d.get("finding_id")): d for d in decisions}
     lines = [
         "# Báo cáo lỗ hổng (tổng hợp từ evidence, chưa qua AI)",
@@ -227,7 +232,7 @@ def deterministic_narrative(
         dec = by_id.get(f.finding_id, {})
         lines.append(f"## {f.title} [{f.status.value}]")
         lines.append(
-            f"CWE-{f.cwe_category.value if f.cwe_category else 'n/a'} | severity={f.severity.value}"
+            f"{f.cwe_category.value if f.cwe_category else 'Unclassified'} | severity={f.severity.value}"
         )
         for o in f.observations[:5]:
             if o.location:
@@ -235,7 +240,7 @@ def deterministic_narrative(
         if dec.get("rationale"):
             lines.append(f"Validator: {dec['rationale']}")
         lines.append("")
-    return "\n".join(lines)
+    return str(sanitize("\n".join(lines))).rstrip() + "\n\n" + markdown_section(findings) + "\n"
 
 
 def run_final_report(
@@ -248,7 +253,7 @@ def run_final_report(
     budget: BudgetManager | None = None,
     comparison: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """One bounded model call → narrative Markdown. Never raises."""
+    """Một lượt gọi model có giới hạn → Markdown diễn giải. Không bao giờ ném ngoại lệ."""
     report: dict[str, Any] = {
         "stage": "final_report",
         "status": "skipped",
@@ -278,11 +283,17 @@ def run_final_report(
         report["provider"] = profile.id
         report["ai_written"] = True
         if resp.content.strip():
+            report["markdown"] = append_to_narrative(resp.content, findings)
             report["status"] = "completed"
-            report["detail"] = f"{resp.usage.get('total_tokens', 0)} tokens"
+            reported_tokens = resp.usage.get("total_tokens")
+            report["detail"] = (
+                f"{reported_tokens} reported tokens"
+                if type(reported_tokens) is int
+                else "Token count unavailable"
+            )
         else:
-            # Empty model reply: keep a deterministic narrative so the
-            # report file is never 0 bytes; mark partial, not failed.
+            # Phản hồi của model rỗng: duy trì phần diễn giải tất định để
+            # file báo cáo không bao giờ có kích thước 0 byte; đánh dấu partial chứ không phải failed.
             report["markdown"] = deterministic_narrative(
                 findings, decisions, run_metadata, comparison=comparison
             )

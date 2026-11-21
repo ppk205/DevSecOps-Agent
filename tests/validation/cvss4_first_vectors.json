@@ -1,0 +1,81 @@
+{
+  "source_commit": "c5b0d409ae9f57c44264c6ce5f27d89298e1d32a",
+  "source": "https://github.com/FIRSTdotorg/cvss-v4-calculator",
+  "cases": [
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+      "base_score": 9.3,
+      "overall_score": 9.3
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H",
+      "base_score": 10,
+      "overall_score": 10
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:A/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+      "base_score": 8.6,
+      "overall_score": 8.6
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:N/SC:N/SI:N/SA:N",
+      "base_score": 0,
+      "overall_score": 0
+    },
+    {
+      "vector": "CVSS:4.0/AV:P/AC:H/AT:P/PR:H/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+      "base_score": 5.4,
+      "overall_score": 5.4
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:P",
+      "base_score": 9.3,
+      "overall_score": 8.9
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:U",
+      "base_score": 9.3,
+      "overall_score": 8.1
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X",
+      "base_score": 9.3,
+      "overall_score": 9.3
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/CR:L/IR:L/AR:L",
+      "base_score": 9.3,
+      "overall_score": 8.9
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/MAV:P/MAC:H/MAT:P/MPR:H/MUI:A",
+      "base_score": 9.3,
+      "overall_score": 5.4
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/MVC:N/MVI:N/MVA:N",
+      "base_score": 9.3,
+      "overall_score": 0
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/MSI:S/MSA:S",
+      "base_score": 9.3,
+      "overall_score": 10
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:P/CR:L/IR:M/AR:H/MAV:A/MSI:S",
+      "base_score": 9.3,
+      "overall_score": 9.2
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/S:P/AU:Y/R:I/V:C/RE:H/U:Red",
+      "base_score": 9.3,
+      "overall_score": 9.3
+    },
+    {
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:N/SC:N/SI:N/SA:N/MVI:H",
+      "base_score": 0,
+      "overall_score": 8.7
+    }
+  ]
+}
