@@ -450,7 +450,7 @@ def run_ai_review(
     validator = IndependentValidator()
     by_id = {f.finding_id: f for f in findings}
     failures = 0
-    for finding in targets:
+    def _investigate_one(finding: Finding) -> tuple[Finding, Assessment]:
         context = {"policy": {}, "source_index": {"snapshot": str(snapshot_root)}}
         assessment = loop.investigate(finding, context)
         _, _, _, explicit = parse_verdict_text(assessment.rationale)
@@ -461,6 +461,17 @@ def run_ai_review(
             single = single_shot_verdict(client, finding, str(snapshot_root), profile, model)
             if single is not None:
                 assessment = single
+        return finding, assessment
+
+    if len(targets) > 1:
+        from concurrent.futures import ThreadPoolExecutor
+
+        with ThreadPoolExecutor(max_workers=min(4, len(targets))) as pool:
+            investigated = list(pool.map(_investigate_one, targets))
+    else:
+        investigated = [_investigate_one(f) for f in targets]
+
+    for finding, assessment in investigated:
         records = evidence_for(finding, assessment, finding.run_id)
         decision = validator.validate(finding.finding_id, finding.status, assessment, records)
         assessment.validation_outcome = decision.outcome

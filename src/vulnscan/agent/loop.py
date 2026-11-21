@@ -172,22 +172,29 @@ class AgentLoop:
                 )
             )
 
-            for tc in resp.tool_calls:
+            def _exec_tc(tc: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
                 tool_name = tc["function"]["name"]
                 if tool_name not in TOOL_NAME_SET:
-                    tool_result = {"error": f"Tool '{tool_name}' is not registered."}
-                else:
-                    try:
-                        args = json.loads(tc["function"]["arguments"])
-                        handler = self.tool_handlers.get(tool_name)
-                        if handler:
-                            tool_result = handler(args)
-                        else:
-                            tool_result = {"error": f"No handler for tool '{tool_name}'."}
-                    except Exception as exc:  # noqa: BLE001 - arbitrary tool handler boundary
-                        logger.warning("Tool %s failed: %s", tool_name, exc)
-                        tool_result = {"error": str(exc)}
+                    return tc, {"error": f"Tool '{tool_name}' is not registered."}
+                try:
+                    args = json.loads(tc["function"]["arguments"])
+                    handler = self.tool_handlers.get(tool_name)
+                    if handler:
+                        return tc, handler(args)
+                    return tc, {"error": f"No handler for tool '{tool_name}'."}
+                except Exception as exc:  # noqa: BLE001 - arbitrary tool handler boundary
+                    logger.warning("Tool %s failed: %s", tool_name, exc)
+                    return tc, {"error": str(exc)}
 
+            if len(resp.tool_calls) > 1:
+                from concurrent.futures import ThreadPoolExecutor
+
+                with ThreadPoolExecutor(max_workers=min(4, len(resp.tool_calls))) as pool:
+                    executed = list(pool.map(_exec_tc, resp.tool_calls))
+            else:
+                executed = [_exec_tc(tc) for tc in resp.tool_calls]
+
+            for tc, tool_result in executed:
                 messages.append(
                     ChatMessage(
                         role="tool",
