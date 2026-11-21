@@ -189,6 +189,7 @@ class ScannerToolService:
             else _ADHOC_COMMIT_SHA
         )
         self.semgrep: ScannerAdapter = semgrep_adapter or SemgrepAdapter()
+        self.semgrep.default_timeout = 60.0
         self.codeql: ScannerAdapter = codeql_adapter or CodeQLAdapter()
         self.codeql.default_timeout = 75.0
         self.owasp: ScannerAdapter = owasp_adapter or DependencyCheckAdapter()
