@@ -284,12 +284,22 @@ class ScannerToolService:
                 self._cached_observations.append(obs)
                 existing_ids.add(obs.observation_id)
 
+    def _bundled_semgrep_pack(self, language: str | None) -> list[str]:
+        rules_dir = Path(__file__).with_name("rules")
+        fam = normalize_language_family(language)
+        if fam:
+            bundled = _BUNDLED_SEMGREP_RULES.get(fam)
+            if bundled and (rules_dir / bundled).is_file():
+                return [str(rules_dir / bundled)]
+        return []
+
     def _resolve_semgrep_rule_paths(
         self,
         ruleset: str | None,
         language: str | None,
     ) -> list[str]:
         rules_dir = Path(__file__).with_name("rules")
+        bundled = self._bundled_semgrep_pack(language)
         if ruleset and ruleset.strip():
             raw = ruleset.strip()
             local_pack = rules_dir / (raw if raw.endswith(".yml") else f"{raw}.yml")
@@ -303,16 +313,16 @@ class ScannerToolService:
             candidate_path = Path(raw)
             if candidate_path.is_file():
                 return [str(candidate_path)]
-            # Non-existent symbolic ruleset names invented by LLMs (e.g.
-            # "security-audit", "default", "owasp") fall through to the
-            # language-matched bundled rule pack below so offline Semgrep
-            # never fails with exit code 7.
+            # Explicit Semgrep registry pack (e.g. p/owasp-top-ten, p/java):
+            # combine with the bundled offline pack; run_semgrep falls back
+            # automatically to bundled-only if offline or registry fails.
+            if raw.startswith(("p/", "r/")):
+                return [*bundled, raw]
 
+        if bundled:
+            return bundled
         fam = normalize_language_family(language)
         if fam:
-            bundled = _BUNDLED_SEMGREP_RULES.get(fam)
-            if bundled and (rules_dir / bundled).is_file():
-                return [str(rules_dir / bundled)]
             community = _SEMGREP_COMMUNITY_PACKS.get(fam)
             if community:
                 return [community]
@@ -383,6 +393,27 @@ class ScannerToolService:
             options={"target_path": rel},
         )
         result = self.semgrep.run(spec, workdir=str(self.snapshot_root))
+        # If a remote registry pack (p/... or r/...) failed (e.g. offline),
+        # fall back cleanly to the bundled offline YAML pack.
+        if (
+            result.status == RunStatus.FAILED
+            and any(p.startswith(("p/", "r/")) for p in rule_paths)
+        ):
+            fallback_rules = self._bundled_semgrep_pack(fam)
+            if fallback_rules:
+                fallback_spec = self._build_spec(
+                    ToolName.SEMGREP,
+                    language=fam or "java",
+                    rule_paths=fallback_rules,
+                    options={"target_path": rel},
+                )
+                fallback_res = self.semgrep.run(fallback_spec, workdir=str(self.snapshot_root))
+                if fallback_res.status != RunStatus.FAILED:
+                    fallback_res.warnings.append(
+                        f"registry ruleset '{ruleset}' unavailable offline; used bundled pack"
+                    )
+                    result = fallback_res
+
         self._record_result(f"semgrep:{rel}:{ruleset or fam or 'default'}", result)
         payload = extract_scanner_result(
             result,

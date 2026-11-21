@@ -27,13 +27,16 @@ _HUNT_SYSTEM = (
     "use them to discover sources, invoke targeted scanners, and confirm tainted flows "
     "into dangerous sinks (SQL, XSS, CMDi, XXE, deserialization, memory safety, "
     "hardcoded secrets, vulnerable dependencies, missing auth). Do not invent "
-    "code, files, or evidence. End with a single JSON array and nothing "
+    "code, files, or evidence. Report EVERY distinct exploitable vulnerability "
+    "(unique file + line + CWE) — do NOT drop real vulnerabilities merely because "
+    "similar patterns repeat across multiple files or appear inside lesson/benchmark "
+    "directories. End with a single JSON array and nothing "
     "else, schema: [{"
     '"title": str, "file": str (repo-relative), "line": int, '
     "\"cwe\": str like 'CWE-89', "
     '"severity": "critical|high|medium|low|info", '
     '"rationale": str, "evidence": str (code excerpt)'
-    "}]. Missing evidence means 'unknown', never 'safe'. Max 20 items."
+    "}]. Missing evidence means 'unknown', never 'safe'. Max 60 items."
 )
 
 _HUNT_USER = (
@@ -425,7 +428,7 @@ def hunt_vulns(
     model: str | None,
     family: str = "java",
     max_rounds: int = 12,
-    max_findings: int = 20,
+    max_findings: int = 60,
     deep: bool = False,
     scanner_service: Any | None = None,
     tool_first: bool = False,
@@ -716,7 +719,7 @@ def hunt_vulns(
                 scanner_digest_lines: list[str] = []
                 if scanner_service is not None and hasattr(scanner_service, "query_findings"):
                     try:
-                        q_out = scanner_service.query_findings(max_items=80)
+                        q_out = scanner_service.query_findings(max_items=120)
                         for idx, item in enumerate(q_out.get("findings") or [], 1):
                             if not isinstance(item, dict):
                                 continue
@@ -737,9 +740,11 @@ def hunt_vulns(
                 if scanner_digest_lines:
                     evidence_parts.append(
                         "Raw observations from the security scanner tools you invoked "
-                        "(FILTER these: keep genuine vulnerabilities using their exact "
-                        "file, line, and cwe; drop false positives / benign patterns):\n"
-                        + "\n".join(scanner_digest_lines[:60])
+                        "(FILTER these: keep EVERY genuine vulnerability using its exact "
+                        "file, line, and cwe — including distinct vulnerable files in "
+                        "lesson/benchmark directories — and drop only false positives or "
+                        "benign third-party library code):\n"
+                        + "\n".join(scanner_digest_lines[:100])
                     )
                 if tool_evidence:
                     evidence_parts.append(
@@ -748,9 +753,9 @@ def hunt_vulns(
                 if closing_sweep:
                     evidence_parts.append(
                         "Sink sweep (context only, judge each line yourself):\n"
-                        + "\n".join(closing_sweep[:20])
+                        + "\n".join(closing_sweep[:25])
                     )
-                evidence_text = "\n\n".join(evidence_parts)[:12000]
+                evidence_text = "\n\n".join(evidence_parts)[:20000]
                 closing = client.chat(
                     [
                         ChatMessage(
@@ -759,10 +764,11 @@ def hunt_vulns(
                                 _HUNT_SYSTEM
                                 + f" Focus on {focus}. "
                                 + "Filter the raw scanner tool observations and code evidence: "
-                                + "confirm and include every genuine vulnerability (preserving "
+                                + "confirm and include EVERY genuine vulnerability (preserving "
                                 + "exact file path, line number, and CWE for confirmed scanner "
                                 + "hits, plus any additional logic vulnerabilities you found), "
-                                + "and exclude false positives. Up to 50 items allowed."
+                                + "do NOT drop real vulnerabilities in lesson/benchmark files, "
+                                + "and exclude only false positives. Up to 60 items allowed."
                             ),
                         ),
                         ChatMessage(
@@ -859,7 +865,7 @@ def hunt_all(
     families: list[str] | None = None,
     logic_pass: bool = True,
     max_rounds: int = 12,
-    max_findings: int = 60,
+    max_findings: int = 120,
     deep: bool = True,
     scanner_service: Any | None = None,
     tool_first: bool = False,

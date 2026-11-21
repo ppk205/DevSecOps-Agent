@@ -65,7 +65,13 @@ def _local(tag: str) -> str:
 
 
 def parse_pom_xml(text: str, *, manifest: str) -> list[OsvPackage]:
-    """Parse Maven ``pom.xml`` dependencies into OSV packages (ecosystem Maven)."""
+    """Parse Maven ``pom.xml`` dependencies into OSV packages (ecosystem Maven).
+
+    Resolves ``${property}`` placeholders from ``<properties>`` (plus
+    ``project.version`` / ``project.parent.version``) and includes the
+    ``<parent>`` BOM coordinate when pinned so pre-build SCA works without
+    running Maven.
+    """
     # stdlib ElementTree does not fetch external entities, but internal
     # ``<!ENTITY`` expansions (billion laughs) come from the scanned repo
     # itself, so refuse entity declarations outright before parsing.
@@ -75,7 +81,53 @@ def parse_pom_xml(text: str, *, manifest: str) -> list[OsvPackage]:
         root = ET.fromstring(text)
     except ET.ParseError:
         return []
+
+    props: dict[str, str] = {}
+    parent_fields: dict[str, str] = {}
+    for child in root:
+        tag = _local(child.tag)
+        if tag == "version" and (child.text or "").strip():
+            props["project.version"] = (child.text or "").strip()
+        elif tag == "parent":
+            for pchild in child:
+                parent_fields[_local(pchild.tag)] = (pchild.text or "").strip()
+            if parent_fields.get("version"):
+                props["project.parent.version"] = parent_fields["version"]
+                props.setdefault("project.version", parent_fields["version"])
+        elif tag == "properties":
+            for prop in child:
+                val = (prop.text or "").strip()
+                if val:
+                    props[_local(prop.tag)] = val
+
+    def _resolve_props(raw: str) -> str:
+        val = raw.strip()
+        for _ in range(3):
+            if "${" not in val:
+                break
+            updated = re.sub(
+                r"\$\{([^}]+)\}",
+                lambda m: props.get(m.group(1).strip(), m.group(0)),
+                val,
+            )
+            if updated == val:
+                break
+            val = updated
+        return val
+
     packages: list[OsvPackage] = []
+    seen: set[tuple[str, str]] = set()
+
+    if parent_fields.get("artifactId") and parent_fields.get("version"):
+        p_ver = _resolve_props(parent_fields["version"])
+        if p_ver and "$" not in p_ver:
+            p_group = parent_fields.get("groupId", "")
+            p_name = f"{p_group}:{parent_fields['artifactId']}" if p_group else parent_fields["artifactId"]
+            seen.add((p_name, p_ver))
+            packages.append(
+                OsvPackage(ecosystem="Maven", name=p_name, version=p_ver, manifest=manifest)
+            )
+
     for node in root.iter():
         if _local(node.tag) != "dependency":
             continue
@@ -83,11 +135,15 @@ def parse_pom_xml(text: str, *, manifest: str) -> list[OsvPackage]:
         for child in node:
             fields[_local(child.tag)] = (child.text or "").strip()
         artifact = fields.get("artifactId", "")
-        version = fields.get("version", "")
+        version = _resolve_props(fields.get("version", ""))
         if not artifact or not version or "$" in version:
             continue
         group = fields.get("groupId", "")
         name = f"{group}:{artifact}" if group else artifact
+        key = (name, version)
+        if key in seen:
+            continue
+        seen.add(key)
         packages.append(
             OsvPackage(ecosystem="Maven", name=name, version=version, manifest=manifest)
         )

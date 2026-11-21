@@ -242,3 +242,65 @@ class TestScannerToolService:
         assert res["status"] == "completed"
         assert res["returned"] >= 1
         assert any("vuln.py" in f["file"] for f in res["findings"])
+
+    def test_semgrep_registry_pack_falls_back_to_bundled_offline(self, tmp_path: Path) -> None:
+        """Explicit p/ ruleset combines with bundled pack and falls back cleanly if offline."""
+        (tmp_path / "App.java").write_text("class App {}", encoding="utf-8")
+        seen_specs: list[list[str]] = []
+
+        def _fake_run(spec, *, workdir):
+            rule_paths = list(spec.tools[0].rule_paths)
+            seen_specs.append(rule_paths)
+            if any(p.startswith("p/") for p in rule_paths):
+                return ScannerResult(
+                    run_id=spec.run_id or "r",
+                    tool=ToolName.SEMGREP,
+                    tool_version="1.178.0",
+                    adapter_version="0.2.0",
+                    status=RunStatus.FAILED,
+                    started_at=datetime.now(UTC),
+                    finished_at=datetime.now(UTC),
+                    errors=["offline registry unreachable"],
+                )
+            return _fake_result(
+                ToolName.SEMGREP, [_obs("obs-sg-1", ToolName.SEMGREP, "java-sqli", "App.java", 1)]
+            )
+
+        mock_sg = MagicMock()
+        mock_sg.run.side_effect = _fake_run
+        svc = ScannerToolService(tmp_path, semgrep_adapter=mock_sg)
+
+        out = svc.run_semgrep(target_path="App.java", ruleset="p/owasp-top-ten", language="java")
+        assert out["status"] == "completed"
+        assert out["returned"] == 1
+        assert len(seen_specs) == 2
+        assert "p/owasp-top-ten" in seen_specs[0]
+        assert all(not p.startswith("p/") for p in seen_specs[1])
+
+    def test_parse_pom_xml_interpolates_properties_and_parent(self) -> None:
+        """parse_pom_xml resolves ${property} versions and includes <parent> BOM."""
+        from vulnscan.scanners.osv_adapter import parse_pom_xml
+
+        pom = """
+        <project xmlns="http://maven.apache.org/POM/4.0.0">
+          <parent>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-parent</artifactId>
+            <version>3.2.5</version>
+          </parent>
+          <properties>
+            <hsqldb.version>2.7.2</hsqldb.version>
+          </properties>
+          <dependencies>
+            <dependency>
+              <groupId>org.hsqldb</groupId>
+              <artifactId>hsqldb</artifactId>
+              <version>${hsqldb.version}</version>
+            </dependency>
+          </dependencies>
+        </project>
+        """
+        pkgs = parse_pom_xml(pom, manifest="pom.xml")
+        coords = {(p.name, p.version) for p in pkgs}
+        assert ("org.springframework.boot:spring-boot-starter-parent", "3.2.5") in coords
+        assert ("org.hsqldb:hsqldb", "2.7.2") in coords
