@@ -750,7 +750,9 @@ class ScanService:
                     session.add(stage_row)
                 stage_row.status = status
                 stage_row.error_message = event.message
-                if status != "running":
+                if status == "running" and stage_row.started_at is None:
+                    stage_row.started_at = datetime.now(UTC)
+                elif status != "running":
                     stage_row.completed_at = datetime.now(UTC)
                 saved = {
                     f.finding_id: f
@@ -1200,8 +1202,15 @@ class ScanService:
                     "checkout contents changed during scanning; retry from a stable checkout"
                 )
             if config.laya and not config.ci and findings:
-                persist("laya_batch_routing", "running", "Loading or running the advisory model")
-            routing, stage = pipeline.run_routing(findings)
+                persist(
+                    "laya_batch_routing",
+                    "running",
+                    f"Starting Laya worker ({advisory.device}); {len(findings)} findings queued",
+                )
+            routing, stage = pipeline.run_routing(
+                findings,
+                on_progress=lambda message: persist("laya_batch_routing", "running", message),
+            )
             if cancelled():
                 raise ScanCancelled()
             persist(stage.name, stage.status, stage.detail)

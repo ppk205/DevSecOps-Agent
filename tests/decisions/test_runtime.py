@@ -48,6 +48,7 @@ def test_production_backend_uses_one_batch_call():
 
 
 def test_qr21_missing_laya_does_not_start_a_worker_for_each_finding(mocker):
+    mocker.patch.object(laya, "_WORKER_PYTHON", sys.executable)
     availability = mocker.patch.object(laya.importlib.util, "find_spec", return_value=None)
     call = mocker.patch.object(laya._process_worker, "call")
     backend = LayaDecisionBackend()

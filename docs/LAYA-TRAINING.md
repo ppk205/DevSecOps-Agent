@@ -26,6 +26,12 @@ An explicit device in the scan configuration takes precedence over
 `LAYA_WORKER_PYTHON` can select a separate environment with Laya, PyTorch and
 the application package installed.
 
+On Windows source checkouts, Laya discovers the workspace worker installed
+under `.tools/laya-windows`, preferring its CUDA environment. An explicit
+`LAYA_WORKER_PYTHON` takes precedence. With Laya enabled, a dashboard scan
+starts the worker at the first routing batch and shows processed findings,
+the actual device, and backend errors as batches return.
+
 ## What the existing experiment shows
 
 `evidence/t09/eval_agentlabels.json` contains 29 findings from one project. Its

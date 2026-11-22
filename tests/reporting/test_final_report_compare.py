@@ -104,6 +104,22 @@ def test_report_prompt_carries_compare_counts():
     assert '"agreed": 1' in prompt
 
 
+def test_report_prompt_bounds_large_scans_and_keeps_totals():
+    findings = [
+        _finding().model_copy(update={"title": "x" * 5000, "finding_id": f"finding-{i:03}"})
+        for i in range(341)
+    ]
+    comparison = _comparison()
+    comparison["model_only"] *= 200
+    comparison["counts"]["model_only"] = 200
+    prompt = build_report_prompt(findings, [], {}, comparison=comparison)
+    assert len(prompt) <= 6000
+    assert '"confirmed": 341' in prompt and '"model_only": 200' in prompt
+    assert "finding-000" in prompt and "finding-340" not in prompt
+    assert "omitted from the model input" in prompt
+    assert "src/Config.java:7" not in prompt
+
+
 def test_empty_model_reply_falls_back_to_deterministic_narrative(monkeypatch):
     """Empty AI reply must not produce a 0-byte report: deterministic text + partial."""
     from vulnscan.reporting import final_report as fr_mod

@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Start the installed Laya worker automatically at routing and show batch
+  progress, the scan scenario, and outputs on the live dashboard.
+
+- Bound the final-report model prompt and render the full scanner comparison
+  locally.
+
+- Load saved provider credentials and model defaults before dashboard scans.
+
 - Add an AI benchmark comparison to Reports, including scanner coverage,
   measured time, request activity, and savings against the review baseline.
 - Allow an optional provider request cap shared across all model stages and

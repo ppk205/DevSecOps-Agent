@@ -7,6 +7,8 @@ generation makes no network request to look up a category and adds no model call
 
 HTML, Markdown, plain text and Word reports use the same data. The final
 narrative includes it when model support is available, disabled, empty or failed.
+AI narratives use a bounded finding sample. The application builds the OWASP
+section and the model-versus-scanner comparison from the full scan data.
 If the model writes its own OWASP Markdown section, the application replaces
 that section with the computed table. Report generation leaves finding status,
 independent validation decisions, scores, evidence and scan gates intact.

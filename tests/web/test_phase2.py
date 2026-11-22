@@ -248,7 +248,11 @@ class TestScans:
             "fail_on": "critical",
             "allow_cloud_model": True,
         }
-        assert client.post("/api/scans", json=body, headers=_csrf(client)).status_code == 200
+        response = client.post("/api/scans", json=body, headers=_csrf(client))
+        assert response.status_code == 200
+        scenario = client.get(f"/api/scans/{response.json()['run_id']}").json()["scenario"]
+        assert scenario["mode"] == "hunt" and scenario["laya"] is False
+        assert scenario["profile"] == "fast" and scenario["ai_report"] is False
         params = seen[0]
         assert params["allow_cloud_model"] is True
         assert params["commit"] == "a" * 40
@@ -287,6 +291,47 @@ class TestScans:
         allowed = {**base, "allow_cloud_model": True}
         _execute_web_scan(str(tmp_path / "x.db"), str(tmp_path), "web-4", allowed)
         assert captured[3]["mode"] == "hunt"
+
+    def test_ir11_worker_loads_saved_provider_before_scan(self, tmp_path, monkeypatch):
+        from types import SimpleNamespace
+
+        from vulnscan.core.scan_service import ScanService
+        from vulnscan.infra.envfile import EnvFile
+        from vulnscan.providers.credentials import load_api_key
+        from vulnscan.web.phase2_routes import _execute_web_scan
+
+        key_env = "WEB_WORKER_TEST_API_KEY"
+        monkeypatch.delenv(key_env, raising=False)
+
+        def load_saved_key(_store):
+            monkeypatch.setenv(key_env, "fixture-key")
+
+        observed = []
+
+        def run(_service, _checkout, config, **_kwargs):
+            observed.append((config.provider_model, load_api_key(key_env)))
+
+        monkeypatch.setattr(EnvFile, "load_into_environ", load_saved_key)
+        monkeypatch.setattr(ScanService, "run", run)
+        monkeypatch.setattr(
+            "vulnscan.core.source.resolve_source",
+            lambda *_args, **_kwargs: SimpleNamespace(checkout=str(tmp_path), commit="abc"),
+        )
+        _execute_web_scan(
+            str(tmp_path / "scan.db"),
+            str(tmp_path),
+            "web-key",
+            {
+                "checkout": str(tmp_path),
+                "repo": str(tmp_path),
+                "profile": "full",
+                "mode": "deterministic",
+                "ai_report": True,
+                "provider_profile": "offline-fixture",
+                "provider_model": "requested-model",
+            },
+        )
+        assert observed == [("requested-model", "fixture-key")]
 
     def test_create_hunt_requires_provider(
         self,

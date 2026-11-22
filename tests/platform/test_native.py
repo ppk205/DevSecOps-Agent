@@ -21,7 +21,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-def native(*args, slow=False):
+def native(*args, slow=False, timeout=30):
     env = {
         **os.environ,
         "DEVSECOPS_PYTHON": sys.executable,
@@ -36,7 +36,7 @@ def native(*args, slow=False):
         capture_output=True,
         text=True,
         encoding="utf-8",
-        timeout=30,
+        timeout=timeout,
         check=False,
     )
 
@@ -250,11 +250,16 @@ def test_fr70_native_scan_matches_python_findings_policy_and_history(
         assert Path(actual["reports"][fmt]).is_file()
     python_only_stages = {"model_hunt", "scanners", "final_report"}
     assert [e["stage"] for e in detail["events"]] == [
-        e["stage"] for e in baseline_detail["events"] if e["stage"] not in python_only_stages
+        e["stage"]
+        for e in baseline_detail["events"]
+        if e["stage"] not in python_only_stages
+        and not (e["stage"] == "laya_batch_routing" and " processed" in e["message"])
     ]
     history = native("scan-list", "--db-path", str(path), "--json")
     assert json.loads(history.stdout)[0]["run_id"] == actual["run_id"]
-    retry = native("scan-retry", actual["run_id"], "--db-path", str(path))
+    retry = native(
+        "scan-retry", actual["run_id"], "--db-path", str(path), timeout=180 if laya else 30
+    )
     assert retry.returncode == 0, retry.stderr + retry.stdout
     assert ScanService(str(path)).history()[0]["attempt"] == 2
 

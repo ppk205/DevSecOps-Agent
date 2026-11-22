@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import importlib
 import json
+import os
 import sys
 from contextlib import redirect_stdout
 from pathlib import Path
@@ -75,6 +76,11 @@ def _load_agent(laya: Any, root: Path, devices: tuple[str, ...]) -> tuple[Any, t
 
 
 def main() -> None:
+    worker_home = Path(sys.prefix).parent
+    cache = worker_home / "huggingface"
+    if worker_home.name == "laya-windows" and cache.is_dir() and not os.environ.get("HF_HOME"):
+        os.environ["HF_HOME"] = str(cache)
+        os.environ.setdefault("HF_HUB_OFFLINE", "1")
     agent: Any = None
     laya: Any = None
     root = Path()

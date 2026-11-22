@@ -471,7 +471,7 @@ def _execute_web_scan(
     Lỗi được ghi lại trên lượt chạy (không bao giờ im lặng): trang trực tiếp poll
     cùng run id và hiển thị lỗi thay vì quay vô tận.
     """
-    from vulnscan.core.config import resolve_config
+    from vulnscan.core.config import resolve_config, resolve_model_config
     from vulnscan.core.scan_service import ScanService
     from vulnscan.core.source import resolve_source
     from vulnscan.storage.database import get_session
@@ -525,6 +525,7 @@ def _execute_web_scan(
             tools=params.get("tools") or None,
             mode=mode,
         )
+        config = resolve_model_config(config)
     except Exception as exc:  # noqa: BLE001 - record config errors on the run, never raise from worker
         _fail(f"Invalid scan configuration: {exc}")
         return

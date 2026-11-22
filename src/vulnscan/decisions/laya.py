@@ -33,7 +33,21 @@ from .state import build_evidence_state, model_state
 _LOADER_TYPE = Callable[[], Any]
 
 
-_WORKER_PYTHON = os.environ.get("LAYA_WORKER_PYTHON", "").strip() or sys.executable
+def _worker_python() -> str:
+    configured = os.environ.get("LAYA_WORKER_PYTHON", "").strip()
+    if configured:
+        return configured
+    module = Path(__file__).resolve()
+    if sys.platform == "win32" and module.parents[2].name == "src":
+        root = module.parents[3] / ".tools" / "laya-windows"
+        for environment in (".venv-cuda", ".venv"):
+            python = root / environment / "Scripts" / "python.exe"
+            if python.is_file():
+                return str(python)
+    return sys.executable
+
+
+_WORKER_PYTHON = _worker_python()
 _process_worker = JSONWorker([_WORKER_PYTHON, "-m", "vulnscan.decisions.model_worker"])
 atexit.register(_process_worker.close)
 

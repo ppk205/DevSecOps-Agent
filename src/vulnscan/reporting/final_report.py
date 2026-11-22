@@ -17,6 +17,7 @@ import logging
 from collections.abc import Sequence
 from typing import Any
 
+from vulnscan.contracts.enums import FindingStatus, Severity
 from vulnscan.contracts.finding import Finding
 from vulnscan.core.security import sanitize
 from vulnscan.providers.budget import BudgetManager
@@ -27,18 +28,24 @@ from vulnscan.reporting.owasp import append_to_narrative, markdown_section
 logger = logging.getLogger(__name__)
 
 
+_REPORT_PROMPT_MAX_CHARS = 6000
+_REPORT_SAMPLE_LIMIT = 12
+_SEVERITY_ORDER = {severity: index for index, severity in enumerate(Severity)}
+
+
 def _finding_brief(f: Finding, decisions: dict[str, dict[str, Any]]) -> str:
-    locs = []
-    for o in f.observations[:3]:
-        if o.location:
-            locs.append(f"{o.location.file_path}:{o.location.line_start} [{o.rule_id}]")
-    dec = decisions.get(f.finding_id, {})
+    location = next((o.location for o in f.observations if o.location), None)
+    where = (
+        f"{location.file_path}:{location.line_start}"
+        if location and len(location.file_path) <= 240
+        else "unknown"
+    )
+    rationale = str(decisions.get(f.finding_id, {}).get("rationale") or "")[:160]
     return (
-        f"- {f.finding_id} | {f.title} | "
-        f"CWE-{f.cwe_category.value if f.cwe_category else 'n/a'} | "
-        f"severity={f.severity.value} | status={f.status.value} | "
-        f"validator: {(dec.get('rationale', '') or '')[:300]}\n"
-        f"  evidence: {'; '.join(locs) or 'no locations'}"
+        f"- {f.finding_id[:80]} | {f.title[:160]} | "
+        f"{f.cwe_category.value if f.cwe_category else 'unclassified'} | "
+        f"{f.severity.value}/{f.status.value} | {where}"
+        + (f" | validator: {rationale}" if rationale else "")
     )
 
 
@@ -162,45 +169,47 @@ def build_report_prompt(
     comparison: dict[str, Any] | None = None,
 ) -> str:
     by_id = {str(d.get("finding_id")): d for d in decisions}
-    briefs = "\n".join(_finding_brief(f, by_id) for f in findings) or "(no findings)"
     counts: dict[str, int] = {}
-    for f in findings:
-        counts[f.status.value] = counts.get(f.status.value, 0) + 1
-    prompt = (
-        "You are a security engineer writing the final vulnerability report "
-        "for a scan. Use ONLY the validated findings below — do not invent "
-        "vulnerabilities, files, or line numbers. Missing evidence means "
-        "'unknown', never 'safe'.\n\n"
-        f"Target: {run_metadata.get('target', 'local')} | "
-        f"commit: {run_metadata.get('commit', 'n/a')} | "
-        f"gate: {run_metadata.get('gate', 'n/a')}\n"
-        f"Status counts: {json.dumps(counts)}\n\n"
-        f"Validated findings:\n{briefs}\n\n"
-        "Write the report in Markdown with exactly these sections:\n"
-        "# Tóm tắt điều hành (2-4 câu, tiếng Việt)\n"
-        "## Phạm vi & phương pháp (nguồn evidence + Laya route + AI review, 1 đoạn ngắn)\n"
-        "## Phát hiện theo mức độ (confirmed trước, mỗi finding: tiêu đề, CWE, "
-        + "vị trí file:line, vì sao nguy hiểm, gợi ý khắc phục 1-2 dòng)\n"
-        "## Kết luận & bước tiếp theo\n"
-        "Keep it factual and bounded: only confirmed/rejected/unresolved "
-        "findings listed above."
-        " Do not write an OWASP Top 10 section or invent category mappings or counts; "
-        "the application appends that section deterministically from normalized CWEs."
+    for finding in findings:
+        counts[finding.status.value] = counts.get(finding.status.value, 0) + 1
+    header = (
+        "Summarize this scan in Vietnamese Markdown. Use only the supplied facts. "
+        "Missing evidence is unknown. Preserve finding statuses and exact locations. "
+        "Use four sections: Tóm tắt điều hành, Phạm vi và phương pháp, "
+        "Phát hiện ưu tiên, Kết luận và bước tiếp theo. "
+        "Comparison and OWASP details are rendered by the application.\n\n"
+        f"Target: {str(run_metadata.get('target', 'local'))[:240]} | "
+        f"commit: {str(run_metadata.get('commit', 'n/a'))[:80]} | "
+        f"gate: {str(run_metadata.get('gate', 'n/a'))[:40]}\n"
+        f"Status counts: {json.dumps(counts)}\n"
     )
-    if comparison:
-        section = comparison_section(comparison)
-        if section:
-            prompt = (
-                prompt + f"\nModel-vs-scanner comparison (JSON counts + buckets):\n"
-                f"{json.dumps(comparison.get('counts', {}))}\n"
-                f"{section}\n"
-                "Add a '## Đối chiếu model vs scanner' section to the report "
-                "covering agreed / model-only / scanner-only items.\n"
-            )
-        track = model_only_track_paragraph(comparison, run_metadata)
-        if track:
-            prompt = prompt + f"\nModel-only track summary (one short paragraph):\n{track}\n"
-    return prompt
+    if comparison and isinstance(comparison.get("counts"), dict):
+        totals = {
+            key: value
+            for key in ("agreed", "model_only", "scanner_only")
+            if type(value := comparison["counts"].get(key)) is int
+        }
+        if totals:
+            header += f"## Đối chiếu model vs scanner: {json.dumps(totals)}\n"
+
+    ordered = sorted(
+        findings,
+        key=lambda f: (f.status != FindingStatus.CONFIRMED, _SEVERITY_ORDER[f.severity]),
+    )
+    lines: list[str] = []
+    used = len(header) + 200  # Reserve space for the sample heading and omission notice.
+    for finding in ordered[:_REPORT_SAMPLE_LIMIT]:
+        line = _finding_brief(finding, by_id)
+        if used + len(line) + 1 > _REPORT_PROMPT_MAX_CHARS:
+            break
+        lines.append(line)
+        used += len(line) + 1
+    sample = "\n".join(lines) or "(no findings)"
+    omitted = len(findings) - len(lines)
+    return (
+        f"{header}\nFinding samples ({len(lines)} of {len(findings)}):\n{sample}\n"
+        f"{omitted} omitted from the model input. Full details are in the scan exports."
+    )
 
 
 def deterministic_narrative(
@@ -283,7 +292,12 @@ def run_final_report(
         report["provider"] = profile.id
         report["ai_written"] = True
         if resp.content.strip():
-            report["markdown"] = append_to_narrative(resp.content, findings)
+            comparison_text = comparison_section(comparison)
+            track = model_only_track_paragraph(comparison, run_metadata)
+            narrative = "\n\n".join(
+                part.strip() for part in (resp.content, comparison_text, track) if part.strip()
+            )
+            report["markdown"] = append_to_narrative(str(sanitize(narrative)), findings)
             report["status"] = "completed"
             reported_tokens = resp.usage.get("total_tokens")
             report["detail"] = (

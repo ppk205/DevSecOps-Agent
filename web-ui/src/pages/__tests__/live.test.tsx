@@ -47,6 +47,13 @@ describe("Phase 3 live pipeline (mock mode)", () => {
     expect(vectors[0]).toHaveTextContent("CVSS:4.0");
   });
 
+  it("describes the selected scenario and its outputs", async () => {
+    renderAt("/live");
+    expect(await screen.findByRole("heading", { name: "Scan scenario" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Scan outputs" })).toBeInTheDocument();
+    expect(screen.getByText(/Laya starts automatically at the routing stage/)).toBeInTheDocument();
+  });
+
   it("renders confirmed-first results with counters and the claim table", async () => {
     renderAt("/live");
     expect(await screen.findByTestId("results-counters", {}, { timeout: 8000 })).toBeInTheDocument();

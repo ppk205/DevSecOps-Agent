@@ -25,10 +25,11 @@ Các bảo đảm được thực thi tại đây:
 from __future__ import annotations
 
 import logging
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
+from time import monotonic
 from typing import Any
 
 from vulnscan.contracts import (
@@ -38,6 +39,7 @@ from vulnscan.contracts import (
     ScannerResult,
     ScanSpecification,
 )
+from vulnscan.contracts.decision import DecisionResult, DecisionStatus
 from vulnscan.normalization.dedup import deduplicate_findings
 from vulnscan.normalization.grouping import group_findings
 from vulnscan.normalization.normalizer import normalize_result
@@ -212,7 +214,12 @@ class ScanPipeline:
     # ------------------------------------------------------------------ #
     # Giai đoạn 2 — định tuyến theo lô mang tính tư vấn của Laya
     # ------------------------------------------------------------------ #
-    def run_routing(self, findings: Sequence[Finding]) -> tuple[list[dict[str, Any]], StageRecord]:
+    def run_routing(
+        self,
+        findings: Sequence[Finding],
+        *,
+        on_progress: Callable[[str], None] | None = None,
+    ) -> tuple[list[dict[str, Any]], StageRecord]:
         """Chỉ định tuyến mang tính tư vấn. Không bao giờ thay đổi trạng thái finding."""
         if not self.laya_config.enabled:
             return [], StageRecord(
@@ -237,6 +244,18 @@ class ScanPipeline:
             timeout_seconds=self.laya_config.timeout_seconds,
         )
         questions = build_triage_questions()
+        last_update = float("-inf")
+
+        def report_batch(done: int, total: int, results: list[DecisionResult]) -> None:
+            nonlocal last_update
+            if on_progress is None or (done < total and monotonic() - last_update < 5):
+                return
+            last_update = monotonic()
+            devices = sorted({r.device for r in results if r.status == DecisionStatus.COMPLETED})
+            errors = sorted({r.error_code for r in results if r.error_code})
+            outcome = ", ".join([*devices, *errors])
+            on_progress(f"{done}/{total} processed" + (f" · {outcome}" if outcome else ""))
+
         try:
             outcomes = triage_many_batched(
                 list(findings),
@@ -249,6 +268,7 @@ class ScanPipeline:
                 batch_size=self.laya_config.batch_size,
                 cache=self.cache if self.laya_config.cache_enabled else None,
                 max_input_tokens=self.laya_config.max_input_tokens,
+                on_batch=report_batch if on_progress is not None else None,
             )
         except (
             Exception
@@ -269,6 +289,10 @@ class ScanPipeline:
             if unavailable
             else f"{len(payloads)} routed"
         )
+        devices = sorted({p["device"] for p in payloads if p["decision_status"] == "completed"})
+        errors = sorted({p["error_code"] for p in unavailable if p.get("error_code")})
+        if devices or errors:
+            detail += " · " + ", ".join([*devices, *errors])
         return payloads, StageRecord(
             name=STAGE_ROUTING, status=status, detail=detail, finished_at=_utcnow()
         )

@@ -10,7 +10,7 @@ from __future__ import annotations
 import inspect
 import json
 import logging
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from typing import Any
 
 from vulnscan.contracts.decision import (
@@ -109,6 +109,7 @@ def triage_many_batched(
     batch_size: int = 4,
     cache: DecisionCache | None = None,
     max_input_tokens: int = MAX_INPUT_TOKENS,
+    on_batch: Callable[[int, int, list[DecisionResult]], None] | None = None,
 ) -> list[TriageOutcome]:
     """Định tuyến nhiều finding bằng cách sử dụng suy luận theo lô kết hợp bộ nhớ đệm theo trạng thái.
 
@@ -143,6 +144,9 @@ def triage_many_batched(
             if cache is not None:
                 cache.put(requests[index], result)
             outcomes[index] = _outcome(findings[index], requests[index], result, policy)
+        if on_batch is not None:
+            processed = len(findings) - len(pending) + start + len(chunk)
+            on_batch(processed, len(findings), results)
 
     return [outcome for outcome in outcomes if outcome is not None]
 

@@ -1014,12 +1014,34 @@ def create_app(
         if isinstance(comparison, dict) and isinstance(comparison.get("counts"), dict):
             comparison_counts = {str(k): int(v) for k, v in comparison["counts"].items()}
         target = run.target
+        configuration = snapshot.get("configuration")
+        if not isinstance(configuration, dict):
+            try:
+                spec = json.loads(run.scan_spec_json or "{}")
+            except ValueError:
+                spec = {}
+            if isinstance(spec, dict):
+                metadata = spec.get("metadata")
+                configuration = (
+                    metadata.get("configuration") if isinstance(metadata, dict) else None
+                ) or spec.get("configuration")
+        scenario = None
+        if isinstance(configuration, dict):
+            scenario = {
+                "profile": configuration.get("profile"),
+                "mode": configuration.get("mode"),
+                "laya": configuration.get("laya"),
+                "ai_review": configuration.get("ai_review"),
+                "ai_report": configuration.get("ai_report"),
+                "max_ai_findings": configuration.get("max_ai_findings"),
+            }
         return {
             "run_id": run.id,
             "repo": target.repository_url if target is not None else "",
             "commit": target.commit_sha if target is not None else "",
             "status": run.status,
             "gate": snapshot.get("gate", "unknown"),
+            "scenario": scenario,
             "counts": counts,
             "severity": severity,
             "stages": [

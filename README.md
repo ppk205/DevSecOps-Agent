@@ -319,6 +319,7 @@ through `EnvFile` in the local gitignored `.env`. Profiles and keys resolve from
 the project root when launching inside `bin`. An externally injected process
 value takes precedence. Updating a key loaded from the same local file refreshes
 it for subsequent scans. The application does not encrypt these files.
+Dashboard scans load saved provider credentials before running enabled AI stages.
 
 In the native EXE, select **Hunt** in **Scan mode**, choose a provider profile,
 and optionally enter a model override. Review with **Ctrl+E**, check the provider,
@@ -527,6 +528,13 @@ The New Scan form and `scan-run --max-model-requests` accept an optional cap on
 HTTP attempts across a run, including retries and AI reporting. With a cap of
 zero, the scan preserves scanner evidence and uses the deterministic report
 fallback. The benchmark displays missing token and price data as unavailable.
+
+AI reporting sends aggregate counts and up to 12 prioritized finding summaries
+in a prompt capped at 6,000 characters. Scan exports retain the full findings.
+
+The live dashboard describes each scan's profile and enabled AI stages, and
+shows its findings count, policy gate, and Laya result. Laya starts automatically
+for enabled scans with findings and reports which device handled routing.
 
 ## Training Laya (teach it to route)
 

@@ -100,6 +100,14 @@ export interface LiveScanDetail {
   commit: string;
   status: RunStatus | string;
   gate: string;
+  scenario?: {
+    profile: string | null;
+    mode: string | null;
+    laya: boolean | null;
+    ai_review: boolean | null;
+    ai_report: boolean | null;
+    max_ai_findings: number | null;
+  } | null;
   counts: Counts;
   severity: Record<string, number>;
   stages: StageSummary[];

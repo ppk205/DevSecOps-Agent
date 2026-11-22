@@ -343,6 +343,45 @@ export function LivePage() {
         </p>
       )}
 
+      {live.data && (
+        <div className="mb-6 grid gap-4 sm:grid-cols-2">
+          <section className="border border-hairline px-4 py-3">
+            <h2 className="label-m text-xs text-muted">{en.live.scenario}</h2>
+            <p className="mt-1 text-sm text-ink">
+              {live.data.scenario?.profile && `${live.data.scenario.profile.toUpperCase()} · `}
+              {live.data.scenario?.mode === "hunt" ? en.live.huntScenario
+                : live.data.scenario?.mode === "deterministic" ? en.live.deterministicScenario
+                : en.live.unknownScenario}
+            </p>
+            <ul className="mt-2 space-y-1 text-sm text-body">
+              {live.data.scenario?.laya === true && <li>{en.live.layaAutomatic}</li>}
+              {live.data.scenario?.laya === false && <li>{en.live.layaDisabled}</li>}
+              {live.data.scenario?.ai_review && (
+                <li>
+                  {en.live.aiReviewEnabled}
+                  {live.data.scenario.max_ai_findings != null
+                    && ` · ${live.data.scenario.max_ai_findings} ${en.live.findings}`}
+                </li>
+              )}
+              {live.data.scenario?.ai_report && <li>{en.live.aiReportEnabled}</li>}
+            </ul>
+          </section>
+          <section className="border border-hairline px-4 py-3">
+            <h2 className="label-m text-xs text-muted">{en.live.outputs}</h2>
+            <dl className="mt-1 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm text-body">
+              <dt>{en.live.policyGate}</dt><dd>{live.data.gate}</dd>
+              <dt>{en.live.findings}</dt><dd>{live.data.counts.total}</dd>
+              <dt>{en.live.layaOutput}</dt>
+              <dd aria-live="polite">
+                {redactSecrets(live.data.stages.find((stage) => stage.name === "laya_batch_routing")?.message || "—")}
+              </dd>
+              <dt>{en.live.reportOutput}</dt>
+              <dd>{live.data.stages.find((stage) => stage.name === "final_report")?.status || "—"}</dd>
+            </dl>
+          </section>
+        </div>
+      )}
+
       {(connection === "reconnecting" || connection === "polling") && (
         <div
           data-testid="reconnect-banner"

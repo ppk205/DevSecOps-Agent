@@ -91,7 +91,14 @@ def test_batched_routing_preserves_order_and_status() -> None:
     agent = BatchAgent()
     findings = [_finding(f"F-{i}") for i in range(3)]
 
-    outcomes = triage_many_batched(findings, agent, build_triage_questions(), batch_size=2)
+    progress: list[tuple[int, int]] = []
+    outcomes = triage_many_batched(
+        findings,
+        agent,
+        build_triage_questions(),
+        batch_size=2,
+        on_batch=lambda done, total, _results: progress.append((done, total)),
+    )
 
     assert [o.finding_id for o in outcomes] == ["F-0", "F-1", "F-2"]
     assert all(o.route.route == "fast_verification" for o in outcomes)
@@ -100,6 +107,7 @@ def test_batched_routing_preserves_order_and_status() -> None:
     # 3 findings at batch_size=2 -> 2 batched calls, 0 single-state calls
     assert len(agent.batch_calls) == 2
     assert agent.single_calls == 0
+    assert progress == [(2, 3), (3, 3)]
 
 
 def test_cache_avoids_repeated_inference_for_identical_state() -> None:
