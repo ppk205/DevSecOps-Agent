@@ -1449,7 +1449,8 @@ def hunt_all(
     total_tokens = 0
     total_rounds = 0
     trace: list[dict[str, Any]] = []
-    for fam in fams:
+
+    def _run_family(fam: str) -> tuple[str, dict[str, Any]]:
         if micro_passes and fam in micro_fams:
             fam_deep = False
             fam_rounds = 1
@@ -1478,6 +1479,20 @@ def hunt_all(
                 "detail": type(exc).__name__,
                 "trace": [],
             }
+        return fam, res
+
+    if len(fams) > 1 and tool_first:
+        with ThreadPoolExecutor(max_workers=min(2, len(fams))) as pool:
+            family_results = list(pool.map(_run_family, fams))
+    else:
+        family_results = []
+        for idx, fam in enumerate(fams):
+            family_results.append(_run_family(fam))
+            if idx < len(fams) - 1:
+                # Điều phối nhịp độ: các upstream gói miễn phí thường từ chối các lượt gọi dồn dập liên tiếp.
+                time.sleep(3)
+
+    for fam, res in family_results:
         cands = res.get("candidates", []) or []
         try:
             total_tokens += int((res.get("usage") or {}).get("total_tokens", 0))
@@ -1496,8 +1511,6 @@ def hunt_all(
             }
         )
         all_candidates.extend(cands)
-        # Điều phối nhịp độ: các upstream gói miễn phí thường từ chối các lượt gọi dồn dập liên tiếp.
-        time.sleep(3)
     merged = dedupe_candidates(all_candidates)[: max(1, max_findings)]
     ok = [p for p in passes if p["status"] == "completed"]
     executed_results = (

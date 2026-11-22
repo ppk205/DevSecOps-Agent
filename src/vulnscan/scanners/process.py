@@ -41,6 +41,11 @@ def scanner_environment(extra: dict[str, str] | None = None) -> dict[str, str]:
         "USERPROFILE",
         "SEMGREP_ENABLE_VERSION_CHECK",
         "SEMGREP_SEND_METRICS",
+        "HTTP_PROXY",
+        "HTTPS_PROXY",
+        "NO_PROXY",
+        "SSL_CERT_FILE",
+        "REQUESTS_CA_BUNDLE",
     }
     return {k: v for k, v in {**os.environ, **(extra or {})}.items() if k.upper() in allowed}
 

@@ -486,3 +486,23 @@ class TestScannerToolService:
         assert first["cached"] is False
         assert second["cached"] is True
         assert mock_sg.run.call_count == 1
+
+    def test_scanner_environment_preserves_proxy_and_strips_secrets(self) -> None:
+        from vulnscan.scanners.process import scanner_environment
+
+        env = scanner_environment(
+            extra={
+                "HTTP_PROXY": "http://127.0.0.1:8080",
+                "HTTPS_PROXY": "http://127.0.0.1:8080",
+                "NO_PROXY": "localhost,127.0.0.1",
+                "SSL_CERT_FILE": "/tmp/ca.pem",
+                "REQUESTS_CA_BUNDLE": "/tmp/ca.pem",
+                "OPENAI_API_KEY": "sk-secret-must-not-leak",
+            }
+        )
+        assert env["HTTP_PROXY"] == "http://127.0.0.1:8080"
+        assert env["HTTPS_PROXY"] == "http://127.0.0.1:8080"
+        assert env["NO_PROXY"] == "localhost,127.0.0.1"
+        assert env["SSL_CERT_FILE"] == "/tmp/ca.pem"
+        assert env["REQUESTS_CA_BUNDLE"] == "/tmp/ca.pem"
+        assert "OPENAI_API_KEY" not in env

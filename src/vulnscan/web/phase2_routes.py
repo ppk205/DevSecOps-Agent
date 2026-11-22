@@ -305,8 +305,10 @@ def api_key_test(profile: str) -> dict[str, Any]:
         "Content-Type": "application/json",
         **(existing.headers or {}),
     }
+    from vulnscan.providers.client import _make_http_client
+
     try:
-        with httpx.Client(timeout=10.0) as client:
+        with _make_http_client(timeout=10.0) as client:
             real = client.post(
                 url,
                 headers=req_headers,
