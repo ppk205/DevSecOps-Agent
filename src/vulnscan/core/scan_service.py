@@ -1065,25 +1065,30 @@ class ScanService:
                             run_id=run_id,
                         )
                         results.append(finalized)
-                        for scan_error in finalized.errors:
-                            errors.append(f"{tool_label}: {scan_error}")
                         findings = pipeline.build_findings(results, run_id)
-                        persist(
-                            tool_label,
-                            finalized.status.value,
-                            f"AI-orchestrated ({len(finalized.observations)} observations)",
+                        tool_detail = (
+                            f"AI-orchestrated ({len(finalized.observations)} observations)"
+                            if not finalized.errors
+                            else f"AI-orchestrated ({len(finalized.observations)} observations; "
+                            f"{'; '.join(finalized.errors)[:200]})"
                         )
+                        persist(tool_label, finalized.status.value, tool_detail)
                     except Exception as exc:  # noqa: BLE001
                         errors.append(f"{tool_label}: {type(exc).__name__}: {exc}")
                         persist(tool_label, "failed", errors[-1])
                 tool_outcomes = [r.status.value for r in results]
-                if any(s == "failed" for s in tool_outcomes):
+                completed_count = sum(1 for r in results if r.is_complete)
+                if completed_count == 0 and any(s == "failed" for s in tool_outcomes):
+                    for r in results:
+                        for scan_error in r.errors:
+                            errors.append(f"{r.tool.value}: {scan_error}")
                     persist("scanners", "failed", "; ".join(errors[-len(results) :]))
                 elif any(s != "completed" for s in tool_outcomes):
                     persist(
                         "scanners",
                         "partial",
-                        f"AI-orchestrated: {len(results)} scanner(s) invoked ({', '.join(ai_invoked_tools)})",
+                        f"AI-orchestrated: {completed_count}/{len(results)} scanner(s) completed "
+                        f"({', '.join(ai_invoked_tools)})",
                     )
                 else:
                     persist(
@@ -1255,6 +1260,8 @@ class ScanService:
 
             compared: dict[str, Any] = comparison
             promoted: list[Finding] = []
+            raw_scanner_findings_count = len(findings)
+            ai_filtered_out_count = 0
             if hunt_active:
                 agreed_findings = [pair["finding"] for pair in compared.get("agreed", [])]
                 agreed_ids = {id(finding) for finding in agreed_findings}
@@ -1269,7 +1276,12 @@ class ScanService:
                     snapshot_root=str(snapshot_root),
                     run_id=run_id,
                 )
-                findings = [*findings, *promoted]
+                ai_curated = [*agreed_findings, *promoted]
+                if orchestration_mode == "ai_orchestrated" and ai_curated:
+                    ai_filtered_out_count = len(compared.get("scanner_only", []))
+                    findings = ai_curated
+                else:
+                    findings = [*findings, *promoted]
             else:
                 agreed_findings = []
                 for scanner_finding in findings:
@@ -1379,6 +1391,15 @@ class ScanService:
                 "orchestration": {
                     "mode": orchestration_mode,
                     "ai_invoked_tools": ai_invoked_tools,
+                },
+                "ai_filtering": {
+                    "raw_scanner_findings": locals().get(
+                        "raw_scanner_findings_count", len(findings)
+                    ),
+                    "ai_confirmed_from_scanners": len(locals().get("agreed_findings", [])),
+                    "ai_added_logic_findings": len(locals().get("promoted", [])),
+                    "ai_filtered_out": locals().get("ai_filtered_out_count", 0),
+                    "final_findings": len(findings),
                 },
                 "model_hunt_tool_calls": dict(hunt_out.get("tool_call_counts") or {}),
                 "status": "cancelled"

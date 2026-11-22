@@ -325,8 +325,15 @@ def test_hunt_mode_ai_orchestrates_scanners_without_duplicate_runs(checkout, tmp
         "ai_invoked_tools": ["semgrep"],
     }
     assert result["status"] == "completed"
-    assert result["exit_code"] == 1
-    assert result["findings"] == 2
+    assert result["exit_code"] == 0
+    assert result["findings"] == 1
+    assert result["ai_filtering"] == {
+        "raw_scanner_findings": 2,
+        "ai_confirmed_from_scanners": 1,
+        "ai_added_logic_findings": 0,
+        "ai_filtered_out": 1,
+        "final_findings": 1,
+    }
     assert result["comparison"]["counts"]["agreed"] >= 1
     assert (tmp_path / "reports" / result["run_id"] / "scanner-semgrep.json").is_file()
 

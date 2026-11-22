@@ -592,6 +592,47 @@ class TestEvidenceVerifier:
         assert dropped == 1
         assert [c["title"] for c in kept] == ["Real CMDi"]
 
+    def test_drops_adjacent_safe_process_builder_and_pem_header_template(self, tmp_path):
+        from vulnscan.ai.hunt import verify_and_filter_candidates
+
+        (tmp_path / "CmdSvc.java").write_text(
+            "class CmdSvc {\n"
+            '  void shell(String cmd) { new ProcessBuilder("/bin/sh", "-c", cmd).start(); }\n'
+            "  void gap1() {}\n"
+            "  void gap2() {}\n"
+            "  void gap3() {}\n"
+            "  void gap4() {}\n"
+            "  void direct(List<String> cmd) {\n"
+            "    new ProcessBuilder(cmd).start();\n"
+            "  }\n"
+            "}\n",
+            encoding="utf-8",
+        )
+        (tmp_path / "CryptoUtil.java").write_text(
+            "class CryptoUtil {\n"
+            '  String header = "-----BEGIN PRIVATE KEY-----\\n";\n'
+            "  String out = header + encoded;\n"
+            "}\n",
+            encoding="utf-8",
+        )
+        (tmp_path / "LeakedKey.java").write_text(
+            "class LeakedKey {\n"
+            '  String pem = "-----BEGIN PRIVATE KEY-----\\n"\n'
+            '    + "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC7o+fakekeydata"\n'
+            '    + "-----END PRIVATE KEY-----";\n'
+            "}\n",
+            encoding="utf-8",
+        )
+        cands = [
+            {"file": "CmdSvc.java", "line": 2, "cwe": "CWE-78", "title": "Real shell CMDi"},
+            {"file": "CmdSvc.java", "line": 8, "cwe": "CWE-78", "title": "Safe direct PB"},
+            {"file": "CryptoUtil.java", "line": 2, "cwe": "CWE-798", "title": "PEM header FP"},
+            {"file": "LeakedKey.java", "line": 2, "cwe": "CWE-798", "title": "Real leaked PEM"},
+        ]
+        kept, dropped = verify_and_filter_candidates(cands, str(tmp_path))
+        assert dropped == 2
+        assert [c["title"] for c in kept] == ["Real shell CMDi", "Real leaked PEM"]
+
     def test_parallel_tool_calls_preserve_order_and_scan_context(self, tmp_path, monkeypatch):
         import json as _json
 

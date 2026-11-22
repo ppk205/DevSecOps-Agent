@@ -733,14 +733,20 @@ def verify_and_filter_candidates(
                 continue
 
         if cwe_num == "78" and lines:
-            lo = max(0, line - 12)
-            hi = min(len(lines), line + 6)
+            lo = max(0, line - 4)
+            hi = min(len(lines), line + 2)
             window = "\n".join(lines[lo:hi])
             if (
                 "ProcessBuilder" in window
                 and _PROCESS_BUILDER_LIST_RE.search(window)
                 and not _SHELL_EXEC_RE.search(window)
             ):
+                dropped += 1
+                continue
+
+        if cwe_num == "798" and lines and "-----BEGIN" in target_line and "KEY-----" in target_line:
+            next_lines = "\n".join(lines[line : min(len(lines), line + 3)])
+            if not re.search(r"[A-Za-z0-9+/]{32,}", next_lines):
                 dropped += 1
                 continue
 
