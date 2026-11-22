@@ -12,6 +12,8 @@ import json
 import logging
 import re
 import time
+from concurrent.futures import ThreadPoolExecutor
+from contextvars import copy_context
 from pathlib import Path
 from typing import Any, TypedDict
 
@@ -30,14 +32,16 @@ _HUNT_SYSTEM = (
     "use them to discover sources, invoke targeted scanners, and confirm tainted flows "
     "into dangerous sinks (SQL, XSS, CMDi, XXE, deserialization, memory safety, "
     "hardcoded secrets, vulnerable dependencies, missing auth). Do not invent "
-    "code, files, or evidence. Each candidate needs a real file and line. End with a single JSON array and nothing "
+    "code, files, or evidence. Report EVERY distinct exploitable vulnerability "
+    "(unique file + line + CWE) — do NOT drop real vulnerabilities merely because "
+    "similar patterns repeat across multiple files or appear inside lesson/benchmark "
+    "directories. End with a single JSON array and nothing "
     "else, schema: [{"
     '"title": str, "file": str (repo-relative), "line": int, '
     "\"cwe\": str like 'CWE-89', "
     '"severity": "critical|high|medium|low|info", '
     '"rationale": str, "evidence": str (code excerpt)'
-    "}]. Missing evidence means 'unknown', never 'safe'. Aim for breadth: "
-    "report every distinct issue you can confirm, up to 80 items per pass."
+    "}]. Missing evidence means 'unknown', never 'safe'. Max 60 items."
 )
 
 _HUNT_USER = (
@@ -622,10 +626,129 @@ def dedupe_candidates(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return out
 
 
-# Xếp hạng bằng chứng: thư viện vendored và mã nguồn chỉ dành cho test là code thực sự,
-# nhưng mô hình sẽ tiêu tốn toàn bộ ngân sách vào chúng nếu chúng đứng đầu lượt
-# quét (ví dụ: các hit __proto__ tập trung trong ace.js). Xếp hạng mã nguồn
-# ứng dụng lên trước; các hit bị giảm độ ưu tiên vẫn theo sau, không bao giờ bị bỏ rơi.
+_COMMENT_PREFIXES = ("//", "/*", "*", "*/", "<!--", "--")
+_PREP_SETTER_RE = re.compile(
+    r"\.(?:setString|setInt|setLong|setObject|setBoolean|setBigDecimal|setDouble|setFloat)\s*\("
+)
+_SQL_CONCAT_RE = re.compile(
+    r'(?i)(?:SELECT|INSERT|UPDATE|DELETE)\b[^;\n]*"\s*\+|prepareStatement\s*\([^)]*\+'
+)
+_PROCESS_BUILDER_LIST_RE = re.compile(r"new\s+ProcessBuilder\s*\(\s*[A-Za-z_]\w*\s*\)")
+_SHELL_EXEC_RE = re.compile(
+    r'(?i)(?:"-c"|"/c"|cmd\.exe|/bin/sh|/bin/bash|Runtime\.getRuntime\(\)\.exec)'
+)
+
+
+def _is_pure_comment_line(stripped: str) -> bool:
+    """Return True if a stripped source line is purely a comment."""
+    if not stripped:
+        return False
+    if stripped.startswith(_COMMENT_PREFIXES):
+        return True
+    return stripped.startswith("#") and not stripped.startswith(
+        ("#include", "#define", "#if", "#ifdef", "#ifndef", "#else", "#elif", "#endif", "#pragma")
+    )
+
+
+def verify_and_filter_candidates(
+    candidates: list[dict[str, Any]],
+    snapshot_root: str,
+) -> tuple[list[dict[str, Any]], int]:
+    """Deterministically verify candidate file/line evidence and drop clear FPs.
+
+    Eliminates:
+    1. Non-existent files, paths escaping ``snapshot_root``, or out-of-range lines.
+    2. Pure comment lines mistaken for code sinks.
+    3. ``CWE-89`` candidates inside parameterized ``PreparedStatement`` blocks
+       (using ``?`` placeholders + typed setters with no SQL string concatenation).
+    4. ``CWE-78`` candidates invoking ``new ProcessBuilder(listVar)`` without
+       any shell invocation (``-c``, ``/c``, ``cmd.exe``, ``/bin/sh``, ``Runtime.exec``).
+
+    Returns ``(verified_candidates, dropped_count)``. Never raises.
+    """
+    if not candidates or not snapshot_root:
+        return list(candidates or []), 0
+    try:
+        root = Path(snapshot_root).resolve()
+    except OSError:
+        return list(candidates), 0
+    if not root.is_dir():
+        return list(candidates), 0
+
+    file_cache: dict[str, list[str] | None] = {}
+    verified: list[dict[str, Any]] = []
+    dropped = 0
+
+    for cand in candidates:
+        rel_raw = str(cand.get("file") or "").replace("\\", "/").strip()
+        rel = rel_raw.lstrip("./")
+        if not rel:
+            dropped += 1
+            continue
+        if rel not in file_cache:
+            try:
+                target = (root / rel).resolve()
+                target.relative_to(root)
+                if target.is_file():
+                    file_cache[rel] = target.read_text(
+                        encoding="utf-8", errors="replace"
+                    ).splitlines()
+                else:
+                    file_cache[rel] = None
+            except (OSError, ValueError):
+                file_cache[rel] = None
+
+        lines = file_cache[rel]
+        if lines is None:
+            dropped += 1
+            continue
+
+        try:
+            line = int(cand.get("line") or 0)
+        except (TypeError, ValueError):
+            line = 0
+        if line < 1 or (lines and line > len(lines)):
+            dropped += 1
+            continue
+
+        target_line = lines[line - 1].strip() if lines else ""
+        if _is_pure_comment_line(target_line):
+            dropped += 1
+            continue
+
+        cwe_match = re.search(r"(\d+)", str(cand.get("cwe") or ""))
+        cwe_num = cwe_match.group(1) if cwe_match else ""
+
+        if cwe_num == "89" and lines:
+            lo = max(0, line - 8)
+            hi = min(len(lines), line + 8)
+            window = "\n".join(lines[lo:hi])
+            if (
+                ("prepareStatement(" in window or "PreparedStatement" in window)
+                and "?" in window
+                and _PREP_SETTER_RE.search(window)
+                and not _SQL_CONCAT_RE.search(window)
+            ):
+                dropped += 1
+                continue
+
+        if cwe_num == "78" and lines:
+            lo = max(0, line - 12)
+            hi = min(len(lines), line + 6)
+            window = "\n".join(lines[lo:hi])
+            if (
+                "ProcessBuilder" in window
+                and _PROCESS_BUILDER_LIST_RE.search(window)
+                and not _SHELL_EXEC_RE.search(window)
+            ):
+                dropped += 1
+                continue
+
+        verified.append(cand)
+
+    return verified, dropped
+
+
 _EVIDENCE_DEPRIORITIZED = (
     "/test/",
     "/it/",
@@ -802,8 +925,8 @@ def hunt_vulns(
     client: ProviderClient,
     model: str | None,
     family: str = "java",
-    max_rounds: int = 16,
-    max_findings: int = 80,
+    max_rounds: int = 12,
+    max_findings: int = 60,
     deep: bool = False,
     scanner_service: Any | None = None,
     tool_first: bool = False,
@@ -1062,7 +1185,8 @@ def hunt_vulns(
                     tool_calls=resp.tool_calls,
                 )
             )
-            for tc in resp.tool_calls:
+
+            def _exec_one(tc: Any) -> tuple[str, dict[str, Any], Any]:
                 fn = tc.get("function") if isinstance(tc, dict) else None
                 fn = fn if isinstance(fn, dict) else {}
                 name = str(fn.get("name", ""))
@@ -1075,32 +1199,45 @@ def hunt_vulns(
                     args = {}
                 handler = handlers.get(name)
                 if handler is None:
-                    result = {"error": f"Tool '{name}' is not registered."}
+                    result: Any = {"error": f"Tool '{name}' is not registered."}
                 else:
                     try:
                         result = handler(args)
                     except Exception as exc:  # noqa: BLE001 - tool boundary
                         logger.warning("Hunt tool %s failed: %s", name, exc)
                         result = {"error": str(exc)[:500]}
+                return name, result, (tc.get("id") if isinstance(tc, dict) else None)
+
+            if len(resp.tool_calls) > 1:
+                with ThreadPoolExecutor(max_workers=min(4, len(resp.tool_calls))) as pool:
+                    pending = [
+                        pool.submit(copy_context().run, _exec_one, tc) for tc in resp.tool_calls
+                    ]
+                    executed = [task.result() for task in pending]
+            else:
+                executed = [_exec_one(tc) for tc in resp.tool_calls]
+
+            for name, result, call_id in executed:
                 result_json = json.dumps(result)
+                failed = "error" in result
                 emit_model_event(
                     "tool",
-                    "failed" if "error" in result else "completed",
-                    f"Hunt tool {name}: "
-                    + ("failed or rejected" if "error" in result else "completed"),
+                    "failed" if failed else "completed",
+                    f"Hunt tool {name}: " + ("failed or rejected" if failed else "completed"),
                 )
                 tool_evidence.append(f"{name} -> {result_json[:1500]}")
                 messages.append(
                     ChatMessage(
                         role="tool",
                         content=result_json,
-                        tool_call_id=tc.get("id") if isinstance(tc, dict) else None,
+                        tool_call_id=call_id,
                     )
                 )
         if exhausted_rounds and not tool_first:
             candidates = dedupe_candidates(
                 [*fast_candidates, *parse_hunt_list(last_content, max_findings)]
             )[: max(1, max_findings)]
+            candidates, _ = verify_and_filter_candidates(candidates, snapshot_root)
             return {
                 "candidates": candidates,
                 "rounds": rounds,
@@ -1119,7 +1256,7 @@ def hunt_vulns(
                 scanner_digest_lines: list[str] = []
                 if scanner_service is not None and hasattr(scanner_service, "query_findings"):
                     try:
-                        q_out = scanner_service.query_findings(max_items=50)
+                        q_out = scanner_service.query_findings(max_items=120)
                         for idx, item in enumerate(q_out.get("findings") or [], 1):
                             if not isinstance(item, dict):
                                 continue
@@ -1137,9 +1274,11 @@ def hunt_vulns(
                 if scanner_digest_lines:
                     evidence_parts.append(
                         "Raw observations from the security scanner tools you invoked "
-                        "(FILTER these: keep genuine vulnerabilities using their exact "
-                        "file, line, and cwe; drop false positives / benign patterns):\n"
-                        + "\n".join(scanner_digest_lines[:60])
+                        "(FILTER these: keep EVERY genuine vulnerability using its exact "
+                        "file, line, and cwe — including distinct vulnerable files in "
+                        "lesson/benchmark directories — and drop only false positives or "
+                        "benign third-party library code):\n"
+                        + "\n".join(scanner_digest_lines[:100])
                     )
                 if tool_evidence:
                     evidence_parts.append(
@@ -1148,22 +1287,22 @@ def hunt_vulns(
                 if closing_sweep:
                     evidence_parts.append(
                         "Sink sweep (context only, judge each line yourself):\n"
-                        + "\n".join(closing_sweep[:20])
+                        + "\n".join(closing_sweep[:25])
                     )
-                closing_excerpts = _sweep_excerpts(snapshot_root, closing_sweep)
-                if closing_excerpts:
-                    evidence_parts.append(
-                        "Source excerpts around sink hits:\n" + "\n\n".join(closing_excerpts[:12])
-                    )
-                evidence_text = "\n\n".join(evidence_parts)[:12000]
+                evidence_text = "\n\n".join(evidence_parts)[:20000]
                 closing = client.chat(
                     [
                         ChatMessage(
                             role="system",
                             content=(
-                                system_content
-                                + " Review the scanner observations and source evidence. "
-                                + "Report candidate findings with their exact file, line, and CWE."
+                                _HUNT_SYSTEM
+                                + f" Focus on {focus}. "
+                                + "Filter the raw scanner tool observations and code evidence: "
+                                + "confirm and include EVERY genuine vulnerability (preserving "
+                                + "exact file path, line number, and CWE for confirmed scanner "
+                                + "hits, plus any additional logic vulnerabilities you found), "
+                                + "do NOT drop real vulnerabilities in lesson/benchmark files, "
+                                + "and exclude only false positives. Up to 60 items allowed."
                             ),
                         ),
                         ChatMessage(
@@ -1232,6 +1371,9 @@ def hunt_vulns(
             detail = (
                 f"no tool calls made and empty reply; last content: {(last_content or '')[:200]}"
             )
+        candidates, dropped_by_verifier = verify_and_filter_candidates(candidates, snapshot_root)
+        if dropped_by_verifier:
+            detail += f"; verifier dropped {dropped_by_verifier} FP(s)"
         return {
             "candidates": candidates,
             "rounds": rounds,
@@ -1239,6 +1381,7 @@ def hunt_vulns(
             "status": "completed" if candidates else "partial",
             "detail": detail,
             "trace": trace,
+            "verifier_dropped": dropped_by_verifier,
         }
     except Exception as exc:  # noqa: BLE001 - provider/budget errors fail soft
         logger.warning("hunt_vulns failed: %s", exc)
@@ -1261,8 +1404,8 @@ def hunt_all(
     logic_pass: bool = True,
     broad_pass: bool = False,
     micro_passes: bool = False,
-    max_rounds: int = 16,
-    max_findings: int = 200,
+    max_rounds: int = 12,
+    max_findings: int = 120,
     deep: bool = True,
     scanner_service: Any | None = None,
     tool_first: bool = False,

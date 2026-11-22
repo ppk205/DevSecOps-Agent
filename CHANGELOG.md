@@ -10,6 +10,10 @@
 - Select the Laya worker device automatically in CUDA, Vulkan and CPU order.
   Retain the actual device in routing results and fall back on GPU failures.
 
+- Cache completed scanner tool results within a Hunt session and fall back to
+  bundled Semgrep packs when a registry scan fails. Resolve Maven properties
+  in OSV dependency inputs and group dependency advisories in model output.
+
 - Restore the FR-72 scanner lists for the fast and full profiles and run them
   deterministically in CI. Show the built-in native-hunt adapter in the web
   scanner health list. Update the React build plugin for Vite 8.

@@ -331,3 +331,158 @@ class TestScannerToolService:
         assert res["status"] == "completed"
         assert res["returned"] >= 1
         assert any("vuln.py" in f["file"] for f in res["findings"])
+
+    def test_semgrep_registry_pack_falls_back_to_bundled_offline(self, tmp_path: Path) -> None:
+        """Explicit p/ ruleset combines with bundled pack and falls back cleanly if offline."""
+        (tmp_path / "App.java").write_text("class App {}", encoding="utf-8")
+        seen_specs: list[list[str]] = []
+
+        def _fake_run(spec, *, workdir):
+            rule_paths = list(spec.tools[0].rule_paths)
+            seen_specs.append(rule_paths)
+            if any(p.startswith("p/") for p in rule_paths):
+                return ScannerResult(
+                    run_id=spec.run_id or "r",
+                    tool=ToolName.SEMGREP,
+                    tool_version="1.178.0",
+                    adapter_version="0.2.0",
+                    status=RunStatus.FAILED,
+                    started_at=datetime.now(UTC),
+                    finished_at=datetime.now(UTC),
+                    errors=["offline registry unreachable"],
+                )
+            return _fake_result(
+                ToolName.SEMGREP, [_obs("obs-sg-1", ToolName.SEMGREP, "java-sqli", "App.java", 1)]
+            )
+
+        mock_sg = MagicMock()
+        mock_sg.run.side_effect = _fake_run
+        svc = ScannerToolService(tmp_path, semgrep_adapter=mock_sg)
+
+        out = svc.run_semgrep(target_path="App.java", ruleset="p/owasp-top-ten", language="java")
+        assert out["status"] == "completed"
+        assert out["returned"] == 1
+        assert len(seen_specs) == 2
+        assert "p/owasp-top-ten" in seen_specs[0]
+        assert all(not p.startswith("p/") for p in seen_specs[1])
+
+    def test_parse_pom_xml_interpolates_properties_and_parent(self) -> None:
+        """parse_pom_xml resolves ${property} versions and includes <parent> BOM."""
+        from vulnscan.scanners.osv_adapter import parse_pom_xml
+
+        pom = """
+        <project xmlns="http://maven.apache.org/POM/4.0.0">
+          <parent>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-parent</artifactId>
+            <version>3.2.5</version>
+          </parent>
+          <properties>
+            <hsqldb.version>2.7.2</hsqldb.version>
+          </properties>
+          <dependencies>
+            <dependency>
+              <groupId>org.hsqldb</groupId>
+              <artifactId>hsqldb</artifactId>
+              <version>${hsqldb.version}</version>
+            </dependency>
+          </dependencies>
+        </project>
+        """
+        pkgs = parse_pom_xml(pom, manifest="pom.xml")
+        coords = {(p.name, p.version) for p in pkgs}
+        assert ("org.springframework.boot:spring-boot-starter-parent", "3.2.5") in coords
+        assert ("org.hsqldb:hsqldb", "2.7.2") in coords
+
+    def test_is_test_file_tagging_and_production_first_sorting(self, tmp_path: Path) -> None:
+        (tmp_path / "src/test/java").mkdir(parents=True)
+        (tmp_path / "src/main/java").mkdir(parents=True)
+        (tmp_path / "src/test/java/LoginTest.java").write_text("class LoginTest {}\n")
+        (tmp_path / "src/main/java/Login.java").write_text("class Login {}\n")
+
+        obs = [
+            _obs(
+                "o-test",
+                ToolName.SEMGREP,
+                "java.sqli",
+                "src/test/java/LoginTest.java",
+                1,
+                cwe=CWECategory.SQL_INJECTION,
+                severity=Severity.HIGH,
+            ),
+            _obs(
+                "o-prod",
+                ToolName.SEMGREP,
+                "java.sqli",
+                "src/main/java/Login.java",
+                1,
+                cwe=CWECategory.SQL_INJECTION,
+                severity=Severity.HIGH,
+            ),
+        ]
+        res = _fake_result(ToolName.SEMGREP, obs)
+        extracted = extract_scanner_result(res, snapshot_root=tmp_path)
+        findings = extracted["findings"]
+        assert len(findings) == 2
+        assert findings[0]["file"] == "src/main/java/Login.java"
+        assert findings[0]["is_test_file"] is False
+        assert findings[1]["file"] == "src/test/java/LoginTest.java"
+        assert findings[1]["is_test_file"] is True
+
+    def test_owasp_dependency_grouping_consolidates_advisories(self, tmp_path: Path) -> None:
+        (tmp_path / "pom.xml").write_text("<project/>\n")
+        obs = [
+            _obs(
+                "odc-1",
+                ToolName.OWASP_DEPENDENCY_CHECK,
+                "GHSA-1111",
+                "pom.xml",
+                1,
+                cwe=CWECategory.DEPENDENCY_VULNERABILITY,
+                severity=Severity.HIGH,
+                cvss=7.5,
+            ).model_copy(update={"dependency_identity": "xstream:1.4.5"}),
+            _obs(
+                "odc-2",
+                ToolName.OWASP_DEPENDENCY_CHECK,
+                "GHSA-2222",
+                "pom.xml",
+                1,
+                cwe=CWECategory.DEPENDENCY_VULNERABILITY,
+                severity=Severity.CRITICAL,
+                cvss=9.8,
+            ).model_copy(update={"dependency_identity": "xstream:1.4.5"}),
+            _obs(
+                "odc-3",
+                ToolName.OWASP_DEPENDENCY_CHECK,
+                "CVE-2021-44228",
+                "pom.xml",
+                1,
+                cwe=CWECategory.DEPENDENCY_VULNERABILITY,
+                severity=Severity.CRITICAL,
+                cvss=10.0,
+            ).model_copy(update={"dependency_identity": "log4j-core:2.14.1"}),
+        ]
+        res = _fake_result(ToolName.OWASP_DEPENDENCY_CHECK, obs)
+        extracted = extract_scanner_result(res, snapshot_root=tmp_path)
+        assert extracted["returned"] == 2
+        by_dep = {f["dependency"]: f for f in extracted["findings"]}
+        assert set(by_dep.keys()) == {"xstream:1.4.5", "log4j-core:2.14.1"}
+        assert by_dep["xstream:1.4.5"]["total_advisories"] == 2
+        assert by_dep["xstream:1.4.5"]["cvss"] == 9.8
+        assert set(by_dep["xstream:1.4.5"]["advisory_ids"]) == {"GHSA-1111", "GHSA-2222"}
+
+    def test_scanner_tool_service_session_cache_avoids_duplicate_runs(self, tmp_path: Path) -> None:
+        (tmp_path / "App.java").write_text("class App {}\n")
+        mock_sg = MagicMock()
+        mock_sg.run.return_value = _fake_result(
+            ToolName.SEMGREP,
+            [_obs("sg-1", ToolName.SEMGREP, "java.sqli", "App.java", 1)],
+        )
+        svc = ScannerToolService(tmp_path, semgrep_adapter=mock_sg)
+
+        first = svc.run_semgrep(target_path="App.java", language="java")
+        second = svc.run_semgrep(target_path="App.java", language="java")
+        assert first["cached"] is False
+        assert second["cached"] is True
+        assert mock_sg.run.call_count == 1

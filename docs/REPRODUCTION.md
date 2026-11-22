@@ -46,6 +46,11 @@ device name, and the `config/laya.json` checksum.
 `config/laya.json` ships **disabled**; a test enforces that. Enable advisory
 routing with the CLI flag, never by editing the file.
 
+The fast and full profiles start with native-hunt, Semgrep and Gitleaks.
+Full also runs Trivy and Dependency-Check. During Model Hunt, repeated scanner
+requests can reuse the session cache. If a Semgrep registry scan falls back to
+a bundled pack, record the effective ruleset when comparing runs.
+
 ### Baseline — no model
 
 ```bash

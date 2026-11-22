@@ -14,6 +14,7 @@ from collections.abc import Callable, Iterator
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from pathlib import Path
+from threading import Lock
 from typing import Any
 
 from filelock import FileLock, Timeout
@@ -826,21 +827,26 @@ class ScanService:
             if on_event:
                 on_event(event)
 
+        model_event_lock = Lock()
+
         def model_event(event: dict[str, Any]) -> None:
             if event["kind"] == "call" and event["status"] == "running" and cancelled():
                 raise ScanCancelled()
             safe = sanitize(event)
-            if safe["kind"] == "call" and safe["status"] in {"completed", "failed"}:
-                model_calls.append(
-                    {
-                        "stage": model_stage,
-                        "status": safe["status"],
-                        "provider": safe.get("provider", ""),
-                        "model": safe.get("model", ""),
-                        "usage": safe.get("usage", {}),
-                    }
+            with model_event_lock:
+                if safe["kind"] == "call" and safe["status"] in {"completed", "failed"}:
+                    model_calls.append(
+                        {
+                            "stage": model_stage,
+                            "status": safe["status"],
+                            "provider": safe.get("provider", ""),
+                            "model": safe.get("model", ""),
+                            "usage": safe.get("usage", {}),
+                        }
+                    )
+                persist(
+                    "model_" + safe["kind"], safe["status"], model_stage + " · " + safe["message"]
                 )
-            persist("model_" + safe["kind"], safe["status"], model_stage + " · " + safe["message"])
 
         snapshot = tempfile.TemporaryDirectory(prefix="vulnscan-snapshot-")
         token = _cancel_check.set(cancelled)

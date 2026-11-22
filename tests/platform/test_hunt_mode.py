@@ -346,9 +346,11 @@ def test_hunt_mode_falls_back_to_static_scanners_on_ai_error(checkout, tmp_path,
             self.calls += 1
             return super().run(spec, workdir=workdir)
 
+    native_adapter = CountingAdapter(ToolName.NATIVE_HUNT)
     semgrep_adapter = CountingAdapter(ToolName.SEMGREP)
     gitleaks_adapter = CountingAdapter(ToolName.GITLEAKS)
     registry = AdapterRegistry()
+    registry.register(native_adapter)
     registry.register(semgrep_adapter)
     registry.register(gitleaks_adapter)
     svc = ScanService(str(tmp_path / "runs.db"), registry)
@@ -361,10 +363,11 @@ def test_hunt_mode_falls_back_to_static_scanners_on_ai_error(checkout, tmp_path,
 
     result = svc.run(
         str(checkout),
-        settings(tmp_path, mode="hunt", provider_profile="test", tools=["semgrep", "gitleaks"]),
+        settings(tmp_path, mode="hunt", provider_profile="test", tools=None),
     )
 
     assert result["orchestration"]["mode"] == "deterministic_fallback"
+    assert native_adapter.calls == 1
     assert result["status"] == "completed"
     assert semgrep_adapter.calls == 1, result["errors"]
     assert gitleaks_adapter.calls == 1, result["errors"]

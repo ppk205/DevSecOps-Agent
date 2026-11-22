@@ -151,8 +151,8 @@ def test_transient_gateway_errors_are_retried(code, monkeypatch):
     assert post.call_count == 2
 
 
-@pytest.mark.parametrize("code", [429, 499])
-def test_rate_limit_and_client_closed_wait_30_seconds_then_retry(code, monkeypatch):
+@pytest.mark.parametrize(("code", "delay"), [(429, 60.0), (499, 30.0)])
+def test_rate_limit_and_client_closed_wait_then_retry(code, delay, monkeypatch):
     request = httpx.Request("POST", "https://offline.invalid/v1/chat/completions")
     failure = httpx.HTTPStatusError(
         "busy", request=request, response=httpx.Response(code, request=request)
@@ -169,7 +169,7 @@ def test_rate_limit_and_client_closed_wait_30_seconds_then_retry(code, monkeypat
         post.side_effect = [failure, failure, ok]
         reply = ProviderClient(_profile(max_retries=3)).chat([ChatMessage("user", "input")])
     assert reply.content == "answer"
-    assert waits == [30.0, 30.0]
+    assert waits == [delay, delay]
 
 
 def test_client_errors_other_than_rate_limit_are_not_retried(monkeypatch):

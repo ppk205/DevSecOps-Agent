@@ -276,6 +276,13 @@ class ProviderClient:
             headers[key] = value
         return headers
 
+    def _rate_limit_idle_seconds(self) -> float:
+        raw_idle = (self.profile.metadata or {}).get("rate_limit_idle_seconds", 60.0)
+        try:
+            return max(0.0, float(raw_idle))
+        except (TypeError, ValueError):
+            return 60.0
+
     def _post_with_retry(
         self,
         url: str,
@@ -285,7 +292,15 @@ class ProviderClient:
         api_key = self._get_key()
         payload = _redact_data(payload, api_key)
         resp = None
-        attempts = max(1, self.profile.max_retries + 1)
+        # Ensure at least 1 retry after a 60s idle on HTTP 429 before falling back
+        # (unless profile.metadata explicitly disables it via rate_limit_idle_seconds=0
+        # AND max_retries=0).
+        idle_seconds = self._rate_limit_idle_seconds()
+        max_429_retries = (
+            max(1, self.profile.max_retries) if idle_seconds > 0 else self.profile.max_retries
+        )
+        attempts = max(1, max_429_retries + 1)
+
         for attempt in range(attempts):
             try:
                 with _make_http_client(self.profile.timeout_seconds) as client:
@@ -298,9 +313,10 @@ class ProviderClient:
                 if exc.response.status_code == 429 and attempt < attempts - 1:
                     retry_after = exc.response.headers.get("retry-after")
                     try:
-                        wait = float(retry_after) if retry_after else 20.0 * (attempt + 1)
+                        header_wait = float(retry_after) if retry_after else 0.0
                     except (TypeError, ValueError):
-                        wait = 20.0 * (attempt + 1)
+                        header_wait = 0.0
+                    wait = max(idle_seconds, header_wait) if idle_seconds > 0 else header_wait
                     time.sleep(min(wait, 120.0))
                     continue
                 raise ProviderError(
@@ -527,8 +543,10 @@ class ProviderClient:
 
         resp = None
         budget = self.budget
+        idle_seconds = self._rate_limit_idle_seconds()
         attempts = max(1, self.profile.max_retries + 1)
-        for attempt in range(attempts):
+        rate_limit_attempts = max(2, attempts) if idle_seconds > 0 else attempts
+        for attempt in range(rate_limit_attempts):
             try:
                 with _make_http_client(self.profile.timeout_seconds) as client:
                     if budget is not None:
@@ -558,17 +576,26 @@ class ProviderClient:
                     usage={},
                 )
                 code = exc.response.status_code
-                if code in (429, 499, 502, 503, 504) and attempt < attempts - 1:
+                retry_attempts = rate_limit_attempts if code == 429 else attempts
+                if code in (429, 499, 502, 503, 504) and attempt < retry_attempts - 1:
                     # Rate limits, gateway-closed (499) and transient gateway failures;
                     # other errors are final.
                     import time as _time
 
                     retry_after = exc.response.headers.get("retry-after")
-                    backoff = 30.0 if code in (429, 499) else 5.0 * (attempt + 1)
+                    backoff = (
+                        idle_seconds
+                        if code == 429
+                        else 30.0
+                        if code == 499
+                        else 5.0 * (attempt + 1)
+                    )
                     try:
                         wait = float(retry_after) if retry_after else backoff
                     except (TypeError, ValueError):
                         wait = backoff
+                    if code == 429:
+                        wait = max(idle_seconds, wait)
                     _time.sleep(min(wait, 120.0))
                     continue
                 raise ProviderError(

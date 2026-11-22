@@ -12,10 +12,10 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_valida
 from vulnscan.contracts import ScanSpecification, ToolConfig, ToolName
 
 PROFILES = {
-    "fast": [ToolName.SEMGREP, ToolName.NATIVE_HUNT, ToolName.GITLEAKS],
+    "fast": [ToolName.NATIVE_HUNT, ToolName.SEMGREP, ToolName.GITLEAKS],
     "full": [
-        ToolName.SEMGREP,
         ToolName.NATIVE_HUNT,
+        ToolName.SEMGREP,
         ToolName.GITLEAKS,
         ToolName.TRIVY,
         ToolName.OWASP_DEPENDENCY_CHECK,

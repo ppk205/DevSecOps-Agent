@@ -252,7 +252,7 @@ class LanguageKind(str, Enum):
     OTHER = "other"
 
 
-#: File extensions scanned as source across the 7 supported language families.
+#: File extensions scanned as source across the supported language families.
 WEB_SOURCE_EXTENSIONS = frozenset(
     {
         ".java",
@@ -271,6 +271,8 @@ WEB_SOURCE_EXTENSIONS = frozenset(
         ".php",
         ".phtml",
         ".go",
+        ".rb",
+        ".erb",
         ".c",
         ".cc",
         ".cpp",
@@ -279,8 +281,6 @@ WEB_SOURCE_EXTENSIONS = frozenset(
         ".hh",
         ".hpp",
         ".hxx",
-        ".rb",
-        ".erb",
         ".cs",
         ".cshtml",
         ".razor",
@@ -304,6 +304,8 @@ _EXTENSION_LANGUAGE: dict[str, LanguageKind] = {
     ".php": LanguageKind.PHP,
     ".phtml": LanguageKind.PHP,
     ".go": LanguageKind.GO,
+    ".rb": LanguageKind.RUBY,
+    ".erb": LanguageKind.RUBY,
     ".c": LanguageKind.CPP,
     ".cc": LanguageKind.CPP,
     ".cpp": LanguageKind.CPP,
@@ -312,8 +314,6 @@ _EXTENSION_LANGUAGE: dict[str, LanguageKind] = {
     ".hh": LanguageKind.CPP,
     ".hpp": LanguageKind.CPP,
     ".hxx": LanguageKind.CPP,
-    ".rb": LanguageKind.RUBY,
-    ".erb": LanguageKind.RUBY,
     ".cs": LanguageKind.CSHARP,
     ".cshtml": LanguageKind.CSHARP,
     ".razor": LanguageKind.CSHARP,

@@ -283,12 +283,12 @@ def test_dr09_recovery_preserves_results(service, checkout, tmp_path):
 
 def test_qr21_cancel_retains_completed_scanner_evidence(service, checkout, tmp_path):
     def cancel(event):
-        if event.stage == "semgrep" and event.status == "completed":
+        if event.stage == "native-hunt" and event.status == "completed":
             service.cancel(service.history()[0]["id"])
 
     result = service.run(str(checkout), settings(tmp_path), on_event=cancel)
     assert result["exit_code"] == 130
-    assert len(result["scanner_results"]) == 1
+    assert [scanner["tool"] for scanner in result["scanner_results"]] == ["native-hunt"]
     assert Path(result["summary_path"]).exists()
 
 

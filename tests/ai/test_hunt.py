@@ -513,6 +513,148 @@ class TestDeepHunt:
         assert len(result["candidates"]) == 1
 
 
+class TestEvidenceVerifier:
+    def test_drops_comment_lines_and_missing_files(self, tmp_path):
+        from vulnscan.ai.hunt import verify_and_filter_candidates
+
+        (tmp_path / "App.java").write_text(
+            "public class App {\n"
+            "  // This comment mentions deserializes and SQL\n"
+            "  public void run() { stmt.executeQuery(sql); }\n"
+            "}\n",
+            encoding="utf-8",
+        )
+        cands = [
+            {"file": "App.java", "line": 2, "cwe": "CWE-502", "title": "Comment FP"},
+            {"file": "Missing.java", "line": 1, "cwe": "CWE-89", "title": "Missing file"},
+            {"file": "App.java", "line": 99, "cwe": "CWE-89", "title": "Out of range"},
+            {"file": "App.java", "line": 3, "cwe": "CWE-89", "title": "Real SQLi"},
+        ]
+        kept, dropped = verify_and_filter_candidates(cands, str(tmp_path))
+        assert dropped == 3
+        assert len(kept) == 1
+        assert kept[0]["title"] == "Real SQLi"
+
+    def test_drops_parameterized_prepared_statement_keeps_sqli(self, tmp_path):
+        from vulnscan.ai.hunt import verify_and_filter_candidates
+
+        (tmp_path / "SafeSql.java").write_text(
+            "class SafeSql {\n"
+            '  String sql = "SELECT * FROM users WHERE name = ?";\n'
+            "  PreparedStatement ps = conn.prepareStatement(sql);\n"
+            "  ps.setString(1, user);\n"
+            "  ps.executeQuery();\n"
+            "}\n",
+            encoding="utf-8",
+        )
+        (tmp_path / "VulnSql.java").write_text(
+            "class VulnSql {\n"
+            '  String sql = "SELECT * FROM users WHERE name = \'" + user + "\'";\n'
+            "  Statement st = conn.createStatement();\n"
+            "  st.executeQuery(sql);\n"
+            "}\n",
+            encoding="utf-8",
+        )
+        cands = [
+            {"file": "SafeSql.java", "line": 5, "cwe": "CWE-89", "title": "Safe PreparedStatement"},
+            {"file": "VulnSql.java", "line": 4, "cwe": "CWE-89", "title": "Real SQLi"},
+        ]
+        kept, dropped = verify_and_filter_candidates(cands, str(tmp_path))
+        assert dropped == 1
+        assert [c["title"] for c in kept] == ["Real SQLi"]
+
+    def test_drops_non_shell_process_builder_keeps_shell_cmdi(self, tmp_path):
+        from vulnscan.ai.hunt import verify_and_filter_candidates
+
+        (tmp_path / "SafeProc.java").write_text(
+            "class SafeProc {\n"
+            "  void run(List<String> args) {\n"
+            "    ProcessBuilder pb = new ProcessBuilder(args);\n"
+            "    pb.start();\n"
+            "  }\n"
+            "}\n",
+            encoding="utf-8",
+        )
+        (tmp_path / "VulnProc.java").write_text(
+            "class VulnProc {\n"
+            "  void run(String cmd) {\n"
+            '    ProcessBuilder pb = new ProcessBuilder("/bin/sh", "-c", cmd);\n'
+            "    pb.start();\n"
+            "  }\n"
+            "}\n",
+            encoding="utf-8",
+        )
+        cands = [
+            {"file": "SafeProc.java", "line": 3, "cwe": "CWE-78", "title": "Safe ProcessBuilder"},
+            {"file": "VulnProc.java", "line": 3, "cwe": "CWE-78", "title": "Real CMDi"},
+        ]
+        kept, dropped = verify_and_filter_candidates(cands, str(tmp_path))
+        assert dropped == 1
+        assert [c["title"] for c in kept] == ["Real CMDi"]
+
+    def test_parallel_tool_calls_preserve_order_and_scan_context(self, tmp_path, monkeypatch):
+        import json as _json
+
+        from vulnscan.ai.hunt import hunt_vulns
+        from vulnscan.providers.client import ChatResponse
+        from vulnscan.scanners.process import _cancel_check
+
+        _snapshot(tmp_path)
+        seen_tool_ids: list[str] = []
+        seen_context: list[bool] = []
+
+        def check_context(_args):
+            seen_context.append(_cancel_check.get()())
+            return {}
+
+        monkeypatch.setattr(
+            "vulnscan.ai.hunt.build_tool_handlers",
+            lambda *_args, **_kwargs: dict.fromkeys(
+                ("list_files", "grep_code", "inspect_code"), check_context
+            ),
+        )
+
+        def _call(name, args, call_id):
+            return {
+                "id": call_id,
+                "type": "function",
+                "function": {"name": name, "arguments": _json.dumps(args)},
+            }
+
+        script = [
+            ChatResponse(
+                content="",
+                tool_calls=[
+                    _call("list_files", {"dir": "src", "glob": "*.java"}, "call_a"),
+                    _call("grep_code", {"pattern": "executeQuery"}, "call_b"),
+                    _call("inspect_code", {"file_path": "src/Safe.java"}, "call_c"),
+                ],
+                usage={"total_tokens": 10},
+            ),
+            ChatResponse(content="[]", tool_calls=[], usage={"total_tokens": 10}),
+        ]
+
+        class _ParallelClient:
+            def chat(self, messages, **kwargs):
+                for m in messages:
+                    if m.role == "tool" and m.tool_call_id:
+                        seen_tool_ids.append(m.tool_call_id)
+                return script.pop(0)
+
+        token = _cancel_check.set(lambda: True)
+        try:
+            hunt_vulns(
+                snapshot_root=str(tmp_path),
+                client=_ParallelClient(),
+                model="m",
+                tool_first=True,
+            )
+        finally:
+            _cancel_check.reset(token)
+        assert seen_tool_ids[:3] == ["call_a", "call_b", "call_c"]
+        assert seen_context and all(seen_context)
+
+
 class TestFamilyBrief:
     def test_brief_covers_native_rule_classes(self):
         from vulnscan.ai.hunt import brief_for

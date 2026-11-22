@@ -51,8 +51,8 @@ class TestTools:
             "codeql",
         }
         assert response.json()["profiles"] == {
-            "fast": ["semgrep", "native-hunt", "gitleaks"],
-            "full": ["semgrep", "native-hunt", "gitleaks", "trivy", "owasp-dependency-check"],
+            "fast": ["native-hunt", "semgrep", "gitleaks"],
+            "full": ["native-hunt", "semgrep", "gitleaks", "trivy", "owasp-dependency-check"],
         }
         assert next(item for item in tools if item["tool"] == "native-hunt")["available"] is True
         for item in tools:

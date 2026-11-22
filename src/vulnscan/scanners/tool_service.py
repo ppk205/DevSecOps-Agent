@@ -191,12 +191,16 @@ class ScannerToolService:
             else _ADHOC_COMMIT_SHA
         )
         self.semgrep: ScannerAdapter = semgrep_adapter or SemgrepAdapter()
+        self.semgrep.default_timeout = 60.0
         self.codeql: ScannerAdapter = codeql_adapter or CodeQLAdapter()
         self.codeql.default_timeout = 75.0
         self.owasp: ScannerAdapter = owasp_adapter or DependencyCheckAdapter()
         self.gitleaks: ScannerAdapter = gitleaks_adapter or GitleaksAdapter()
         self.spotbugs: ScannerAdapter = spotbugs_adapter or SpotBugsAdapter()
         self.trivy: ScannerAdapter = trivy_adapter or TrivyAdapter()
+        import threading
+
+        self._lock = threading.Lock()
         self._cached_results: dict[str, ScannerResult] = {}
         self._cached_observations: list[Observation] = []
 
@@ -267,6 +271,10 @@ class ScannerToolService:
             ],
         )
 
+    def _get_cached(self, cache_key: str) -> ScannerResult | None:
+        with self._lock:
+            return self._cached_results.get(cache_key)
+
     def _record_result(self, cache_key: str, result: ScannerResult) -> None:
         if (
             result.status == RunStatus.FAILED
@@ -283,12 +291,22 @@ class ScannerToolService:
                     "errors": [],
                 }
             )
-        self._cached_results[cache_key] = result
-        existing_ids = {o.observation_id for o in self._cached_observations}
-        for obs in result.observations:
-            if obs.observation_id not in existing_ids:
-                self._cached_observations.append(obs)
-                existing_ids.add(obs.observation_id)
+        with self._lock:
+            self._cached_results[cache_key] = result
+            existing_ids = {o.observation_id for o in self._cached_observations}
+            for obs in result.observations:
+                if obs.observation_id not in existing_ids:
+                    self._cached_observations.append(obs)
+                    existing_ids.add(obs.observation_id)
+
+    def _bundled_semgrep_pack(self, language: str | None) -> list[str]:
+        rules_dir = Path(__file__).with_name("rules")
+        fam = normalize_language_family(language)
+        if fam:
+            bundled = _BUNDLED_SEMGREP_RULES.get(fam)
+            if bundled and (rules_dir / bundled).is_file():
+                return [str(rules_dir / bundled)]
+        return []
 
     def _resolve_semgrep_rule_paths(
         self,
@@ -296,6 +314,7 @@ class ScannerToolService:
         language: str | None,
     ) -> list[str]:
         rules_dir = Path(__file__).with_name("rules")
+        bundled = self._bundled_semgrep_pack(language)
         if ruleset and ruleset.strip():
             raw = ruleset.strip()
             local_pack = rules_dir / (raw if raw.endswith(".yml") else f"{raw}.yml")
@@ -309,16 +328,16 @@ class ScannerToolService:
             candidate_path = Path(raw)
             if candidate_path.is_file():
                 return [str(candidate_path)]
-            # Non-existent symbolic ruleset names invented by LLMs (e.g.
-            # "security-audit", "default", "owasp") fall through to the
-            # language-matched bundled rule pack below so offline Semgrep
-            # never fails with exit code 7.
+            # Explicit Semgrep registry pack (e.g. p/owasp-top-ten, p/java):
+            # combine with the bundled offline pack; run_semgrep falls back
+            # automatically to bundled-only if offline or registry fails.
+            if raw.startswith(("p/", "r/")):
+                return [*bundled, raw]
 
+        if bundled:
+            return bundled
         fam = normalize_language_family(language)
         if fam:
-            bundled = _BUNDLED_SEMGREP_RULES.get(fam)
-            if bundled and (rules_dir / bundled).is_file():
-                return [str(rules_dir / bundled)]
             community = _SEMGREP_COMMUNITY_PACKS.get(fam)
             if community:
                 return [community]
@@ -382,14 +401,41 @@ class ScannerToolService:
             fam = _EXT_TO_FAMILY.get(Path(rel).suffix.lower())
         rule_paths = self._resolve_semgrep_rule_paths(ruleset, fam)
 
-        spec = self._build_spec(
-            ToolName.SEMGREP,
-            language=fam or "java",
-            rule_paths=rule_paths,
-            options={"target_path": rel},
-        )
-        result = self.semgrep.run(spec, workdir=str(self.snapshot_root))
-        self._record_result(f"semgrep:{rel}:{ruleset or fam or 'default'}", result)
+        cache_key = f"semgrep:{rel}:{ruleset or fam or 'default'}"
+        cached = self._get_cached(cache_key)
+        if cached is not None:
+            result = cached
+            from_cache = True
+        else:
+            from_cache = False
+            spec = self._build_spec(
+                ToolName.SEMGREP,
+                language=fam or "java",
+                rule_paths=rule_paths,
+                options={"target_path": rel},
+            )
+            result = self.semgrep.run(spec, workdir=str(self.snapshot_root))
+            # If a remote registry pack (p/... or r/...) failed (e.g. offline),
+            # fall back cleanly to the bundled offline YAML pack.
+            if result.status == RunStatus.FAILED and any(
+                p.startswith(("p/", "r/")) for p in rule_paths
+            ):
+                fallback_rules = self._bundled_semgrep_pack(fam)
+                if fallback_rules:
+                    fallback_spec = self._build_spec(
+                        ToolName.SEMGREP,
+                        language=fam or "java",
+                        rule_paths=fallback_rules,
+                        options={"target_path": rel},
+                    )
+                    fallback_res = self.semgrep.run(fallback_spec, workdir=str(self.snapshot_root))
+                    if fallback_res.status != RunStatus.FAILED:
+                        fallback_res.warnings.append(
+                            f"registry ruleset '{ruleset}' unavailable offline; used bundled pack"
+                        )
+                        result = fallback_res
+
+            self._record_result(cache_key, result)
         payload = extract_scanner_result(
             result,
             snapshot_root=self.snapshot_root,
@@ -397,6 +443,7 @@ class ScannerToolService:
             max_items=max_items,
         )
         payload["target_path"] = rel
+        payload["cached"] = from_cache
         if fam:
             payload["language"] = fam
         return payload
@@ -435,33 +482,40 @@ class ScannerToolService:
                 "findings": [],
             }
 
-        import hashlib as _hashlib
-        import tempfile as _tempfile
-
         target_fs = self.snapshot_root / rel
-        codeql_workdir = str(target_fs if target_fs.is_dir() else self.snapshot_root)
-        rel_hash = _hashlib.sha1(f"{self.snapshot_root}:{rel}".encode()).hexdigest()[:10]
-        db_cache_dir = (
-            Path(_tempfile.gettempdir())
-            / "vulnscan-codeql-db"
-            / f"{self.commit_sha[:12]}-{rel_hash}"
-        )
-        options: dict[str, Any] = {
-            "language": fam,
-            "database_dir": str(db_cache_dir),
-        }
-        if query_suite and query_suite.strip():
-            options["suite"] = query_suite.strip()
+        cache_key = f"codeql:{rel}:{fam}"
+        cached = self._get_cached(cache_key)
+        if cached is not None:
+            result = cached
+            from_cache = True
+        else:
+            from_cache = False
+            import hashlib as _hashlib
+            import tempfile as _tempfile
 
-        spec = self._build_spec(ToolName.CODEQL, language=fam, options=options)
-        result = self.codeql.run(spec, workdir=codeql_workdir)
-        if rel != "." and target_fs.is_dir():
-            prefix = f"{rel.rstrip('/')}/"
-            for obs in result.observations:
-                fp = obs.location.file_path
-                if not fp.startswith(prefix) and not Path(fp).is_absolute():
-                    obs.location.file_path = f"{prefix}{fp}"
-        self._record_result(f"codeql:{rel}:{fam}", result)
+            codeql_workdir = str(target_fs if target_fs.is_dir() else self.snapshot_root)
+            rel_hash = _hashlib.sha1(f"{self.snapshot_root}:{rel}".encode()).hexdigest()[:10]
+            db_cache_dir = (
+                Path(_tempfile.gettempdir())
+                / "vulnscan-codeql-db"
+                / f"{self.commit_sha[:12]}-{rel_hash}"
+            )
+            options: dict[str, Any] = {
+                "language": fam,
+                "database_dir": str(db_cache_dir),
+            }
+            if query_suite and query_suite.strip():
+                options["suite"] = query_suite.strip()
+
+            spec = self._build_spec(ToolName.CODEQL, language=fam, options=options)
+            result = self.codeql.run(spec, workdir=codeql_workdir)
+            if rel != "." and target_fs.is_dir():
+                prefix = f"{rel.rstrip('/')}/"
+                for obs in result.observations:
+                    fp = obs.location.file_path
+                    if not fp.startswith(prefix) and not Path(fp).is_absolute():
+                        obs.location.file_path = f"{prefix}{fp}"
+            self._record_result(cache_key, result)
 
         file_filter = None if (rel == "." or target_fs.is_dir()) else rel
         payload = extract_scanner_result(
@@ -473,6 +527,7 @@ class ScannerToolService:
         )
         payload["target_path"] = rel
         payload["language"] = fam
+        payload["cached"] = from_cache
         return payload
 
     def run_owasp(
@@ -490,13 +545,28 @@ class ScannerToolService:
                 return {"tool": "owasp-dependency-check", "status": "error", "error": err}
             rel_manifest = rel
 
-        options: dict[str, Any] = {}
-        if rel_manifest:
-            options["manifest_path"] = rel_manifest
+        cache_key = f"owasp:{rel_manifest or 'all'}"
+        cached = self._get_cached(cache_key)
+        if cached is not None:
+            result = cached
+            from_cache = True
+        else:
+            from_cache = False
+            options: dict[str, Any] = {}
+            if rel_manifest:
+                options["manifest_path"] = rel_manifest
 
-        spec = self._build_spec(ToolName.OWASP_DEPENDENCY_CHECK, options=options)
-        result = self.owasp.run(spec, workdir=str(self.snapshot_root))
-        self._record_result(f"owasp:{rel_manifest or 'all'}", result)
+            spec = self._build_spec(ToolName.OWASP_DEPENDENCY_CHECK, options=options)
+            if (
+                type(self.owasp) is DependencyCheckAdapter
+                and not Path("D:/dev/odc/data/odc.mv.db").is_file()
+            ):
+                from .osv_adapter import OSVAdapter
+
+                result = OSVAdapter().run(spec, workdir=str(self.snapshot_root))
+            else:
+                result = self.owasp.run(spec, workdir=str(self.snapshot_root))
+            self._record_result(cache_key, result)
 
         payload = extract_scanner_result(
             result,
@@ -505,6 +575,7 @@ class ScannerToolService:
             file_path=rel_manifest,
             max_items=max_items,
         )
+        payload["cached"] = from_cache
         if rel_manifest:
             payload["manifest_path"] = rel_manifest
         if isinstance(result.metadata, dict):
@@ -526,15 +597,22 @@ class ScannerToolService:
         if err or rel is None:
             return {"tool": "gitleaks", "status": "error", "error": err}
 
-        spec = self._build_spec(
-            ToolName.GITLEAKS,
-            options={
-                "target_path": rel,
-                "scan_git_history": bool(scan_git_history),
-            },
-        )
-        result = self.gitleaks.run(spec, workdir=str(self.snapshot_root))
-        self._record_result(f"gitleaks:{rel}:{scan_git_history}", result)
+        cache_key = f"gitleaks:{rel}:{scan_git_history}"
+        cached = self._get_cached(cache_key)
+        if cached is not None:
+            result = cached
+            from_cache = True
+        else:
+            from_cache = False
+            spec = self._build_spec(
+                ToolName.GITLEAKS,
+                options={
+                    "target_path": rel,
+                    "scan_git_history": bool(scan_git_history),
+                },
+            )
+            result = self.gitleaks.run(spec, workdir=str(self.snapshot_root))
+            self._record_result(cache_key, result)
         payload = extract_scanner_result(
             result,
             snapshot_root=self.snapshot_root,
@@ -542,6 +620,7 @@ class ScannerToolService:
         )
         payload["target_path"] = rel
         payload["scan_git_history"] = bool(scan_git_history)
+        payload["cached"] = from_cache
         return payload
 
     def run_config_audit(
@@ -558,14 +637,20 @@ class ScannerToolService:
 
         mode = (check_type or "auto").strip().lower()
 
-        if mode == "bytecode":
-            spec = self._build_spec(ToolName.SPOTBUGS, language="java")
-            result = self.spotbugs.run(spec, workdir=str(self.snapshot_root))
-            self._record_result(f"spotbugs:{rel}", result)
+        cache_key = f"{'spotbugs' if mode == 'bytecode' else 'trivy'}:{rel}"
+        cached = self._get_cached(cache_key)
+        if cached is not None:
+            result = cached
+            from_cache = True
         else:
-            spec = self._build_spec(ToolName.TRIVY, options={"target_path": rel})
-            result = self.trivy.run(spec, workdir=str(self.snapshot_root))
-            self._record_result(f"trivy:{rel}", result)
+            from_cache = False
+            if mode == "bytecode":
+                spec = self._build_spec(ToolName.SPOTBUGS, language="java")
+                result = self.spotbugs.run(spec, workdir=str(self.snapshot_root))
+            else:
+                spec = self._build_spec(ToolName.TRIVY, options={"target_path": rel})
+                result = self.trivy.run(spec, workdir=str(self.snapshot_root))
+            self._record_result(cache_key, result)
 
         payload = extract_scanner_result(
             result,
@@ -575,6 +660,7 @@ class ScannerToolService:
         )
         payload["check_type"] = mode
         payload["target_path"] = rel
+        payload["cached"] = from_cache
         return payload
 
     def query_findings(

@@ -439,7 +439,7 @@ This section follows `ScanService._run`. Both modes share one path:
    sequential passes with `list_files`, `grep_code` and `inspect_code`. It is skipped with a
    reason when no provider is available. In `--mode deterministic` this stage is skipped.
 3. **Scanners**: deterministic scans and Hunt fallback use the configured scanner
-   profile. `fast` selects Semgrep, native-hunt and Gitleaks. `full` adds Trivy and
+   profile. `fast` selects native-hunt, Semgrep and Gitleaks. `full` adds Trivy and
    Dependency-Check. Hunt can invoke a targeted subset during its model stage.
    The web scan form shows the backend presets and supports explicit tool selection.
 4. **Normalization and dedup**, then **Laya routing**. Laya is advisory and only sees scanner

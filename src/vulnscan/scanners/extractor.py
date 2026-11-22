@@ -180,6 +180,32 @@ def read_code_snippet(
     return "\n".join(excerpt)
 
 
+_TEST_PATH_SEGMENTS = frozenset({"test", "tests", "it", "e2e", "__tests__", "spec", "specs"})
+
+
+def _is_test_path(path: str | None) -> bool:
+    """Return True when *path* looks like a test/integration/spec file."""
+    if not path:
+        return False
+    norm = path.replace("\\", "/")
+    parts = [p.lower() for p in norm.split("/") if p]
+    if any(p in _TEST_PATH_SEGMENTS for p in parts[:-1]):
+        return True
+    name = parts[-1] if parts else ""
+    return name.startswith("test_") or name.endswith(
+        (
+            "test.java",
+            "tests.java",
+            "spec.js",
+            "test.js",
+            "spec.ts",
+            "test.ts",
+            "_test.py",
+            "_test.go",
+        )
+    )
+
+
 def extract_observation(
     obs: Observation,
     *,
@@ -207,6 +233,7 @@ def extract_observation(
         "file": file_path or "",
         "line_start": line_start,
         "line_end": line_end,
+        "is_test_file": _is_test_path(file_path),
         "message": (obs.message or "")[:400],
     }
     if snippet:
@@ -217,6 +244,60 @@ def extract_observation(
     if cvss is not None:
         entry["cvss"] = cvss
     return entry
+
+
+def _group_dependency_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Consolidate multiple OWASP/OSV advisories for the same dependency package."""
+    grouped: dict[tuple[str, str], dict[str, Any]] = {}
+    order: list[tuple[str, str]] = []
+    for item in items:
+        dep = str(item.get("dependency") or "")
+        if not dep:
+            msg = str(item.get("message") or "")
+            m = re.search(r"affects\s+([^\s]+)", msg)
+            dep = m.group(1) if m else ""
+        if not dep:
+            key = (str(item.get("file") or ""), str(item.get("observation_id") or ""))
+        else:
+            key = (str(item.get("file") or ""), dep)
+        adv_id = str(item.get("rule_id") or "")
+        if key not in grouped:
+            base = dict(item)
+            if dep:
+                base["dependency"] = dep
+            base["advisory_ids"] = [adv_id] if adv_id else []
+            base["total_advisories"] = 1
+            grouped[key] = base
+            order.append(key)
+        else:
+            cur = grouped[key]
+            if adv_id and adv_id not in cur["advisory_ids"]:
+                cur["advisory_ids"].append(adv_id)
+            cur["total_advisories"] = len(cur["advisory_ids"])
+            if _SEVERITY_RANK.get(str(item.get("severity")), 5) < _SEVERITY_RANK.get(
+                str(cur.get("severity")), 5
+            ):
+                cur["severity"] = item.get("severity")
+            item_cvss = item.get("cvss")
+            cur_cvss = cur.get("cvss")
+            if isinstance(item_cvss, (int, float)) and (
+                not isinstance(cur_cvss, (int, float)) or item_cvss > cur_cvss
+            ):
+                cur["cvss"] = item_cvss
+    out: list[dict[str, Any]] = []
+    for key in order:
+        entry = grouped[key]
+        if entry["total_advisories"] > 1:
+            dep_name = entry.get("dependency") or entry.get("file")
+            sample = ", ".join(entry["advisory_ids"][:6])
+            suffix = (
+                f" (+{entry['total_advisories'] - 6} more)" if entry["total_advisories"] > 6 else ""
+            )
+            entry["message"] = (
+                f"{entry['total_advisories']} known advisories affect {dep_name}: {sample}{suffix}"
+            )
+        out.append(entry)
+    return out
 
 
 def extract_scanner_result(
@@ -232,7 +313,7 @@ def extract_scanner_result(
     """Filter, prioritize, and compact a :class:`ScannerResult` for LLM consumption."""
     cwe_norm = normalize_cwe_filter(cwe)
     file_norm = file_path.replace("\\", "/").strip().lower() if file_path else None
-    cap = max(1, min(50, int(max_items)))
+    cap = max(1, min(200, int(max_items)))
 
     filtered: list[Observation] = []
     for obs in result.observations:
@@ -264,12 +345,20 @@ def extract_scanner_result(
     filtered.sort(
         key=lambda o: (
             _SEVERITY_RANK.get(o.severity.value, 5),
+            1 if _is_test_path(o.location.file_path if o.location else None) else 0,
             o.location.file_path if o.location else "",
             o.location.line_start or 0 if o.location else 0,
         )
     )
 
-    items = [extract_observation(obs, snapshot_root=snapshot_root) for obs in filtered[:cap]]
+    if result.tool.value == "owasp-dependency-check":
+        raw_items = [extract_observation(obs, snapshot_root=snapshot_root) for obs in filtered]
+        consolidated = _group_dependency_items(raw_items)
+        items = consolidated[:cap]
+        truncated = len(consolidated) > cap
+    else:
+        items = [extract_observation(obs, snapshot_root=snapshot_root) for obs in filtered[:cap]]
+        truncated = len(filtered) > cap
 
     return {
         "tool": result.tool.value,
@@ -278,7 +367,7 @@ def extract_scanner_result(
         "total_observations": len(result.observations),
         "matched_observations": len(filtered),
         "returned": len(items),
-        "truncated": len(filtered) > cap,
+        "truncated": truncated,
         "errors": list(result.errors)[:5],
         "warnings": list(result.warnings)[:5],
         "findings": items,

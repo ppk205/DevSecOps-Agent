@@ -122,6 +122,7 @@ def test_provider_request_limit_counts_retries_across_models_and_protocols(
 ):
     budget = BudgetManager(max_requests=max_requests)
     monkeypatch.setenv("TEST_API_KEY", "synthetic-key")
+    monkeypatch.setattr("vulnscan.providers.client.time.sleep", lambda _seconds: None)
     sent_paths = []
 
     def respond(request: httpx.Request) -> httpx.Response:
@@ -328,3 +329,34 @@ class TestV0PlatformClient:
             client = _make_http_client(10)
             assert isinstance(client, httpx.Client)
             client.close()
+
+    def test_429_idles_60s_then_retries_before_fallback(self):
+        """On HTTP 429, ProviderClient idles 60s and retries once before failing."""
+        req = httpx.Request("POST", "https://api.example.com/v1/chat/completions")
+        resp_429 = httpx.Response(429, request=req, text='{"error":"rate limit"}')
+        err_429 = httpx.HTTPStatusError("429", request=req, response=resp_429)
+
+        first = MagicMock()
+        first.raise_for_status.side_effect = err_429
+
+        second = MagicMock()
+        second.raise_for_status = MagicMock()
+        second.json.return_value = {
+            "choices": [{"message": {"content": "recovered"}, "finish_reason": "stop"}],
+            "usage": {"prompt_tokens": 5, "completion_tokens": 2, "total_tokens": 7},
+            "model": "gpt-4o",
+        }
+
+        with (
+            patch("vulnscan.providers.client.httpx.Client") as MockClient,
+            patch("vulnscan.providers.client.time.sleep") as mock_sleep,
+        ):
+            mock_client = MockClient.return_value.__enter__.return_value
+            mock_client.post.side_effect = [first, second]
+
+            with patch.dict("os.environ", {"TEST_API_KEY": "sk-test123456789"}):
+                client = ProviderClient(_profile(max_retries=0))
+                resp = client.chat([ChatMessage(role="user", content="hi")])
+
+        mock_sleep.assert_called_once_with(60.0)
+        assert resp.content == "recovered"

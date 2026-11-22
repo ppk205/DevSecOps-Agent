@@ -93,8 +93,16 @@ def test_scan_run_reports_findings_for_single_language_target(
     tmp_path: Path, family: str, inventoried: str
 ) -> None:
     """A vulnerable target in one of these languages must not pass as clean."""
+    import subprocess
+
     checkout = tmp_path / "checkout"
     shutil.copytree(FIXTURES / family, checkout / family)
+    for git_args in (
+        ["init"],
+        ["add", "."],
+        ["-c", "user.name=Test", "-c", "user.email=test@example.invalid", "commit", "-m", "init"],
+    ):
+        subprocess.run(["git", *git_args], cwd=checkout, check=True, capture_output=True)
     registry = AdapterRegistry()
     registry.register(NativeHuntAdapter())
     service = ScanService(str(tmp_path / "runs.db"), registry)
