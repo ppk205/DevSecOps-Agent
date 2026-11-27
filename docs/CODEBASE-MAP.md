@@ -1,10 +1,30 @@
-# Bản đồ mã nguồn DevSecOps-Agent
+# Bản đồ mã nguồn và lộ trình DevSecOps-Agent
 
 Tài liệu trả lời ba câu hỏi: **tệp nào làm gì, nằm ở đâu và chương trình chạy qua những bước nào**. Đối tượng đọc là người cần chạy dự án, lần theo một yêu cầu từ giao diện đến kết quả, hoặc tìm đúng nơi để sửa một chức năng.
 
-Bản đồ được đối chiếu với working tree ngày 15/11/2026 trên nhánh `feat/native-workflow-notifications`, HEAD `03c5533`. Nhánh `my_tool_call` đã là tổ tiên của HEAD; phép kiểm tra `git merge-base --is-ancestor my_tool_call HEAD` trả mã 0. Working tree có nhiều thay đổi và tệp chưa được Git theo dõi, nên nội dung dưới đây mô tả mã hiện có trong checkout, không chỉ mã đã commit. Đặc biệt, `ci/launch.py` đang tồn tại nhưng chưa được Git theo dõi tại thời điểm đối chiếu.
+Bản đồ được cập nhật ngày 26/11/2026 trên nhánh `feat/native-workflow-notifications`, HEAD `3e4ff8d`. Sau `git fetch origin`, HEAD trùng `origin/feat/native-workflow-notifications`; lệnh đồng bộ `git merge --ff-only` trả về `Already up to date`. Không có commit ứng dụng mới trên upstream của nhánh này để nhập thêm. `ci/launch.py` đã được Git theo dõi.
+
+Working tree có 27 tệp tracked đã sửa trước lần cập nhật này, cùng nhiều tệp untracked. Các sửa đổi về token, chi phí và báo cáo trong đó là công việc cục bộ chưa commit, chưa được kiểm thử lại trong phiên này. Bản đồ mô tả mã đang có và chỉ rõ phần cục bộ; mục 16 đề xuất thứ tự công việc tiếp theo.
 
 Đây là tài liệu điều hướng mã, không phải kết quả chạy lại hệ thống hay chứng nhận mọi yêu cầu trong SRS đã được hoàn thành. Quy tắc làm việc nằm ở [AGENTS.md](../AGENTS.md); yêu cầu gốc nằm ở [SRS.md](SRS.md).
+
+## 0. Kết quả kiểm tra commit và phạm vi đồng bộ
+
+Bảng 0.1 ghi trạng thái các nhánh remote sau fetch. Số commit riêng phản ánh lịch sử Git, không tự chứng minh thiếu chức năng.
+
+| Nhánh remote | Đầu nhánh | Kết quả và cách xử lý |
+| --- | --- | --- |
+| `feat/native-workflow-notifications` | `3e4ff8d`, 22/11 | Trùng HEAD; đã kiểm tra fast-forward, không tạo merge commit. |
+| `main` | `5c96352` | Là tổ tiên của HEAD; không còn commit cần nhập. |
+| `my_tool_call` | `eda27d3` | Là tổ tiên của HEAD; thay đổi đã nằm trong lịch sử hiện tại. |
+| `feat/ai-scanner-tools-7-langs` | `c15d001` | Là tổ tiên của HEAD; scanner tools đã được nhập. |
+| `lane-hunt-recall`, `lane-native-universal` | `1cab83d`, `dfda65b` | Đều là tổ tiên của HEAD. |
+| `feat/integrate-latest-remote-20261104` | `393ef78`, 05/11 | Có 4 commit riêng trong lịch sử; mã adapter native-hunt chỉ khác HEAD ở docstring. Không nhập lại toàn nhánh cũ hoặc coi bằng chứng kiểm thử cũ là kết quả mới. |
+| `dev` | `3355e6b`, 02/11 | Có 45 commit riêng, gồm chat harness, gate và remote session thuộc kiến trúc khác. Không nhập vì H1 và phần 1 của AGENTS.md yêu cầu giữ phạm vi nhánh hiện tại. |
+| `dependabot/uv/uv-36c316cad6` | `6e12539`, 24/11 | Commit mới cập nhật 9 dependency trong `uv.lock` và `requirements.lock.txt`. Chủ dự án đã chọn để chờ; chưa merge hoặc cài gói. |
+| `dependabot/uv/uv-e72634a380` | `96bbf48`, 03/11 | Đề xuất dependency cũ, có 1 commit riêng; cũng để chờ. |
+
+Các mốc gần nhất trên HEAD là `a8b8960` nhập scanner tools, `effe8d8` cập nhật báo cáo tiến độ và khởi động Laya, `9ea4862` chỉnh proxy và chạy song song các pass tool-first, rồi `3e4ff8d` khôi phục lọc finding trong nhánh `ai_orchestrated`. Tên commit không thay cho việc đọc điều kiện thực thi ở mục 5.
 
 ## 1. Đọc gì trước
 
@@ -36,8 +56,13 @@ flowchart TD
     R --> S
     R --> H[Scanner / routing / report helpers]
     S --> I[Source resolution / manifest / snapshot]
-    I --> M[Optional model hunt]
-    M --> A[Scanner adapters]
+    I --> M[Model Hunt tùy cấu hình]
+    M --> T[ScannerToolService trên snapshot]
+    T --> A[Scanner adapters]
+    M --> R1[Tái sử dụng kết quả tool nếu đủ điều kiện]
+    R1 --> Q
+    M --> F1[Chạy adapter cấu hình khi không có kết quả dùng được]
+    F1 --> A
     A --> Q[Normalize / deduplicate / coverage]
     Q --> L[Optional Laya / AI review]
     L --> V[IndependentValidator]
@@ -134,7 +159,7 @@ Luồng mặc định là `web`: chuẩn bị Python, tìm/cài Gitleaks khi thi
 
 Khi có `uv`, launcher chạy `uv sync --frozen --inexact --extra scanners` mỗi lần khởi động; `--inexact` giữ lại extra đã cài. Khi thiếu `uv` nhưng môi trường đã tồn tại, nó dùng môi trường đó. Frontend chỉ chạy `npm ci` hoặc build khi đầu ra thiếu/cũ hơn nguồn. Go chỉ build khi binary thiếu/cũ hơn nguồn; nếu thiếu SDK nhưng có binary cũ, launcher có thể dùng binary đó và báo rõ.
 
-Gitleaks được tải ở phiên bản ghim 8.24.2, kiểm tra SHA-256 và đặt vào thư mục script của virtualenv. Đây là launcher có thể truy cập mạng, cài gói và tải binary, không phải lệnh kiểm tra offline. Nó không tự cài Java, SpotBugs, Dependency-Check, CodeQL hay extra `laya`. Trạng thái `untracked` của tệp này phải được xử lý riêng nếu muốn đưa launcher vào bản phát hành; bản đồ không tự thêm nó vào Git.
+Gitleaks được tải ở phiên bản ghim 8.24.2, kiểm tra SHA-256 và đặt vào thư mục script của virtualenv. Đây là launcher có thể truy cập mạng, cài gói và tải binary, không phải lệnh kiểm tra offline. Nó không tự cài Java, SpotBugs, Dependency-Check, CodeQL hay extra `laya`. Tệp launcher đã được Git theo dõi; phiên cập nhật tài liệu này không chạy nó.
 
 ### 4.3. Go CLI/TUI và dashboard
 
@@ -193,8 +218,8 @@ Python `ScanConfig` mặc định `mode="hunt"`, `laya=True`, `ai_review=False`,
 | 1. Tạo run | `ScanService._run` | Public run ID, integer ID trong SQLite, attempt/parent, thư mục đầu ra mới. Không tái sử dụng thư mục của một run cũ. |
 | 2. Intake | `checkout_manifest` trong `scan_service.py` | Commit đã xác minh, inventory, trạng thái dirty hoặc chưa biết, hash từng tệp; từ chối source/commit không thỏa điều kiện. |
 | 3. Snapshot | `ScanService._run` | Sao chép tập tệp đã chọn sang thư mục tạm, đối chiếu hash trước khi quét. Checkout gốc không phải nơi áp dụng patch hay build sửa lỗi. |
-| 4. Model hunt tùy chọn | [ai/hunt.py](../src/vulnscan/ai/hunt.py) | Candidate theo họ ngôn ngữ/generic/logic, trace và trạng thái thực tế của các lần gọi. |
-| 5. Scanner | [scanners/base.py](../src/vulnscan/scanners/base.py), từng adapter | `ScannerResult`, observation, version, lỗi, coverage; `scanner-<tool>.json` trong thư mục run. |
+| 4. Model hunt tùy chọn | [ai/hunt.py](../src/vulnscan/ai/hunt.py), [scanners/tool_service.py](../src/vulnscan/scanners/tool_service.py) | Model gọi scanner tools trên snapshot; lưu candidate, kết quả tool, trace và trạng thái thực tế. |
+| 5. Scanner | [scanners/base.py](../src/vulnscan/scanners/base.py), từng adapter | Tái sử dụng `ScannerResult` do Hunt gọi khi đủ điều kiện; nếu không, chạy adapter theo cấu hình. Giữ observation, version, lỗi, coverage và artifact. |
 | 6. Chuẩn hóa sau kết quả scanner | [pipeline/runner.py](../src/vulnscan/pipeline/runner.py), [normalization/](../src/vulnscan/normalization/) | Finding dùng schema chung, nhóm trùng và giữ provenance. Source excerpt được đọc lại trong snapshot và sanitize. |
 | 7. Laya routing | [decisions/router.py](../src/vulnscan/decisions/router.py) | Đề xuất tuyến xử lý, xác suất và lý do; không sở hữu trạng thái finding. |
 | 8. Nếu Hunt có candidate | [ai/laya_verify.py](../src/vulnscan/ai/laya_verify.py), [ai/compare.py](../src/vulnscan/ai/compare.py) | Kiểm tra tư vấn, đối chiếu file/dòng/CWE, chia `agreed`, `model_only`, `scanner_only`. |
@@ -205,7 +230,11 @@ Python `ScanConfig` mặc định `mode="hunt"`, `laya=True`, `ai_review=False`,
 | 13. Policy gate | [core/policy.py](../src/vulnscan/core/policy.py) | Gate, exit code, finding vượt ngưỡng, severity chưa biết, lỗi scanner/coverage. |
 | 14. Xuất và hoàn tất | [reporting/reporter.py](../src/vulnscan/reporting/reporter.py), [notifications/service.py](../src/vulnscan/notifications/service.py) | Báo cáo, `summary.json`, trạng thái SQLite và draft/receipt thông báo. |
 
-Trong Hunt có candidate, review ưu tiên nhóm scanner đồng ý với model và các candidate được promotion. Khi Hunt không có candidate hoạt động, service chuyển tập scanner findings vào đường review thông thường. Không thể suy ra mọi finding đều được model đọc, vì còn giới hạn, provider, routing và lỗi.
+Hunt chỉ dùng nhánh `ai_orchestrated` khi trạng thái Hunt là `completed` hoặc `partial` và có ít nhất một scanner result hoàn tất. Khi không có kết quả dùng được, service chạy các adapter cấu hình. Trong nhánh AI có candidate hoạt động, nếu tập `agreed` cộng `model_only` được promotion không rỗng, tập finding cuối được thay bằng tập này; finding `scanner_only` được đếm trong `ai_filtering`. Nếu tập đó rỗng hoặc không thuộc nhánh AI điều phối, scanner findings được giữ cùng finding promotion. Đây là lọc tập kết quả, không phải independent rejection.
+
+Trong Hunt có candidate, review ưu tiên nhóm scanner đồng ý với model và candidate được promotion. Khi Hunt không có candidate hoạt động, service chuyển tập scanner findings vào đường review thông thường. Không thể suy ra mọi finding đều được model đọc, vì còn giới hạn, provider, routing và lỗi.
+
+Nhánh `ai_orchestrated` lấy scanner bắt buộc từ các kết quả hoàn tất đã trả về và bỏ diagnostic chứa `missing coverage` khỏi danh sách lỗi đối soát đưa vào gate. Vì vậy gate đạt ở nhánh này không chứng minh mọi scanner của profile hoặc mọi tệp đã được xét. Nhánh deterministic giữ tập tool cấu hình và đối soát đầy đủ; CI ép deterministic theo FR-72. Cần đọc coverage và trạng thái từng tool cùng kết quả gate.
 
 Stage `promotion` là một đoạn xử lý trong `_run`, không nhất thiết có một dòng progress riêng mang đúng tên đó. Các trạng thái stage ghi `skipped`, `partial`, `failed` hoặc `completed` theo nhánh thực thi. Tên hay ô stage có sẵn trên UI không chứng minh bước đã thực sự chạy.
 
@@ -253,7 +282,9 @@ Một `Observation` là điều một scanner báo. Một `Finding` gom các obs
 
 | Tệp | Trách nhiệm |
 | --- | --- |
-| [scanners/base.py](../src/vulnscan/scanners/base.py) | Interface `ScannerAdapter`, capability, gọi binary và `AdapterRegistry.default()`. Registry chứa Semgrep, native-hunt, SpotBugs, Dependency-Check, Gitleaks và CodeQL. |
+| [scanners/base.py](../src/vulnscan/scanners/base.py) | Interface `ScannerAdapter`, capability, gọi binary và `AdapterRegistry.default()`. Registry chứa Semgrep, native-hunt, SpotBugs, Trivy, Dependency-Check, Gitleaks và CodeQL. |
+| [scanners/tool_service.py](../src/vulnscan/scanners/tool_service.py) | Dịch vụ scanner cho `tool-scan`, Hunt và AI review; giới hạn đường dẫn trong snapshot, cache kết quả trong phiên và tổng hợp finding. |
+| [scanners/trivy_adapter.py](../src/vulnscan/scanners/trivy_adapter.py) | Quét cấu hình hạ tầng/container bằng Trivy; không thay cho phân tích bytecode Java. |
 | [scanners/native_hunt_adapter.py](../src/vulnscan/scanners/native_hunt_adapter.py) | Gọi engine nội bộ, chuyển finding sang observation/coverage dùng schema chung. |
 | [scanners/semgrep_adapter.py](../src/vulnscan/scanners/semgrep_adapter.py) | Chạy/đọc kết quả Semgrep, map severity, theo dõi timeout và phân biệt ngôn ngữ chưa có rule. |
 | [scanners/gitleaks_adapter.py](../src/vulnscan/scanners/gitleaks_adapter.py) | Quét secret trong snapshot đã chọn và đưa ra observation đã qua xử lý che dữ liệu. |
@@ -266,7 +297,7 @@ Một `Observation` là điều một scanner báo. Một `Finding` gom các obs
 | [scanners/rules/](../src/vulnscan/scanners/rules/) | Rule Semgrep được đóng gói cho Java, JS/TS, Python và PHP. |
 | [scanners/fake.py](../src/vulnscan/scanners/fake.py) | Adapter giả cho test; không dùng kết quả giả để báo hiệu quả thật. |
 
-Profile Python `fast` gồm Semgrep + native-hunt + Gitleaks. `full` bổ sung SpotBugs/FindSecBugs và Dependency-Check, cùng đường build cách ly. `tools` trong JSON cấu hình chọn tập scanner riêng, kể cả CodeQL. Công cụ thiếu binary, lỗi rule hoặc thiếu môi trường được ghi rõ; không coi số finding bằng 0 là scan thành công.
+Profile chung `fast` gồm Semgrep + native-hunt + Gitleaks. `full` bổ sung Trivy và Dependency-Check. SpotBugs/FindSecBugs và CodeQL vẫn là adapter có thể chọn rõ qua `tools`, không thuộc hai profile mặc định. Công cụ thiếu binary, lỗi rule hoặc thiếu môi trường được ghi rõ; không coi số finding bằng 0 là scan thành công.
 
 ### 7.2. Engine native-hunt
 
@@ -280,9 +311,10 @@ Profile Python `fast` gồm Semgrep + native-hunt + Gitleaks. `full` bổ sung S
 | JS/TS | `.js`, `.jsx`, `.ts`, `.tsx`, `.mjs`, `.cjs`, `.vue` | Có pack JS/TS; năng lực còn phụ thuộc cú pháp/parser. | Có pass JavaScript. |
 | Python | `.py` | Có. | Có. |
 | PHP | `.php`, `.phtml` | Có. | Có. |
-| Go | `.go` | Không có rule; ghi `unsupported`. | Không có pass riêng; generic có thể đọc text. |
+| Go | `.go` | Không có rule; ghi `unsupported`. | Có pass Go. |
 | Ruby | `.rb`, `.erb` | Không có rule; ghi `unsupported`. | Không có pass riêng; generic có thể đọc text. |
-| C# | `.cs`, `.cshtml`, `.razor` | Không có rule; ghi `unsupported`. | Không có pass riêng; generic có thể đọc text. |
+| C# | `.cs`, `.cshtml`, `.razor` | Không có rule; ghi `unsupported`. | Có pass C#. |
+| C/C++ | Không có pack native-hunt. | Không có rule đóng gói; ghi `unsupported`. | Có pass C/C++; inventory/model support không chứng minh native-hunt hoặc Go executable phân tích được. |
 
 Nguồn xác định phạm vi là `FAMILY_EXTENSIONS` trong engine, `_language_for` trong adapter, `LanguageKind`/`WEB_SOURCE_EXTENSIONS` trong contracts, `_NO_RULE_LANGUAGES` của Semgrep và `_SUFFIX_FAMILY`/`_HUNT_FAMILIES` của Hunt. Thêm rule mà chưa nối các điểm này và test `scan-run` chưa đủ để công bố hỗ trợ pipeline cho ngôn ngữ mới.
 
@@ -312,10 +344,11 @@ Một giới hạn cần thấy ngay khi đọc API tool: schema `lookup_route` 
 | [providers/client.py](../src/vulnscan/providers/client.py) | Gọi API Chat Completions tương thích OpenAI bằng `httpx`, xử lý response/tool call và ghi usage/progress. Không có provider SDK. |
 | [providers/profile_store.py](../src/vulnscan/providers/profile_store.py) | Đọc/ghi profile và chọn profile mặc định có credential phù hợp. |
 | [providers/credentials.py](../src/vulnscan/providers/credentials.py) | Resolve tham chiếu credential và che giá trị nhạy cảm. |
-| [providers/budget.py](../src/vulnscan/providers/budget.py) | Theo dõi token/chi phí và giới hạn ngân sách theo dữ liệu sẵn có. Thiếu usage hoặc giá không có nghĩa chi phí bằng 0. |
+| [providers/budget.py](../src/vulnscan/providers/budget.py) | Bộ đếm HTTP attempt và giới hạn `max_model_requests` dùng chung các bước/retry; còn cấu trúc ngân sách USD cũ. Không suy ra giá thực từ số token hoặc attempt. |
 | [providers/events.py](../src/vulnscan/providers/events.py) | Sự kiện lần gọi model và tool để UI hiện tiến độ đã thực sự xảy ra. |
 | [agent/loop.py](../src/vulnscan/agent/loop.py) | Vòng điều tra viết tay: gửi context, nhận tool call, thực thi handler được đăng ký, phân tích assessment. |
-| [agent/tools.py](../src/vulnscan/agent/tools.py) | Schema của bảy công cụ model được phép gọi. |
+| [agent/tools.py](../src/vulnscan/agent/tools.py) | Schema bảy tool kiểm tra nguồn/bằng chứng và bảy tool scanner/kết quả scanner. |
+| [agent/scanner_handlers.py](../src/vulnscan/agent/scanner_handlers.py) | Handler chuyển tham số model sang `ScannerToolService`, giữ giới hạn snapshot và định dạng kết quả. |
 | [ai/review.py](../src/vulnscan/ai/review.py) | Handler đọc snapshot, chọn finding review, tạo evidence, gọi agent rồi chuyển assessment qua validator. |
 | [ai/hunt.py](../src/vulnscan/ai/hunt.py) | Model tự tìm candidate qua pass ngôn ngữ, generic và logic. Có phát hiện do model khởi tạo, không chỉ giải thích scanner. |
 | [ai/compare.py](../src/vulnscan/ai/compare.py) | Đối chiếu candidate với scanner theo file, khoảng dòng và CWE. |
@@ -323,7 +356,9 @@ Một giới hạn cần thấy ngay khi đọc API tool: schema `lookup_route` 
 | [ai/laya_verify.py](../src/vulnscan/ai/laya_verify.py), [ai/excerpts.py](../src/vulnscan/ai/excerpts.py) | Kiểm tra tư vấn candidate và chuẩn bị excerpt có giới hạn. |
 | [reporting/final_report.py](../src/vulnscan/reporting/final_report.py) | Tạo bản narrative, có đường nội dung deterministic khi không có AI. |
 
-Bảy tool là `inspect_code`, `lookup_route`, `get_evidence`, `check_coverage`, `propose_verification`, `list_files`, `grep_code`. Handler phải ở trong snapshot và có giới hạn kết quả. `propose_verification` trả đề xuất thủ tục; nó không trao quyền thực thi shell, chạy process, truy cập mạng, đọc credential hoặc ghi file cho model. `verification/probe.py` là đường kiểm chứng tin cậy riêng, không phải quyền của tool model.
+Bảy tool kiểm tra nguồn/bằng chứng là `inspect_code`, `lookup_route`, `get_evidence`, `check_coverage`, `propose_verification`, `list_files`, `grep_code`. Nhóm scanner có `run_semgrep_scan`, `run_codeql_scan`, `run_owasp_scan`, `run_secret_scan`, `run_config_audit`, `query_scanner_findings`, `explain_scanner_rule`. Năm thao tác chạy scanner đi qua adapter; hai thao tác sau đọc kết quả hoặc giải thích rule. Adapter có thể khởi chạy scanner và dùng nguồn dữ liệu đã cấu hình; model không có shell hoặc networking tổng quát.
+
+Handler phải ở trong snapshot, coi tham số model là dữ liệu không tin cậy và giới hạn kết quả. Raw secret match/excerpt từ Gitleaks không được đưa cho model. `propose_verification` chỉ trả đề xuất thủ tục; `verification/probe.py` là đường kiểm chứng tin cậy riêng. `ScannerToolService` khai báo Java/JVM, JS/TS, Python, PHP, Go, C/C++ và C#/.NET; danh sách này không bảo đảm mọi adapter có binary, rule hoặc coverage cho mọi ngôn ngữ.
 
 Source, comment, tài liệu trong target và tool result đều là dữ liệu không tin cậy. Nội dung target không được mở rộng quyền của agent. [infra/envfile.py](../src/vulnscan/infra/envfile.py) xử lý lưu key cục bộ, nhập che ký tự và ưu tiên biến môi trường được tiêm từ bên ngoài; [core/security.py](../src/vulnscan/core/security.py) sanitize dữ liệu qua các ranh giới hiển thị/lưu trữ. Bản đồ không đọc hoặc trích các tệp credential thực tế.
 
@@ -341,7 +376,7 @@ Source, comment, tài liệu trong target và tool result đều là dữ liệu
 
 `ScanConfig.laya`, cấu hình JSON và default dataclass là ba lớp khác nhau. `ScanService` hiện chỉ gọi `load_config(path)` khi có `laya_config_path`; nếu không thì tạo `LayaConfig()` rồi áp dụng `enabled=config.laya and not config.ci`. Vì vậy không được nhìn mỗi `config/laya.json` để kết luận mọi lệnh Python đều tắt Laya.
 
-Worker dùng CPU trừ khi CUDA được yêu cầu rõ và khả dụng; có fallback CPU khi load thất bại. Mỗi phép đo cần ghi cấu hình hiệu lực và device thực tế. Hướng huấn luyện nằm trong [training/dataset.py](../src/vulnscan/training/dataset.py), [finetune.py](../src/vulnscan/training/finetune.py), [evaluate.py](../src/vulnscan/training/evaluate.py) và [LAYA-TRAINING.md](LAYA-TRAINING.md); đây không phải các bước tự động chạy trong mọi scan.
+Với `device="auto"`, worker thử CUDA, Vulkan rồi CPU. Vulkan cần PyTorch phía worker có hỗ trợ; lỗi load hoặc inference trên GPU có thể chuyển sang backend tiếp theo. Mỗi phép đo cần ghi cấu hình hiệu lực và device thực tế. Hướng huấn luyện nằm trong [training/dataset.py](../src/vulnscan/training/dataset.py), [finetune.py](../src/vulnscan/training/finetune.py), [evaluate.py](../src/vulnscan/training/evaluate.py) và [LAYA-TRAINING.md](LAYA-TRAINING.md); đây không phải các bước tự động chạy trong mọi scan.
 
 ### 9.3. Quyền quyết định và CVSS
 
@@ -399,6 +434,8 @@ Snapshot tạm dùng khi chạy được dọn sau thực thi; báo cáo giữ e
 [reporting/reporter.py](../src/vulnscan/reporting/reporter.py) dựng nội dung từ cùng tập finding và metadata. `ExportFormat` hiện gồm **SARIF, JSON, HTML, Markdown, TXT, DOCX**. API web cũ trong `web/app.py` còn có đường xuất CSV riêng. Vì SRS FR-60 vẫn nêu HTML/CSV/JSON, cần phân biệt CSV web cũ với bộ export chung; `scan-export --fmt csv` không phải định dạng được enum chung chấp nhận.
 
 [reporting/owasp.py](../src/vulnscan/reporting/owasp.py) dựng mục OWASP Top 10:2025/CWE từ mapping đóng gói. Mục này giữ category trống/unmapped và tham chiếu finding; nó không gọi model hay tra mạng, không đổi status, điểm CVSS hoặc gate. Xem [OWASP-REPORTING.md](OWASP-REPORTING.md).
+
+Trong working tree chưa commit, `ReportGenerator.usage_lines()` thêm request, prompt/completion/total token vào Markdown, TXT, HTML và DOCX; `ScanService` truyền `ai_usage` khi tạo và xuất lại báo cáo. Các sửa đổi API, React, benchmark và native TUI đang chuyển hiển thị từ chi phí sang token. FR-49/C-02 trong SRS cục bộ đã được sửa tương ứng: chi tiêu theo dõi ngoài ứng dụng, usage bị thiếu là unavailable. Đây là trạng thái code cục bộ chưa được xác nhận bằng runtime test trong phiên này.
 
 ## 11. Các tệp giao diện cần tìm khi sửa UI
 
@@ -481,16 +518,16 @@ Phép xác minh hiện có giới hạn ở rule Semgrep tìm được trong pac
 
 | Tệp | Trách nhiệm |
 | --- | --- |
-| [notifications/settings.py](../src/vulnscan/notifications/settings.py) | Setting version 1; mặc định manual và cả hai kênh disabled; lưu tên biến credential. |
+| [notifications/settings.py](../src/vulnscan/notifications/settings.py) | Setting version 2; mặc định manual, Telegram/Discord/webhook disabled; nâng cấp v1 không tự bật kênh mới; lưu tên biến credential. |
 | [notifications/events.py](../src/vulnscan/notifications/events.py) | Tạo event từ kết quả thực: completed/failed/cancelled, gate failed, high/critical, AI failed và report ready. |
 | [notifications/service.py](../src/vulnscan/notifications/service.py) | Tạo draft, chọn event/kênh, claim delivery và lưu receipt; Python/native dùng chung dịch vụ. |
 | [notifications/transports.py](../src/vulnscan/notifications/transports.py) | Telegram `sendMessage`, Discord incoming webhook, timeout và kiểm tra acknowledgement. |
 
 Thông điệp chỉ có tóm tắt, không chèn raw source hay secret-scanner output. Timeout là `unknown` vì server có thể đã nhận; không tự retry. Delivery không thay đổi finding, gate hay exit code. Đọc setting/receipt của dịch vụ outbound không gửi draft. Tài liệu vận hành ở [NOTIFICATIONS.md](NOTIFICATIONS.md).
 
-**Webhook outbound tổng quát đã được kết nối với dịch vụ thông báo chung và CLI; các client khác đang tích hợp.** Tích hợp cũ gửi `gate_failed` khi đọc feed đã được gỡ; chỉ đặt `WEBHOOK_URL` không gửi thông báo.
+Webhook outbound có chữ ký đã kết nối với dịch vụ chung, CLI và form web. Native TUI có lựa chọn event/kênh webhook; không suy ra toàn bộ client đã đạt parity. Tích hợp cũ gửi `gate_failed` khi đọc feed đã được gỡ; chỉ đặt `WEBHOOK_URL` không gửi thông báo.
 
-Có một khác biệt cần ghi nhận: `GET /api/notifications` hiện gọi `_ensure_scan_notifications`; helper có thể tạo `gate_failed` rồi gọi webhook cũ. [NOTIFICATIONS.md](NOTIFICATIONS.md) mô tả rõ hành vi legacy này, còn quy tắc T8 trong [AGENTS.md](../AGENTS.md) yêu cầu GET/settings không gửi hoặc phát lại draft. Vì vậy không thể khẳng định mọi GET notification đều hoàn toàn không có side effect outbound. Đây là điểm cần đối chiếu khi thiết kế webhook chung; bản đồ chỉ ghi nhận, không sửa hành vi.
+`GET /api/notifications` còn gọi `_ensure_scan_notifications` để duy trì bản ghi feed cục bộ. Mô tả cũ trong bản đồ về việc helper gửi webhook không còn phù hợp với source hiện tại. Theo T8, GET/settings không được gửi hoặc phát lại draft outbound; kiểm thử thông báo phải dùng transport giả và preference cách ly.
 
 ## 13. An toàn nguồn và đường chạy cách ly
 
@@ -590,6 +627,37 @@ Muốn chỉ chạy native-hunt, tạo tệp cấu hình riêng với `{"schema_
 | Notification có chọn event/kênh | FR-75 | [NOTIFICATIONS.md](NOTIFICATIONS.md) |
 | Persistence, responsiveness, kiểm tra bắt buộc | DR-01..10, QR-21..23 | [NATIVE-MIGRATION.md](NATIVE-MIGRATION.md), [TEST-PLAN.md](TEST-PLAN.md) |
 
-Các ID trên xác định nơi lần theo hợp đồng, không đánh dấu toàn bộ yêu cầu là đã đạt. Những khoảng trống nổi bật được ghi trong bản đồ: verifier ngữ nghĩa tổng quát, route lookup chưa trả index, queue gián đoạn không tự tiếp tục scanner, khác biệt CSV/export chung, tạo PR và các client webhook còn đang phát triển.
+Các ID trên xác định nơi lần theo hợp đồng, không đánh dấu toàn bộ yêu cầu là đã đạt. Những khoảng trống nổi bật gồm verifier ngữ nghĩa tổng quát, route lookup chưa trả index, queue gián đoạn không tự tiếp tục scanner, khác biệt CSV/export chung, tạo PR và parity giữa các client. Nhánh AI có lọc finding và đối soát coverage khác deterministic; cần giữ giới hạn này khi đánh giá kết quả.
 
-Lần cập nhật này chỉ thêm bản đồ tài liệu. Đã đối chiếu đường dẫn và nội dung liên quan với checkout, kiểm tra branch/ancestor và phạm vi diff. Không chạy application test, full scan, provider, model download, dịch vụ thông báo hay launcher; không có kết quả runtime mới được tạo từ việc viết tài liệu này.
+## 16. Lộ trình mã nguồn sau khi kiểm tra remote
+
+### 16.1. Thứ tự ưu tiên và điều kiện hoàn tất
+
+Lộ trình này đề xuất công việc tiếp theo, chưa triển khai các hạng mục bên dưới. Thứ tự dựa trên rủi ro dữ liệu và những khác biệt đã thấy trong source. Không gán ngày hoàn thành hoặc tỷ lệ tiến độ khi chưa có kế hoạch nguồn lực. Bảng 16.1 chỉ rõ phần mã cần xem và bằng chứng để đóng từng việc.
+
+| Ưu tiên | Công việc và lý do | Mã, kiểm thử chính | Điều kiện hoàn tất và yêu cầu SRS |
+| --- | --- | --- | --- |
+| P0.1 | Kiểm tra trọn luồng token đang sửa cục bộ trước khi coi là thay đổi ổn định. Cần phân biệt request hoàn tất, HTTP attempt/retry, usage thiếu và không có model call. | `core/scan_service.py`, `core/rpc.py`, `reporting/reporter.py`, `web/phase2.py`, `web-ui/src/pages/KeysPage.tsx`, `internal/tui/presentation.go`; test reporting/platform/web hiện có. | Báo cáo mới và export lại run lưu cho cùng số liệu; usage thiếu không thành 0; không lộ key. Python, Go và frontend qua check áp dụng. FR-49/61/66/68/71. |
+| P0.2 | Đối chiếu khả năng nhìn thấy finding và coverage giữa Hunt và deterministic. Nhánh AI hiện có thể lọc `scanner_only` và bỏ lỗi thiếu coverage khỏi gate; cần làm rõ điều đó trong kết quả vận hành. | `core/scan_service.py`, `ai/compare.py`, `ai/promote.py`, `core/policy.py`; `tests/platform/test_scan_service.py`, `tests/platform/test_hunt_mode.py`. | Test kiểm tra có/không có tool result hoàn tất, tập AI rỗng/không rỗng, scanner phụ lỗi và đường fallback. Báo cáo phân biệt dữ liệu scanner với tập đã lọc; CI vẫn bắt đủ tool/coverage theo FR-30..34/56/61/72. Không tự đổi hợp đồng lọc trong lần cập nhật tài liệu này. |
+| P1.1 | Kiểm tra cùng một cấu hình quét qua CLI, Textual, native và React. Mặc định Python/native khác nhau nên giao diện cần thể hiện cấu hình hiệu lực. | `core/config.py`, `web/phase2_routes.py`, `internal/service/config.go`, `internal/bridge/client.go`; test native AI/RPC và form React. | Kiểm tra deterministic không gọi model, lựa chọn Hunt tường minh, hủy giữ bằng chứng và JSONL 8 MiB. Runtime từng OS được ghi riêng; cross-build không tính là runtime pass. FR-66/68/71, IR-11..13, QR-21. |
+| P1.2 | Bổ sung kiểm chứng có scope cho từng loại claim cần ưu tiên, bắt đầu bằng regression cho một luồng cụ thể. General semantic verifier vẫn chưa có; không mở rộng quyền xác nhận chỉ bằng confidence. | `assessment/validator.py`, `verification/`, `ai/review.py`; `tests/validation/test_validator_regressions.py`, `tests/ai/test_validation_cvss_pipeline.py`. | Có vulnerable/safe controls, counterevidence và trường hợp thủ tục không hoàn tất. Chỉ producer kiểm chứng tin cậy được tạo metadata độc lập. FR-50..56. |
+| P1.3 | Nối `lookup_route` với `SourceIndex` theo phạm vi có thể trích xuất. Handler hiện chỉ trả note/query nên chưa cung cấp route/filter chain như người dùng có thể kỳ vọng. | `ai/review.py`, `context/source_index.py`, `agent/tools.py`; test AI/context liên quan. | Test route từ annotation và `web.xml`, scope snapshot, giới hạn kết quả và thông báo unknown khi không trích xuất được. Không coi regex là parser Java đầy đủ. FR-40..48/56. |
+| P2.1 | Rà soát các khoảng trống đã ghi: phục hồi job sau gián đoạn, CSV giữa API cũ/export chung và lựa chọn notification ở từng client. Tách mỗi việc thành thay đổi nhỏ. | `core/scan_service.py`, `contracts/enums.py`, `reporting/reporter.py`, `notifications/`, các client; test platform/reporting/notifications. | Phân biệt recover với resume, thống nhất hoặc ghi rõ interface CSV, bảo đảm GET/settings không gửi và timeout không tự retry. DR-02, FR-60/68/75, QR-21. |
+| P2.2 | Đánh giá lại scanner/Hunt/Laya sau khi chốt các thay đổi trên bằng cùng cấu hình, target revision và quy trình nhãn. | `evaluation/`, `scanners/`, `decisions/`; [TEST-PLAN.md](TEST-PLAN.md), [REPRODUCTION.md](REPRODUCTION.md). | Lưu evidence mới trong thư mục ngày mới; tách held-out label khỏi input, công bố tool thiếu/coverage/device/usage thật. Full scan theo G6; provider call hoặc tải model cần ủy quyền riêng. FR-62..65, QR-05/12/17. |
+| Chờ duyệt | Xem xét riêng commit Dependabot `6e12539`, không gộp với ổn định ứng dụng. Thay đổi Torch và nhiều major version có thể ảnh hưởng scanner/Laya. | `uv.lock`, `requirements.lock.txt`, môi trường Laya và scanner. | Chủ dự án đã chọn để chờ. Chỉ đổi dependency khi được duyệt theo G1, sau đó kiểm tra tương thích và môi trường GPU thực tế; không tự tải Torch/model để viết roadmap. |
+
+P0.1 và P0.2 nên hoàn tất trước khi công bố một baseline đánh giá mới. Các mục P1 xử lý độ tin cậy của interface và bằng chứng. P2 chỉ bắt đầu sau khi đã chốt phạm vi từng thay đổi; đây không phải cam kết xây lại toàn bộ pipeline.
+
+### 16.2. Phần tiếp tục để ở mức thiết kế
+
+Luồng tạo branch, commit, push và draft PR từ fix proposal vẫn là kế hoạch trong [thiết kế remediation/webhook](superpowers/specs/2026-11-15-remediation-webhook-design.md) và [kế hoạch fix suggestions](superpowers/plans/2026-11-15-fix-suggestions-pr.md). Overlay apply và exact-rule Semgrep verification hiện có không đồng nghĩa đã triển khai publication. Khi làm tiếp cần tách duyệt diff, kiểm tra baseline/patched, quyền repository và thao tác công bố; không sửa checkout pristine.
+
+Chat harness G0–G7, `GateKeeper`, ask/auto và `devsec-chat/1` không nằm trong lộ trình của nhánh này. Việc chúng xuất hiện trong lịch sử `origin/dev` không làm chúng trở thành tính năng hiện có. Không chuyển các tài liệu/kiến trúc đó vào đây bằng một merge bảo trì.
+
+### 16.3. Lịch sử xác minh
+
+Ngày 26/11 chỉ sửa `docs/CODEBASE-MAP.md`: cập nhật bản đồ và bổ sung lộ trình bằng tiếng Việt. Đã fetch remote, kiểm tra chênh lệch lịch sử, chạy đồng bộ fast-forward với upstream, đọc source liên quan và kiểm tra đường dẫn/diff. HEAD lúc đó là `3e4ff8d`; chưa tạo commit hoặc push. Các thay đổi cục bộ có sẵn được giữ nguyên, dependency để chờ theo lựa chọn của chủ dự án.
+
+Phiên ngày 26/11 không chạy application test, build, full scan, provider, model download, dịch vụ thông báo hoặc launcher. Đó là cập nhật tài liệu theo G7, không phải xác nhận các sửa đổi code cục bộ đã qua kiểm thử.
+
+Ngày 27/11, chủ dự án yêu cầu kiểm tra thay đổi cục bộ rồi đưa lên GitHub. Review phát hiện phép cộng usage có thể hiển thị tổng chưa đầy đủ khi một run hoặc một trường token trong model call bị thiếu. Regression test đã tái hiện lỗi trước khi sửa; API usage hiện trả unavailable cho tổng tương ứng, vẫn giữ giá trị 0 được báo cáo thực. Kiểm thử RPC bổ sung kiểm tra `ai_usage` trong metadata JSON xuất qua bridge. Các bước này xử lý một phần P0.1; chúng không hoàn tất P0.2 hoặc chứng minh độ chính xác phát hiện. Kết quả check và giới hạn của lần đẩy được ghi trong thông điệp commit.
