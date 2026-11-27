@@ -6,7 +6,6 @@ import {
   fetchKeys,
   fetchScans,
   fetchTools,
-  fetchUsage,
 } from "../api/client";
 import { Banner } from "../components/Banner";
 import { Button } from "../components/Button";
@@ -56,7 +55,6 @@ export function NewScanPage() {
 
   const scansQuery = useQuery({ queryKey: ["scans"], queryFn: fetchScans });
   const toolsQuery = useQuery({ queryKey: ["tools"], queryFn: () => fetchTools(false) });
-  const usageQuery = useQuery({ queryKey: ["usage"], queryFn: fetchUsage });
   const keysQuery = useQuery({ queryKey: ["keys"], queryFn: fetchKeys });
   const useHunt = allowCloud && hunt;
   const useReview = allowCloud && aiReview;
@@ -100,7 +98,6 @@ export function NewScanPage() {
     return [...seen];
   }, [scansQuery.data]);
 
-  const remaining = usageQuery.data?.available;
 
   const cli = useMemo(() => {
     const parts = ["devsecops-agent scan-run", `--checkout ${shellQuote(repo.trim() || "<repo>")}`, `--profile ${profile}`];
@@ -288,12 +285,6 @@ export function NewScanPage() {
                         onChange={(e) => setMaxAi(Number(e.target.value) || 10)}
                       />
                     </label>
-                  )}
-                  {usesModel && (
-                    <p className="self-end text-xs text-muted">
-                      {en.newScan.aiEstimate} · {en.newScan.aiPriceUnavailable}
-                      {remaining !== undefined && ` · $${remaining.toFixed(2)} ${en.newScan.aiBudget}`}
-                    </p>
                   )}
                 </div>
               </>

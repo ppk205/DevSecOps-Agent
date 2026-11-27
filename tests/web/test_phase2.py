@@ -199,12 +199,64 @@ class TestKeys:
 
 
 class TestUsage:
-    def test_budget_ceiling(self, tmp_path: Path, monkeypatch) -> None:  # type: ignore[no-untyped-def]
+    def test_reports_tokens_without_cost(self, tmp_path: Path, monkeypatch) -> None:  # type: ignore[no-untyped-def]
         client = _client(tmp_path, monkeypatch)
         body = client.get("/api/usage").json()
-        assert body["total_budget"] == 50.0
-        assert body["total_spent"] == 0.0
-        assert body["available"] == 50.0
+        assert body["total_tokens"] is None  # no runs: unavailable, not zero
+        assert not {"total_budget", "total_spent", "available", "by_provider"} & body.keys()
+
+    def test_aggregate_usage_sums_reported_tokens(self) -> None:
+        from vulnscan.web.phase2 import aggregate_usage
+
+        body = aggregate_usage(
+            [
+                {"ai_usage": {"requests": 2, "prompt_tokens": 100, "total_tokens": 150}},
+                {"ai_usage": {"requests": 1, "prompt_tokens": None, "total_tokens": 50}},
+                {},
+            ]
+        )
+        assert body == {
+            "requests": 3,
+            "prompt_tokens": None,
+            "completion_tokens": None,
+            "total_tokens": 200,
+        }
+
+    def test_aggregate_usage_marks_partial_totals_unavailable(self) -> None:
+        from vulnscan.web.phase2 import aggregate_usage
+
+        body = aggregate_usage(
+            [
+                {"ai_usage": {"requests": 1, "total_tokens": 0}},
+                {"ai_usage": {"requests": 1, "total_tokens": None}},
+            ]
+        )
+        assert body["requests"] == 2
+        assert body["total_tokens"] is None
+
+        partial = aggregate_usage(
+            [{"ai_usage": {"requests": 2, "usage_reported_requests": 1, "total_tokens": 0}}]
+        )
+        assert partial["total_tokens"] is None
+        complete = aggregate_usage([{"ai_usage": {"requests": 1, "total_tokens": 0}}])
+        assert complete["total_tokens"] == 0
+
+    def test_aggregate_usage_checks_each_call_for_missing_metrics(self) -> None:
+        from vulnscan.core.scan_service import _model_usage
+        from vulnscan.providers.budget import BudgetManager
+        from vulnscan.web.phase2 import aggregate_usage
+
+        calls = [
+            {"status": "completed", "usage": {"prompt_tokens": 10, "completion_tokens": 5}},
+            {"status": "completed", "usage": {"total_tokens": 20}},
+        ]
+        body = aggregate_usage(
+            [{"ai_usage": _model_usage(calls, BudgetManager()), "model_calls": calls}]
+        )
+        assert body["requests"] == 2
+        assert body["total_tokens"] == 35
+        assert body["prompt_tokens"] is None
+        assert body["completion_tokens"] is None
 
 
 class TestScans:

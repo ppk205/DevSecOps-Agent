@@ -104,13 +104,13 @@ describe("Phase 2 pages (mock mode, standalone)", () => {
     expect(await screen.findByText(/Scan queued #8/, {}, { timeout: 5000 })).toBeInTheDocument();
   });
 
-  it("passes an explicit zero HTTP request cap without inventing a price", async () => {
+  it("passes an explicit zero HTTP request cap without showing a cost", async () => {
     const spy = vi.spyOn(mockApi, "createScan");
     try {
       renderAt("/scans/new");
       expect(screen.queryByLabelText("Maximum model HTTP attempts")).not.toBeInTheDocument();
       fireEvent.click(screen.getByRole("switch", { name: "Allow cloud model" }));
-      expect(screen.getByText(/Estimated cost.*Unavailable/)).toBeInTheDocument();
+      expect(screen.queryByText(/cost|budget|\$/i)).not.toBeInTheDocument();
       fireEvent.click(screen.getByText("Advanced options"));
       const requestCap = screen.getByLabelText("Maximum model HTTP attempts");
       const start = screen.getByRole("button", { name: "Start scan" });
@@ -154,12 +154,13 @@ describe("Phase 2 pages (mock mode, standalone)", () => {
     renderAt("/keys");
     expect(await screen.findByText("AI provider", {}, { timeout: 5000 })).toBeInTheDocument();
     expect(screen.getByText("Scanner tools")).toBeInTheDocument();
-    expect(screen.getByText("Usage & budget")).toBeInTheDocument();
+    expect(screen.getByText("Token usage")).toBeInTheDocument();
     expect(screen.getByText("General")).toBeInTheDocument();
     // 4 ký tự cuối đã che từ fixture; secret đầy đủ không bao giờ được gửi trong dữ liệu mock.
     expect(await screen.findByText("••••8901", {}, { timeout: 5000 })).toBeInTheDocument();
     expect(screen.queryByText(/sk-/)).not.toBeInTheDocument();
     expect(screen.getByPlaceholderText(/Paste a new key/)).toHaveAttribute("type", "password");
-    expect(screen.getByText("$3.42")).toBeInTheDocument();
+    expect(screen.getByText("48,210")).toBeInTheDocument();
+    expect(screen.queryByText(/\$/)).not.toBeInTheDocument();
   });
 });

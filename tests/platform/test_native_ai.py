@@ -66,7 +66,7 @@ def test_fr48_exe_runs_real_ai_wiring_and_preserves_explanations(checkout, tmp_p
     assert summary["model_calls"]
     assert all(call["model"] == "selected-fixture-model" for call in summary["model_calls"])
     assert summary["ai_usage"]["total_tokens"] == len(summary["model_calls"]) * 12
-    assert summary["ai_usage"]["cost_usd"] is None
+    assert not {"cost_usd", "total_spent", "total_budget"} & summary["ai_usage"].keys()
     assert summary["final_report"]["ai_written"] is True
     assert all(d["decided_by"] == "independent-validator" for d in summary["validation_decisions"])
     assert any(event["stage"] == "model_tool" for event in summary["stages"])

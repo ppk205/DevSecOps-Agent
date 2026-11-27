@@ -343,6 +343,7 @@ def create_app(
                 "status": run.status,
                 "gate": snapshot.get("gate"),
                 "errors": snapshot.get("errors", []),
+                "ai_usage": snapshot.get("ai_usage", {}),
             },
         )
         artifact = report.export(export_format, output, generated_by="dashboard")
@@ -1628,6 +1629,7 @@ def create_app(
                 "status": run.status,
                 "gate": snapshot.get("gate"),
                 "errors": snapshot.get("errors", []),
+                "ai_usage": snapshot.get("ai_usage", {}),
             },
         )
 

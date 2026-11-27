@@ -56,9 +56,9 @@ export const MOCK_KEYS: KeyEntry[] = [
 ];
 
 export const MOCK_USAGE: UsageSummary = {
-  total_budget: 50.0,
-  total_spent: 3.42,
-  available: 46.58,
-  by_provider: { "kios-free": 3.42 },
+  requests: 14,
+  prompt_tokens: 41_050,
+  completion_tokens: 7_160,
+  total_tokens: 48_210,
   run_count: 3,
 };

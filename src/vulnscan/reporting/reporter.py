@@ -215,6 +215,25 @@ class ReportGenerator:
         }
         return json.dumps(data, indent=2, ensure_ascii=False)
 
+    def usage_lines(self) -> list[str]:
+        """Provider-reported token counts; missing counts read as unavailable, never zero."""
+        usage = self.run_metadata.get("ai_usage") or {}
+        requests = usage.get("requests") or 0
+        if not requests:
+            return ["No model calls recorded for this run."]
+
+        def shown(name: str) -> str:
+            value = usage.get(name)
+            return str(value) if type(value) is int else "unavailable"
+
+        reported = usage.get("usage_reported_requests") or 0
+        return [
+            f"Model requests: {requests} (usage reported by {reported} of {requests})",
+            f"Prompt tokens: {shown('prompt_tokens')}",
+            f"Completion tokens: {shown('completion_tokens')}",
+            f"Total tokens: {shown('total_tokens')}",
+        ]
+
     def advisory_section(self) -> list[str]:
         """Markdown cho khối định tuyến tư vấn, hoặc ghi nhận rõ sự vắng mặt."""
         if not self.routing_payloads:
@@ -284,6 +303,8 @@ class ReportGenerator:
             )
         else:
             lines.append("No coverage limitations recorded.")
+        lines.extend(["", "## Model token usage", ""])
+        lines.extend(f"- {line}" for line in self.usage_lines())
         lines.extend(self.advisory_section())
         lines.extend(["", owasp_markdown(self.findings)])
         lines.extend(["", "## Findings", ""])
@@ -348,6 +369,8 @@ class ReportGenerator:
             lines.extend(f"  - {k}: {v}" for k, v in self.coverage_summary.items())
         else:
             lines.append("  No coverage limitations recorded.")
+        lines.extend(["", "Model token usage:"])
+        lines.extend(f"  {line}" for line in self.usage_lines())
         lines.extend(["", "Advisory routing:"])
         for route, count in self.routing_counts().items():
             lines.append(f"  - {route}: {count}")
@@ -412,6 +435,9 @@ class ReportGenerator:
                 break
             table.rows[row].cells[0].text = label
             table.rows[row].cells[1].text = str(value)
+        doc.add_heading("Model token usage", level=2)
+        for line in self.usage_lines():
+            doc.add_paragraph(line)
         doc.add_heading(OWASP_TITLE, level=2)
         doc.add_paragraph(OWASP_NOTE)
         owasp_table = doc.add_table(rows=1, cols=len(OWASP_HEADERS))
@@ -461,6 +487,7 @@ class ReportGenerator:
         hàng trăm dòng lỗi.
         """
         meta = dict(self.run_metadata)
+        meta.pop("ai_usage", None)  # rendered as its own section
         errors = list(meta.get("errors", []) or [])
         if len(errors) > 10:
             meta["errors"] = errors[:10] + [
@@ -480,6 +507,7 @@ class ReportGenerator:
             findings=self.findings,
             coverage_summary=self.coverage_summary,
             coverage_cards=_coverage_cards(self.coverage_summary),
+            usage_lines=self.usage_lines(),
             owasp_title=OWASP_TITLE,
             owasp_note=OWASP_NOTE,
             owasp_source=OWASP_SOURCE,
@@ -623,6 +651,8 @@ padding:12px 16px;margin:10px 0}
 <span class="meta"> — {{ card.analyzed }}/{{ card.units }} units analyzed</span>
 {% if card.limitations %}<ul>{% for reason in card.limitations %}<li>{{ reason }}</li>{% endfor %}</ul>{% endif %}</div>{% endfor %}
 {% else %}<p class="meta">No coverage recorded.</p>{% endif %}
+<h2>Model token usage</h2>
+<ul class="meta">{% for line in usage_lines %}<li>{{ line }}</li>{% endfor %}</ul>
 <h2>{{ owasp_title }}</h2>
 <p class="meta">{{ owasp_note }}</p>
 <div class="owasp"><table><thead><tr>{% for header in owasp_headers %}<th scope="col">{{ header }}</th>{% endfor %}</tr></thead>

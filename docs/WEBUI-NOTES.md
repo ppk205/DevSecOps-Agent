@@ -52,7 +52,8 @@ frontend concern.
 - A2: Jinja pages stay as legacy fallback; React SPA served at `/app/*` or root
   with SPA fallback;decision made in Phase 1 by implementer (prefer `/app` to avoid
   breaking `/` for existing users; revisit before finalize).
-- A3: Budget cap USD 50 (`BudgetManager`); usage from `ai_usage` in result_json.
+- A3: No cost display (BYOK providers price tokens differently); the Keys page
+  shows token totals summed from `ai_usage` in result_json.
 - A4: Timestamps UTC in DB/API; UI renders Asia/Saigon by default with toggle.
 - A5: Node 26 + npm 11 available on build machine (verified 2026-11-01).
 - A6: `muse-glimmer`/`north-mini-code` style free models may return reasoning-only

@@ -215,7 +215,6 @@ function BenchmarkCard({
     [labels.promptTokens, row.prompt_tokens],
     [labels.completionTokens, row.completion_tokens],
     [labels.totalTokens, row.total_tokens],
-    [labels.cost, row.cost_usd == null ? null : `$${row.cost_usd}`],
     [labels.reviewed, row.reviewed],
     [labels.validated, row.validated],
     [labels.layaDevices, row.laya_devices.join(", ") || null],
@@ -273,7 +272,6 @@ function BenchmarkCard({
             <dt>{labels.duration}</dt><dd>{percentage(row.savings.duration_percent)}</dd>
             <dt>{labels.httpAttempts}</dt><dd>{percentage(row.savings.requests_percent)}</dd>
             <dt>{labels.totalTokens}</dt><dd>{percentage(row.savings.tokens_percent)}</dd>
-            <dt>{labels.cost}</dt><dd>{percentage(row.savings.cost_percent)}</dd>
           </dl>
         </div>
       )}

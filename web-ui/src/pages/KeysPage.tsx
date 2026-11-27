@@ -92,7 +92,6 @@ export function KeysPage() {
   const keys = keysQuery.data ?? [];
   const usage = usageQuery.data;
   const settings = { ...(settingsQuery.data ?? {}), ...form };
-  const spentPct = usage ? Math.min(100, (usage.total_spent / usage.total_budget) * 100) : 0;
 
   return (
     <div>
@@ -258,34 +257,26 @@ export function KeysPage() {
         )}
       </Section>
 
-      {/* USAGE & BUDGET */}
+      {/* TOKEN USAGE */}
       <Section title={en.apiKeys.usage} body={en.apiKeys.usageBody}>
         {usage ? (
-          <div>
-            <div className="flex justify-between text-xs text-muted">
-              <span>
-                ${usage.total_spent.toFixed(2)} {en.apiKeys.spent} / ${usage.total_budget.toFixed(0)}
-              </span>
-              <span>
-                ${usage.available.toFixed(2)} {en.apiKeys.remaining}
-              </span>
-            </div>
-            <div
-              className="mt-2 h-2 w-full bg-elevated"
-              role="progressbar"
-              aria-valuenow={Math.round(spentPct)}
-              aria-valuemin={0}
-              aria-valuemax={100}
-            >
-              <div className="h-2" style={{ width: `${spentPct}%`, background: tokens.color.mRed }} />
-            </div>
-            {Object.entries(usage.by_provider).map(([provider, spent]) => (
-              <div key={provider} className="mt-2 flex justify-between text-sm">
-                <span className="text-body">{provider}</span>
-                <span className="font-mono text-xs text-ink">${spent.toFixed(2)}</span>
+          <dl>
+            {(
+              [
+                [en.apiKeys.modelCalls, usage.requests],
+                [en.apiKeys.promptTokens, usage.prompt_tokens],
+                [en.apiKeys.completionTokens, usage.completion_tokens],
+                [en.apiKeys.totalTokens, usage.total_tokens],
+              ] as const
+            ).map(([label, value]) => (
+              <div key={label} className="mt-2 flex justify-between text-sm">
+                <dt className="text-body">{label}</dt>
+                <dd className="font-mono text-xs text-ink">
+                  {value == null ? en.apiKeys.unavailable : value.toLocaleString("en-US")}
+                </dd>
               </div>
             ))}
-          </div>
+          </dl>
         ) : (
           <p className="text-body">{en.common.loading}</p>
         )}

@@ -169,3 +169,28 @@ class TestFileExport:
         export = report.export(fmt, tmp_path, generated_by="test")
         assert Path(export.artifact_ref.path).exists()
         assert export.format == fmt
+
+
+@pytest.mark.parametrize("fmt", ["to_markdown", "to_txt", "to_html"])
+def test_reports_show_model_token_usage(fmt: str) -> None:
+    usage = {
+        "requests": 3,
+        "usage_reported_requests": 2,
+        "prompt_tokens": 1200,
+        "completion_tokens": 345,
+        "total_tokens": 1545,
+    }
+    text = getattr(ReportGenerator("run-1", [], run_metadata={"ai_usage": usage}), fmt)()
+    assert "Model token usage" in text
+    assert "1545" in text and "1200" in text and "345" in text
+    assert "2 of 3" in text
+    assert "'prompt_tokens'" not in text  # rendered as a section, not a raw dict dump
+
+
+def test_reports_mark_missing_token_usage_unavailable() -> None:
+    usage = {"requests": 1, "usage_reported_requests": 0, "total_tokens": None}
+    text = ReportGenerator("run-1", [], run_metadata={"ai_usage": usage}).to_markdown()
+    assert "Total tokens: unavailable" in text
+    assert "Total tokens: 0" not in text
+    none = ReportGenerator("run-1", []).to_markdown()
+    assert "No model calls recorded" in none

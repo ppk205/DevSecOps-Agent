@@ -40,7 +40,7 @@ describe("Reports page (mock mode)", () => {
     expect(await screen.findByText("Export comparison as HTML", {}, { timeout: 5000 })).toBeInTheDocument();
   });
 
-  it("shows recorded benchmark metrics, unknown cost and the original run report (FR-63, FR-66)", async () => {
+  it("shows recorded benchmark metrics, no cost and the original run report (FR-63, FR-66)", async () => {
     const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity } } });
     const reference = {
       run_id: 6,
@@ -61,7 +61,6 @@ describe("Reports page (mock mode)", () => {
       prompt_tokens: 1000,
       completion_tokens: 200,
       total_tokens: 1200,
-      cost_usd: null,
       reviewed: 7,
       validated: 6,
       laya_devices: [],
@@ -82,7 +81,7 @@ describe("Reports page (mock mode)", () => {
       laya_timeouts: 1,
       limitations: ["Laya timed out on one finding."],
       comparable: true,
-      savings: { duration_percent: 50, requests_percent: null, tokens_percent: null, cost_percent: null },
+      savings: { duration_percent: 50, requests_percent: null, tokens_percent: null },
     };
     client.setQueryData(["compare", 7, 6], {
       baseline: 7,
@@ -98,7 +97,7 @@ describe("Reports page (mock mode)", () => {
     renderAt("/reports", client);
     const benchmark = await screen.findByRole("region", { name: "Benchmark" });
     const referenceCard = within(benchmark).getByRole("article", { name: "A1 · #6" });
-    expect(within(referenceCard).getByText("Cost (USD)").nextElementSibling).toHaveTextContent("Unavailable");
+    expect(within(benchmark).queryByText(/cost/i)).not.toBeInTheDocument();
     expect(within(referenceCard).getByText("HTTP attempts").nextElementSibling).toHaveTextContent("9 / 20");
     expect(within(referenceCard).getByText(/semgrep.*9\/10.*1 skipped/)).toBeInTheDocument();
     const layaCard = within(benchmark).getByRole("article", { name: "A3 · #7" });

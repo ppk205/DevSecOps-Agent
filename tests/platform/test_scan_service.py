@@ -170,7 +170,7 @@ def test_fr49_scan_keeps_one_request_cap_across_review_and_report(
     assert len(budgets) == 2 and budgets[0] is budgets[1]
     assert result["ai_usage"]["http_attempts"] == 1
     assert result["ai_usage"]["max_model_requests"] == 1
-    assert result["ai_usage"]["cost_usd"] is None
+    assert not {"cost_usd", "total_spent", "total_budget"} & result["ai_usage"].keys()
     assert result["duration_seconds"] >= 0
 
 

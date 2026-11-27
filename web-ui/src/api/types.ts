@@ -168,10 +168,10 @@ export interface KeyEntry {
 }
 
 export interface UsageSummary {
-  total_budget: number;
-  total_spent: number;
-  available: number;
-  by_provider: Record<string, number>;
+  requests: number;
+  prompt_tokens: number | null;
+  completion_tokens: number | null;
+  total_tokens: number | null;
   run_count: number;
 }
 
@@ -257,7 +257,6 @@ export interface BenchmarkRow {
   prompt_tokens: number | null;
   completion_tokens: number | null;
   total_tokens: number | null;
-  cost_usd: number | null;
   reviewed: number | null;
   validated: number | null;
   laya_devices: string[];
@@ -269,7 +268,6 @@ export interface BenchmarkRow {
     duration_percent: number | null;
     requests_percent: number | null;
     tokens_percent: number | null;
-    cost_percent: number | null;
   } | null;
 }
 

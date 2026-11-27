@@ -92,7 +92,8 @@ def test_fr63_uses_a1_as_benchmark_reference_and_keeps_gate_failure_completed() 
     assert a1["gate"] == "failed"
     assert a1["status"] == "completed"
     assert a1["total_tokens"] == 200
-    assert a1["cost_usd"] is None
+    assert "cost_usd" not in a1
+    assert "cost_percent" not in a3["savings"]
     assert a4["scenario"] == "A4"
     assert not a4["comparable"]
 

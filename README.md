@@ -330,8 +330,8 @@ not enable native model calls.
 
 **Activity** shows model requests, returned explanations and tool steps as calls
 finish. Open a finding with **Enter** to inspect its retained AI rationale and
-proposed status. Reported token counts are retained; omitted usage and monetary
-cost are shown as unavailable. This is call-level progress; token-by-token
+proposed status. Reported token counts are retained; omitted usage is shown as
+unavailable. Monetary cost is not displayed. This is call-level progress; token-by-token
 streaming is not implemented. See [native AI support](docs/NATIVE-MIGRATION.md#ai-support)
 and the [verification record](docs/NATIVE-AI-VERIFICATION-2026-11-04.md).
 
@@ -699,7 +699,8 @@ labels created by agents record `labelled_by`; agents never self-assign
 
 ## Budget and Timeline
 
-- **Total budget**: USD 50 for AI usage
+- **Total budget**: USD 50 for AI usage, tracked outside the application
+  (providers are bring-your-own-key; reports show token counts, not cost)
 - **Timeline**: 17 weeks (2 students)
 - **Target**: JVA-bookstore (101 Java files, 38 JSP files)
 

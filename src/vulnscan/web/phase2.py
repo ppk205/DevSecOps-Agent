@@ -15,8 +15,6 @@ from typing import Any
 
 from vulnscan.infra.envfile import EnvFile, find_project_root
 
-BUDGET_TOTAL_USD = 50.0
-
 _SETTINGS_FILENAME = ".pitwall-settings.json"
 
 _GENERAL_DEFAULTS: dict[str, Any] = {
@@ -208,30 +206,42 @@ def probe_tools(with_versions: bool = False) -> list[dict[str, Any]]:
 
 
 def aggregate_usage(runs: list[dict[str, Any]]) -> dict[str, Any]:
-    """Tính tổng các tóm tắt ``ai_usage`` được lưu trong các blob kết quả lượt chạy."""
-    total_spent = 0.0
-    by_provider: dict[str, float] = {}
+    """Sum provider-reported token counts across stored runs.
+
+    Providers and models are BYOK with their own per-token prices, so no cost is
+    computed. Missing counts in runs with model calls make the corresponding
+    total unavailable, rather than presenting a partial sum as a complete total.
+    """
+    totals: dict[str, Any] = {
+        "requests": 0,
+        "prompt_tokens": None,
+        "completion_tokens": None,
+        "total_tokens": None,
+    }
+    incomplete: set[str] = set()
     for snapshot in runs:
         usage = snapshot.get("ai_usage") or {}
         if not isinstance(usage, dict):
             continue
-        spent = usage.get("total_spent")
-        try:
-            total_spent += float(spent or 0.0)
-        except (TypeError, ValueError):
-            pass
-        for key, value in usage.items():
-            if key.startswith("spent_"):
-                provider = key[len("spent_") :]
-                try:
-                    by_provider[provider] = by_provider.get(provider, 0.0) + float(value or 0.0)
-                except (TypeError, ValueError):
-                    continue
-    total_spent = round(total_spent, 6)
-    available = round(max(0.0, BUDGET_TOTAL_USD - total_spent), 6)
-    return {
-        "total_budget": BUDGET_TOTAL_USD,
-        "total_spent": total_spent,
-        "available": available,
-        "by_provider": by_provider,
-    }
+        for name, total in totals.items():
+            value = usage.get(name)
+            if type(value) is int and value >= 0:
+                totals[name] = (total or 0) + value
+            elif name != "requests" and usage.get("requests", 0):
+                incomplete.add(name)
+        reported, requests = usage.get("usage_reported_requests"), usage.get("requests")
+        if type(reported) is int and type(requests) is int and reported < requests:
+            incomplete.update(("prompt_tokens", "completion_tokens", "total_tokens"))
+        for call in snapshot.get("model_calls") or []:
+            raw = call.get("usage") or {}
+            for name in ("prompt_tokens", "completion_tokens", "total_tokens"):
+                value = raw.get(name)
+                if name == "total_tokens" and value is None:
+                    prompt, completion = raw.get("prompt_tokens"), raw.get("completion_tokens")
+                    if type(prompt) is int and type(completion) is int:
+                        value = prompt + completion
+                if type(value) is not int or value < 0:
+                    incomplete.add(name)
+    for name in incomplete:
+        totals[name] = None
+    return totals

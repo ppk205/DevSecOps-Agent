@@ -1,7 +1,7 @@
 """Bề mặt JSON Phase 2 (PIT WALL Home / New Scan / Keys).
 
 Lớp mỏng trên các service hiện có: tools thông qua đầu dò adapter ``which``, keys qua
-``.env`` cục bộ dự án + ``.providers/*.json``, usage so với mức trần 50 USD.
+``.env`` cục bộ dự án + ``.providers/*.json``, usage là tổng số token do provider báo cáo.
 Được gắn kết từ :func:`vulnscan.web.app.create_app` thông qua :func:`register_phase2`.
 """
 
@@ -28,7 +28,6 @@ from vulnscan.providers.profile_store import (
     save_profile,
 )
 from vulnscan.web.phase2 import (
-    BUDGET_TOTAL_USD,
     aggregate_usage,
     key_status,
     key_value,
@@ -552,4 +551,4 @@ def register_phase2(app: Any, db_engine: Any) -> None:
     """Gắn router Phase 2 và cung cấp engine cho các phiên request."""
     app.state.db_engine = db_engine
     app.include_router(router)
-    _ = (BUDGET_TOTAL_USD, EnvFile, os.environ, Path, time)
+    _ = (EnvFile, os.environ, Path, time)

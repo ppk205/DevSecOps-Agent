@@ -261,7 +261,6 @@ def _row(run: BenchmarkRun) -> tuple[dict[str, Any], dict[str, Any], str | None]
             field: _tokens(calls, field) if complete_usage else None
             for field in ("prompt_tokens", "completion_tokens", "total_tokens")
         },
-        "cost_usd": _number(usage.get("cost_usd")) if complete_usage else None,
         "reviewed": (
             sum("error" not in _object(assessment.get("metadata")) for assessment in reviewed)
             if reviewed is not None
@@ -350,7 +349,6 @@ def compare_benchmark(runs: Sequence[BenchmarkRun]) -> dict[str, Any]:
                 ("duration_percent", "duration_seconds"),
                 ("requests_percent", "http_attempts"),
                 ("tokens_percent", "total_tokens"),
-                ("cost_percent", "cost_usd"),
             )
         }
         rows.append(row)

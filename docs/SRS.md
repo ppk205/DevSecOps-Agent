@@ -172,7 +172,7 @@ The target application has four user roles. The application declares an authoriz
 
 **C-01**: The application runs locally. Network access is limited to dependency/tool installation, advisory database updates, optional model downloads, explicitly enabled LLM API calls and operator-configured outbound notifications (FR-75).
 
-**C-02**: Total AI-usage budget is USD 50 for the project lifetime. The application must track cumulative spend and refuse to exceed the budget without explicit override.
+**C-02**: Total AI-usage budget is USD 50 for the project lifetime. Providers and models are bring-your-own-key with their own per-token prices, so the team tracks spend outside the application. The application reports token counts (FR-49) and does not compute or display cost.
 
 **C-03**: Timeline is 17 weeks with two developers.
 
@@ -347,13 +347,11 @@ separate from independently validated finding status.
 
 *Evidence*: LLM request/response artifacts retained per finding; test `T-CTX-18`.
 
-**FR-49 — AI cost accounting.** The application shall record token counts and estimated cost per LLM call and accumulate them against the USD 50 budget, refusing further calls when the budget is exhausted unless explicitly overridden.
+**FR-49 — AI usage accounting.** The application shall record provider-reported token counts per LLM call, show the totals in run reports and the dashboard, and support an optional request limit. It shall not compute or display monetary cost, because providers and models are bring-your-own-key with their own per-token prices.
 
 Implementation note: current call records aggregate provider-reported token
-counts. Omitted usage is unknown. Provider prices are not configured, so monetary
-cost is unavailable and must not be presented as free execution. The existing
-budget tracker only operates on recorded estimates; the monetary requirement is
-not fully implemented or validated by the offline execution checks.
+counts. Omitted usage is unknown and is shown as unavailable, never as zero.
+Markdown, text, HTML and Word reports include a model token usage section.
 An optional per-run request limit bounds HTTP attempts across Hunt, AI review,
 and the final report, including retries. The run records this limit and the
 number of attempted submissions separately from completed calls and token usage.
@@ -445,7 +443,7 @@ when a finding has multiple labels. Missing scanner labels retain the existing
 
 The benchmark view shall describe the scanner-only, AI review, capped review,
 and Laya-prioritized scenarios. It shall show measured time, scanner coverage,
-review and validation outcomes, request counts, and available usage and cost.
+review and validation outcomes, request counts, and available token usage.
 Savings use the AI review scenario as the reference and require comparable
 source revisions and scanner coverage. Hunt is shown separately because it may
 choose a different scanner set.

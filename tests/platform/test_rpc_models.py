@@ -13,6 +13,32 @@ from vulnscan.providers import profile_store
 __all__ = ["checkout", "service"]
 
 
+def test_fr49_reports_rpc_preserves_token_usage(service, tmp_path):
+    usage = {"requests": 1, "usage_reported_requests": 1, "total_tokens": 12}
+    result = rpc.ServiceRPC(service).dispatch(
+        "reports",
+        {
+            "summary": {
+                "run_id": "usage-fixture",
+                "configuration": {},
+                "status": "completed",
+                "gate": "passed",
+                "errors": [],
+                "ai_usage": usage,
+            },
+            "findings": [],
+            "output": str(tmp_path / "reports"),
+        },
+        "reports",
+        threading.Event(),
+    )
+    assert result["errors"] == []
+    from pathlib import Path
+
+    report = json.loads(Path(result["reports"]["json"]).read_text(encoding="utf-8"))
+    assert report["scan_metadata"]["ai_usage"] == usage
+
+
 def setup_profile(tmp_path, monkeypatch):
     (tmp_path / "pyproject.toml").touch()
     monkeypatch.chdir(tmp_path)

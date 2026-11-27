@@ -177,6 +177,7 @@ class ServiceRPC:
                     "status": summary["status"],
                     "gate": summary["gate"],
                     "errors": summary["errors"],
+                    "ai_usage": summary.get("ai_usage", {}),
                 },
             )
             reports: dict[str, str] = {}

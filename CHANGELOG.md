@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Keep aggregate token totals unavailable when a run with model calls omits
+  usage, instead of displaying a partial sum as the complete total.
+
+- Show model token usage (requests, prompt, completion and total tokens) in
+  Markdown, text, HTML and Word reports. Counts a provider did not report
+  appear as unavailable, not zero.
+- Remove cost and USD budget displays. Providers are bring-your-own-key with
+  their own per-token prices. The Keys page shows token totals instead, and
+  run summaries, benchmarks and the native TUI no longer carry cost fields.
+
 - Start the installed Laya worker automatically at routing and show batch
   progress, the scan scenario, and outputs on the live dashboard.
 

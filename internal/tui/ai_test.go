@@ -48,10 +48,10 @@ func TestFR48FindingExplanationKeepsProposalSeparateFromFindingStatus(t *testing
 	}
 }
 
-func TestFR49UsageDoesNotInventUnknownTokensOrCost(t *testing.T) {
+func TestFR49UsageShowsUnknownTokensWithoutCost(t *testing.T) {
 	text := strings.Join(resultText(map[string]any{"ai_usage": map[string]any{"requests": 1, "failed_requests": 1, "total_tokens": nil}}), "\n")
-	if !strings.Contains(text, "tokens unavailable") || !strings.Contains(text, "cost unavailable") {
-		t.Fatal("unknown model accounting appeared as zero or a known price")
+	if !strings.Contains(text, "tokens unavailable") || strings.Contains(text, "cost") {
+		t.Fatal("unknown tokens appeared as zero, or a cost was shown for BYOK models")
 	}
 }
 

@@ -68,7 +68,6 @@ def _model_usage(calls: list[dict[str, Any]], budget: BudgetManager) -> dict[str
         "usage_reported_requests": sum(bool(call.get("usage")) for call in calls),
         "http_attempts": budget.attempts,
         "max_model_requests": budget.max_requests,
-        "cost_usd": None,
     }
     for name in ("prompt_tokens", "completion_tokens", "total_tokens"):
         reported = []
@@ -594,6 +593,7 @@ class ScanService:
                 "errors": detail["result"].get("errors", []),
                 "commit": detail["spec"].get("target_commit_sha"),
                 "configuration": detail["spec"].get("metadata", {}).get("configuration", {}),
+                "ai_usage": detail["result"].get("ai_usage", {}),
             },
         )
         return str(generator.export(fmt, output).artifact_ref.path)
@@ -1418,7 +1418,7 @@ class ScanService:
                 "assessments": review["assessments"],
                 "validation_decisions": decisions,
                 "model_calls": model_calls,
-                "ai_usage": {**review["usage"], **_model_usage(model_calls, budget)},
+                "ai_usage": _model_usage(model_calls, budget),
                 "final_report": {
                     "status": final["status"],
                     "ai_written": final["ai_written"],
@@ -1464,6 +1464,7 @@ class ScanService:
                 "gate": summary["gate"],
                 "errors": summary["errors"],
                 "configuration": config.model_dump(),
+                "ai_usage": summary["ai_usage"],
             },
         )
         for fmt in ExportFormat:

@@ -228,7 +228,7 @@ func modelUsageText(value any) string {
 	if usage["total_tokens"] != nil {
 		tokens = display(usage["total_tokens"]) + " reported"
 	}
-	return fmt.Sprintf("AI usage: %s finished calls · %s failed · tokens %s · cost unavailable", display(usage["requests"]), display(usage["failed_requests"]), tokens)
+	return fmt.Sprintf("AI usage: %s finished calls · %s failed · tokens %s", display(usage["requests"]), display(usage["failed_requests"]), tokens)
 }
 
 // Directory reads run inside a tea.Cmd, never in the UI update or view.
