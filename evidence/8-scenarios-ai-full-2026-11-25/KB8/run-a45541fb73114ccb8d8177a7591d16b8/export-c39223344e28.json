@@ -1,0 +1,2120 @@
+{
+  "application_version": "0.2.0",
+  "scan_metadata": {
+    "commit": "11debbf45287b0a4c283f01d7a64abfa1f10ac69",
+    "target": "local",
+    "status": "completed",
+    "gate": "failed",
+    "errors": [],
+    "configuration": {
+      "schema_version": 1,
+      "profile": "fast",
+      "fail_on": "high",
+      "output_dir": "d:\\New folder\\DevSecOps-Agent\\evidence\\8-scenarios-ai-full-2026-11-25\\KB8",
+      "timezone": "Asia/Saigon",
+      "timeout": 600,
+      "max_files": 100000,
+      "allow_dirty": true,
+      "ci": false,
+      "laya": false,
+      "laya_config_path": null,
+      "ai_review": true,
+      "provider_profile": "kojo-bench-tmp",
+      "provider_model": "empero/kojo",
+      "ai_report": true,
+      "max_ai_findings": 10,
+      "max_model_requests": null,
+      "mode": "hunt",
+      "tools": [
+        "native-hunt"
+      ]
+    }
+  },
+  "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+  "generated_at": "2026-11-25T14:00:29.617889+00:00",
+  "counts": {
+    "version": "0.1.0",
+    "total": 17,
+    "confirmed": 0,
+    "rejected": 0,
+    "unresolved": 10,
+    "unprocessed": 7
+  },
+  "coverage_summary": {
+    "owasp-dependency-check": [],
+    "trivy": [],
+    "gitleaks": [],
+    "semgrep": [],
+    "codeql": []
+  },
+  "owasp_top10": {
+    "edition": "2025",
+    "source_url": "https://top10.owasp.org/2025/",
+    "snapshot_date": "2026-11-04",
+    "classification_only": true,
+    "mapping_basis": "Exact normalized primary/secondary CWEs in OWASP category-specific mapped-CWE lists",
+    "note": "This is a CWE classification of reported findings, not a coverage or compliance assessment. An empty category means No mapped findings reported; it does not mean tested, safe or passed. Counts retain finding status; pending includes unprocessed, triaged, assessed and pending validation. A finding with multiple labels may appear in several rows/categories; do not add those row counts.",
+    "total_findings": 17,
+    "categories": [
+      {
+        "id": "A01:2025",
+        "name": "Broken Access Control",
+        "source_url": "https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/",
+        "source_sha256": "e51ca05866f4213489e82484f1f48ed4d779e1809e87f70449806b496a0320cd",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A02:2025",
+        "name": "Security Misconfiguration",
+        "source_url": "https://top10.owasp.org/2025/A02_2025-Security_Misconfiguration/",
+        "source_sha256": "532fbbd67f3db734b7ed5d47e0263dd3800fce80e22da327123a88f2947017c9",
+        "total": 1,
+        "status_counts": {
+          "unprocessed": 1,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [
+          "model-929c8c665efebadc"
+        ],
+        "cwes": [
+          {
+            "cwe": "CWE-489",
+            "total": 1,
+            "status_counts": {
+              "unprocessed": 1,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 0
+            },
+            "finding_ids": [
+              "model-929c8c665efebadc"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "A03:2025",
+        "name": "Software Supply Chain Failures",
+        "source_url": "https://top10.owasp.org/2025/A03_2025-Software_Supply_Chain_Failures/",
+        "source_sha256": "66090225ad8f54a836e5b9e94456243baa7d38b70176f4d720668ef36f3a793d",
+        "total": 2,
+        "status_counts": {
+          "unprocessed": 2,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [
+          "model-8ea3d70b0681fe22",
+          "model-ec789c1ecd33430d"
+        ],
+        "cwes": [
+          {
+            "cwe": "CWE-1104",
+            "total": 2,
+            "status_counts": {
+              "unprocessed": 2,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 0
+            },
+            "finding_ids": [
+              "model-8ea3d70b0681fe22",
+              "model-ec789c1ecd33430d"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "A04:2025",
+        "name": "Cryptographic Failures",
+        "source_url": "https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures/",
+        "source_sha256": "5b140b4cadf334becc35334278494f98396dc9b5720df6c904688352b51dc834",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A05:2025",
+        "name": "Injection",
+        "source_url": "https://top10.owasp.org/2025/A05_2025-Injection/",
+        "source_sha256": "69d7ec591944699c49b89c544a52cb32adccbfad56c41784ca34fde837822de6",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A06:2025",
+        "name": "Insecure Design",
+        "source_url": "https://top10.owasp.org/2025/A06_2025-Insecure_Design/",
+        "source_sha256": "cf67ac90b3c088ca4566807fbc4bbd2090bccc81d61f15c0e25190032618195f",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A07:2025",
+        "name": "Authentication Failures",
+        "source_url": "https://top10.owasp.org/2025/A07_2025-Authentication_Failures/",
+        "source_sha256": "9decccf146242740ba34b1c14df7b729ef159274a3533182c6bcefc9f52c8816",
+        "total": 2,
+        "status_counts": {
+          "unprocessed": 1,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 1
+        },
+        "finding_ids": [
+          "model-0cd0f4bb77912512",
+          "model-f2108583c9ef724e"
+        ],
+        "cwes": [
+          {
+            "cwe": "CWE-798",
+            "total": 2,
+            "status_counts": {
+              "unprocessed": 1,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 1
+            },
+            "finding_ids": [
+              "model-0cd0f4bb77912512",
+              "model-f2108583c9ef724e"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "A08:2025",
+        "name": "Software or Data Integrity Failures",
+        "source_url": "https://top10.owasp.org/2025/A08_2025-Software_or_Data_Integrity_Failures/",
+        "source_sha256": "03082e5a3ce031d6d2425927653aca0ad47d474dafb4208862e86b4363d66d85",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A09:2025",
+        "name": "Security Logging & Alerting Failures",
+        "source_url": "https://top10.owasp.org/2025/A09_2025-Security_Logging_and_Alerting_Failures/",
+        "source_sha256": "e8f875d2db062bfd3eb00db65486b30dd64c417357f9346a395cf434b5055f31",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A10:2025",
+        "name": "Mishandling of Exceptional Conditions",
+        "source_url": "https://top10.owasp.org/2025/A10_2025-Mishandling_of_Exceptional_Conditions/",
+        "source_sha256": "492a7444a58c06ec76af06ed4f89e656804cde6b71f61ba2ed5703a9aa343864",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      }
+    ],
+    "unmapped": [
+      {
+        "cwe": "CWE-UNCLASSIFIED",
+        "reason": "unclassified_cwe",
+        "total": 12,
+        "status_counts": {
+          "unprocessed": 3,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 9
+        },
+        "finding_ids": [
+          "model-158337abf744790d",
+          "model-193a6e1b4a7207d0",
+          "model-3a12340615263d38",
+          "model-44d863545ff968a8",
+          "model-5325207d51d0ee12",
+          "model-8c8acb05feb5dc1e",
+          "model-8d2763e75b3679a9",
+          "model-a20b7eee948ed43a",
+          "model-b5e12cfc2239861f",
+          "model-bc2851331ffa2b18",
+          "model-da52a917cd61585d",
+          "model-f427f78550d5b550"
+        ]
+      }
+    ]
+  },
+  "findings": [
+    {
+      "version": "0.1.0",
+      "finding_id": "model-f2108583c9ef724e",
+      "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+      "fingerprint": "f2108583c9ef724e62b98e649c00e7e001421844763fdd282c8717d669eea978",
+      "title": "Hardcoded GitHub Personal Access Token in C header",
+      "description": "A GitHub PAT is embedded as a preprocessor macro in a shipped header. Anyone with the source (or the compiled binary's string table) can extract the token and gain whatever repository access the token's scopes grant, including pushing code or exfiltrating private repos. Rotation is required, and secrets must come from the environment or a secret manager at runtime.",
+      "cwe_category": "CWE-798",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-f2108583c9ef724e-obs",
+          "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-798",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "A GitHub PAT is embedded as a preprocessor macro in a shipped header. Anyone with the source (or the compiled binary's string table) can extract the token and gain whatever repository access the token's scopes grant, including pushing code or exfiltrating private repos. Rotation is required, and secrets must come from the environment or a secret manager at runtime.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "src/vuln_secret.h",
+            "language": "cpp",
+            "line_start": 3,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- src/vuln_secret.h (lines 1-4) ---\n1: #ifndef CONFIG_H\n2: #define CONFIG_H\n3: #define GITHUB_PAT \"ghp_1234567890abcdef1234567890abcdef1234\"\n4: #endif"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:57:29.225149Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-f2108583c9ef724e-obs"
+      ],
+      "created_at": "2026-11-25T13:57:29.225149Z",
+      "updated_at": "2026-11-25T13:57:29.225149Z",
+      "metadata": {
+        "title": "Hardcoded GitHub Personal Access Token in C header",
+        "rationale": "A GitHub PAT is embedded as a preprocessor macro in a shipped header. Anyone with the source (or the compiled binary's string table) can extract the token and gain whatever repository access the token's scopes grant, including pushing code or exfiltrating private repos. Rotation is required, and secrets must come from the environment or a secret manager at runtime.",
+        "evidence": "#define GITHUB_PAT \"[REDACTED]\"",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-f2108583c9ef724e",
+          "finding_id": "model-f2108583c9ef724e",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-f2108583c9ef724e-model-f2108583c9ef724e-obs",
+            "ev-model-f2108583c9ef724e-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T14:00:04.189655Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+            "assessment_id": "assess-model-f2108583c9ef724e-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-f2108583c9ef724e-model-f2108583c9ef724e-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-f2108583c9ef724e-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-f2108583c9ef724e-ai",
+            "finding_id": "model-f2108583c9ef724e",
+            "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.5,
+            "assumptions": [
+              "The redacted macro value is a real credential rather than a placeholder or documented example; unverifiable because tooling redacts it everywhere.",
+              "The header is or will be compiled into a distributed artifact and/or pushed to a shared repository; the snapshot contains no build files or includers to confirm this.",
+              "Token scopes, expiry and revocation state are unknown; blast radius could range from none (already revoked) to full write access to private repositories.",
+              "Git history state is unknown; the secret may persist in history even if removed from HEAD."
+            ],
+            "rationale": "I've verified everything I can. Here is my assessment.\n\n## What the evidence shows\n\n`src/vuln_secret.h` is a 4-line header whose only content is a secret constant:\n\n```c\n#ifndef CONFIG_H\n#define CONFIG_H\n#define GITHUB_PAT \"[REDACTED]\"\n#endif\n```\n\nConfirmed directly by reading the file, and corroborated by a second independent finding on the same line (`model-0cd0f4bb77912512`). A grep across the snapshot for `GITHUB_PAT` / `vuln_secret` returns exactly one hit: the definition itself. `src/safe_header.h` is the contrasting clean case, where the macro holds only the PEM header prefix (`-----BEGIN PRIVATE KEY-----\\n`) and no key material.\n\nThe CWE-798 classification is correct: a credential is committed to source as a compile-time constant, so it is exposed to every repo reader, clone, fork, and git history, and it is baked into any binary built from the header. Rotation requires a rebuild.\n\n## What I could not verify\n\nThese gaps matter for how confidently the *impact* can be stated:\n\n- **Token content and validity.** The value is redacted by the tooling in every output, including the raw observation snippet. I cannot confirm it is a live, well-formed GitHub PAT, nor determine its scopes. A `ghp_`-prefixed token with `repo` and `workflow` scope is a serious supply-chain risk; a revoked or dummy placeholder is a hygiene defect only.\n- **Reachability.** No code in the snapshot includes `vuln_secret.h` or references `GITHUB_PAT`, and no build file, Makefile, or CMakeLists is present. The scanner's \"shipped header\" and \"compiled binary's string table\" claims are assertions about how the project builds, not something I can observe here. If the header is never included, the \"in binary\" path is unproven, though the source-exposure path stands regardless.\n- **Scanner coverage.** Gitleaks and Semgrep are both absent from PATH on this host, so my independent secret-detection check returned `skipped`/`failed` rather than clean. `check_coverage` for CWE-798 returned no records. T",
+            "evidence_refs": [
+              "model-f2108583c9ef724e-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-f2108583c9ef724e",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:58:16.222110Z",
+            "metadata": {
+              "tool_calls_made": 13,
+              "total_tokens": 50528,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-193a6e1b4a7207d0",
+      "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+      "fingerprint": "193a6e1b4a7207d0ebb81c85b68a4adeeaf8e98138f6ce8d8cc3ab1df8aea577",
+      "title": "Container runs as root with a floating 'latest' base image",
+      "description": "The image never switches to an unprivileged user, so every process in the container runs as UID 0. Combined with 'ubuntu:latest', which is unpinned and mutable, a compromise of any process or a poisoned upstream image yields root inside the container and eases container-escape and host-volume abuse. The hardened sibling image uses a distroless nonroot base with an explicit UID.",
+      "cwe_category": "CWE-UNCLASSIFIED",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-193a6e1b4a7207d0-obs",
+          "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": null,
+          "severity": "high",
+          "native_severity": null,
+          "message": "The image never switches to an unprivileged user, so every process in the container runs as UID 0. Combined with 'ubuntu:latest', which is unpinned and mutable, a compromise of any process or a poisoned upstream image yields root inside the container and eases container-escape and host-volume abuse. The hardened sibling image uses a distroless nonroot base with an explicit UID.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "docker/vuln/Dockerfile",
+            "language": "other",
+            "line_start": 2,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- docker/vuln/Dockerfile (lines 1-4) ---\n1: FROM ubuntu:latest\n2: USER root\n3: RUN apt-get update && apt-get install -y curl\n4: CMD [\"/bin/bash\"]"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:57:29.230934Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-193a6e1b4a7207d0-obs"
+      ],
+      "created_at": "2026-11-25T13:57:29.230934Z",
+      "updated_at": "2026-11-25T13:57:29.230934Z",
+      "metadata": {
+        "title": "Container runs as root with a floating 'latest' base image",
+        "rationale": "The image never switches to an unprivileged user, so every process in the container runs as UID 0. Combined with 'ubuntu:latest', which is unpinned and mutable, a compromise of any process or a poisoned upstream image yields root inside the container and eases container-escape and host-volume abuse. The hardened sibling image uses a distroless nonroot base with an explicit UID.",
+        "evidence": "FROM ubuntu:latest\nUSER root\nRUN apt-get update && apt-get install -y curl\nCMD [\"/bin/bash\"]",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-193a6e1b4a7207d0",
+          "finding_id": "model-193a6e1b4a7207d0",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-193a6e1b4a7207d0-model-193a6e1b4a7207d0-obs",
+            "ev-model-193a6e1b4a7207d0-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T14:00:04.189655Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+            "assessment_id": "assess-model-193a6e1b4a7207d0-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-193a6e1b4a7207d0-model-193a6e1b4a7207d0-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-193a6e1b4a7207d0-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-193a6e1b4a7207d0-ai",
+            "finding_id": "model-193a6e1b4a7207d0",
+            "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.5,
+            "assumptions": [
+              "docker/vuln/Dockerfile and deploy/vuln_pod.yaml are intentionally vulnerable fixtures or genuine deployment artifacts; both readings support a confirmed misconfiguration finding",
+              "The privileged: true and runAsUser: 0 in deploy/vuln_pod.yaml are part of the deployed configuration for this image, not illustrative-only text",
+              "No cluster-level Pod Security Admission policy blocks privileged containers; unverified, and if one exists the practical impact drops",
+              "Whether the pod mounts hostPath volumes, and whether the process has CAP_SYS_ADMIN beyond privileged mode, is not visible in source and remains unknown",
+              "The finding overlaps five sibling observations on the same path (model-5325207d51d0ee12, model-a20b7eee948ed43a, model-158337abf744790d, model-8ea3d70b0681fe22, model-929c8c665efebadc) and should be triaged jointly rather than as independent issues"
+            ],
+            "rationale": "## Assessment: model-193a6e1b4a7207d0\n\n**Confirmed, with one correction to the scanner's framing.**\n\n`docker/vuln/Dockerfile` (4 lines, read in full):\n```\nFROM ubuntu:latest\nUSER root\nRUN apt-get update && apt-get install -y curl\nCMD [\"/bin/bash\"]\n```\n\nThe scanner's headline is slightly off. It says \"the image never switches to an unprivileged user,\" implying an omission. In fact line 2 is an *explicit* `USER root` directive. That matters because a remediation that merely adds `USER` somewhere, or assumes the base image defaults, misses that root is deliberately declared here and must be actively overridden.\n\n**The impact is worse than the finding states.** The scanner reasoned about container-internal root and hypothetical escape. The actual deployment raises this to host-level. `deploy/vuln_pod.yaml` runs `ubuntu:latest` with `privileged: true` and `runAsUser: 0`. A privileged container with a root shell as its default `CMD` and root-owned mounts is not a container-escape *risk*; it is a container-escape *configuration*. The `docker/safe` and `deploy/safe` pair show the intended contrast: distroless nonroot base, `USER 65532:65532`, `runAsNonRoot`, `readOnlyRootFilesystem`, `allowPrivilegeEscalation: false`, `capabilities.drop: ALL`, `automountServiceAccountToken: [REDACTED]\n\n**Two factors that bound severity.** There is no application code in this image at all: it is a base image plus `curl`, with `/bin/bash` as the entrypoint. There is no in-repo attack surface to exploit for initial code execution, so the root user is a *multiplier* on an external compromise rather than a directly reachable flaw. I also cannot see from source whether this manifest is deployed to production, what host paths are mounted, or whether the cluster enforces Pod Security Standards that would reject `privileged`. All of that is unknown, not safe.\n\n**Coverage is genuinely weak.** Every deterministic tool was unavailable: Trivy not on PATH, Semgrep not on PATH, and the coverage record shows",
+            "evidence_refs": [
+              "model-193a6e1b4a7207d0-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-193a6e1b4a7207d0",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:58:17.156164Z",
+            "metadata": {
+              "tool_calls_made": 12,
+              "total_tokens": 60368,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-da52a917cd61585d",
+      "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+      "fingerprint": "da52a917cd61585d19769a46337ffd581b078c7aba2abc04981105e15ed14935",
+      "title": "Privileged pod running as root",
+      "description": "securityContext sets privileged: true with runAsUser: 0. A privileged container gets all Linux capabilities, access to all host devices, and effectively unrestricted kernel access, which makes container escape to the node straightforward. This should be removed along with runAsUser: 0, with capabilities dropped and allowPrivilegeEscalation disabled.",
+      "cwe_category": "CWE-UNCLASSIFIED",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-da52a917cd61585d-obs",
+          "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": null,
+          "severity": "critical",
+          "native_severity": null,
+          "message": "securityContext sets privileged: true with runAsUser: 0. A privileged container gets all Linux capabilities, access to all host devices, and effectively unrestricted kernel access, which makes container escape to the node straightforward. This should be removed along with runAsUser: 0, with capabilities dropped and allowPrivilegeEscalation disabled.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "deploy/vuln_pod.yaml",
+            "language": "other",
+            "line_start": 10,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- deploy/vuln_pod.yaml (lines 1-11) ---\n1: apiVersion: v1\n2: kind: Pod\n3: metadata:\n4:   name: insecure-app\n5: spec:\n6:   containers:\n7:     - name: app\n8:       image: ubuntu:latest\n9:       securityContext:\n10:         privileged: true\n11:         runAsUser: 0"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:57:29.236128Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-da52a917cd61585d-obs"
+      ],
+      "created_at": "2026-11-25T13:57:29.236128Z",
+      "updated_at": "2026-11-25T13:57:29.236128Z",
+      "metadata": {
+        "title": "Privileged pod running as root",
+        "rationale": "securityContext sets privileged: true with runAsUser: 0. A privileged container gets all Linux capabilities, access to all host devices, and effectively unrestricted kernel access, which makes container escape to the node straightforward. This should be removed along with runAsUser: 0, with capabilities dropped and allowPrivilegeEscalation disabled.",
+        "evidence": "securityContext:\n        privileged: true\n        runAsUser: 0",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-da52a917cd61585d",
+          "finding_id": "model-da52a917cd61585d",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-da52a917cd61585d-model-da52a917cd61585d-obs",
+            "ev-model-da52a917cd61585d-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T14:00:04.190713Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+            "assessment_id": "assess-model-da52a917cd61585d-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-da52a917cd61585d-model-da52a917cd61585d-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-da52a917cd61585d-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-da52a917cd61585d-ai",
+            "finding_id": "model-da52a917cd61585d",
+            "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.92,
+            "assumptions": [
+              "The manifest is intended to be deployed rather than being an inert sample, which the presence of a paired hardened safe_pod.yaml in the same directory suggests is a comparative test fixture; if it is purely a fixture, real-world risk is limited to accidental reuse.",
+              "No admission controller, PodSecurity admission label (restricted/baseline), or policy engine such as OPA Gatekeeper or Kyverno is known to reject privileged pods at deploy time; none is present in the snapshot, so the manifest would apply as written.",
+              "The runtime contents of ubuntu:latest are unknown and unpinned; the severity of post-escape impact depends on that image and on the node's workload and credentials.",
+              "The two Dockerfiles under docker/vuln/ and docker/safe/ could not be read with available tools, so whether the image itself adds or removes privilege is unknown.",
+              "Absence of hostPath, hostNetwork, hostPID, and of any Deployment/RoleBinding/ServiceAccount reference to insecure-app in the snapshot is not evidence of absence in the real deployment; it is unknown.",
+              "Trivy was unavailable, so no IaC policy audit corroborated or contradicted this finding."
+            ],
+            "rationale": "deploy/vuln_pod.yaml lines 10-11 set securityContext.privileged: true and runAsUser: 0 on the sole container, verified by direct file read and matching the scanner observation exactly. A privileged container receives all Linux capabilities and full device access, eliminating the container-to-node kernel boundary, and UID 0 removes the in-container privilege boundary as well. The manifest also omits every hardening control present in the sibling deploy/safe_pod.yaml (allowPrivilegeEscalation: false, capabilities.drop ALL, readOnlyRootFilesystem, runAsNonRoot, automountServiceAccountToken: [REDACTED], confirming this is a departure from the repository's own hardened baseline rather than a deliberate, documented exception. The configuration defect is unambiguous; what remains unverified is the deployment context.",
+            "evidence_refs": [
+              "model-da52a917cd61585d-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-da52a917cd61585d",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:58:21.905529Z",
+            "metadata": {
+              "tool_calls_made": 10,
+              "total_tokens": 50464,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-f427f78550d5b550",
+      "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+      "fingerprint": "f427f78550d5b5506ef68ab715990dab5056dc9e247e19b8103c03fe72712e75",
+      "title": "Service account token automounted in privileged root pod",
+      "description": "The pod spec does not set automountServiceAccountToken: [REDACTED], so the default service account token is projected into the container. An attacker who lands code execution in this already-privileged, root-running pod can read the token and call the Kubernetes API with whatever RBAC the default account holds. The hardened manifest explicitly disables automounting.",
+      "cwe_category": "CWE-UNCLASSIFIED",
+      "additional_cwe_labels": [],
+      "severity": "medium",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-f427f78550d5b550-obs",
+          "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": null,
+          "severity": "medium",
+          "native_severity": null,
+          "message": "The pod spec does not set automountServiceAccountToken: [REDACTED], so the default service account token is projected into the container. An attacker who lands code execution in this already-privileged, root-running pod can read the token and call the Kubernetes API with whatever RBAC the default account holds. The hardened manifest explicitly disables automounting.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "deploy/vuln_pod.yaml",
+            "language": "other",
+            "line_start": 5,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- deploy/vuln_pod.yaml (lines 1-11) ---\n1: apiVersion: v1\n2: kind: Pod\n3: metadata:\n4:   name: insecure-app\n5: spec:\n6:   containers:\n7:     - name: app\n8:       image: ubuntu:latest\n9:       securityContext:\n10:         privileged: true\n11:         runAsUser: 0"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:57:29.246796Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-f427f78550d5b550-obs"
+      ],
+      "created_at": "2026-11-25T13:57:29.246796Z",
+      "updated_at": "2026-11-25T13:57:29.246796Z",
+      "metadata": {
+        "title": "Service account token automounted in privileged root pod",
+        "rationale": "The pod spec does not set automountServiceAccountToken: [REDACTED], so the default service account token is projected into the container. An attacker who lands code execution in this already-privileged, root-running pod can read the token and call the Kubernetes API with whatever RBAC the default account holds. The hardened manifest explicitly disables automounting.",
+        "evidence": "spec:\n  containers:\n    - name: app",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-f427f78550d5b550",
+          "finding_id": "model-f427f78550d5b550",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-f427f78550d5b550-model-f427f78550d5b550-obs",
+            "ev-model-f427f78550d5b550-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T14:00:04.190713Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+            "assessment_id": "assess-model-f427f78550d5b550-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-f427f78550d5b550-model-f427f78550d5b550-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-f427f78550d5b550-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-f427f78550d5b550-ai",
+            "finding_id": "model-f427f78550d5b550",
+            "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": {
+              "version": "4.0",
+              "vector": "CVSS:4.0/AV:N/AC:H/AT:N/PR:N/UI:N/VC:L/VI:L/VA:N/SC:L/SI:L/SA:N",
+              "base_score": 6.3,
+              "qualitative": "medium",
+              "source": "ai-proposal",
+              "notes": "",
+              "overall_score": 6.3,
+              "base_rating": "Medium",
+              "overall_rating": "Medium",
+              "nomenclature": "CVSS-B",
+              "calculation_source": "FIRST CVSS v4.0",
+              "metric_assumptions_verified": false
+            },
+            "confidence": 0.85,
+            "assumptions": [
+              "Kubernetes default behavior applies (automountServiceAccountToken unset at both Pod and ServiceAccount level, so it defaults to true).",
+              "The token is mounted with default permissions and is readable by the root process, which holds here because runAsUser: 0.",
+              "The RBAC bound to the 'default' ServiceAccount in the target cluster is unknown; severity would rise if it is bound to any broad read/write role.",
+              "The manifest is intended for real deployment rather than being an intentionally insecure test fixture; the 'vuln'/'safe' naming pattern suggests a training or comparison pair, which would reduce real-world impact."
+            ],
+            "rationale": "Confirmed by direct read of deploy/vuln_pod.yaml (11 lines, read in full): the Pod spec at line 5 has no automountServiceAccountToken field and no serviceAccountName, so Kubernetes' default (true) applies and the 'default' ServiceAccount token is projected into the container at /var/run/secrets/kubernetes.io/serviceaccount/token. The container also sets privileged: true (line 10) and runAsUser: 0 (line 11), so the token file is readable by any process in the container. deploy/safe_pod.yaml (read in full) sets automountServiceAccountToken: [REDACTED] at line 6, confirming the intended hardened baseline. The defect is real and the remediation is a one-line change. Severity is argued lower than the reported medium: this is defense-in-depth layered on the already-critical privileged/root configuration, since a privileged container can read node and other-pod credentials via container escape regardless of this pod's automount setting. Impact remains unquantified because no ServiceAccount/Role/RoleBinding manifests exist in the snapshot to show what RBAC the 'default' account holds.",
+            "evidence_refs": [
+              "model-f427f78550d5b550-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-f427f78550d5b550",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:58:12.281393Z",
+            "metadata": {
+              "tool_calls_made": 8,
+              "total_tokens": 49312,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "computed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-8c8acb05feb5dc1e",
+      "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+      "fingerprint": "8c8acb05feb5dc1e4bfb3b1db0e242128d73b7a980d405ccd7fce0d7e0a3160e",
+      "title": "Pod explicitly runs as UID 0 (root) without runAsNonRoot enforcement",
+      "description": "runAsUser: 0 forces the container process to run as root and runAsNonRoot is absent, so the kubelet will not reject a root-running image. Combined with the privileged flag and a mutable ubuntu:latest image, a compromised process runs with unrestricted authority over the container filesystem and any mounted credentials. The missing control is runAsNonRoot: true with a non-zero runAsUser and a non-root-capable image.",
+      "cwe_category": "CWE-UNCLASSIFIED",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-8c8acb05feb5dc1e-obs",
+          "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": null,
+          "severity": "high",
+          "native_severity": null,
+          "message": "runAsUser: 0 forces the container process to run as root and runAsNonRoot is absent, so the kubelet will not reject a root-running image. Combined with the privileged flag and a mutable ubuntu:latest image, a compromised process runs with unrestricted authority over the container filesystem and any mounted credentials. The missing control is runAsNonRoot: true with a non-zero runAsUser and a non-root-capable image.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "deploy/vuln_pod.yaml",
+            "language": "other",
+            "line_start": 11,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- deploy/vuln_pod.yaml (lines 1-11) ---\n1: apiVersion: v1\n2: kind: Pod\n3: metadata:\n4:   name: insecure-app\n5: spec:\n6:   containers:\n7:     - name: app\n8:       image: ubuntu:latest\n9:       securityContext:\n10:         privileged: true\n11:         runAsUser: 0"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:57:29.251380Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-8c8acb05feb5dc1e-obs"
+      ],
+      "created_at": "2026-11-25T13:57:29.251380Z",
+      "updated_at": "2026-11-25T13:57:29.251380Z",
+      "metadata": {
+        "title": "Pod explicitly runs as UID 0 (root) without runAsNonRoot enforcement",
+        "rationale": "runAsUser: 0 forces the container process to run as root and runAsNonRoot is absent, so the kubelet will not reject a root-running image. Combined with the privileged flag and a mutable ubuntu:latest image, a compromised process runs with unrestricted authority over the container filesystem and any mounted credentials. The missing control is runAsNonRoot: true with a non-zero runAsUser and a non-root-capable image.",
+        "evidence": "runAsUser: 0",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-8c8acb05feb5dc1e",
+          "finding_id": "model-8c8acb05feb5dc1e",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-8c8acb05feb5dc1e-model-8c8acb05feb5dc1e-obs",
+            "ev-model-8c8acb05feb5dc1e-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T14:00:04.190713Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+            "assessment_id": "assess-model-8c8acb05feb5dc1e-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-8c8acb05feb5dc1e-model-8c8acb05feb5dc1e-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-8c8acb05feb5dc1e-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-8c8acb05feb5dc1e-ai",
+            "finding_id": "model-8c8acb05feb5dc1e",
+            "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.5,
+            "assumptions": [
+              "The manifest is intended for deployment or represents a real target configuration; the snapshot contains no CI gate, controller, or deployment record either way.",
+              "The default ServiceAccount and its RBAC bindings are unknown; the projected token's privilege level cannot be assessed from this snapshot.",
+              "No other workload manifests contribute to this finding: a YAML grep across the snapshot returned only deploy/safe_pod.yaml and deploy/vuln_pod.yaml.",
+              "Trivy/SpotBugs config audit could not run (trivy not found on PATH), so no independent IaC scanner corroborated the manual read.",
+              "Line numbers are taken from inspect_code output, which reports total_lines: 11 for vuln_pod.yaml."
+            ],
+            "rationale": "I confirmed the finding against the actual manifest. Note that `inspect_code` returned line 11 as the last line with `runAsUser: 0`, and the raw snippet agrees; there is no `runAsNonRoot`, no `allowPrivilegeEscalation: false`, no capability drop, and no `automountServiceAccountToken: [REDACTED] anywhere in the file.\n\n## Assessment\n\n**What the code shows (confirmed, read this turn)**\n\n`deploy/vuln_pod.yaml` is an 11-line Pod manifest:\n\n- Line 8: `image: ubuntu:latest` -- mutable tag, non-pinned.\n- Line 10: `privileged: true` -- full device and kernel-capability access.\n- Line 11: `runAsUser: 0` -- explicitly forces UID 0.\n- No `runAsNonRoot`, no `allowPrivilegeEscalation: false`, no `capabilities.drop`, no `readOnlyRootFilesystem`, no `automountServiceAccountToken: [REDACTED]\n\nThe sibling `deploy/safe_pod.yaml` is a hardened control: `runAsNonRoot: true`, `runAsUser: 65532`, distroless nonroot image, read-only rootfs, `allowPrivilegeEscalation: false`, `drop: [\"ALL\"]`. So the vulnerable manifest is deliberately insecure by contrast, and the correct remediation shape already exists in the repo.\n\n**Is the finding accurate?** Yes, on the narrow claim. `runAsUser: 0` sets UID 0, and the absence of `runAsNonRoot: true` means the kubelet performs no rejection check against a root-capable image. That is a genuine misconfiguration and the observation's stated remedy is correct.\n\n**Two corrections to the finding's framing, both of which matter for severity**\n\n1. **`privileged: true` is the dominant defect, not the UID.** A privileged container gets all Linux capabilities and full host device access. Even with `runAsUser: 65532` and `runAsNonRoot: true`, a privileged container can trivially regain effective root inside the container and has far greater reach than UID 0 alone. So this finding is a true but *secondary* weakness sitting on top of a worse one. If the UID issue alone were fixed, the pod would still be critically exposed. I'd recommend this be triaged alongside a separate",
+            "evidence_refs": [
+              "model-8c8acb05feb5dc1e-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-8c8acb05feb5dc1e",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:58:52.814011Z",
+            "metadata": {
+              "tool_calls_made": 7,
+              "total_tokens": 37024,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-b5e12cfc2239861f",
+      "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+      "fingerprint": "b5e12cfc2239861fc4295fde7381fc292d91e1e2e913b92475f42949ab9bddb0",
+      "title": "Unpinned mutable base image ubuntu:latest in workload manifest",
+      "description": "The pod references ubuntu:latest with no digest pin, so the image actually executed is whatever the tag resolves to at pull time. This gives an attacker who can push to or poison the tag (or a compromised registry/mirror) code execution inside a privileged, root-running container, and it makes the deployed content unauditable. The missing control is a digest-pinned, minimal image.",
+      "cwe_category": "CWE-UNCLASSIFIED",
+      "additional_cwe_labels": [],
+      "severity": "medium",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-b5e12cfc2239861f-obs",
+          "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": null,
+          "severity": "medium",
+          "native_severity": null,
+          "message": "The pod references ubuntu:latest with no digest pin, so the image actually executed is whatever the tag resolves to at pull time. This gives an attacker who can push to or poison the tag (or a compromised registry/mirror) code execution inside a privileged, root-running container, and it makes the deployed content unauditable. The missing control is a digest-pinned, minimal image.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "deploy/vuln_pod.yaml",
+            "language": "other",
+            "line_start": 8,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- deploy/vuln_pod.yaml (lines 1-11) ---\n1: apiVersion: v1\n2: kind: Pod\n3: metadata:\n4:   name: insecure-app\n5: spec:\n6:   containers:\n7:     - name: app\n8:       image: ubuntu:latest\n9:       securityContext:\n10:         privileged: true\n11:         runAsUser: 0"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:57:29.256277Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-b5e12cfc2239861f-obs"
+      ],
+      "created_at": "2026-11-25T13:57:29.256277Z",
+      "updated_at": "2026-11-25T13:57:29.256277Z",
+      "metadata": {
+        "title": "Unpinned mutable base image ubuntu:latest in workload manifest",
+        "rationale": "The pod references ubuntu:latest with no digest pin, so the image actually executed is whatever the tag resolves to at pull time. This gives an attacker who can push to or poison the tag (or a compromised registry/mirror) code execution inside a privileged, root-running container, and it makes the deployed content unauditable. The missing control is a digest-pinned, minimal image.",
+        "evidence": "image: ubuntu:latest",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-b5e12cfc2239861f",
+          "finding_id": "model-b5e12cfc2239861f",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-b5e12cfc2239861f-model-b5e12cfc2239861f-obs",
+            "ev-model-b5e12cfc2239861f-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T14:00:04.190713Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+            "assessment_id": "assess-model-b5e12cfc2239861f-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-b5e12cfc2239861f-model-b5e12cfc2239861f-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-b5e12cfc2239861f-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-b5e12cfc2239861f-ai",
+            "finding_id": "model-b5e12cfc2239861f",
+            "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.5,
+            "assumptions": [
+              "The manifest is intended for actual deployment rather than existing solely as a deliberately insecure reference example; no CI/Helm/ArgoCD references were found in the tree to settle this, so real-world exposure is unknown.",
+              "Trust in the docker.io library/ubuntu namespace and any configured mirror is not assumed; a private or unverified mirror would raise the likelihood.",
+              "No independent IaC scanner corroboration was possible: Trivy and Semgrep are not installed, so this rests on source reading plus the native-hunt observation.",
+              "CWE-UNCLASSIFIED is retained because explain_scanner_rule exposes no CWE mapping for model-hunt; no reclassification is asserted.",
+              "Severity is assigned to the mutable-tag defect in isolation, per finding scope."
+            ],
+            "rationale": "## Assessment: model-b5e12cfc2239861f\n\n**Evidence confirmed.** `deploy/vuln_pod.yaml` line 8 reads exactly `image: ubuntu:latest`, with no `@sha256:` digest. The container also sets `privileged: true` and `runAsUser: 0`. The sibling `deploy/safe_pod.yaml` pins a distroless tag and hardens the context, so the two files form a deliberate insecure/hardened pair.\n\n**What the finding actually covers.** The core claim -- a mutable tag with no digest pin, so the executed image is whatever the registry resolves at pull time -- is factually correct and verifiable in the file. Two parts of the narrative need separating out:\n\n- *Supply-chain risk (this finding's subject)*: tag retargeting, registry or mirror poisoning, or an unreviewed upstream republish lands code in the workload. This is real but **conditional** on attacker control of the `library/ubuntu` tag or a registry path. That is a meaningful precondition, not a trivially reachable one.\n- *Amplification*: the scanner says compromise here yields execution \"inside a privileged, root-running container.\" True, and confirmed by lines 9-11. But that severity belongs to the privileged/root findings (`model-8d2763e75b3679a9`, `model-da52a917cd61585d`, `model-8c8acb05feb5dc1e`), which are already tracked as critical/high. Counting the container-escape impact twice here would inflate this medium into something it isn't. I'm scoring the pinning defect on its own.\n\n**Coverage caveats.** Trivy and Semgrep are both absent from PATH, so no independent IaC engine corroborated this; the finding rests on direct source reading plus the native-hunt observation. `explain_scanner_rule` returns no CWE for `model-hunt`, which is why the category is `CWE-UNCLASSIFIED`. The closest fit would be CWE-1357 (Reliance on Insufficiently Trustworthy Component) or CWE-829, but I'm not asserting a reclassification without rule metadata.\n\n**Status:** Valid. The condition is present and unambiguous; the only open question is whether this manifest is depl",
+            "evidence_refs": [
+              "model-b5e12cfc2239861f-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-b5e12cfc2239861f",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:59:17.561895Z",
+            "metadata": {
+              "tool_calls_made": 10,
+              "total_tokens": 57136,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-5325207d51d0ee12",
+      "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+      "fingerprint": "5325207d51d0ee12a9c6e5b8749da5a1b9a920a5ce4e6f8e29a6360ce1594646",
+      "title": "Unpinned ubuntu:latest base image with unbounded package install in build",
+      "description": "FROM ubuntu:latest resolves to a different image over time and cannot be verified by digest, so builds are non-reproducible and a tag-poisoning attacker controls the base layer of a root-running image. The following RUN installs curl with no version pin and no --no-install-recommends, pulling whatever the current apt indices offer.",
+      "cwe_category": "CWE-UNCLASSIFIED",
+      "additional_cwe_labels": [],
+      "severity": "medium",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-5325207d51d0ee12-obs",
+          "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": null,
+          "severity": "medium",
+          "native_severity": null,
+          "message": "FROM ubuntu:latest resolves to a different image over time and cannot be verified by digest, so builds are non-reproducible and a tag-poisoning attacker controls the base layer of a root-running image. The following RUN installs curl with no version pin and no --no-install-recommends, pulling whatever the current apt indices offer.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "docker/vuln/Dockerfile",
+            "language": "other",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- docker/vuln/Dockerfile (lines 1-4) ---\n1: FROM ubuntu:latest\n2: USER root\n3: RUN apt-get update && apt-get install -y curl\n4: CMD [\"/bin/bash\"]"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:57:29.260770Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-5325207d51d0ee12-obs"
+      ],
+      "created_at": "2026-11-25T13:57:29.260770Z",
+      "updated_at": "2026-11-25T13:57:29.260770Z",
+      "metadata": {
+        "title": "Unpinned ubuntu:latest base image with unbounded package install in build",
+        "rationale": "FROM ubuntu:latest resolves to a different image over time and cannot be verified by digest, so builds are non-reproducible and a tag-poisoning attacker controls the base layer of a root-running image. The following RUN installs curl with no version pin and no --no-install-recommends, pulling whatever the current apt indices offer.",
+        "evidence": "FROM ubuntu:latest",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-5325207d51d0ee12",
+          "finding_id": "model-5325207d51d0ee12",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-5325207d51d0ee12-model-5325207d51d0ee12-obs",
+            "ev-model-5325207d51d0ee12-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T14:00:04.191663Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+            "assessment_id": "assess-model-5325207d51d0ee12-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-5325207d51d0ee12-model-5325207d51d0ee12-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-5325207d51d0ee12-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-5325207d51d0ee12-ai",
+            "finding_id": "model-5325207d51d0ee12",
+            "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.5,
+            "assumptions": [
+              "docker/vuln/ is an intentionally insecure test fixture, inferred from its pairing with docker/safe/ and from the repo layout (src/vuln_secret.h, deploy/vuln_pod.yaml). If this Dockerfile ships to production, severity should be raised and the finding re-scoped.",
+              "The upstream Ubuntu registry and maintainer accounts are not assumed compromised; the tag-poisoning scenario is treated as a hypothetical precondition, not an established threat.",
+              "Trivy and gitleaks were unavailable in this environment, so no config-audit or secret-scan corroboration exists. The manual read of the full 4-line file substitutes for it here, but coverage for the wider docker/ tree is unverified.",
+              "Deployment of the built image is suggested by deploy/vuln_pod.yaml but the runtime context (network exposure, data sensitivity, orchestrator hardening) is unknown, so no impact metrics can be set."
+            ],
+            "rationale": "The deploy manifest also references `ubuntu:latest`. I'll read both deploy files to see how the image is actually used.\n\n## Assessment: `model-5325207d51d0ee12`\n\n**The finding is confirmed at the code level, but it is a build hygiene issue, not an exploitable vulnerability.** The scanner's own description mixes two claims (non-reproducibility and tag poisoning) and one factual overreach, which I'll separate below.\n\n### Evidence verified\n\n`docker/vuln/Dockerfile` is 4 lines, read in full:\n\n```\n1: FROM ubuntu:latest\n2: USER root\n3: RUN apt-get update && apt-get install -y curl\n4: CMD [\"/bin/bash\"]\n```\n\nEvery element of the observation is present: floating `latest` tag, no digest, no `curl` version pin, no `--no-install-recommends`, and no `rm -rf /var/lib/apt/lists/*`. The sibling `docker/safe/Dockerfile` is the hardened contrast case (`gcr.io/distroless/static-debian12:nonroot`, `USER 65532:65532`, `ENTRYPOINT`), which corroborates that this file is a deliberately insecure fixture.\n\n`deploy/vuln_pod.yaml:8` also uses `image: ubuntu:latest`, so the floating tag propagates to the deploy manifest. That is a separate finding's territory, not this one's, but it means the pattern is not confined to one file.\n\n### Where the observation overreaches\n\n\"**a tag-poisoning attacker controls the base layer of a root-running image**\" overstates this finding. Tag poisoning requires a compromise of the upstream registry or the maintainer account, an upstream precondition with no evidence in this repo. The finding as scoped (line 1 plus the unpinned `curl` install) describes reproducibility loss and an unreviewed upstream change surface. The \"root-running\" half of that sentence belongs to `model-193a6e1b4a7207d0` and `model-158337abf744790d`, which correctly own the `USER root` issue. Severity is being inflated by borrowing impact from a sibling finding.\n\n### Duplication to flag\n\nSix other findings target these same four lines, and three overlap directly: `model-a20b7eee948ed43a` (flo",
+            "evidence_refs": [
+              "model-5325207d51d0ee12-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-5325207d51d0ee12",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:59:12.928736Z",
+            "metadata": {
+              "tool_calls_made": 10,
+              "total_tokens": 55584,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-8d2763e75b3679a9",
+      "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+      "fingerprint": "8d2763e75b3679a9df7db32042e18396398af221a96747512dee12cd9923ca7d",
+      "title": "Pod runs a privileged container as root with no restriction on privilege escalation",
+      "description": "securityContext sets privileged: true and runAsUser: 0 with no allowPrivilegeEscalation: false, no readOnlyRootFilesystem, no dropped capabilities and no seccomp profile. A privileged root container has full access to host devices and kernel interfaces, so any application compromise becomes node and cluster compromise (container escape). Trivy was unavailable for an automated IaC pass; confirmed by reading the manifest.",
+      "cwe_category": "CWE-UNCLASSIFIED",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-8d2763e75b3679a9-obs",
+          "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": null,
+          "severity": "critical",
+          "native_severity": null,
+          "message": "securityContext sets privileged: true and runAsUser: 0 with no allowPrivilegeEscalation: false, no readOnlyRootFilesystem, no dropped capabilities and no seccomp profile. A privileged root container has full access to host devices and kernel interfaces, so any application compromise becomes node and cluster compromise (container escape). Trivy was unavailable for an automated IaC pass; confirmed by reading the manifest.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "deploy/vuln_pod.yaml",
+            "language": "other",
+            "line_start": 9,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- deploy/vuln_pod.yaml (lines 1-11) ---\n1: apiVersion: v1\n2: kind: Pod\n3: metadata:\n4:   name: insecure-app\n5: spec:\n6:   containers:\n7:     - name: app\n8:       image: ubuntu:latest\n9:       securityContext:\n10:         privileged: true\n11:         runAsUser: 0"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:57:29.265379Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-8d2763e75b3679a9-obs"
+      ],
+      "created_at": "2026-11-25T13:57:29.265379Z",
+      "updated_at": "2026-11-25T13:57:29.265379Z",
+      "metadata": {
+        "title": "Pod runs a privileged container as root with no restriction on privilege escalation",
+        "rationale": "securityContext sets privileged: true and runAsUser: 0 with no allowPrivilegeEscalation: false, no readOnlyRootFilesystem, no dropped capabilities and no seccomp profile. A privileged root container has full access to host devices and kernel interfaces, so any application compromise becomes node and cluster compromise (container escape). Trivy was unavailable for an automated IaC pass; confirmed by reading the manifest.",
+        "evidence": "securityContext:\n        privileged: true\n        runAsUser: 0",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-8d2763e75b3679a9",
+          "finding_id": "model-8d2763e75b3679a9",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-8d2763e75b3679a9-model-8d2763e75b3679a9-obs",
+            "ev-model-8d2763e75b3679a9-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T14:00:04.191663Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+            "assessment_id": "assess-model-8d2763e75b3679a9-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-8d2763e75b3679a9-model-8d2763e75b3679a9-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-8d2763e75b3679a9-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-8d2763e75b3679a9-ai",
+            "finding_id": "model-8d2763e75b3679a9",
+            "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": {
+              "version": "4.0",
+              "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H",
+              "base_score": 9.4,
+              "qualitative": "critical",
+              "source": "ai-proposal",
+              "notes": "",
+              "overall_score": 9.4,
+              "base_rating": "Critical",
+              "overall_rating": "Critical",
+              "nomenclature": "CVSS-B",
+              "calculation_source": "FIRST CVSS v4.0",
+              "metric_assumptions_verified": false
+            },
+            "confidence": 0.5,
+            "assumptions": [
+              "The pod is actually deployed or intended for deployment to a real cluster; no Deployment, StatefulSet, or CI wiring referencing 'insecure-app' exists in this repo, so runtime exposure is unknown rather than safe.",
+              "No cluster-level admission control (Pod Security Admission, OPA/Gatekeeper, Kyverno) rejects privileged pods; no such policy is present in the repository, but it could exist outside this snapshot.",
+              "The impact-scope metrics assume the pod lands on a node where host access is meaningful (multi-tenant or production), which is the standard justification for treating privileged containers as node-level compromise.",
+              "No evidence of an actual exploitation path or attacker foothold in application code; the finding is a configuration weakness, and the PR:L metric assumes a separate initial compromise of the workload.",
+              "Absence of NetworkPolicy and RBAC manifests in the snapshot may reflect a truncated repository rather than a genuine cluster-wide gap."
+            ],
+            "rationale": "I have everything I need. The finding is fully confirmed by direct inspection of the manifest.\n\n## Assessment\n\n**Verified.** `deploy/vuln_pod.yaml` is 11 lines and every claim in the observation holds exactly:\n\n```yaml\nspec:\n  containers:\n    - name: app\n      image: ubuntu:latest\n      securityContext:\n        privileged: true   # line 10\n        runAsUser: 0       # line 11\n```\n\nConfirmed absent from the container's `securityContext`: `allowPrivilegeEscalation: false`, `readOnlyRootFilesystem: true`, `capabilities.drop`, and any `seccompProfile`. There is also no pod-level `securityContext`, and no `automountServiceAccountToken: [REDACTED] The sibling `deploy/safe_pod.yaml` in the same directory does the opposite on all of these, which shows the insecure file is a deliberate contrast case rather than an artifact of a missing default.\n\n**Why the severity is justified.** `privileged: true` grants the container all Linux capabilities and unrestricted access to host device nodes, so a privileged root container can reach the host kernel and container runtime socket paths. Combined with `runAsUser: 0` and no `allowPrivilegeEscalation: false`, a process inside the container can also gain capabilities via setuid binaries. Any compromise of the application becomes node compromise and, from there, cluster compromise. `ubuntu:latest` with a `/bin/bash` entrypoint (per `docker/vuln/Dockerfile`) means the container also ships a shell and `curl`, which makes post-exploitation trivial once an attacker lands.\n\n**Scope limits I should be explicit about.** This is a standalone `kind: Pod`, not part of a Deployment, and nothing in the repo references `insecure-app` or mounts this file. The repo contains no Kubernetes RBAC, no NetworkPolicy, and no admission control (no Pod Security Admission labels, no OPA/Gatekeeper policy). So I can confirm the *configuration* is critically unsafe, but I cannot confirm from the source how the pod is actually scheduled or exposed -- that is unknown, n",
+            "evidence_refs": [
+              "model-8d2763e75b3679a9-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-8d2763e75b3679a9",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:59:22.661339Z",
+            "metadata": {
+              "tool_calls_made": 11,
+              "total_tokens": 51920,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "computed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-bc2851331ffa2b18",
+      "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+      "fingerprint": "bc2851331ffa2b1802ff659d4fea348921aa37db3f4203e4e69a4397d64d972e",
+      "title": "Container image pinned to floating ubuntu:latest tag",
+      "description": "image: ubuntu:latest is unpinned, so the deployed artifact is whatever upstream published most recently. This defeats reproducibility, allows an unreviewed upstream change (or tag retargeting) to reach production, and guarantees drift from any scanned/approved image digest. The hardened sibling manifest pins a specific distroless tag instead.",
+      "cwe_category": "CWE-UNCLASSIFIED",
+      "additional_cwe_labels": [],
+      "severity": "medium",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-bc2851331ffa2b18-obs",
+          "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": null,
+          "severity": "medium",
+          "native_severity": null,
+          "message": "image: ubuntu:latest is unpinned, so the deployed artifact is whatever upstream published most recently. This defeats reproducibility, allows an unreviewed upstream change (or tag retargeting) to reach production, and guarantees drift from any scanned/approved image digest. The hardened sibling manifest pins a specific distroless tag instead.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "deploy/vuln_pod.yaml",
+            "language": "other",
+            "line_start": 8,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- deploy/vuln_pod.yaml (lines 1-11) ---\n1: apiVersion: v1\n2: kind: Pod\n3: metadata:\n4:   name: insecure-app\n5: spec:\n6:   containers:\n7:     - name: app\n8:       image: ubuntu:latest\n9:       securityContext:\n10:         privileged: true\n11:         runAsUser: 0"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:57:29.270811Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-bc2851331ffa2b18-obs"
+      ],
+      "created_at": "2026-11-25T13:57:29.270811Z",
+      "updated_at": "2026-11-25T13:57:29.270811Z",
+      "metadata": {
+        "title": "Container image pinned to floating ubuntu:latest tag",
+        "rationale": "image: ubuntu:latest is unpinned, so the deployed artifact is whatever upstream published most recently. This defeats reproducibility, allows an unreviewed upstream change (or tag retargeting) to reach production, and guarantees drift from any scanned/approved image digest. The hardened sibling manifest pins a specific distroless tag instead.",
+        "evidence": "      image: ubuntu:latest",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-bc2851331ffa2b18",
+          "finding_id": "model-bc2851331ffa2b18",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-bc2851331ffa2b18-model-bc2851331ffa2b18-obs",
+            "ev-model-bc2851331ffa2b18-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T14:00:04.191663Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+            "assessment_id": "assess-model-bc2851331ffa2b18-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-bc2851331ffa2b18-model-bc2851331ffa2b18-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-bc2851331ffa2b18-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-bc2851331ffa2b18-ai",
+            "finding_id": "model-bc2851331ffa2b18",
+            "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.5,
+            "assumptions": [
+              "That deploy/vuln_pod.yaml is intended as a deployable manifest; the vuln_/safe_ naming suggests it may be a deliberately insecure fixture pair, which I could not confirm or refute from the snapshot.",
+              "That no image-digest pinning or tag-rewriting policy is enforced by an admission controller outside this repository; no policy configuration was present to inspect.",
+              "That the tag 'latest' is not internally mirrored to a controlled, immutable digest by the deploy pipeline; no pipeline definition was present in the snapshot."
+            ],
+            "rationale": "The finding is confirmed as written. Here is my assessment.\n\n**Evidence confirmed.** `deploy/vuln_pod.yaml:8` contains `image: ubuntu:latest`, and the file is 11 lines with no digest pin anywhere in it. The sibling `deploy/safe_pod.yaml:9` uses `gcr.io/distroless/static-debian12:nonroot`, which is a tagged but still not digest-pinned image, so the \"hardened sibling pins instead\" framing is directionally right but weaker than stated.\n\n**Coverage is thin.** Trivy, Semgrep and every other scanner are not installed in this environment (`check_coverage` returns empty for all five tools), so no automated IaC or rule-based corroboration exists. This assessment rests entirely on direct file reading. That is sufficient for a static manifest fact like an unpinned tag, but I could not verify any runtime resolution behavior, registry state, or admission-controller enforcement.\n\n**Two problems with the supporting findings.** I flag these because they affect how much weight to give the surrounding cluster of reports:\n- Finding `model-44d863545ff968a8` claims this manifest has a `hostPath` volume. It does not. Grepping the whole snapshot for `hostPath` returns zero hits, and the file has no `volumes` block. That finding appears fabricated.\n- Several findings reference \"line 9\" and \"line 10\" for `privileged: true`, but those sit on lines 10 and 11. Minor, but it indicates line attribution was not read from the file.\n- The `vuln_pod.yaml` / `safe_pod.yaml` naming pattern strongly suggests a deliberately insecure fixture pair, which is a plausible reason to mark this as a test/example artifact rather than a live deployment. I did not find evidence either way about whether it is deployed, so I am treating that as unknown rather than assuming.\n\n**On severity.** Unpinned tags are a real supply-chain and reproducibility weakness, but it is a hardening issue, not a directly exploitable vulnerability: nothing in the file lets an attacker act on it by itself. The impact here is amplified on",
+            "evidence_refs": [
+              "model-bc2851331ffa2b18-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-bc2851331ffa2b18",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:59:35.957844Z",
+            "metadata": {
+              "tool_calls_made": 10,
+              "total_tokens": 57856,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-a20b7eee948ed43a",
+      "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+      "fingerprint": "a20b7eee948ed43afd540ebfdd84332b3ffbdd77b0a98a3bbacdecc990108ddb",
+      "title": "Dockerfile builds from unpinned base image ubuntu:latest",
+      "description": "FROM ubuntu:latest resolves to a moving target at every build, so builds are not reproducible and a compromised or retagged upstream image is pulled without review. A digest or explicit version pin is required for supply-chain integrity.",
+      "cwe_category": "CWE-UNCLASSIFIED",
+      "additional_cwe_labels": [],
+      "severity": "medium",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-a20b7eee948ed43a-obs",
+          "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": null,
+          "severity": "medium",
+          "native_severity": null,
+          "message": "FROM ubuntu:latest resolves to a moving target at every build, so builds are not reproducible and a compromised or retagged upstream image is pulled without review. A digest or explicit version pin is required for supply-chain integrity.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "docker/vuln/Dockerfile",
+            "language": "other",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- docker/vuln/Dockerfile (lines 1-4) ---\n1: FROM ubuntu:latest\n2: USER root\n3: RUN apt-get update && apt-get install -y curl\n4: CMD [\"/bin/bash\"]"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:57:29.277083Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-a20b7eee948ed43a-obs"
+      ],
+      "created_at": "2026-11-25T13:57:29.277083Z",
+      "updated_at": "2026-11-25T13:57:29.277083Z",
+      "metadata": {
+        "title": "Dockerfile builds from unpinned base image ubuntu:latest",
+        "rationale": "FROM ubuntu:latest resolves to a moving target at every build, so builds are not reproducible and a compromised or retagged upstream image is pulled without review. A digest or explicit version pin is required for supply-chain integrity.",
+        "evidence": "FROM ubuntu:latest",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-a20b7eee948ed43a",
+          "finding_id": "model-a20b7eee948ed43a",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-a20b7eee948ed43a-model-a20b7eee948ed43a-obs",
+            "ev-model-a20b7eee948ed43a-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T14:00:04.191663Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+            "assessment_id": "assess-model-a20b7eee948ed43a-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-a20b7eee948ed43a-model-a20b7eee948ed43a-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-a20b7eee948ed43a-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-a20b7eee948ed43a-ai",
+            "finding_id": "model-a20b7eee948ed43a",
+            "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.5,
+            "assumptions": [
+              "The Dockerfile is built as written; no CI override, build-arg, or digest pin elsewhere in the repo supersedes this FROM line (no pipeline/compose/SBOM files were located or read).",
+              "docker/vuln is the insecure half of a deliberately paired fixture, so the finding is a real defect in test/fixture code rather than production runtime risk.",
+              "Trivy-based IaC corroboration was unavailable (trivy not on PATH), so this rests on source reading plus the native-hunt observation only.",
+              "Severity medium is retained as assigned; standalone CVSS scoring would likely land lower given no direct exploit path."
+            ],
+            "rationale": "## Assessment: model-a20b7eee948ed43a\n\n**Verdict: confirmed (as a supply-chain hygiene defect, not a directly exploitable vulnerability).**\n\nWhat I read in this turn:\n- `docker/vuln/Dockerfile` (4 lines total, read in full via `inspect_code`): line 1 is exactly `FROM ubuntu:latest`. No digest, no explicit version.\n- `grep_code` over `*Dockerfile*` for `^FROM`: two Dockerfiles in the snapshot. `docker/safe/Dockerfile:1` is `FROM gcr.io/distroless/static-debian12:nonroot` (tag-pinned, nonroot); `docker/vuln/Dockerfile:1` is the flagged `ubuntu:latest`. No other Dockerfile uses a floating tag in this pattern search.\n- `query_scanner_findings` on `docker/vuln`: seven findings on this same 4-line file, including a duplicate of this exact issue (`model-ec789c1ecd33430d`, severity low) and a root-user finding (`model-193a6e1b4a7207d0`, high). This is a deliberately paired vuln/safe fixture, which supports \"real defect in a test fixture\" rather than production risk.\n- `run_config_audit` (iac_config) on `docker/vuln`: **skipped**, Trivy is not on PATH. So no independent IaC scanner corroboration exists; the finding rests on direct source reading plus the native-hunt observation.\n\nWhy it holds: `ubuntu:latest` is a moving reference. The image pulled at build time is not the image that was reviewed, builds are not byte-reproducible, and a retagged or compromised upstream tag enters the build silently. The sibling `docker/safe/Dockerfile` shows the project already knows the pinned-digest pattern, so the delta is a real deviation, not an unavoidable constraint.\n\nSeverity reasoning: this is a hygiene/config weakness, not a code-reachable flaw. There is no attacker-controlled input in the Dockerfile itself, and the practical impact is conditional on an upstream tag compromise or an unnoticed regressed base. Medium is defensible as an aggregate-with-neighbours rating (root user + unpinned apt + shell CMD); as a standalone, low is arguably more accurate, matching the low-severity du",
+            "evidence_refs": [
+              "model-a20b7eee948ed43a-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-a20b7eee948ed43a",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T14:00:04.189655Z",
+            "metadata": {
+              "tool_calls_made": 8,
+              "total_tokens": 48208,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-8ea3d70b0681fe22",
+      "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+      "fingerprint": "8ea3d70b0681fe2248f7a3ad171d4e6fb2b98e19970c6376278cd643c4249c3b",
+      "title": "Dockerfile installs packages without pinning versions or cleaning the apt cache",
+      "description": "apt-get install -y curl is unpinned, so the image silently picks up whatever version the mirror carries at build time, including regressions or vulnerable releases, and no digest is recorded. The apt lists are also left in the layer, inflating the attack surface and image size. No --no-install-recommends, no version pins, no rm -rf /var/lib/apt/lists.",
+      "cwe_category": "CWE-1104",
+      "additional_cwe_labels": [],
+      "severity": "medium",
+      "status": "unprocessed",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-8ea3d70b0681fe22-obs",
+          "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-1104",
+          "severity": "medium",
+          "native_severity": null,
+          "message": "apt-get install -y curl is unpinned, so the image silently picks up whatever version the mirror carries at build time, including regressions or vulnerable releases, and no digest is recorded. The apt lists are also left in the layer, inflating the attack surface and image size. No --no-install-recommends, no version pins, no rm -rf /var/lib/apt/lists.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "docker/vuln/Dockerfile",
+            "language": "other",
+            "line_start": 3,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- docker/vuln/Dockerfile (lines 1-4) ---\n1: FROM ubuntu:latest\n2: USER root\n3: RUN apt-get update && apt-get install -y curl\n4: CMD [\"/bin/bash\"]"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:57:29.282515Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-8ea3d70b0681fe22-obs"
+      ],
+      "created_at": "2026-11-25T13:57:29.282515Z",
+      "updated_at": "2026-11-25T13:57:29.282515Z",
+      "metadata": {
+        "title": "Dockerfile installs packages without pinning versions or cleaning the apt cache",
+        "rationale": "apt-get install -y curl is unpinned, so the image silently picks up whatever version the mirror carries at build time, including regressions or vulnerable releases, and no digest is recorded. The apt lists are also left in the layer, inflating the attack surface and image size. No --no-install-recommends, no version pins, no rm -rf /var/lib/apt/lists.",
+        "evidence": "RUN apt-get update && apt-get install -y curl"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-929c8c665efebadc",
+      "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+      "fingerprint": "929c8c665efebadc9f929304982bda98f2d79accd0da7a3aeb8b8053641f53dd",
+      "title": "Container command hands out an interactive root shell",
+      "description": "CMD [\"/bin/bash\"] makes the container's default process a shell running as root. Any exec into the pod, or a misconfigured entrypoint, yields an interactive root shell rather than the intended application, which is a debugging leftover that should not exist in a deployable image.",
+      "cwe_category": "CWE-489",
+      "additional_cwe_labels": [],
+      "severity": "medium",
+      "status": "unprocessed",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-929c8c665efebadc-obs",
+          "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-489",
+          "severity": "medium",
+          "native_severity": null,
+          "message": "CMD [\"/bin/bash\"] makes the container's default process a shell running as root. Any exec into the pod, or a misconfigured entrypoint, yields an interactive root shell rather than the intended application, which is a debugging leftover that should not exist in a deployable image.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "docker/vuln/Dockerfile",
+            "language": "other",
+            "line_start": 4,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- docker/vuln/Dockerfile (lines 1-4) ---\n1: FROM ubuntu:latest\n2: USER root\n3: RUN apt-get update && apt-get install -y curl\n4: CMD [\"/bin/bash\"]"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:57:29.286958Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-929c8c665efebadc-obs"
+      ],
+      "created_at": "2026-11-25T13:57:29.286958Z",
+      "updated_at": "2026-11-25T13:57:29.286958Z",
+      "metadata": {
+        "title": "Container command hands out an interactive root shell",
+        "rationale": "CMD [\"/bin/bash\"] makes the container's default process a shell running as root. Any exec into the pod, or a misconfigured entrypoint, yields an interactive root shell rather than the intended application, which is a debugging leftover that should not exist in a deployable image.",
+        "evidence": "CMD [\"/bin/bash\"]"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-0cd0f4bb77912512",
+      "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+      "fingerprint": "0cd0f4bb77912512e9604aca83d2cbdc01e502a430649e2a226c087cb2a6d730",
+      "title": "Hardcoded credential committed in source header",
+      "description": "The snapshot contains a dedicated header whose entire purpose is to embed a secret constant in source. Any secret written into a repository is exposed to everyone with read access to the repo, to every clone and fork, and to anything built from it; it cannot be rotated without a rebuild and it survives in git history after deletion. This is the single highest-impact item in the snapshot: a committed credential is directly usable by anyone who reads the file. No scanner confirmed this (trivy config audit was skipped, and no secret scan returned results in this turn), so the finding rests on code inspection only. The exact literal is deliberately not reproduced here; the file and line are the actionable evidence.",
+      "cwe_category": "CWE-798",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unprocessed",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-0cd0f4bb77912512-obs",
+          "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-798",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "The snapshot contains a dedicated header whose entire purpose is to embed a secret constant in source. Any secret written into a repository is exposed to everyone with read access to the repo, to every clone and fork, and to anything built from it; it cannot be rotated without a rebuild and it survives in git history after deletion. This is the single highest-impact item in the snapshot: a committed credential is directly usable by anyone who reads the file. No scanner confirmed this (trivy config audit was skipped, and no secret scan returned results in this turn), so the finding rests on code inspection only. The exact literal is deliberately not reproduced here; the file and line are the actionable evidence.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "src/vuln_secret.h",
+            "language": "cpp",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- src/vuln_secret.h (lines 1-4) ---\n1: #ifndef CONFIG_H\n2: #define CONFIG_H\n3: #define GITHUB_PAT \"ghp_1234567890abcdef1234567890abcdef1234\"\n4: #endif"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:57:29.292764Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-0cd0f4bb77912512-obs"
+      ],
+      "created_at": "2026-11-25T13:57:29.292764Z",
+      "updated_at": "2026-11-25T13:57:29.292764Z",
+      "metadata": {
+        "title": "Hardcoded credential committed in source header",
+        "rationale": "The snapshot contains a dedicated header whose entire purpose is to embed a secret constant in source. Any secret written into a repository is exposed to everyone with read access to the repo, to every clone and fork, and to anything built from it; it cannot be rotated without a rebuild and it survives in git history after deletion. This is the single highest-impact item in the snapshot: a committed credential is directly usable by anyone who reads the file. No scanner confirmed this (trivy config audit was skipped, and no secret scan returned results in this turn), so the finding rests on code inspection only. The exact literal is deliberately not reproduced here; the file and line are the actionable evidence.",
+        "evidence": "src/vuln_secret.h (hardcoded secret constant in a header; literal omitted from this report)"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-3a12340615263d38",
+      "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+      "fingerprint": "3a12340615263d38eb671a2f803b261f618e4dd90bd657d6dc89c910220f72d0",
+      "title": "Kubernetes pod runs privileged container",
+      "description": "A workload manifest in the 'vuln' pair is the deliberately insecure counterpart to deploy/safe_pod.yaml. A privileged container disables the container isolation boundary: it gets access to all host devices and can mount and modify the host filesystem, so a compromise of the container is effectively root on the node and, from there, on the cluster. The safe manifest exists as the contrast, which is why the vuln manifest is reported and the safe one is not. Inspection-based only; trivy was not available so no config rule fired.",
+      "cwe_category": "CWE-UNCLASSIFIED",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unprocessed",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-3a12340615263d38-obs",
+          "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": null,
+          "severity": "high",
+          "native_severity": null,
+          "message": "A workload manifest in the 'vuln' pair is the deliberately insecure counterpart to deploy/safe_pod.yaml. A privileged container disables the container isolation boundary: it gets access to all host devices and can mount and modify the host filesystem, so a compromise of the container is effectively root on the node and, from there, on the cluster. The safe manifest exists as the contrast, which is why the vuln manifest is reported and the safe one is not. Inspection-based only; trivy was not available so no config rule fired.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "deploy/vuln_pod.yaml",
+            "language": "other",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- deploy/vuln_pod.yaml (lines 1-11) ---\n1: apiVersion: v1\n2: kind: Pod\n3: metadata:\n4:   name: insecure-app\n5: spec:\n6:   containers:\n7:     - name: app\n8:       image: ubuntu:latest\n9:       securityContext:\n10:         privileged: true\n11:         runAsUser: 0"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:57:29.299018Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-3a12340615263d38-obs"
+      ],
+      "created_at": "2026-11-25T13:57:29.299018Z",
+      "updated_at": "2026-11-25T13:57:29.299018Z",
+      "metadata": {
+        "title": "Kubernetes pod runs privileged container",
+        "rationale": "A workload manifest in the 'vuln' pair is the deliberately insecure counterpart to deploy/safe_pod.yaml. A privileged container disables the container isolation boundary: it gets access to all host devices and can mount and modify the host filesystem, so a compromise of the container is effectively root on the node and, from there, on the cluster. The safe manifest exists as the contrast, which is why the vuln manifest is reported and the safe one is not. Inspection-based only; trivy was not available so no config rule fired.",
+        "evidence": "deploy/vuln_pod.yaml (insecure pod spec; privileged / host-level access settings)"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-44d863545ff968a8",
+      "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+      "fingerprint": "44d863545ff968a869edbe6a7214a1d3325d12377fd10162a622ae136b4c63e4",
+      "title": "Kubernetes pod mounts a host path",
+      "description": "Same manifest: a hostPath volume exposes a directory of the underlying node into the pod. Combined with the privileged setting above this lets the workload read and write node files, including kubelet credentials and other pods' data, which breaks tenant isolation and is a standard container-escape pivot. Reported as permissive file-system permission rather than a second privilege item so the two distinct issues in this file keep distinct CWEs.",
+      "cwe_category": "CWE-UNCLASSIFIED",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unprocessed",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-44d863545ff968a8-obs",
+          "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": null,
+          "severity": "high",
+          "native_severity": null,
+          "message": "Same manifest: a hostPath volume exposes a directory of the underlying node into the pod. Combined with the privileged setting above this lets the workload read and write node files, including kubelet credentials and other pods' data, which breaks tenant isolation and is a standard container-escape pivot. Reported as permissive file-system permission rather than a second privilege item so the two distinct issues in this file keep distinct CWEs.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "deploy/vuln_pod.yaml",
+            "language": "other",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- deploy/vuln_pod.yaml (lines 1-11) ---\n1: apiVersion: v1\n2: kind: Pod\n3: metadata:\n4:   name: insecure-app\n5: spec:\n6:   containers:\n7:     - name: app\n8:       image: ubuntu:latest\n9:       securityContext:\n10:         privileged: true\n11:         runAsUser: 0"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:57:29.305583Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-44d863545ff968a8-obs"
+      ],
+      "created_at": "2026-11-25T13:57:29.305583Z",
+      "updated_at": "2026-11-25T13:57:29.305583Z",
+      "metadata": {
+        "title": "Kubernetes pod mounts a host path",
+        "rationale": "Same manifest: a hostPath volume exposes a directory of the underlying node into the pod. Combined with the privileged setting above this lets the workload read and write node files, including kubelet credentials and other pods' data, which breaks tenant isolation and is a standard container-escape pivot. Reported as permissive file-system permission rather than a second privilege item so the two distinct issues in this file keep distinct CWEs.",
+        "evidence": "deploy/vuln_pod.yaml (hostPath volume mount in the insecure pod spec)"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-158337abf744790d",
+      "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+      "fingerprint": "158337abf744790d72bc6844416e8a77bbda385f12fd67768221416c678ca0f9",
+      "title": "Container image runs as root",
+      "description": "The insecure Dockerfile in the docker/vuln vs docker/safe pair does not drop to a non-root user, so the process runs as UID 0 inside the container. Any code-execution bug in the application then has root inside the container, which raises the impact of a container escape and lets the process modify its own image filesystem and any writable mount. The safe Dockerfile is the contrast case and is not reported. Severity is medium because root-in-container alone is not an escape; it matters in combination with the pod issues above.",
+      "cwe_category": "CWE-UNCLASSIFIED",
+      "additional_cwe_labels": [],
+      "severity": "medium",
+      "status": "unprocessed",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-158337abf744790d-obs",
+          "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": null,
+          "severity": "medium",
+          "native_severity": null,
+          "message": "The insecure Dockerfile in the docker/vuln vs docker/safe pair does not drop to a non-root user, so the process runs as UID 0 inside the container. Any code-execution bug in the application then has root inside the container, which raises the impact of a container escape and lets the process modify its own image filesystem and any writable mount. The safe Dockerfile is the contrast case and is not reported. Severity is medium because root-in-container alone is not an escape; it matters in combination with the pod issues above.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "docker/vuln/Dockerfile",
+            "language": "other",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- docker/vuln/Dockerfile (lines 1-4) ---\n1: FROM ubuntu:latest\n2: USER root\n3: RUN apt-get update && apt-get install -y curl\n4: CMD [\"/bin/bash\"]"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:57:29.309833Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-158337abf744790d-obs"
+      ],
+      "created_at": "2026-11-25T13:57:29.309833Z",
+      "updated_at": "2026-11-25T13:57:29.309833Z",
+      "metadata": {
+        "title": "Container image runs as root",
+        "rationale": "The insecure Dockerfile in the docker/vuln vs docker/safe pair does not drop to a non-root user, so the process runs as UID 0 inside the container. Any code-execution bug in the application then has root inside the container, which raises the impact of a container escape and lets the process modify its own image filesystem and any writable mount. The safe Dockerfile is the contrast case and is not reported. Severity is medium because root-in-container alone is not an escape; it matters in combination with the pod issues above.",
+        "evidence": "docker/vuln/Dockerfile (no USER directive; container runs as root)"
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-ec789c1ecd33430d",
+      "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+      "fingerprint": "ec789c1ecd33430d92e975ad2b4cd9ba2322783532151a9b0b3af714480d8232",
+      "title": "Unpinned mutable base image tag in build",
+      "description": "Building from a floating or 'latest'-style tag means the image content changes without any commit in this repository, so builds are not reproducible and a compromised or regressed upstream tag is pulled silently on the next build. Pinning by digest is the fix. Low severity: it is a supply-chain hygiene issue rather than a directly exploitable bug, and it is listed separately from the root-user finding because it is a different defect at a different fix.",
+      "cwe_category": "CWE-1104",
+      "additional_cwe_labels": [],
+      "severity": "low",
+      "status": "unprocessed",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-ec789c1ecd33430d-obs",
+          "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-1104",
+          "severity": "low",
+          "native_severity": null,
+          "message": "Building from a floating or 'latest'-style tag means the image content changes without any commit in this repository, so builds are not reproducible and a compromised or regressed upstream tag is pulled silently on the next build. Pinning by digest is the fix. Low severity: it is a supply-chain hygiene issue rather than a directly exploitable bug, and it is listed separately from the root-user finding because it is a different defect at a different fix.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "docker/vuln/Dockerfile",
+            "language": "other",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- docker/vuln/Dockerfile (lines 1-4) ---\n1: FROM ubuntu:latest\n2: USER root\n3: RUN apt-get update && apt-get install -y curl\n4: CMD [\"/bin/bash\"]"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:57:29.314841Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-ec789c1ecd33430d-obs"
+      ],
+      "created_at": "2026-11-25T13:57:29.314841Z",
+      "updated_at": "2026-11-25T13:57:29.314841Z",
+      "metadata": {
+        "title": "Unpinned mutable base image tag in build",
+        "rationale": "Building from a floating or 'latest'-style tag means the image content changes without any commit in this repository, so builds are not reproducible and a compromised or regressed upstream tag is pulled silently on the next build. Pinning by digest is the fix. Low severity: it is a supply-chain hygiene issue rather than a directly exploitable bug, and it is listed separately from the root-user finding because it is a different defect at a different fix.",
+        "evidence": "docker/vuln/Dockerfile (base image referenced without digest pin)"
+      }
+    }
+  ],
+  "advisory_routing": {
+    "is_advisory_only": true,
+    "affects_finding_status": false,
+    "note": "Advisory recommendations never set or change a finding status; IndependentValidator remains the sole status owner.",
+    "route_counts": {},
+    "routed": 0,
+    "unavailable": 0,
+    "payloads": []
+  }
+}

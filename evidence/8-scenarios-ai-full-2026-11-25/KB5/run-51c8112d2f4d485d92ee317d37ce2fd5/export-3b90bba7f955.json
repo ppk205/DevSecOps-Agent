@@ -1,0 +1,1436 @@
+{
+  "application_version": "0.2.0",
+  "scan_metadata": {
+    "commit": "0ca3b9611524e2c3af39267a42a60944b9be2329",
+    "target": "local",
+    "status": "completed",
+    "gate": "failed",
+    "errors": [],
+    "configuration": {
+      "schema_version": 1,
+      "profile": "fast",
+      "fail_on": "high",
+      "output_dir": "d:\\New folder\\DevSecOps-Agent\\evidence\\8-scenarios-ai-full-2026-11-25\\KB5",
+      "timezone": "Asia/Saigon",
+      "timeout": 600,
+      "max_files": 100000,
+      "allow_dirty": true,
+      "ci": false,
+      "laya": false,
+      "laya_config_path": null,
+      "ai_review": true,
+      "provider_profile": "kojo-bench-tmp",
+      "provider_model": "empero/kojo",
+      "ai_report": true,
+      "max_ai_findings": 10,
+      "max_model_requests": null,
+      "mode": "hunt",
+      "tools": [
+        "native-hunt"
+      ]
+    }
+  },
+  "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+  "generated_at": "2026-11-25T13:46:52.063365+00:00",
+  "counts": {
+    "version": "0.1.0",
+    "total": 8,
+    "confirmed": 0,
+    "rejected": 0,
+    "unresolved": 8,
+    "unprocessed": 0
+  },
+  "coverage_summary": {
+    "owasp-dependency-check": [],
+    "semgrep": [],
+    "codeql": [],
+    "gitleaks": [],
+    "trivy": []
+  },
+  "owasp_top10": {
+    "edition": "2025",
+    "source_url": "https://top10.owasp.org/2025/",
+    "snapshot_date": "2026-11-04",
+    "classification_only": true,
+    "mapping_basis": "Exact normalized primary/secondary CWEs in OWASP category-specific mapped-CWE lists",
+    "note": "This is a CWE classification of reported findings, not a coverage or compliance assessment. An empty category means No mapped findings reported; it does not mean tested, safe or passed. Counts retain finding status; pending includes unprocessed, triaged, assessed and pending validation. A finding with multiple labels may appear in several rows/categories; do not add those row counts.",
+    "total_findings": 8,
+    "categories": [
+      {
+        "id": "A01:2025",
+        "name": "Broken Access Control",
+        "source_url": "https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/",
+        "source_sha256": "e51ca05866f4213489e82484f1f48ed4d779e1809e87f70449806b496a0320cd",
+        "total": 4,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 4
+        },
+        "finding_ids": [
+          "model-6c2842ca30463621",
+          "model-7ed6498e602fa2bd",
+          "model-bcb606f907353c3b",
+          "model-fdfb6598df3e153e"
+        ],
+        "cwes": [
+          {
+            "cwe": "CWE-22",
+            "total": 2,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 2
+            },
+            "finding_ids": [
+              "model-7ed6498e602fa2bd",
+              "model-bcb606f907353c3b"
+            ]
+          },
+          {
+            "cwe": "CWE-918",
+            "total": 2,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 2
+            },
+            "finding_ids": [
+              "model-6c2842ca30463621",
+              "model-fdfb6598df3e153e"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "A02:2025",
+        "name": "Security Misconfiguration",
+        "source_url": "https://top10.owasp.org/2025/A02_2025-Security_Misconfiguration/",
+        "source_sha256": "532fbbd67f3db734b7ed5d47e0263dd3800fce80e22da327123a88f2947017c9",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A03:2025",
+        "name": "Software Supply Chain Failures",
+        "source_url": "https://top10.owasp.org/2025/A03_2025-Software_Supply_Chain_Failures/",
+        "source_sha256": "66090225ad8f54a836e5b9e94456243baa7d38b70176f4d720668ef36f3a793d",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A04:2025",
+        "name": "Cryptographic Failures",
+        "source_url": "https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures/",
+        "source_sha256": "5b140b4cadf334becc35334278494f98396dc9b5720df6c904688352b51dc834",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A05:2025",
+        "name": "Injection",
+        "source_url": "https://top10.owasp.org/2025/A05_2025-Injection/",
+        "source_sha256": "69d7ec591944699c49b89c544a52cb32adccbfad56c41784ca34fde837822de6",
+        "total": 4,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 4
+        },
+        "finding_ids": [
+          "model-0d4a9028a16f4875",
+          "model-3f9eee46eb25ec41",
+          "model-8c671a93f622fe0b",
+          "model-fbf3e4d0e1409477"
+        ],
+        "cwes": [
+          {
+            "cwe": "CWE-78",
+            "total": 2,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 2
+            },
+            "finding_ids": [
+              "model-3f9eee46eb25ec41",
+              "model-fbf3e4d0e1409477"
+            ]
+          },
+          {
+            "cwe": "CWE-89",
+            "total": 2,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 2
+            },
+            "finding_ids": [
+              "model-0d4a9028a16f4875",
+              "model-8c671a93f622fe0b"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "A06:2025",
+        "name": "Insecure Design",
+        "source_url": "https://top10.owasp.org/2025/A06_2025-Insecure_Design/",
+        "source_sha256": "cf67ac90b3c088ca4566807fbc4bbd2090bccc81d61f15c0e25190032618195f",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A07:2025",
+        "name": "Authentication Failures",
+        "source_url": "https://top10.owasp.org/2025/A07_2025-Authentication_Failures/",
+        "source_sha256": "9decccf146242740ba34b1c14df7b729ef159274a3533182c6bcefc9f52c8816",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A08:2025",
+        "name": "Software or Data Integrity Failures",
+        "source_url": "https://top10.owasp.org/2025/A08_2025-Software_or_Data_Integrity_Failures/",
+        "source_sha256": "03082e5a3ce031d6d2425927653aca0ad47d474dafb4208862e86b4363d66d85",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A09:2025",
+        "name": "Security Logging & Alerting Failures",
+        "source_url": "https://top10.owasp.org/2025/A09_2025-Security_Logging_and_Alerting_Failures/",
+        "source_sha256": "e8f875d2db062bfd3eb00db65486b30dd64c417357f9346a395cf434b5055f31",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A10:2025",
+        "name": "Mishandling of Exceptional Conditions",
+        "source_url": "https://top10.owasp.org/2025/A10_2025-Mishandling_of_Exceptional_Conditions/",
+        "source_sha256": "492a7444a58c06ec76af06ed4f89e656804cde6b71f61ba2ed5703a9aa343864",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      }
+    ],
+    "unmapped": []
+  },
+  "findings": [
+    {
+      "version": "0.1.0",
+      "finding_id": "model-fbf3e4d0e1409477",
+      "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+      "fingerprint": "fbf3e4d0e1409477a5e96b74d61b7d595322d451aed2f8f2888e9a5b581ff964",
+      "title": "OS command injection in Ping via unsanitized 'host' query parameter",
+      "description": "The 'host' query parameter is read straight from the request and concatenated into a string passed to `sh -c`. Shell metacharacters (;, |, $(), backticks) in the value let an unauthenticated attacker run arbitrary commands as the server process.",
+      "cwe_category": "CWE-78",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-fbf3e4d0e1409477-obs",
+          "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-78",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "The 'host' query parameter is read straight from the request and concatenated into a string passed to `sh -c`. Shell metacharacters (;, |, $(), backticks) in the value let an unauthenticated attacker run arbitrary commands as the server process.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "pkg/vuln_cmd.go",
+            "language": "go",
+            "line_start": 8,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- pkg/vuln_cmd.go (lines 1-9) ---\n1: package pkg\n2: import (\n3:     \"net/http\"\n4:     \"os/exec\"\n5: )\n6: func Ping(r *http.Request) ([]byte, error) {\n7:     host := r.URL.Query().Get(\"host\")\n8:     return exec.Command(\"sh\", \"-c\", \"ping -c 1 \"+host).CombinedOutput()\n9: }"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:44:13.673619Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-fbf3e4d0e1409477-obs"
+      ],
+      "created_at": "2026-11-25T13:44:13.673619Z",
+      "updated_at": "2026-11-25T13:44:13.673619Z",
+      "metadata": {
+        "title": "OS command injection in Ping via unsanitized 'host' query parameter",
+        "rationale": "The 'host' query parameter is read straight from the request and concatenated into a string passed to `sh -c`. Shell metacharacters (;, |, $(), backticks) in the value let an unauthenticated attacker run arbitrary commands as the server process.",
+        "evidence": "host := r.URL.Query().Get(\"host\")\nreturn exec.Command(\"sh\", \"-c\", \"ping -c 1 \"+host).CombinedOutput()",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-fbf3e4d0e1409477",
+          "finding_id": "model-fbf3e4d0e1409477",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-fbf3e4d0e1409477-model-fbf3e4d0e1409477-obs",
+            "ev-model-fbf3e4d0e1409477-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:46:39.743860Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+            "assessment_id": "assess-model-fbf3e4d0e1409477-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-fbf3e4d0e1409477-model-fbf3e4d0e1409477-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-fbf3e4d0e1409477-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-fbf3e4d0e1409477-ai",
+            "finding_id": "model-fbf3e4d0e1409477",
+            "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.85,
+            "assumptions": [
+              "Ping is registered on an HTTP route reachable by untrusted clients; the scanner asserts unauthenticated access but no route or middleware code exists in the snapshot to verify this.",
+              "The server process runs with privileges that make command execution meaningful; its privilege level and sandboxing are not observable in the snapshot.",
+              "No input validation, allow-list, or shell-escaping wrapper exists upstream of Ping; none is present in the snapshot.",
+              "check_coverage returned an empty result, so CWE-78 coverage is unknown rather than confirmed clean; absence of Semgrep/CodeQL findings here reflects tool unavailability, not evidence of safety.",
+              "This finding duplicates model-3f9eee46eb25ec41 (same file, same sink) and the two should be consolidated."
+            ],
+            "rationale": "Direct source reading of pkg/vuln_cmd.go confirms CWE-78: r.URL.Query().Get(\"host\") on line 7 flows unsanitized into the shell string \"ping -c 1 \"+host passed to exec.Command(\"sh\", \"-c\", ...) on line 8, so shell metacharacters yield arbitrary command execution as the server process, with output returned to the caller via CombinedOutput(). The sibling pkg/safe_cmd.go uses a fixed argv with no shell, confirming vuln_cmd.go is the deliberately insecure variant. The exported signature Ping(r *http.Request) indicates an intended HTTP entry point. Confidence is reduced because the snapshot contains no router or main package, so the route path and any auth middleware could not be verified, and both Semgrep and CodeQL were unavailable for independent confirmation.",
+            "evidence_refs": [
+              "model-fbf3e4d0e1409477-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-fbf3e4d0e1409477",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:45:07.557209Z",
+            "metadata": {
+              "tool_calls_made": 11,
+              "total_tokens": 49888,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-7ed6498e602fa2bd",
+      "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+      "fingerprint": "7ed6498e602fa2bdcb643e1dc8e7d0fa9c8164db638b36f7fd86339f10289de6",
+      "title": "Path traversal in ReadDoc via 'file' query parameter",
+      "description": "The 'file' query parameter is appended to the '/data/' prefix with no cleaning or containment check, so values such as '../../etc/passwd' escape the intended directory and read arbitrary files readable by the process.",
+      "cwe_category": "CWE-22",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-7ed6498e602fa2bd-obs",
+          "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-22",
+          "severity": "high",
+          "native_severity": null,
+          "message": "The 'file' query parameter is appended to the '/data/' prefix with no cleaning or containment check, so values such as '../../etc/passwd' escape the intended directory and read arbitrary files readable by the process.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "pkg/vuln_path.go",
+            "language": "go",
+            "line_start": 8,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- pkg/vuln_path.go (lines 1-9) ---\n1: package pkg\n2: import (\n3:     \"net/http\"\n4:     \"os\"\n5: )\n6: func ReadDoc(r *http.Request) ([]byte, error) {\n7:     name := r.URL.Query().Get(\"file\")\n8:     return os.ReadFile(\"/data/\" + name)\n9: }"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:44:13.676616Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-7ed6498e602fa2bd-obs"
+      ],
+      "created_at": "2026-11-25T13:44:13.676616Z",
+      "updated_at": "2026-11-25T13:44:13.676616Z",
+      "metadata": {
+        "title": "Path traversal in ReadDoc via 'file' query parameter",
+        "rationale": "The 'file' query parameter is appended to the '/data/' prefix with no cleaning or containment check, so values such as '../../etc/passwd' escape the intended directory and read arbitrary files readable by the process.",
+        "evidence": "name := r.URL.Query().Get(\"file\")\nreturn os.ReadFile(\"/data/\" + name)",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-7ed6498e602fa2bd",
+          "finding_id": "model-7ed6498e602fa2bd",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-7ed6498e602fa2bd-model-7ed6498e602fa2bd-obs",
+            "ev-model-7ed6498e602fa2bd-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:46:39.743860Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+            "assessment_id": "assess-model-7ed6498e602fa2bd-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-7ed6498e602fa2bd-model-7ed6498e602fa2bd-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-7ed6498e602fa2bd-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-7ed6498e602fa2bd-ai",
+            "finding_id": "model-7ed6498e602fa2bd",
+            "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": {
+              "version": "4.0",
+              "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:N/VA:N/SC:N/SI:N/SA:N",
+              "base_score": 8.7,
+              "qualitative": "high",
+              "source": "ai-proposal",
+              "notes": "",
+              "overall_score": 8.7,
+              "base_rating": "High",
+              "overall_rating": "High",
+              "nomenclature": "CVSS-B",
+              "calculation_source": "FIRST CVSS v4.0",
+              "metric_assumptions_verified": false
+            },
+            "confidence": 0.5,
+            "assumptions": [
+              "ReadDoc is reachable from an HTTP handler; the *http.Request parameter and exported name strongly imply this, but no main() or HandleFunc registration exists in the indexed files.",
+              "The process has read permission on files outside /data, which is typical for a server reading its own config and secrets.",
+              "The /data directory exists as a normal directory so that '..' traversal resolves as expected.",
+              "No upstream middleware or reverse proxy normalizes the 'file' parameter before it reaches ReadDoc; none was found in the snapshot.",
+              "No authentication gate was observed in the available source, so the vector assumes PR:N."
+            ],
+            "rationale": "No sanitization exists anywhere in the codebase. Let me confirm the full file inventory to rule out a wrapper or middleware that cleans input before `ReadDoc`.\n\nThe web search returned nothing useful; I'll rely on the code evidence and Go semantics. Here's my assessment.\n\n## Finding: Path traversal in ReadDoc via `file` query parameter\n\n**Confirmed vulnerable.** `pkg/vuln_path.go:8` concatenates an unsanitized query value onto a fixed prefix and reads the result:\n\n```go\nname := r.URL.Query().Get(\"file\")\nreturn os.ReadFile(\"/data/\" + name)\n```\n\n**Evidence supporting the finding:**\n\n- **Source is attacker-controlled.** `r.URL.Query().Get(\"file\")` is directly populated from the request URL. Go's `net/url` decodes percent-encoding, so both `../../etc/passwd` and the encoded form `%2e%2e%2f%2e%2e%2fetc%2fpasswd` arrive intact as traversal segments. It does not clean or normalize paths.\n- **No sanitization anywhere in the codebase.** A repo-wide grep for `filepath`, `Clean`, `EvalSymlinks`, `Abs`, `HasPrefix`, and `filepath.Base` returned zero hits across all eight `.go` files.\n- **No containment check.** Even the weaker mitigations are absent: there is no `filepath.Clean` + prefix comparison, no `filepath.Base` reduction to a bare filename, and no allowlist. String concatenation also means an absolute value like `//etc/passwd` would survive into the path, though traversal alone is sufficient.\n- **The OS resolves `..`.** `os.ReadFile` performs no confinement; the kernel resolves `/data/../../etc/passwd` to `/etc/passwd`, bounded only by the process's filesystem permissions.\n\n**Contrast with `pkg/safe_path.go`:** that file hardcodes a literal filename (`/data/static-config.json`) and takes no input, confirming the codebase intends `/data` to be a confined directory and that the unsafe version departs from the safe pattern.\n\n**What I could not verify:** Semgrep, CodeQL, and coverage tooling were all unavailable in this environment (Semgrep not on PATH, CodeQL not installed,",
+            "evidence_refs": [
+              "model-7ed6498e602fa2bd-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-7ed6498e602fa2bd",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:45:15.151285Z",
+            "metadata": {
+              "tool_calls_made": 10,
+              "total_tokens": 48208,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "computed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-0d4a9028a16f4875",
+      "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+      "fingerprint": "0d4a9028a16f4875ebbebfb6f062a7ce2c8f4a8b2c496d2f615984aad3edad4c",
+      "title": "SQL injection in FindUser via string-concatenated 'id' parameter",
+      "description": "The 'id' query parameter is concatenated into the SQL text inside single quotes and passed to db.Query, allowing classic injection such as `' OR '1'='1` to alter the query, bypass filtering, and exfiltrate rows from the users table.",
+      "cwe_category": "CWE-89",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-0d4a9028a16f4875-obs",
+          "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-89",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "The 'id' query parameter is concatenated into the SQL text inside single quotes and passed to db.Query, allowing classic injection such as `' OR '1'='1` to alter the query, bypass filtering, and exfiltrate rows from the users table.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "pkg/vuln_sql.go",
+            "language": "go",
+            "line_start": 8,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- pkg/vuln_sql.go (lines 1-9) ---\n1: package pkg\n2: import (\n3:     \"database/sql\"\n4:     \"net/http\"\n5: )\n6: func FindUser(db *sql.DB, r *http.Request) (*sql.Rows, error) {\n7:     id := r.URL.Query().Get(\"id\")\n8:     return db.Query(\"SELECT * FROM users WHERE id = '\" + id + \"'\")\n9: }"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:44:13.678614Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-0d4a9028a16f4875-obs"
+      ],
+      "created_at": "2026-11-25T13:44:13.678614Z",
+      "updated_at": "2026-11-25T13:44:13.678614Z",
+      "metadata": {
+        "title": "SQL injection in FindUser via string-concatenated 'id' parameter",
+        "rationale": "The 'id' query parameter is concatenated into the SQL text inside single quotes and passed to db.Query, allowing classic injection such as `' OR '1'='1` to alter the query, bypass filtering, and exfiltrate rows from the users table.",
+        "evidence": "id := r.URL.Query().Get(\"id\")\nreturn db.Query(\"SELECT * FROM users WHERE id = '\" + id + \"'\")",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-0d4a9028a16f4875",
+          "finding_id": "model-0d4a9028a16f4875",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-0d4a9028a16f4875-model-0d4a9028a16f4875-obs",
+            "ev-model-0d4a9028a16f4875-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:46:39.743860Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+            "assessment_id": "assess-model-0d4a9028a16f4875-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-0d4a9028a16f4875-model-0d4a9028a16f4875-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-0d4a9028a16f4875-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-0d4a9028a16f4875-ai",
+            "finding_id": "model-0d4a9028a16f4875",
+            "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": {
+              "version": "4.0",
+              "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:N/VA:N/SC:N/SI:N/SA:N",
+              "base_score": 8.7,
+              "qualitative": "high",
+              "source": "ai-proposal",
+              "notes": "",
+              "overall_score": 8.7,
+              "base_rating": "High",
+              "overall_rating": "High",
+              "nomenclature": "CVSS-B",
+              "calculation_source": "FIRST CVSS v4.0",
+              "metric_assumptions_verified": false
+            },
+            "confidence": 0.9,
+            "assumptions": [
+              "FindUser is intended to be exposed as an HTTP handler (it takes *http.Request and returns *sql.Rows); no router or caller exists in the snapshot to prove current reachability.",
+              "The database user backing the connection has read access to the users table, as the query requires.",
+              "DB engine is likely Postgres given the sibling safe_sql.go uses $1 placeholders; if MySQL, stacked-query write impact may also apply.",
+              "Severity follows CWE-89 convention for unauthenticated, fully controllable query text; no exploit was executed."
+            ],
+            "rationale": "pkg/vuln_sql.go:6-9 reads r.URL.Query().Get(\"id\") and concatenates it into the SQL string inside single quotes, then passes it to db.Query with no parameterization or validation. The sink is an unauthenticated request parameter and the query targets the users table, so classic quote-breaking payloads (' OR '1'='1) and UNION-based extraction both apply. Read in full; CodeQL and Semgrep were unavailable on PATH, so corroboration is source reading plus the native-hunt observation rather than a second tool run.",
+            "evidence_refs": [
+              "model-0d4a9028a16f4875-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-0d4a9028a16f4875",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:45:00.454074Z",
+            "metadata": {
+              "tool_calls_made": 10,
+              "total_tokens": 43840,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "computed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-6c2842ca30463621",
+      "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+      "fingerprint": "6c2842ca304636218151c36b0403c2a25130b5a6b4ff694dd3e4b6d5de55b898",
+      "title": "Server-side request forgery in Proxy via 'url' query parameter",
+      "description": "The 'url' query parameter is passed directly to http.Get with no scheme, host or IP allow-listing, letting an attacker make the server issue requests to internal services, loopback, or cloud metadata endpoints and relay the response back.",
+      "cwe_category": "CWE-918",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-6c2842ca30463621-obs",
+          "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-918",
+          "severity": "high",
+          "native_severity": null,
+          "message": "The 'url' query parameter is passed directly to http.Get with no scheme, host or IP allow-listing, letting an attacker make the server issue requests to internal services, loopback, or cloud metadata endpoints and relay the response back.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "pkg/vuln_ssrf.go",
+            "language": "go",
+            "line_start": 5,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- pkg/vuln_ssrf.go (lines 1-6) ---\n1: package pkg\n2: import \"net/http\"\n3: func Proxy(r *http.Request) (*http.Response, error) {\n4:     target := r.URL.Query().Get(\"url\")\n5:     return http.Get(target)\n6: }"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:44:13.683247Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-6c2842ca30463621-obs"
+      ],
+      "created_at": "2026-11-25T13:44:13.683247Z",
+      "updated_at": "2026-11-25T13:44:13.683247Z",
+      "metadata": {
+        "title": "Server-side request forgery in Proxy via 'url' query parameter",
+        "rationale": "The 'url' query parameter is passed directly to http.Get with no scheme, host or IP allow-listing, letting an attacker make the server issue requests to internal services, loopback, or cloud metadata endpoints and relay the response back.",
+        "evidence": "target := r.URL.Query().Get(\"url\")\nreturn http.Get(target)",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-6c2842ca30463621",
+          "finding_id": "model-6c2842ca30463621",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-6c2842ca30463621-model-6c2842ca30463621-obs",
+            "ev-model-6c2842ca30463621-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:46:39.743860Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+            "assessment_id": "assess-model-6c2842ca30463621-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-6c2842ca30463621-model-6c2842ca30463621-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-6c2842ca30463621-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-6c2842ca30463621-ai",
+            "finding_id": "model-6c2842ca30463621",
+            "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.5,
+            "assumptions": [
+              "The 'url' query parameter is intended to be attacker-influenced. The parameter name and http.Request argument imply external input, but no route registration or caller exists in the snapshot to confirm network exposure.",
+              "Exploitability depends on deployment: egress from the host to internal networks or metadata endpoints must not already be blocked by network policy or a forward proxy.",
+              "Whether cloud metadata credentials are actually retrievable depends on the provider's header or token requirements, which a plain http.Get GET request cannot satisfy on all providers.",
+              "The response body is assumed to be surfaced to some caller, but no evidence in the snapshot shows it is relayed to the attacker.",
+              "No route, main package, test, or documentation file exists in this snapshot; if the full repository contains one, reachability should be re-assessed against it.",
+              "Semgrep and CodeQL coverage was unavailable, so absence of corroborating engine findings is a tooling gap and not evidence of safety."
+            ],
+            "rationale": "Coverage returned nothing, so let me confirm whether these units were analyzed at all and check the rest of the package for any validation helpers the caller might use.\n\nThat call was a mistake on my part -- disregard it. Let me finish the source review properly.\n\nThat search was unhelpful. I'll go straight to the Go documentation for `http.Get`.\n\nI have what I need. Let me confirm the `http.Get` and `DefaultClient` semantics from the same page.\n\nI have the documentation I need. Let me confirm the `DefaultClient` redirect behaviour directly from the `Client` type section.\n\nI have the source facts confirmed. One last check for whether any config, test, or docs in the snapshot document intended deployment or exposure of `Proxy`.\n\nI have enough to assess this. Here is what the evidence shows.\n\n## Verified facts\n\n**The vulnerable code is exactly as reported** (`pkg/vuln_ssrf.go`, all 6 lines):\n\n```go\npackage pkg\nimport \"net/http\"\nfunc Proxy(r *http.Request) (*http.Response, error) {\n    target := r.URL.Query().Get(\"url\")\n    return http.Get(target)\n}\n```\n\nThe taint path is direct and complete: attacker-controlled query parameter -> `http.Get`. There is no allow-list, no scheme check, no host check, no IP/CIDR filtering, and no custom `Transport` or `DialContext` that would do address filtering. Per the Go standard library docs, `http.Get` uses `DefaultClient`/`DefaultTransport`, which has no built-in loopback, link-local, or RFC1918 blocking, and `DefaultClient` follows up to 10 redirects (`CheckRedirect` nil means \"stop after 10 consecutive requests\"). So a redirect chain cannot be blocked by any implicit client policy either.\n\n**Confirmed independently in the Go docs** ([net/http](https://pkg.go.dev/net/http#Client)):\n- `Get` follows 301/302/303/307/308 redirects with default policy.\n- `Transport` has no address filtering by default; `DialContext` is nil, so it dials via `net`.\n- `Client.Do` docs even note the client's redirect behaviour is \"rather permissive\" by mode",
+            "evidence_refs": [
+              "model-6c2842ca30463621-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-6c2842ca30463621",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:45:56.168724Z",
+            "metadata": {
+              "tool_calls_made": 10,
+              "total_tokens": 50288,
+              "verdict_explicit": false,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-3f9eee46eb25ec41",
+      "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+      "fingerprint": "3f9eee46eb25ec41ec504c77698f87e7d63bfda31c59da6852ee44ea4768aa05",
+      "title": "OS command injection via unsanitized argument in command execution",
+      "description": "The file name (vuln_cmd) and its sibling safe_cmd.go indicate a deliberately vulnerable command-execution path that builds a shell command from input without sanitization. The file listing was observed but its body was not returned by the read-only tools in this turn, so the exact vulnerable statement and line are unverified; the entry is reported rather than dropped because the file's stated purpose is a command-injection lesson.",
+      "cwe_category": "CWE-78",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-3f9eee46eb25ec41-obs",
+          "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-78",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "The file name (vuln_cmd) and its sibling safe_cmd.go indicate a deliberately vulnerable command-execution path that builds a shell command from input without sanitization. The file listing was observed but its body was not returned by the read-only tools in this turn, so the exact vulnerable statement and line are unverified; the entry is reported rather than dropped because the file's stated purpose is a command-injection lesson.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "pkg/vuln_cmd.go",
+            "language": "go",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- pkg/vuln_cmd.go (lines 1-9) ---\n1: package pkg\n2: import (\n3:     \"net/http\"\n4:     \"os/exec\"\n5: )\n6: func Ping(r *http.Request) ([]byte, error) {\n7:     host := r.URL.Query().Get(\"host\")\n8:     return exec.Command(\"sh\", \"-c\", \"ping -c 1 \"+host).CombinedOutput()\n9: }"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:44:13.686269Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-3f9eee46eb25ec41-obs"
+      ],
+      "created_at": "2026-11-25T13:44:13.686269Z",
+      "updated_at": "2026-11-25T13:44:13.686269Z",
+      "metadata": {
+        "title": "OS command injection via unsanitized argument in command execution",
+        "rationale": "The file name (vuln_cmd) and its sibling safe_cmd.go indicate a deliberately vulnerable command-execution path that builds a shell command from input without sanitization. The file listing was observed but its body was not returned by the read-only tools in this turn, so the exact vulnerable statement and line are unverified; the entry is reported rather than dropped because the file's stated purpose is a command-injection lesson.",
+        "evidence": "unknown (pkg/vuln_cmd.go content not retrieved in this turn; file presence confirmed by list_files)",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-3f9eee46eb25ec41",
+          "finding_id": "model-3f9eee46eb25ec41",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-3f9eee46eb25ec41-model-3f9eee46eb25ec41-obs",
+            "ev-model-3f9eee46eb25ec41-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:46:39.743860Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+            "assessment_id": "assess-model-3f9eee46eb25ec41-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-3f9eee46eb25ec41-model-3f9eee46eb25ec41-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-3f9eee46eb25ec41-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-3f9eee46eb25ec41-ai",
+            "finding_id": "model-3f9eee46eb25ec41",
+            "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+            "proposed_status": "true_positive",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.92,
+            "assumptions": [
+              "pkg.Ping is intended to be invoked from an HTTP handler; the function signature takes *http.Request and reads a query parameter, but no route registration or caller exists in the snapshot, so the network entry point is unverified.",
+              "The deployment runs as a POSIX shell (sh -c is used), so metacharacter splitting applies.",
+              "This is a deliberately vulnerable teaching repository (vuln_* vs safe_* siblings); it still represents a real code flaw if the code ships, and severity is assessed on the code, not on intent.",
+              "Observation model-fbf3e4d0e1409477 (line 8) is a duplicate of this finding and should be merged."
+            ],
+            "rationale": "Source confirmed by direct read of pkg/vuln_cmd.go: line 7 reads r.URL.Query().Get(\"host\") and line 8 concatenates it into exec.Command(\"sh\", \"-c\", \"ping -c 1 \"+host), giving unescaped shell metacharacter injection (CWE-78). No sanitization, quoting, allowlist, or shell avoidance is present. The scanner's own caveat (body not retrieved) is resolved: the snippet in the observation matches the file exactly. Semgrep and CodeQL were unavailable on PATH, so corroboration is source-reading based.",
+            "evidence_refs": [
+              "model-3f9eee46eb25ec41-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-3f9eee46eb25ec41",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:45:41.974204Z",
+            "metadata": {
+              "tool_calls_made": 10,
+              "total_tokens": 51392,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-8c671a93f622fe0b",
+      "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+      "fingerprint": "8c671a93f622fe0bf16bfda20b26eebfa804aba5ec6ef7357deb2baca6c029d4",
+      "title": "SQL injection via string-concatenated query",
+      "description": "vuln_sql.go is the benchmark counterpart to safe_sql.go and is intended to demonstrate a tainted value concatenated into a SQL statement. The file was listed but its contents were not returned, so the precise sink line is unverified; included per the instruction not to suppress lesson/benchmark vulnerabilities.",
+      "cwe_category": "CWE-89",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-8c671a93f622fe0b-obs",
+          "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-89",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "vuln_sql.go is the benchmark counterpart to safe_sql.go and is intended to demonstrate a tainted value concatenated into a SQL statement. The file was listed but its contents were not returned, so the precise sink line is unverified; included per the instruction not to suppress lesson/benchmark vulnerabilities.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "pkg/vuln_sql.go",
+            "language": "go",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- pkg/vuln_sql.go (lines 1-9) ---\n1: package pkg\n2: import (\n3:     \"database/sql\"\n4:     \"net/http\"\n5: )\n6: func FindUser(db *sql.DB, r *http.Request) (*sql.Rows, error) {\n7:     id := r.URL.Query().Get(\"id\")\n8:     return db.Query(\"SELECT * FROM users WHERE id = '\" + id + \"'\")\n9: }"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:44:13.689751Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-8c671a93f622fe0b-obs"
+      ],
+      "created_at": "2026-11-25T13:44:13.689751Z",
+      "updated_at": "2026-11-25T13:44:13.689751Z",
+      "metadata": {
+        "title": "SQL injection via string-concatenated query",
+        "rationale": "vuln_sql.go is the benchmark counterpart to safe_sql.go and is intended to demonstrate a tainted value concatenated into a SQL statement. The file was listed but its contents were not returned, so the precise sink line is unverified; included per the instruction not to suppress lesson/benchmark vulnerabilities.",
+        "evidence": "unknown (pkg/vuln_sql.go content not retrieved in this turn; file presence confirmed by list_files)",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-8c671a93f622fe0b",
+          "finding_id": "model-8c671a93f622fe0b",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-8c671a93f622fe0b-model-8c671a93f622fe0b-obs",
+            "ev-model-8c671a93f622fe0b-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:46:39.744874Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+            "assessment_id": "assess-model-8c671a93f622fe0b-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-8c671a93f622fe0b-model-8c671a93f622fe0b-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-8c671a93f622fe0b-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-8c671a93f622fe0b-ai",
+            "finding_id": "model-8c671a93f622fe0b",
+            "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.5,
+            "assumptions": [
+              "The snapshot of 8 pkg/*.go files is the complete reviewable scope; no application entrypoint or route wiring exists outside it.",
+              "FindUser is intended for use in an HTTP request path, as its *http.Request parameter implies, but no such caller is present in this snapshot.",
+              "Semgrep and CodeQL were unavailable (not on PATH) and check_coverage returned no data for CWE-89, so no scanner corroboration exists; the assessment rests on manual source review.",
+              "Database privileges and driver stacked-query support are unknown, so the CIA impact scope cannot be measured.",
+              "The file being a benchmark/lesson artifact does not reduce its status as a genuine, fixable injection defect."
+            ],
+            "rationale": "Route lookup returned nothing usable. I'll run the remaining scanners so the coverage picture is complete before I assess.\n\nThe upstream docs confirm the API contract. I'll pull the exact wording on `Query` arguments to ground the remediation claim.\n\nI have what I need on the API contract. I'll run the remaining scanners for a complete coverage picture before assessing.\n\nI have enough to assess. One last check: whether any other file in the snapshot calls `FindUser` in a handler context, which would settle reachability.\n\nI've confirmed the code, the taint source, the sink, and the API contract. Here is my assessment.\n\n## Verification of the scanner claim\n\nThe scanner's own note said the file contents were never retrieved and the sink line was unverified, so I read the file. The snippet in the finding matches `pkg/vuln_sql.go` byte for byte, and the sink is real:\n\n```go\n// pkg/vuln_sql.go:6-9\nfunc FindUser(db *sql.DB, r *http.Request) (*sql.Rows, error) {\n    id := r.URL.Query().Get(\"id\")\n    return db.Query(\"SELECT * FROM users WHERE id = '\" + id + \"'\")\n}\n```\n\nThe taint flow is complete and unbroken: `r.URL.Query().Get(\"id\")` returns attacker-controlled request input, and it is concatenated inside single quotes into the query string passed as `db.Query`'s first argument. No placeholder arguments are supplied, so the driver has nothing to bind. The paired `pkg/safe_sql.go` uses the correct form (`db.Query(\"SELECT * FROM users WHERE id = $1\", id)`), which confirms the file is the deliberate vulnerable counterpart rather than dead or accidental code.\n\nThe vulnerability is confirmed. Two things the finding got wrong are worth correcting: the location (it pointed at line 1, the sink is line 8), and the \"unverified\" caveat, which no longer applies now that the source has been read.\n\n## What is not established\n\nReachability. The snapshot contains eight files, all in `pkg/`, and nothing outside `pkg/vuln_sql.go` or `pkg/safe_sql.go` mentions `FindUser` -- no `main` package,",
+            "evidence_refs": [
+              "model-8c671a93f622fe0b-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-8c671a93f622fe0b",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:46:26.512719Z",
+            "metadata": {
+              "tool_calls_made": 11,
+              "total_tokens": 50800,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-bcb606f907353c3b",
+      "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+      "fingerprint": "bcb606f907353c3beed107c7af3311b4feb29d974860655254362027e7bad280",
+      "title": "Path traversal in file access path construction",
+      "description": "vuln_path.go is the vulnerable counterpart to safe_path.go and is meant to show user-controlled input joined into a filesystem path without confinement to a base directory. Contents were not retrieved this turn, so the exact line is unverified.",
+      "cwe_category": "CWE-22",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-bcb606f907353c3b-obs",
+          "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-22",
+          "severity": "high",
+          "native_severity": null,
+          "message": "vuln_path.go is the vulnerable counterpart to safe_path.go and is meant to show user-controlled input joined into a filesystem path without confinement to a base directory. Contents were not retrieved this turn, so the exact line is unverified.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "pkg/vuln_path.go",
+            "language": "go",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- pkg/vuln_path.go (lines 1-9) ---\n1: package pkg\n2: import (\n3:     \"net/http\"\n4:     \"os\"\n5: )\n6: func ReadDoc(r *http.Request) ([]byte, error) {\n7:     name := r.URL.Query().Get(\"file\")\n8:     return os.ReadFile(\"/data/\" + name)\n9: }"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:44:13.692448Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-bcb606f907353c3b-obs"
+      ],
+      "created_at": "2026-11-25T13:44:13.692448Z",
+      "updated_at": "2026-11-25T13:44:13.692448Z",
+      "metadata": {
+        "title": "Path traversal in file access path construction",
+        "rationale": "vuln_path.go is the vulnerable counterpart to safe_path.go and is meant to show user-controlled input joined into a filesystem path without confinement to a base directory. Contents were not retrieved this turn, so the exact line is unverified.",
+        "evidence": "unknown (pkg/vuln_path.go content not retrieved in this turn; file presence confirmed by list_files)",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-bcb606f907353c3b",
+          "finding_id": "model-bcb606f907353c3b",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-bcb606f907353c3b-model-bcb606f907353c3b-obs",
+            "ev-model-bcb606f907353c3b-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:46:39.744874Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+            "assessment_id": "assess-model-bcb606f907353c3b-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-bcb606f907353c3b-model-bcb606f907353c3b-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-bcb606f907353c3b-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-bcb606f907353c3b-ai",
+            "finding_id": "model-bcb606f907353c3b",
+            "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.5,
+            "assumptions": [
+              "ReadDoc is wired to an HTTP handler in code not present in the indexed snapshot; the *http.Request signature implies an HTTP entry point but no handler was found.",
+              "The /data directory exists on the target host and the process has read permission on the intended traversal target (e.g. /etc/passwd); traversal is ineffective only if permissions deny access.",
+              "No middleware in front of the handler normalizes or rejects '..' in the 'file' query parameter; none is present in the snapshot.",
+              "The snapshot is a partial/representative harness containing paired safe_*/vuln_* files, so absence of a caller is not evidence of unreachability.",
+              "The 'safe_path.go' counterpart is not a strict analogue (it uses a hardcoded path rather than a sanitized variable), which does not affect the validity of this finding."
+            ],
+            "rationale": "The source confirms the flow. Let me verify the sink's actual behaviour on traversal input, since Go's `os.ReadFile` and URL query decoding both affect exploitability.\n\n## Assessment: finding model-bcb606f907353c3b\n\n**The finding is confirmed by direct source inspection.** The scanner's note said the file contents were unverified; I retrieved them, and the sink is exactly as described.\n\n`pkg/vuln_path.go`:\n\n```go\nfunc ReadDoc(r *http.Request) ([]byte, error) {\n    name := r.URL.Query().Get(\"file\")      // line 7: taint source\n    return os.ReadFile(\"/data/\" + name)    // line 8: sink, no confinement\n}\n```\n\nThe taint flow is complete and direct: attacker-controlled query parameter to a filesystem read, with string concatenation as the only \"sanitization.\" There is no `filepath.Clean`, no `filepath.Base`, no `filepath.Abs` prefix check, and no `os.Root`/`openat` confinement. `r.URL.Query().Get` URL-decodes, so `?file=../../etc/passwd` arrives as `\"../../etc/passwd\"`, producing `/data/../../etc/passwd`, which the OS resolves to `/etc/passwd`. Encoded forms (`%2e%2e%2f`) work equally. Absolute paths also bypass the prefix entirely, since `/data/` + `/etc/shadow` yields `/data//etc/shadow`, still confined -- but `/data/` + `/../..` style traversal is the effective vector, and on Go the prefix concatenation does not block `..`. Neither `net/http` nor `os.ReadFile` performs traversal-blocking cleaning.\n\nThe contrast file `pkg/safe_path.go` is a different function with a hardcoded path, so it is not a true \"safe counterpart\" in the same shape -- worth noting, but it does not weaken the finding.\n\n**Evidence limitations I must flag:**\n- Semgrep and CodeQL are both unavailable in this environment (`semgrep not found on PATH`, `codeql not found on PATH`), so no independent automated corroboration was possible. My confirmation rests on manual reading plus the scanner observation, which agree.\n- **No route or caller exists in the snapshot.** `grep` for `ReadDoc` returns only its",
+            "evidence_refs": [
+              "model-bcb606f907353c3b-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-bcb606f907353c3b",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:46:25.378950Z",
+            "metadata": {
+              "tool_calls_made": 12,
+              "total_tokens": 50432,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-fdfb6598df3e153e",
+      "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+      "fingerprint": "fdfb6598df3e153ea989d027e45904c0866969399737fa21df4cedaaee86dfd1",
+      "title": "Server-side request forgery via attacker-controlled URL",
+      "description": "vuln_ssrf.go is the SSRF lesson file, presumably issuing an outbound HTTP request to a URL taken from request input with no allow-list or address filtering. Contents were not retrieved this turn, so the specific fetch call and line are unverified.",
+      "cwe_category": "CWE-918",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-fdfb6598df3e153e-obs",
+          "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-918",
+          "severity": "high",
+          "native_severity": null,
+          "message": "vuln_ssrf.go is the SSRF lesson file, presumably issuing an outbound HTTP request to a URL taken from request input with no allow-list or address filtering. Contents were not retrieved this turn, so the specific fetch call and line are unverified.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "pkg/vuln_ssrf.go",
+            "language": "go",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- pkg/vuln_ssrf.go (lines 1-6) ---\n1: package pkg\n2: import \"net/http\"\n3: func Proxy(r *http.Request) (*http.Response, error) {\n4:     target := r.URL.Query().Get(\"url\")\n5:     return http.Get(target)\n6: }"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:44:13.695137Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-fdfb6598df3e153e-obs"
+      ],
+      "created_at": "2026-11-25T13:44:13.695137Z",
+      "updated_at": "2026-11-25T13:44:13.695137Z",
+      "metadata": {
+        "title": "Server-side request forgery via attacker-controlled URL",
+        "rationale": "vuln_ssrf.go is the SSRF lesson file, presumably issuing an outbound HTTP request to a URL taken from request input with no allow-list or address filtering. Contents were not retrieved this turn, so the specific fetch call and line are unverified.",
+        "evidence": "unknown (pkg/vuln_ssrf.go content not retrieved in this turn; file presence confirmed by list_files)",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-fdfb6598df3e153e",
+          "finding_id": "model-fdfb6598df3e153e",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-fdfb6598df3e153e-model-fdfb6598df3e153e-obs",
+            "ev-model-fdfb6598df3e153e-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:46:39.744874Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+            "assessment_id": "assess-model-fdfb6598df3e153e-single",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-fdfb6598df3e153e-model-fdfb6598df3e153e-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-fdfb6598df3e153e-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-fdfb6598df3e153e-single",
+            "finding_id": "model-fdfb6598df3e153e",
+            "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.95,
+            "assumptions": [
+              "Proxy is reachable from an HTTP handler and the request's query string is attacker-controlled; the excerpt does not show the routing layer.",
+              "http.Get uses the default client, which follows redirects, so a permitted initial host could still redirect to internal addresses; this is inferred from Go's standard library, not from the excerpt.",
+              "No allow-list or custom DialContext exists elsewhere in the package; only lines 1-6 were provided."
+            ],
+            "rationale": "In pkg/vuln_ssrf.go lines 4-5 the query parameter \"url\" flows unfiltered into http.Get(target), giving a source-to-sink path for CWE-918 with no scheme, host, or address validation in the shown code. The scanner's caveat that contents were not retrieved is moot because the excerpt itself contains the full six-line function.",
+            "evidence_refs": [
+              "model-fdfb6598df3e153e-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-fdfb6598df3e153e",
+            "model_id": "kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:46:39.742819Z",
+            "metadata": {
+              "single_shot": true,
+              "total_tokens": 1352,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "advisory_routing": {
+    "is_advisory_only": true,
+    "affects_finding_status": false,
+    "note": "Advisory recommendations never set or change a finding status; IndependentValidator remains the sole status owner.",
+    "route_counts": {},
+    "routed": 0,
+    "unavailable": 0,
+    "payloads": []
+  }
+}

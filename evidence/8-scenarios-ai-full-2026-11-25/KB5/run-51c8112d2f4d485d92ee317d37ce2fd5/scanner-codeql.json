@@ -1,0 +1,26 @@
+{
+  "version": "0.1.0",
+  "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+  "tool": "codeql",
+  "tool_version": "unknown",
+  "adapter_version": "0.3.0",
+  "status": "skipped",
+  "started_at": "2026-11-25T13:43:07.087194Z",
+  "finished_at": "2026-11-25T13:43:07.087194Z",
+  "observations": [],
+  "coverage_records": [],
+  "raw_output_refs": [],
+  "coverage_percent": 0.0,
+  "eligible_units": 0,
+  "analyzed_units": 0,
+  "skipped_units": 0,
+  "failed_units": 0,
+  "errors": [
+    "codeql not found on PATH; install the CodeQL CLI bundle (https://github.com/github/codeql-cli-binaries) and ensure 'codeql' is on PATH, or leave this opt-in DEEP step disabled in the scan spec"
+  ],
+  "warnings": [
+    "CodeQL is an opt-in DEEP step; skipping it leaves baseline coverage unchanged"
+  ],
+  "duration_ms": null,
+  "metadata": {}
+}

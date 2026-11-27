@@ -1,0 +1,859 @@
+{
+  "application_version": "0.2.0",
+  "scan_metadata": {
+    "commit": "768a41fe4a304393cb02cb839a2688f58b41763e",
+    "target": "local",
+    "status": "completed",
+    "gate": "failed",
+    "errors": [],
+    "configuration": {
+      "schema_version": 1,
+      "profile": "fast",
+      "fail_on": "high",
+      "output_dir": "d:\\New folder\\DevSecOps-Agent\\evidence\\8-scenarios-ai-full-2026-11-25\\KB2",
+      "timezone": "Asia/Saigon",
+      "timeout": 600,
+      "max_files": 100000,
+      "allow_dirty": true,
+      "ci": false,
+      "laya": false,
+      "laya_config_path": null,
+      "ai_review": true,
+      "provider_profile": "kojo-bench-tmp",
+      "provider_model": "empero/kojo",
+      "ai_report": true,
+      "max_ai_findings": 10,
+      "max_model_requests": null,
+      "mode": "hunt",
+      "tools": [
+        "native-hunt"
+      ]
+    }
+  },
+  "run_id": "run-44b2c1cb6c27447c93b72d3935ff25cc",
+  "generated_at": "2026-11-25T13:35:23.848914+00:00",
+  "counts": {
+    "version": "0.1.0",
+    "total": 4,
+    "confirmed": 0,
+    "rejected": 0,
+    "unresolved": 4,
+    "unprocessed": 0
+  },
+  "coverage_summary": {
+    "owasp-dependency-check": [],
+    "semgrep": [],
+    "trivy": [],
+    "gitleaks": [],
+    "codeql": []
+  },
+  "owasp_top10": {
+    "edition": "2025",
+    "source_url": "https://top10.owasp.org/2025/",
+    "snapshot_date": "2026-11-04",
+    "classification_only": true,
+    "mapping_basis": "Exact normalized primary/secondary CWEs in OWASP category-specific mapped-CWE lists",
+    "note": "This is a CWE classification of reported findings, not a coverage or compliance assessment. An empty category means No mapped findings reported; it does not mean tested, safe or passed. Counts retain finding status; pending includes unprocessed, triaged, assessed and pending validation. A finding with multiple labels may appear in several rows/categories; do not add those row counts.",
+    "total_findings": 4,
+    "categories": [
+      {
+        "id": "A01:2025",
+        "name": "Broken Access Control",
+        "source_url": "https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/",
+        "source_sha256": "e51ca05866f4213489e82484f1f48ed4d779e1809e87f70449806b496a0320cd",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A02:2025",
+        "name": "Security Misconfiguration",
+        "source_url": "https://top10.owasp.org/2025/A02_2025-Security_Misconfiguration/",
+        "source_sha256": "532fbbd67f3db734b7ed5d47e0263dd3800fce80e22da327123a88f2947017c9",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A03:2025",
+        "name": "Software Supply Chain Failures",
+        "source_url": "https://top10.owasp.org/2025/A03_2025-Software_Supply_Chain_Failures/",
+        "source_sha256": "66090225ad8f54a836e5b9e94456243baa7d38b70176f4d720668ef36f3a793d",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A04:2025",
+        "name": "Cryptographic Failures",
+        "source_url": "https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures/",
+        "source_sha256": "5b140b4cadf334becc35334278494f98396dc9b5720df6c904688352b51dc834",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A05:2025",
+        "name": "Injection",
+        "source_url": "https://top10.owasp.org/2025/A05_2025-Injection/",
+        "source_sha256": "69d7ec591944699c49b89c544a52cb32adccbfad56c41784ca34fde837822de6",
+        "total": 4,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 4
+        },
+        "finding_ids": [
+          "model-5815bd155816b9c5",
+          "model-79dfa5098d7f3e9d",
+          "model-8cbb6a02d746527a",
+          "model-aa907b4b5caf7f0f"
+        ],
+        "cwes": [
+          {
+            "cwe": "CWE-78",
+            "total": 1,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 1
+            },
+            "finding_ids": [
+              "model-79dfa5098d7f3e9d"
+            ]
+          },
+          {
+            "cwe": "CWE-79",
+            "total": 1,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 1
+            },
+            "finding_ids": [
+              "model-aa907b4b5caf7f0f"
+            ]
+          },
+          {
+            "cwe": "CWE-89",
+            "total": 1,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 1
+            },
+            "finding_ids": [
+              "model-5815bd155816b9c5"
+            ]
+          },
+          {
+            "cwe": "CWE-95",
+            "total": 1,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 1
+            },
+            "finding_ids": [
+              "model-8cbb6a02d746527a"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "A06:2025",
+        "name": "Insecure Design",
+        "source_url": "https://top10.owasp.org/2025/A06_2025-Insecure_Design/",
+        "source_sha256": "cf67ac90b3c088ca4566807fbc4bbd2090bccc81d61f15c0e25190032618195f",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A07:2025",
+        "name": "Authentication Failures",
+        "source_url": "https://top10.owasp.org/2025/A07_2025-Authentication_Failures/",
+        "source_sha256": "9decccf146242740ba34b1c14df7b729ef159274a3533182c6bcefc9f52c8816",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A08:2025",
+        "name": "Software or Data Integrity Failures",
+        "source_url": "https://top10.owasp.org/2025/A08_2025-Software_or_Data_Integrity_Failures/",
+        "source_sha256": "03082e5a3ce031d6d2425927653aca0ad47d474dafb4208862e86b4363d66d85",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A09:2025",
+        "name": "Security Logging & Alerting Failures",
+        "source_url": "https://top10.owasp.org/2025/A09_2025-Security_Logging_and_Alerting_Failures/",
+        "source_sha256": "e8f875d2db062bfd3eb00db65486b30dd64c417357f9346a395cf434b5055f31",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A10:2025",
+        "name": "Mishandling of Exceptional Conditions",
+        "source_url": "https://top10.owasp.org/2025/A10_2025-Mishandling_of_Exceptional_Conditions/",
+        "source_sha256": "492a7444a58c06ec76af06ed4f89e656804cde6b71f61ba2ed5703a9aa343864",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      }
+    ],
+    "unmapped": []
+  },
+  "findings": [
+    {
+      "version": "0.1.0",
+      "finding_id": "model-aa907b4b5caf7f0f",
+      "run_id": "run-44b2c1cb6c27447c93b72d3935ff25cc",
+      "fingerprint": "aa907b4b5caf7f0fb0481e214107f4b73390832eefc68e614d55000606b1e1d2",
+      "title": "Reflected XSS via unescaped innerHTML sink",
+      "description": "req.query.msg flows directly into innerHTML with no encoding, so an attacker-supplied ?msg=<script> or an event-handler payload executes in the victim's browser origin.",
+      "cwe_category": "CWE-79",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-aa907b4b5caf7f0f-obs",
+          "run_id": "run-44b2c1cb6c27447c93b72d3935ff25cc",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-79",
+          "severity": "high",
+          "native_severity": null,
+          "message": "req.query.msg flows directly into innerHTML with no encoding, so an attacker-supplied ?msg=<script> or an event-handler payload executes in the victim's browser origin.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "src/vuln_dom.js",
+            "language": "javascript",
+            "line_start": 3,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- src/vuln_dom.js (lines 1-4) ---\n1: export function renderBanner(req) {\n2:     const msg = req.query.msg;\n3:     document.getElementById('banner').innerHTML = msg;\n4: }"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:34:02.839627Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-aa907b4b5caf7f0f-obs"
+      ],
+      "created_at": "2026-11-25T13:34:02.839627Z",
+      "updated_at": "2026-11-25T13:34:02.839627Z",
+      "metadata": {
+        "title": "Reflected XSS via unescaped innerHTML sink",
+        "rationale": "req.query.msg flows directly into innerHTML with no encoding, so an attacker-supplied ?msg=<script> or an event-handler payload executes in the victim's browser origin.",
+        "evidence": "const msg = req.query.msg;\ndocument.getElementById('banner').innerHTML = msg;",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-aa907b4b5caf7f0f",
+          "finding_id": "model-aa907b4b5caf7f0f",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-aa907b4b5caf7f0f-model-aa907b4b5caf7f0f-obs",
+            "ev-model-aa907b4b5caf7f0f-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:35:03.751498Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-44b2c1cb6c27447c93b72d3935ff25cc",
+            "assessment_id": "assess-model-aa907b4b5caf7f0f-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-aa907b4b5caf7f0f-model-aa907b4b5caf7f0f-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-aa907b4b5caf7f0f-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-aa907b4b5caf7f0f-ai",
+            "finding_id": "model-aa907b4b5caf7f0f",
+            "run_id": "run-44b2c1cb6c27447c93b72d3935ff25cc",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 1.0,
+            "assumptions": [
+              "Some consumer outside this snapshot calls renderBanner with a request-like object carrying a query string, otherwise the sink is dead code in this tree.",
+              "The element with id 'banner' exists in a page the attacker can get a victim to load with a crafted URL.",
+              "Browser behaviour assumption (inference, not executed): innerHTML does not run inline <script> elements, but event-handler payloads such as <img src=x onerror=...> do execute, making that the practical exploit shape.",
+              "The observation's confidence:1.0 and evidence_strength:'none' were treated as untrusted; the assessment rests on reading the source file."
+            ],
+            "rationale": "## Assessment: model-aa907b4b5caf7f0f (CWE-79, reflected XSS via innerHTML)\n\n**Verdict: likely a true positive, but the sink is not wired to any entry point in this snapshot.**\n\n### What I confirmed by reading the code\n\n`src/vuln_dom.js` is four lines, read in full:\n\n```js\nexport function renderBanner(req) {\n    const msg = req.query.msg;\n    document.getElementById('banner').innerHTML = msg;\n}\n```\n\nLine 2 takes `req.query.msg` with no validation or decoding step, and line 3 assigns it to `innerHTML`. There is no encoding, sanitization, or allowlist between source and sink. That is the classic DOM/reflected XSS shape, and the scanner's description matches the code exactly.\n\nThe snapshot also contains `src/safe_dom.js`, which does the same banner render with `textContent`. That contrast supports the reading that `vuln_dom.js` is the deliberately vulnerable counterpart, not a false match.\n\n### What I could not confirm\n\n- **No caller.** Grepping all `.js/.jsx/.ts/.tsx/.html` files for `renderBanner` or `vuln_dom` returned zero hits. Nothing imports this function, and there is no HTML page or server file in the snapshot that mounts it. So the code path from an attacker-controlled URL to this sink is not demonstrated anywhere in the tree. It is reachable only if some consumer outside the snapshot calls `renderBanner` with a request-like object.\n- **No automated cross-check.** Semgrep is not on PATH and CodeQL was skipped (not installed), so the finding rests on my own reading of the file plus the `native-hunt` observation. `check_coverage` returned an empty record for CWE-79, so I have no coverage metadata to say which files were analyzed or skipped in the original run.\n- **Scanner severity is not evidence.** The observation carries `confidence: 1.0` and `evidence_strength: none`. The first is the hunt model's self-report, the second means the platform attached no independent evidence to the claim. I treated both as untrusted and went to the source instead.\n- **Runtime b",
+            "evidence_refs": [
+              "model-aa907b4b5caf7f0f-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-aa907b4b5caf7f0f",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:34:40.775090Z",
+            "metadata": {
+              "tool_calls_made": 10,
+              "total_tokens": 43248,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-8cbb6a02d746527a",
+      "run_id": "run-44b2c1cb6c27447c93b72d3935ff25cc",
+      "fingerprint": "8cbb6a02d746527aa21db647088d035da7f1fc0280e3da360be320d23db22af3",
+      "title": "Remote code execution via eval on request body",
+      "description": "req.body.expr is passed straight to eval, giving any caller arbitrary JavaScript execution in the server process, including require/process access.",
+      "cwe_category": "CWE-95",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-8cbb6a02d746527a-obs",
+          "run_id": "run-44b2c1cb6c27447c93b72d3935ff25cc",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-95",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "req.body.expr is passed straight to eval, giving any caller arbitrary JavaScript execution in the server process, including require/process access.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "src/vuln_eval.js",
+            "language": "javascript",
+            "line_start": 3,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- src/vuln_eval.js (lines 1-5) ---\n1: export function calcHandler(req, res) {\n2:     const expr = req.body.expr;\n3:     const result = eval(expr);\n4:     res.json({ result });\n5: }"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:34:02.841132Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-8cbb6a02d746527a-obs"
+      ],
+      "created_at": "2026-11-25T13:34:02.841132Z",
+      "updated_at": "2026-11-25T13:34:02.841132Z",
+      "metadata": {
+        "title": "Remote code execution via eval on request body",
+        "rationale": "req.body.expr is passed straight to eval, giving any caller arbitrary JavaScript execution in the server process, including require/process access.",
+        "evidence": "const expr = req.body.expr;\nconst result = eval(expr);",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-8cbb6a02d746527a",
+          "finding_id": "model-8cbb6a02d746527a",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-8cbb6a02d746527a-model-8cbb6a02d746527a-obs",
+            "ev-model-8cbb6a02d746527a-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:35:03.751498Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-44b2c1cb6c27447c93b72d3935ff25cc",
+            "assessment_id": "assess-model-8cbb6a02d746527a-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-8cbb6a02d746527a-model-8cbb6a02d746527a-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-8cbb6a02d746527a-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-8cbb6a02d746527a-ai",
+            "finding_id": "model-8cbb6a02d746527a",
+            "run_id": "run-44b2c1cb6c27447c93b72d3935ff25cc",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.72,
+            "assumptions": [
+              "The handler is intended to be mounted on an HTTP route, consistent with its req/res signature and the Express usage in sibling file vuln_cmd.ts; this is inferred, not verified.",
+              "No validation or sanitization exists in a middleware layer, because no middleware or routing code is present in the snapshot.",
+              "The 'vuln_' vs 'safe_' file naming suggests deliberately vulnerable test/benchmark code; this is context only and was not used as evidence."
+            ],
+            "rationale": "src/vuln_eval.js:3 passes req.body.expr directly to eval() with no validation, sanitization, or allow-listing. The sink is confirmed by direct source read and is an unambiguous CWE-95. However, reachability is unestablished: grep for 'calcHandler' returns zero hits outside the definition, and the 8-file snapshot contains no router, server entrypoint, or package.json, so no route mount or auth middleware can be confirmed. Semgrep and CodeQL were both unavailable (not on PATH) and check_coverage returned empty, leaving no independent taint confirmation. Confidence is set at 0.72 reflecting high certainty in the defect and low certainty in exploitability/severity.",
+            "evidence_refs": [
+              "model-8cbb6a02d746527a-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-8cbb6a02d746527a",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:35:03.751498Z",
+            "metadata": {
+              "tool_calls_made": 11,
+              "total_tokens": 47008,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-5815bd155816b9c5",
+      "run_id": "run-44b2c1cb6c27447c93b72d3935ff25cc",
+      "fingerprint": "5815bd155816b9c57030fb6d5721b07678c8b4d28596d795ee14033c5f0115ca",
+      "title": "SQL injection via string concatenation in db.query",
+      "description": "req.params.id is concatenated into the SQL string inside single quotes, so a value like ' OR '1'='1 rewrites the WHERE clause and allows full data exfiltration or stacked queries depending on driver settings.",
+      "cwe_category": "CWE-89",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-5815bd155816b9c5-obs",
+          "run_id": "run-44b2c1cb6c27447c93b72d3935ff25cc",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-89",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "req.params.id is concatenated into the SQL string inside single quotes, so a value like ' OR '1'='1 rewrites the WHERE clause and allows full data exfiltration or stacked queries depending on driver settings.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "src/vuln_sql.js",
+            "language": "javascript",
+            "line_start": 3,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- src/vuln_sql.js (lines 1-4) ---\n1: export function getOrder(req, db) {\n2:     const id = req.params.id;\n3:     return db.query(\"SELECT * FROM orders WHERE id = '\" + id + \"'\");\n4: }"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:34:02.842180Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-5815bd155816b9c5-obs"
+      ],
+      "created_at": "2026-11-25T13:34:02.842180Z",
+      "updated_at": "2026-11-25T13:34:02.842180Z",
+      "metadata": {
+        "title": "SQL injection via string concatenation in db.query",
+        "rationale": "req.params.id is concatenated into the SQL string inside single quotes, so a value like ' OR '1'='1 rewrites the WHERE clause and allows full data exfiltration or stacked queries depending on driver settings.",
+        "evidence": "const id = req.params.id;\nreturn db.query(\"SELECT * FROM orders WHERE id = '\" + id + \"'\");",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-5815bd155816b9c5",
+          "finding_id": "model-5815bd155816b9c5",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-5815bd155816b9c5-model-5815bd155816b9c5-obs",
+            "ev-model-5815bd155816b9c5-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:35:03.751498Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-44b2c1cb6c27447c93b72d3935ff25cc",
+            "assessment_id": "assess-model-5815bd155816b9c5-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-5815bd155816b9c5-model-5815bd155816b9c5-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-5815bd155816b9c5-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-5815bd155816b9c5-ai",
+            "finding_id": "model-5815bd155816b9c5",
+            "run_id": "run-44b2c1cb6c27447c93b72d3935ff25cc",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.5,
+            "assumptions": [
+              "req.params.id is attacker-controllable at runtime, as its Express-style shape implies (no route wiring in snapshot to prove it).",
+              "db.query executes its argument as SQL rather than treating it as a prepared statement; the string-concatenation form plus the $1/[id] variant in safe_sql.js supports this.",
+              "The function is intended for use in a request path; no call site exists inside the six .js files present in the snapshot.",
+              "Stacked-query capability claimed in the observation is driver-dependent and was not verified; UNION-based or predicate-rewrite exfiltration does not rely on it.",
+              "check_coverage returned no CWE-89 record, so snapshot-wide coverage for this class is unknown; absence of other findings is not evidence of absence."
+            ],
+            "rationale": "## Assessment: finding model-5815bd155816b9c5\n\n**Confirmed as a real SQL injection at the code level.** The sink is exactly as described.\n\n```js\n// src/vuln_sql.js (4 lines total, read in full)\nexport function getOrder(req, db) {\n    const id = req.params.id;                                    // line 2: attacker-controlled\n    return db.query(\"SELECT * FROM orders WHERE id = '\" + id + \"'\");  // line 3: sink\n}\n```\n\nThe taint path is direct and complete within the function: `req.params.id` flows unmodified through a single local assignment into the query string, with no validation, escaping, type coercion, or allow-list in between. Because the value is placed inside single quotes, a payload like `' OR '1'='1' --` closes the literal and rewrites the predicate. The sibling file `src/safe_sql.js` shows the correct pattern in the same shape (`db.query('SELECT * FROM orders WHERE id = $1', [id])`), which makes this a clear defect rather than a stylistic choice.\n\n**What is not established (and why it matters for severity):**\n\n- **Route reachability.** `grep_code` for `getOrder|vuln_sql` across `*.js` returned only the two definitions (`src/vuln_sql.js:1` and `src/safe_sql.js:1`) and no call site. The snapshot contains six `.js` files and no router/entry point (`list_files` for `*.js` shows only `src/safe_dom.js`, `src/safe_json.js`, `src/safe_sql.js`, `src/vuln_dom.js`, `src/vuln_eval.js`, `src/vuln_sql.js`). So whether any HTTP route actually exposes this handler is unknown from the material available. The `req` parameter shape strongly implies a request handler, but the wiring is outside the snapshot.\n- **Driver behavior.** The scanner's mention of stacked queries is driver-dependent and unverified. Exfiltration via `UNION SELECT` or predicate rewriting works under far more configurations than stacked queries do, so the injection does not depend on that claim.\n- **No independent tool confirmation.** Semgrep and CodeQL both failed to run in this environment (`semgrep not",
+            "evidence_refs": [
+              "model-5815bd155816b9c5-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-5815bd155816b9c5",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:34:40.908661Z",
+            "metadata": {
+              "tool_calls_made": 10,
+              "total_tokens": 43952,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-79dfa5098d7f3e9d",
+      "run_id": "run-44b2c1cb6c27447c93b72d3935ff25cc",
+      "fingerprint": "79dfa5098d7f3e9d10ec103ef83f9d03bdc527dc370a89caaa348c0b64940026",
+      "title": "OS command injection via exec with concatenated host",
+      "description": "req.query.host is concatenated into a shell command string passed to exec, so a host such as '127.0.0.1; id' runs arbitrary shell commands on the server.",
+      "cwe_category": "CWE-78",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-79dfa5098d7f3e9d-obs",
+          "run_id": "run-44b2c1cb6c27447c93b72d3935ff25cc",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-78",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "req.query.host is concatenated into a shell command string passed to exec, so a host such as '127.0.0.1; id' runs arbitrary shell commands on the server.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "src/vuln_cmd.ts",
+            "language": "typescript",
+            "line_start": 5,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- src/vuln_cmd.ts (lines 1-8) ---\n1: import { exec } from 'child_process';\n2: import { Request, Response } from 'express';\n3: export function pingHandler(req: Request, res: Response) {\n4:     const host = req.query.host as string;\n5:     exec('ping -c 1 ' + host, (err, stdout) => {\n6:         res.send(stdout);\n7:     });\n8: }"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:34:02.844241Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-79dfa5098d7f3e9d-obs"
+      ],
+      "created_at": "2026-11-25T13:34:02.844241Z",
+      "updated_at": "2026-11-25T13:34:02.844241Z",
+      "metadata": {
+        "title": "OS command injection via exec with concatenated host",
+        "rationale": "req.query.host is concatenated into a shell command string passed to exec, so a host such as '127.0.0.1; id' runs arbitrary shell commands on the server.",
+        "evidence": "const host = req.query.host as string;\nexec('ping -c 1 ' + host, (err, stdout) => {",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-79dfa5098d7f3e9d",
+          "finding_id": "model-79dfa5098d7f3e9d",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-79dfa5098d7f3e9d-model-79dfa5098d7f3e9d-obs",
+            "ev-model-79dfa5098d7f3e9d-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:35:03.751498Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-44b2c1cb6c27447c93b72d3935ff25cc",
+            "assessment_id": "assess-model-79dfa5098d7f3e9d-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-79dfa5098d7f3e9d-model-79dfa5098d7f3e9d-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-79dfa5098d7f3e9d-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-79dfa5098d7f3e9d-ai",
+            "finding_id": "model-79dfa5098d7f3e9d",
+            "run_id": "run-44b2c1cb6c27447c93b72d3935ff25cc",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.5,
+            "assumptions": [
+              "The finding is assessed on the code as written; the defect is unambiguously present in src/vuln_cmd.ts regardless of whether it is currently wired into a router.",
+              "Reachability is unverified: no importer of pingHandler and no express()/listen()/route wiring exists anywhere in the 8-file snapshot, and no package.json or server entrypoint is present. Runtime exploitability of a deployed app is therefore unknown, not confirmed.",
+              "The process runs with normal application privileges and /bin/sh is available on the deployment platform, which is required for shell metacharacter interpretation; neither was verifiable from the snapshot.",
+              "Impact scope is limited to the Node process's own privileges (no evidence of privilege boundary crossing), hence no scope change was assumed even though the vector was ultimately omitted."
+            ],
+            "rationale": "## Assessment: model-79dfa5098d7f3e9d (CWE-78, OS command injection)\n\n**Verdict: the defect is real and fully visible in the code. Confirmed sink and source; exploitability of the running app is unverified because no routing exists in this snapshot.**\n\n**What the code does** (`src/vuln_cmd.ts`, all 8 lines read):\n\n```ts\n3: export function pingHandler(req: Request, res: Response) {\n4:     const host = req.query.host as string;\n5:     exec('ping -c 1 ' + host, (err, stdout) => {\n6:         res.send(stdout);\n7:     });\n```\n\nLine 4 reads an attacker-controlled query parameter; line 5 concatenates it directly into a command string handed to `child_process.exec`. `exec` runs its argument through `/bin/sh -c`, so shell metacharacters in `host` (`;`, `&&`, `|`, `$(...)`, backticks) are interpreted by the shell. `'127.0.0.1; id'` produces the command `ping -c 1 127.0.0.1; id`, executing `id` on the host. There is no validation, allowlisting, escaping, or `--` separator anywhere in the function. The `as string` cast is type-level only and enforces nothing at runtime; if `host` is an array (Express parses repeated params as arrays), string coercion yields a comma-joined value that still flows into the command.\n\nThe severity is right: this is direct command injection at the OS boundary, and the command runs with the privileges of the Node process. Line 6 also returns the child's stdout to the requester, which turns the defect into a straightforward read-back channel for command output, raising confidentiality impact beyond mere code execution.\n\n**Independent corroboration: none obtained.** Both deep scanners are unavailable in this environment: Semgrep returned `semgrep not found on PATH`, and CodeQL returned `codeql not found on PATH` and was skipped as an opt-in DEEP step. `check_coverage` shows empty records across all five scanners. So this assessment rests on my own reading of the file, which is short enough to read completely and leaves no doubt about the sink. I am not t",
+            "evidence_refs": [
+              "model-79dfa5098d7f3e9d-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-79dfa5098d7f3e9d",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:34:37.650721Z",
+            "metadata": {
+              "tool_calls_made": 11,
+              "total_tokens": 44560,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "advisory_routing": {
+    "is_advisory_only": true,
+    "affects_finding_status": false,
+    "note": "Advisory recommendations never set or change a finding status; IndependentValidator remains the sole status owner.",
+    "route_counts": {},
+    "routed": 0,
+    "unavailable": 0,
+    "payloads": []
+  }
+}

@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Security assessment run-478cac2a54c04fc19aea10cb3e71a08a</title>
+<style>
+:root{--bg:#0e1319;--card:#161d24;--ink:#e8edf2;--muted:#9aa7b4;--hairline:#2a3440;
+--accent:#1c69d4;--green:#22c55e;--yellow:#f59e0b;--red:#e22718;--code:#0b0f14}
+*{box-sizing:border-box}html{scrollbar-color:#3a4654 var(--bg)}
+body{font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:1100px;
+margin:40px auto;padding:0 20px;background:var(--bg);color:var(--ink)}
+h1{font-size:28px;margin:0 0 4px}h2{font-size:19px;margin:36px 0 12px;
+padding-bottom:8px;border-bottom:1px solid var(--hairline)}
+a{color:#6ea8fe}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+font-size:.86em;background:var(--code);border:1px solid var(--hairline);
+border-radius:4px;padding:2px 6px}
+.meta{color:var(--muted);font-size:13px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.chip{font-size:12px;border:1px solid var(--hairline);border-radius:999px;padding:3px 12px;color:var(--muted)}
+.counts{display:flex;flex-wrap:wrap;gap:12px;padding:0;list-style:none;margin:20px 0}
+.counts li{flex:1 1 140px;background:var(--card);border:1px solid var(--hairline);
+border-left:4px solid var(--muted);border-radius:6px;padding:10px 14px}
+.counts li.ok{border-left-color:var(--green)}.counts li.warn{border-left-color:var(--yellow)}
+.counts li.bad{border-left-color:var(--red)}
+.count{font-size:28px;font-weight:700;line-height:1.1}.counts small{color:var(--muted)}
+.finding{background:var(--card);border:1px solid var(--hairline);border-radius:8px;
+padding:18px 20px;margin:14px 0}
+.finding h3{margin:0 0 6px;font-size:16px}
+.st{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
+border-radius:4px;padding:2px 8px;margin-right:6px}
+.st-confirmed{background:rgba(34,197,94,.15);color:var(--green);border:1px solid var(--green)}
+.st-unresolved,.st-unprocessed{background:rgba(245,158,11,.13);color:var(--yellow);border:1px solid var(--yellow)}
+.st-rejected{background:rgba(154,167,180,.13);color:var(--muted);border:1px solid var(--muted)}
+.sev-high{color:var(--red)}.sev-medium{color:var(--yellow)}.sev-low{color:#6ea8fe}
+pre{background:var(--code);border:1px solid var(--hairline);border-radius:6px;
+padding:12px 14px;overflow-x:auto;font-size:13px;line-height:1.5;scrollbar-color:#3a4654 var(--code)}
+pre::-webkit-scrollbar{height:10px}pre::-webkit-scrollbar-track{background:var(--code)}
+pre::-webkit-scrollbar-thumb{background:#3a4654;border-radius:5px}
+pre::-webkit-scrollbar-thumb:hover{background:#4d5c6e}
+::-webkit-scrollbar{width:12px;height:12px}::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#3a4654;border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:#4d5c6e}
+.cover{background:var(--card);border:1px solid var(--hairline);border-radius:8px;
+padding:12px 16px;margin:10px 0}
+.cover b{color:var(--ink)}.cover ul{margin:6px 0 0;padding-left:20px;color:var(--muted)}
+.owasp{overflow-x:auto}.owasp table{width:100%;border-collapse:collapse;font-size:13px}
+.owasp th,.owasp td{border:1px solid var(--hairline);padding:8px;text-align:left;vertical-align:top;overflow-wrap:anywhere}
+@media print{body{margin:20px;background:#fff;color:#000}.finding,.counts li,.cover{break-inside:avoid}}
+</style></head><body>
+<h1>Security assessment <code>run-478cac2a54c04fc19aea10cb3e71a08a</code></h1>
+<p class="meta">devsecops-agent 0.2.0</p>
+<div class="chips"><span class="chip">commit: 37f2458c4ec90f9d2fe19a9b49d114cbec8b5af0</span><span class="chip">target: local</span><span class="chip">status: completed</span><span class="chip">gate: failed</span><span class="chip">errors: []</span><span class="chip">configuration: {&#39;schema_version&#39;: 1, &#39;profile&#39;: &#39;fast&#39;, &#39;fail_on&#39;: &#39;high&#39;, &#39;output_dir&#39;: &#39;d:\\New folder\\DevSecOps-Agent\\evidence\\8-scenarios-ai-full-2026-11-25\\KB3&#39;, &#39;timezone&#39;: &#39;Asia/Saigon&#39;, &#39;timeout&#39;: 600, &#39;max_files&#39;: 100000, &#39;allow_dirty&#39;: True, &#39;ci&#39;: False, &#39;laya&#39;: False, &#39;laya_config_path&#39;: None, &#39;ai_review&#39;: True, &#39;provider_profile&#39;: &#39;kojo-bench-tmp&#39;, &#39;provider_model&#39;: &#39;empero/kojo&#39;, &#39;ai_report&#39;: True, &#39;max_ai_findings&#39;: 10, &#39;max_model_requests&#39;: None, &#39;mode&#39;: &#39;hunt&#39;, &#39;tools&#39;: [&#39;native-hunt&#39;]}</span></div>
+<ul class="counts">
+<li class="ok"><span class="count">9</span><br><small>Total</small></li>
+<li class="ok"><span class="count">0</span><br><small>Confirmed</small></li>
+<li><span class="count">0</span><br><small>Rejected</small></li>
+<li class="warn"><span class="count">9</span><br><small>Unresolved</small></li>
+<li class="warn"><span class="count">0</span><br><small>Unprocessed</small></li>
+</ul>
+<h2>Coverage</h2>
+<div class="cover"><b>owasp-dependency-check</b>
+<span class="meta"> — 0/0 units analyzed</span>
+</div><div class="cover"><b>gitleaks</b>
+<span class="meta"> — 0/0 units analyzed</span>
+</div><div class="cover"><b>semgrep</b>
+<span class="meta"> — 0/0 units analyzed</span>
+</div><div class="cover"><b>trivy</b>
+<span class="meta"> — 0/0 units analyzed</span>
+</div>
+
+<h2>OWASP Top 10:2025 and CWE mapping</h2>
+<p class="meta">This is a CWE classification of reported findings, not a coverage or compliance assessment. An empty category means No mapped findings reported; it does not mean tested, safe or passed. Counts retain finding status; pending includes unprocessed, triaged, assessed and pending validation. A finding with multiple labels may appear in several rows/categories; do not add those row counts.</p>
+<div class="owasp"><table><thead><tr><th scope="col">OWASP category</th><th scope="col">Reported CWE</th><th scope="col">Finding IDs</th><th scope="col">Finding status counts</th></tr></thead>
+<tbody><tr><td>A01:2025 Broken Access Control</td><td>—</td><td>—</td><td>Confirmed: 0; Rejected: 0; Unresolved: 0; Pending: 0</td></tr><tr><td>A02:2025 Security Misconfiguration</td><td>—</td><td>—</td><td>Confirmed: 0; Rejected: 0; Unresolved: 0; Pending: 0</td></tr><tr><td>A03:2025 Software Supply Chain Failures</td><td>—</td><td>—</td><td>Confirmed: 0; Rejected: 0; Unresolved: 0; Pending: 0</td></tr><tr><td>A04:2025 Cryptographic Failures</td><td>—</td><td>—</td><td>Confirmed: 0; Rejected: 0; Unresolved: 0; Pending: 0</td></tr><tr><td>A05:2025 Injection</td><td>CWE-78</td><td>model-46073067cb2040c4, model-579e2ee9320c00ff</td><td>Confirmed: 0; Rejected: 0; Unresolved: 2; Pending: 0</td></tr><tr><td>A05:2025 Injection</td><td>CWE-89</td><td>model-51eebd1bfa11dcb5, model-54d4ad9ceed276c5, model-d892dbb509e17195</td><td>Confirmed: 0; Rejected: 0; Unresolved: 3; Pending: 0</td></tr><tr><td>A06:2025 Insecure Design</td><td>—</td><td>—</td><td>Confirmed: 0; Rejected: 0; Unresolved: 0; Pending: 0</td></tr><tr><td>A07:2025 Authentication Failures</td><td>—</td><td>—</td><td>Confirmed: 0; Rejected: 0; Unresolved: 0; Pending: 0</td></tr><tr><td>A08:2025 Software or Data Integrity Failures</td><td>CWE-502</td><td>model-1c9c9f297b2bb1a8, model-a47246365b979b90, model-c5e393381934a763, model-fb6d571b9cbd0737</td><td>Confirmed: 0; Rejected: 0; Unresolved: 4; Pending: 0</td></tr><tr><td>A09:2025 Security Logging &amp; Alerting Failures</td><td>—</td><td>—</td><td>Confirmed: 0; Rejected: 0; Unresolved: 0; Pending: 0</td></tr><tr><td>A10:2025 Mishandling of Exceptional Conditions</td><td>—</td><td>—</td><td>Confirmed: 0; Rejected: 0; Unresolved: 0; Pending: 0</td></tr></tbody></table></div>
+<p class="meta">Mapping source: <a href="https://top10.owasp.org/2025/">OWASP Top 10:2025</a></p>
+<h2>Findings</h2>
+<section class="finding"><h3>OS command injection via unsanitized request parameter in shell=True Popen</h3>
+<p><span class="st st-unresolved">unresolved</span><span class="sev-critical">critical</span>
+<span class="meta"> · model-579e2e · CWE-78</span></p>
+<p>request.args.get(&#39;target&#39;) flows directly into a concatenated shell command string passed to subprocess.Popen with shell=True. Any attacker who can reach this route controls the shell line, e.g. ?target=127.0.0.1;id, yielding arbitrary command execution as the app&#39;s user.</p>
+<p class="meta">native-hunt / model-hunt / app/vuln_cmd.py:6</p>
+<pre>--- app/vuln_cmd.py (lines 1-6) ---
+1: import subprocess
+2: from flask import request
+3: 
+4: def run_check():
+5:     target = request.args.get(&#34;target&#34;, &#34;&#34;)
+6:     return subprocess.Popen(&#34;ping -c 1 &#34; + target, shell=True)</pre>
+</section><section class="finding"><h3>Unsafe deserialization of raw request body with pickle.loads</h3>
+<p><span class="st st-unresolved">unresolved</span><span class="sev-critical">critical</span>
+<span class="meta"> · model-1c9c9f · CWE-502</span></p>
+<p>request.get_data() is passed straight to pickle.loads. Pickle can invoke arbitrary callables during unpickling, so a crafted body achieves remote code execution before any validation is possible. There is no allowlist, signing, or type check.</p>
+<p class="meta">native-hunt / model-hunt / app/vuln_pickle.py:6</p>
+<pre>--- app/vuln_pickle.py (lines 1-6) ---
+1: import pickle
+2: from flask import request
+3: 
+4: def load_job():
+5:     payload = request.get_data()
+6:     return pickle.loads(payload)</pre>
+</section><section class="finding"><h3>SQL injection through string concatenation in cursor.execute</h3>
+<p><span class="st st-unresolved">unresolved</span><span class="sev-high">high</span>
+<span class="meta"> · model-54d4ad · CWE-89</span></p>
+<p>The &#39;name&#39; query parameter is concatenated into the SQL text instead of being bound as a parameter. A value such as &#39; OR &#39;1&#39;=&#39;1 or &#39; UNION SELECT ... breaks out of the string literal and alters the query, enabling data disclosure and authentication bypass.</p>
+<p class="meta">native-hunt / model-hunt / app/vuln_sql.py:5</p>
+<pre>--- app/vuln_sql.py (lines 1-6) ---
+1: from flask import request
+2: 
+3: def find_user(cursor):
+4:     name = request.args.get(&#34;name&#34;, &#34;&#34;)
+5:     cursor.execute(&#34;SELECT * FROM users WHERE name = &#39;&#34; + name + &#34;&#39;&#34;)
+6:     return cursor.fetchall()</pre>
+</section><section class="finding"><h3>Unsafe YAML deserialization using yaml.Loader on request body</h3>
+<p><span class="st st-unresolved">unresolved</span><span class="sev-critical">critical</span>
+<span class="meta"> · model-c5e393 · CWE-502</span></p>
+<p>yaml.load with the full yaml.Loader constructor resolves arbitrary Python object tags (e.g. !!python/object/apply:os.system), so attacker-supplied YAML in the request body leads to code execution. yaml.safe_load is the correct call here.</p>
+<p class="meta">native-hunt / model-hunt / app/vuln_yaml.py:6</p>
+<pre>--- app/vuln_yaml.py (lines 1-6) ---
+1: import yaml
+2: from flask import request
+3: 
+4: def parse_config():
+5:     raw = request.get_data(as_text=True)
+6:     return yaml.load(raw, Loader=yaml.Loader)</pre>
+</section><section class="finding"><h3>SQL injection via string concatenation in user lookup</h3>
+<p><span class="st st-unresolved">unresolved</span><span class="sev-high">high</span>
+<span class="meta"> · model-51eebd · CWE-89</span></p>
+<p>The `name` query parameter is concatenated into the SQL statement inside single quotes instead of being bound as a parameter. A value such as &#39; OR &#39;1&#39;=&#39;1&#39; -- breaks out of the literal and alters the query, enabling data disclosure and authentication bypass on the underlying users table.</p>
+<p class="meta">native-hunt / model-hunt / app/vuln_sql.py:6</p>
+<pre>--- app/vuln_sql.py (lines 1-6) ---
+1: from flask import request
+2: 
+3: def find_user(cursor):
+4:     name = request.args.get(&#34;name&#34;, &#34;&#34;)
+5:     cursor.execute(&#34;SELECT * FROM users WHERE name = &#39;&#34; + name + &#34;&#39;&#34;)
+6:     return cursor.fetchall()</pre>
+</section><section class="finding"><h3>OS command injection via os.system with user-controlled input</h3>
+<p><span class="st st-unresolved">unresolved</span><span class="sev-critical">critical</span>
+<span class="meta"> · model-460730 · CWE-78</span></p>
+<p>The vuln_cmd.py module passes untrusted input into a shell-invoking sink (os.system/subprocess with shell=True) without shlex.quote or argument-list separation, allowing arbitrary command execution. The safe counterpart app/safe_cmd.py uses shlex, which confirms the intended contrast. Exact line number not returned by the tools in this turn, so line 1 is a placeholder for the file-level finding.</p>
+<p class="meta">native-hunt / model-hunt / app/vuln_cmd.py:1</p>
+<pre>--- app/vuln_cmd.py (lines 1-6) ---
+1: import subprocess
+2: from flask import request
+3: 
+4: def run_check():
+5:     target = request.args.get(&#34;target&#34;, &#34;&#34;)
+6:     return subprocess.Popen(&#34;ping -c 1 &#34; + target, shell=True)</pre>
+</section><section class="finding"><h3>Arbitrary code execution via pickle.loads on untrusted data</h3>
+<p><span class="st st-unresolved">unresolved</span><span class="sev-critical">critical</span>
+<span class="meta"> · model-a47246 · CWE-502</span></p>
+<p>Deserializing attacker-controlled bytes with pickle.loads permits arbitrary code execution through __reduce__ payloads. The safe counterpart app/safe_json.py uses json, confirming the intended contrast. Exact line number not returned by the tools in this turn, so line 1 is a placeholder for the file-level finding.</p>
+<p class="meta">native-hunt / model-hunt / app/vuln_pickle.py:1</p>
+<pre>--- app/vuln_pickle.py (lines 1-6) ---
+1: import pickle
+2: from flask import request
+3: 
+4: def load_job():
+5:     payload = request.get_data()
+6:     return pickle.loads(payload)</pre>
+</section><section class="finding"><h3>SQL injection via string-built query</h3>
+<p><span class="st st-unresolved">unresolved</span><span class="sev-critical">critical</span>
+<span class="meta"> · model-d892db · CWE-89</span></p>
+<p>Query text is assembled by concatenation/interpolation of user input instead of bound parameters, allowing SQL injection. The safe counterpart app/safe_sql.py uses parameterized statements. Exact line number not returned by the tools in this turn, so line 1 is a placeholder for the file-level finding.</p>
+<p class="meta">native-hunt / model-hunt / app/vuln_sql.py:1</p>
+<pre>--- app/vuln_sql.py (lines 1-6) ---
+1: from flask import request
+2: 
+3: def find_user(cursor):
+4:     name = request.args.get(&#34;name&#34;, &#34;&#34;)
+5:     cursor.execute(&#34;SELECT * FROM users WHERE name = &#39;&#34; + name + &#34;&#39;&#34;)
+6:     return cursor.fetchall()</pre>
+</section><section class="finding"><h3>Unsafe YAML deserialization via yaml.load without SafeLoader</h3>
+<p><span class="st st-unresolved">unresolved</span><span class="sev-high">high</span>
+<span class="meta"> · model-fb6d57 · CWE-502</span></p>
+<p>yaml.load without SafeLoader can instantiate arbitrary Python objects from crafted documents, leading to code execution. The safe counterpart app/safe_yaml.py uses yaml.safe_load. Exact line number not returned by the tools in this turn, so line 1 is a placeholder for the file-level finding.</p>
+<p class="meta">native-hunt / model-hunt / app/vuln_yaml.py:1</p>
+<pre>--- app/vuln_yaml.py (lines 1-6) ---
+1: import yaml
+2: from flask import request
+3: 
+4: def parse_config():
+5:     raw = request.get_data(as_text=True)
+6:     return yaml.load(raw, Loader=yaml.Loader)</pre>
+</section>
+</body></html>

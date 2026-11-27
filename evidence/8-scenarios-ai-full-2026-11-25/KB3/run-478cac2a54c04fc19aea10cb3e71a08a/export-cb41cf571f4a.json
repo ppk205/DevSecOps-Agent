@@ -1,0 +1,1566 @@
+{
+  "application_version": "0.2.0",
+  "scan_metadata": {
+    "commit": "37f2458c4ec90f9d2fe19a9b49d114cbec8b5af0",
+    "target": "local",
+    "status": "completed",
+    "gate": "failed",
+    "errors": [],
+    "configuration": {
+      "schema_version": 1,
+      "profile": "fast",
+      "fail_on": "high",
+      "output_dir": "d:\\New folder\\DevSecOps-Agent\\evidence\\8-scenarios-ai-full-2026-11-25\\KB3",
+      "timezone": "Asia/Saigon",
+      "timeout": 600,
+      "max_files": 100000,
+      "allow_dirty": true,
+      "ci": false,
+      "laya": false,
+      "laya_config_path": null,
+      "ai_review": true,
+      "provider_profile": "kojo-bench-tmp",
+      "provider_model": "empero/kojo",
+      "ai_report": true,
+      "max_ai_findings": 10,
+      "max_model_requests": null,
+      "mode": "hunt",
+      "tools": [
+        "native-hunt"
+      ]
+    }
+  },
+  "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+  "generated_at": "2026-11-25T13:39:02.486953+00:00",
+  "counts": {
+    "version": "0.1.0",
+    "total": 9,
+    "confirmed": 0,
+    "rejected": 0,
+    "unresolved": 9,
+    "unprocessed": 0
+  },
+  "coverage_summary": {
+    "owasp-dependency-check": [],
+    "gitleaks": [],
+    "semgrep": [],
+    "trivy": []
+  },
+  "owasp_top10": {
+    "edition": "2025",
+    "source_url": "https://top10.owasp.org/2025/",
+    "snapshot_date": "2026-11-04",
+    "classification_only": true,
+    "mapping_basis": "Exact normalized primary/secondary CWEs in OWASP category-specific mapped-CWE lists",
+    "note": "This is a CWE classification of reported findings, not a coverage or compliance assessment. An empty category means No mapped findings reported; it does not mean tested, safe or passed. Counts retain finding status; pending includes unprocessed, triaged, assessed and pending validation. A finding with multiple labels may appear in several rows/categories; do not add those row counts.",
+    "total_findings": 9,
+    "categories": [
+      {
+        "id": "A01:2025",
+        "name": "Broken Access Control",
+        "source_url": "https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/",
+        "source_sha256": "e51ca05866f4213489e82484f1f48ed4d779e1809e87f70449806b496a0320cd",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A02:2025",
+        "name": "Security Misconfiguration",
+        "source_url": "https://top10.owasp.org/2025/A02_2025-Security_Misconfiguration/",
+        "source_sha256": "532fbbd67f3db734b7ed5d47e0263dd3800fce80e22da327123a88f2947017c9",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A03:2025",
+        "name": "Software Supply Chain Failures",
+        "source_url": "https://top10.owasp.org/2025/A03_2025-Software_Supply_Chain_Failures/",
+        "source_sha256": "66090225ad8f54a836e5b9e94456243baa7d38b70176f4d720668ef36f3a793d",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A04:2025",
+        "name": "Cryptographic Failures",
+        "source_url": "https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures/",
+        "source_sha256": "5b140b4cadf334becc35334278494f98396dc9b5720df6c904688352b51dc834",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A05:2025",
+        "name": "Injection",
+        "source_url": "https://top10.owasp.org/2025/A05_2025-Injection/",
+        "source_sha256": "69d7ec591944699c49b89c544a52cb32adccbfad56c41784ca34fde837822de6",
+        "total": 5,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 5
+        },
+        "finding_ids": [
+          "model-46073067cb2040c4",
+          "model-51eebd1bfa11dcb5",
+          "model-54d4ad9ceed276c5",
+          "model-579e2ee9320c00ff",
+          "model-d892dbb509e17195"
+        ],
+        "cwes": [
+          {
+            "cwe": "CWE-78",
+            "total": 2,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 2
+            },
+            "finding_ids": [
+              "model-46073067cb2040c4",
+              "model-579e2ee9320c00ff"
+            ]
+          },
+          {
+            "cwe": "CWE-89",
+            "total": 3,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 3
+            },
+            "finding_ids": [
+              "model-51eebd1bfa11dcb5",
+              "model-54d4ad9ceed276c5",
+              "model-d892dbb509e17195"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "A06:2025",
+        "name": "Insecure Design",
+        "source_url": "https://top10.owasp.org/2025/A06_2025-Insecure_Design/",
+        "source_sha256": "cf67ac90b3c088ca4566807fbc4bbd2090bccc81d61f15c0e25190032618195f",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A07:2025",
+        "name": "Authentication Failures",
+        "source_url": "https://top10.owasp.org/2025/A07_2025-Authentication_Failures/",
+        "source_sha256": "9decccf146242740ba34b1c14df7b729ef159274a3533182c6bcefc9f52c8816",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A08:2025",
+        "name": "Software or Data Integrity Failures",
+        "source_url": "https://top10.owasp.org/2025/A08_2025-Software_or_Data_Integrity_Failures/",
+        "source_sha256": "03082e5a3ce031d6d2425927653aca0ad47d474dafb4208862e86b4363d66d85",
+        "total": 4,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 4
+        },
+        "finding_ids": [
+          "model-1c9c9f297b2bb1a8",
+          "model-a47246365b979b90",
+          "model-c5e393381934a763",
+          "model-fb6d571b9cbd0737"
+        ],
+        "cwes": [
+          {
+            "cwe": "CWE-502",
+            "total": 4,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 4
+            },
+            "finding_ids": [
+              "model-1c9c9f297b2bb1a8",
+              "model-a47246365b979b90",
+              "model-c5e393381934a763",
+              "model-fb6d571b9cbd0737"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "A09:2025",
+        "name": "Security Logging & Alerting Failures",
+        "source_url": "https://top10.owasp.org/2025/A09_2025-Security_Logging_and_Alerting_Failures/",
+        "source_sha256": "e8f875d2db062bfd3eb00db65486b30dd64c417357f9346a395cf434b5055f31",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A10:2025",
+        "name": "Mishandling of Exceptional Conditions",
+        "source_url": "https://top10.owasp.org/2025/A10_2025-Mishandling_of_Exceptional_Conditions/",
+        "source_sha256": "492a7444a58c06ec76af06ed4f89e656804cde6b71f61ba2ed5703a9aa343864",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      }
+    ],
+    "unmapped": []
+  },
+  "findings": [
+    {
+      "version": "0.1.0",
+      "finding_id": "model-579e2ee9320c00ff",
+      "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+      "fingerprint": "579e2ee9320c00ff97ae7a985c637898e8c10d65bea6442f92e8443a37b2c4d4",
+      "title": "OS command injection via unsanitized request parameter in shell=True Popen",
+      "description": "request.args.get('target') flows directly into a concatenated shell command string passed to subprocess.Popen with shell=True. Any attacker who can reach this route controls the shell line, e.g. ?target=127.0.0.1;id, yielding arbitrary command execution as the app's user.",
+      "cwe_category": "CWE-78",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-579e2ee9320c00ff-obs",
+          "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-78",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "request.args.get('target') flows directly into a concatenated shell command string passed to subprocess.Popen with shell=True. Any attacker who can reach this route controls the shell line, e.g. ?target=127.0.0.1;id, yielding arbitrary command execution as the app's user.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/vuln_cmd.py",
+            "language": "python",
+            "line_start": 6,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/vuln_cmd.py (lines 1-6) ---\n1: import subprocess\n2: from flask import request\n3: \n4: def run_check():\n5:     target = request.args.get(\"target\", \"\")\n6:     return subprocess.Popen(\"ping -c 1 \" + target, shell=True)"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:36:52.500210Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-579e2ee9320c00ff-obs"
+      ],
+      "created_at": "2026-11-25T13:36:52.500210Z",
+      "updated_at": "2026-11-25T13:36:52.500210Z",
+      "metadata": {
+        "title": "OS command injection via unsanitized request parameter in shell=True Popen",
+        "rationale": "request.args.get('target') flows directly into a concatenated shell command string passed to subprocess.Popen with shell=True. Any attacker who can reach this route controls the shell line, e.g. ?target=127.0.0.1;id, yielding arbitrary command execution as the app's user.",
+        "evidence": "target = request.args.get(\"target\", \"\")\n    return subprocess.Popen(\"ping -c 1 \" + target, shell=True)",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-579e2ee9320c00ff",
+          "finding_id": "model-579e2ee9320c00ff",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-579e2ee9320c00ff-model-579e2ee9320c00ff-obs",
+            "ev-model-579e2ee9320c00ff-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:38:48.634326Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+            "assessment_id": "assess-model-579e2ee9320c00ff-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-579e2ee9320c00ff-model-579e2ee9320c00ff-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-579e2ee9320c00ff-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-579e2ee9320c00ff-ai",
+            "finding_id": "model-579e2ee9320c00ff",
+            "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": {
+              "version": "4.0",
+              "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+              "base_score": 9.3,
+              "qualitative": "critical",
+              "source": "ai-proposal",
+              "notes": "",
+              "overall_score": 9.3,
+              "base_rating": "Critical",
+              "overall_rating": "Critical",
+              "nomenclature": "CVSS-B",
+              "calculation_source": "FIRST CVSS v4.0",
+              "metric_assumptions_verified": false
+            },
+            "confidence": 0.5,
+            "assumptions": [
+              "The function is registered as a Flask view or called from one; flask.request raises RuntimeError outside a request context, which implies this is the intent.",
+              "The parameter is reachable over HTTP without authentication, as no auth decorators or checks appear in the snapshot.",
+              "Semgrep and CodeQL were unavailable in this environment, so the finding rests on the native-hunt observation and direct source reading rather than an independent second scanner.",
+              "check_coverage returned an empty result for CWE-78; overall analyzed-code coverage for this CWE is unknown."
+            ],
+            "rationale": "Both external scanners are unavailable, so I'll fall back to the OWASP scanner and query existing findings for this file.\n\nThat call was a mistake on my part; no expert consultation is needed here. Let me run the remaining available scanner instead.\n\nI have what I need from the source itself. Here's the assessment.\n\n**Confirmed in source (app/vuln_cmd.py, all 6 lines):**\n```python\ntarget = request.args.get(\"target\", \"\")          # line 5: attacker-controlled, no validation\nreturn subprocess.Popen(\"ping -c 1 \" + target, shell=True)   # line 6: sink\n```\nLine 5 and line 6 are adjacent with no validation, sanitization, allowlist, or type coercion between them. `shell=True` means the string is handed to `/bin/sh -c`, so metacharacters (`;`, `&&`, `|`, `$()`, backticks) are interpreted. `?target=127.0.0.1;id` executes `id` as the app's user. The taint flow is complete within one function; this is a true positive for CWE-78.\n\n**One gap: route registration is not in the snapshot.** The snapshot contains only eight leaf modules (`safe_cmd.py`, `safe_json.py`, `safe_sql.py`, `safe_yaml.py` and four `vuln_*` counterparts). There is no app factory, no `@app.route`, no `add_url_rule`, no blueprint, and no entrypoint. My grep for `run_check|vuln_cmd` matched only the definition itself. The use of `flask.request` implies a view, but I cannot prove the route is registered or unauthenticated from this snapshot. That limits confidence in *reachability*, not in the flaw.\n\n**Tool coverage was poor.** Semgrep and CodeQL both failed (`not found on PATH`), so I could not independently corroborate the flow; the native-hunt observation plus direct source reading is the whole evidentiary basis. `check_coverage` for CWE-78 returned an empty result, so I cannot state how much of the codebase was actually analyzed. Sibling files like `safe_cmd.py` show the codebase deliberately mixes safe and unsafe variants, which is consistent with this being an intentional test fixture.\n\n**Fix:** drop the sh",
+            "evidence_refs": [
+              "model-579e2ee9320c00ff-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-579e2ee9320c00ff",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:37:34.914238Z",
+            "metadata": {
+              "tool_calls_made": 11,
+              "total_tokens": 49328,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "computed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-1c9c9f297b2bb1a8",
+      "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+      "fingerprint": "1c9c9f297b2bb1a8ed90685be20f42adb0649ed6d4bc68cb629be69845077921",
+      "title": "Unsafe deserialization of raw request body with pickle.loads",
+      "description": "request.get_data() is passed straight to pickle.loads. Pickle can invoke arbitrary callables during unpickling, so a crafted body achieves remote code execution before any validation is possible. There is no allowlist, signing, or type check.",
+      "cwe_category": "CWE-502",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-1c9c9f297b2bb1a8-obs",
+          "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-502",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "request.get_data() is passed straight to pickle.loads. Pickle can invoke arbitrary callables during unpickling, so a crafted body achieves remote code execution before any validation is possible. There is no allowlist, signing, or type check.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/vuln_pickle.py",
+            "language": "python",
+            "line_start": 6,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/vuln_pickle.py (lines 1-6) ---\n1: import pickle\n2: from flask import request\n3: \n4: def load_job():\n5:     payload = request.get_data()\n6:     return pickle.loads(payload)"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:36:52.501224Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-1c9c9f297b2bb1a8-obs"
+      ],
+      "created_at": "2026-11-25T13:36:52.501224Z",
+      "updated_at": "2026-11-25T13:36:52.501224Z",
+      "metadata": {
+        "title": "Unsafe deserialization of raw request body with pickle.loads",
+        "rationale": "request.get_data() is passed straight to pickle.loads. Pickle can invoke arbitrary callables during unpickling, so a crafted body achieves remote code execution before any validation is possible. There is no allowlist, signing, or type check.",
+        "evidence": "payload = request.get_data()\n    return pickle.loads(payload)",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-1c9c9f297b2bb1a8",
+          "finding_id": "model-1c9c9f297b2bb1a8",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-1c9c9f297b2bb1a8-model-1c9c9f297b2bb1a8-obs",
+            "ev-model-1c9c9f297b2bb1a8-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:38:48.635304Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+            "assessment_id": "assess-model-1c9c9f297b2bb1a8-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-1c9c9f297b2bb1a8-model-1c9c9f297b2bb1a8-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-1c9c9f297b2bb1a8-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-1c9c9f297b2bb1a8-ai",
+            "finding_id": "model-1c9c9f297b2bb1a8",
+            "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": {
+              "version": "4.0",
+              "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H",
+              "base_score": 10.0,
+              "qualitative": "critical",
+              "source": "ai-proposal",
+              "notes": "",
+              "overall_score": 10.0,
+              "base_rating": "Critical",
+              "overall_rating": "Critical",
+              "nomenclature": "CVSS-B",
+              "calculation_source": "FIRST CVSS v4.0",
+              "metric_assumptions_verified": false
+            },
+            "confidence": 0.5,
+            "assumptions": [
+              "request.get_data() returns the full raw body with no upstream transformation or signature verification; no middleware or before_request hook was found in the snapshot, but the snapshot has no app entrypoint, so middleware presence cannot be fully excluded.",
+              "No caller of load_job exists within the scanned tree; a caller or route registration outside the snapshot (e.g. a WSGI entrypoint, router module, or dynamic import) cannot be ruled out.",
+              "The eight-file app/ layout is a curated fixture set, so absence of routing code may reflect the fixture rather than production deployment structure.",
+              "Scanner coverage for CWE-502 could not be established; check_coverage returned an empty result and both Semgrep and CodeQL failed to execute."
+            ],
+            "rationale": "Semgrep and CodeQL aren't installed, so I'll rely on direct source reading plus the existing findings index.\n\n## Assessment: model-1c9c9f297b2bb1a8\n\n**Confirmed sink.** `app/vuln_pickle.py` is exactly as the scanner describes -- the whole file is six lines:\n\n```python\nimport pickle\nfrom flask import request\n\ndef load_job():\n    payload = request.get_data()\n    return pickle.loads(payload)\n```\n\n`request.get_data()` returns the raw request body untouched, and it goes straight into `pickle.loads` with no allowlist `Unpickler` subclass, no HMAC signature check, no type validation. The Python docs are unambiguous here: \"It is possible to construct malicious pickle data which will execute arbitrary code during unpickling. Never unpickle data that could have come from an untrusted source.\" A crafted body using the `__reduce__` protocol reaches RCE during `loads`, before any of this code could validate the result.\n\n**Reachability is the open question.** I could not find any caller. A grep for `load_job` and `vuln_pickle` across all Python files returns only the definition itself at line 4. There are no `@route` decorators, no `add_url_rule`, no `import_module`, and no `getattr` dispatch anywhere in the tree. The snapshot contains only eight flat files under `app/` (`safe_*` and `vuln_*` pairs for cmd, json, sql, yaml, pickle), with no `__main__`, no `Flask(...)` instantiation, and no application entrypoint. The route lookup tool returned nothing because it is served from the scan manifest, not the live repo.\n\nSo the module is a vulnerability fixture with no wired route *in this snapshot*. That is a statement about the snapshot, not proof the function is dead in the real deployment -- the index context gives no manifest detail, and a WSGI entrypoint living outside the scanned tree would make this fully reachable. I am treating reachability as unknown, not as safe.\n\n**Scanner coverage.** Semgrep and CodeQL both failed to run (not on PATH), so there is no independent tool conf",
+            "evidence_refs": [
+              "model-1c9c9f297b2bb1a8-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-1c9c9f297b2bb1a8",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:37:27.938331Z",
+            "metadata": {
+              "tool_calls_made": 11,
+              "total_tokens": 47136,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "computed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-54d4ad9ceed276c5",
+      "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+      "fingerprint": "54d4ad9ceed276c5307789538e5518ae83be0f38aa756abc035127f6b55e60ef",
+      "title": "SQL injection through string concatenation in cursor.execute",
+      "description": "The 'name' query parameter is concatenated into the SQL text instead of being bound as a parameter. A value such as ' OR '1'='1 or ' UNION SELECT ... breaks out of the string literal and alters the query, enabling data disclosure and authentication bypass.",
+      "cwe_category": "CWE-89",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-54d4ad9ceed276c5-obs",
+          "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-89",
+          "severity": "high",
+          "native_severity": null,
+          "message": "The 'name' query parameter is concatenated into the SQL text instead of being bound as a parameter. A value such as ' OR '1'='1 or ' UNION SELECT ... breaks out of the string literal and alters the query, enabling data disclosure and authentication bypass.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/vuln_sql.py",
+            "language": "python",
+            "line_start": 5,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/vuln_sql.py (lines 1-6) ---\n1: from flask import request\n2: \n3: def find_user(cursor):\n4:     name = request.args.get(\"name\", \"\")\n5:     cursor.execute(\"SELECT * FROM users WHERE name = '\" + name + \"'\")\n6:     return cursor.fetchall()"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:36:52.505223Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-54d4ad9ceed276c5-obs"
+      ],
+      "created_at": "2026-11-25T13:36:52.505223Z",
+      "updated_at": "2026-11-25T13:36:52.505223Z",
+      "metadata": {
+        "title": "SQL injection through string concatenation in cursor.execute",
+        "rationale": "The 'name' query parameter is concatenated into the SQL text instead of being bound as a parameter. A value such as ' OR '1'='1 or ' UNION SELECT ... breaks out of the string literal and alters the query, enabling data disclosure and authentication bypass.",
+        "evidence": "name = request.args.get(\"name\", \"\")\n    cursor.execute(\"SELECT * FROM users WHERE name = '\" + name + \"'\" )",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-54d4ad9ceed276c5",
+          "finding_id": "model-54d4ad9ceed276c5",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-54d4ad9ceed276c5-model-54d4ad9ceed276c5-obs",
+            "ev-model-54d4ad9ceed276c5-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:38:48.635304Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+            "assessment_id": "assess-model-54d4ad9ceed276c5-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-54d4ad9ceed276c5-model-54d4ad9ceed276c5-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-54d4ad9ceed276c5-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-54d4ad9ceed276c5-ai",
+            "finding_id": "model-54d4ad9ceed276c5",
+            "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.92,
+            "assumptions": [
+              "The cursor is a standard DB-API cursor whose execute() does not itself re-escape concatenated SQL text.",
+              "find_user is reachable from a live HTTP handler; no in-repo caller or route manifest entry exists in this snapshot, so reachability is inferred from the function reading request.args directly rather than proven.",
+              "The 'users' table is not otherwise restricted such that a rewritten query would be harmless."
+            ],
+            "rationale": "Direct source-to-sink flow: request.args['name'] on line 4 is concatenated into the SQL string on line 5 and passed to cursor.execute with no parameter binding, escaping, or validation. Attacker-controlled quote characters terminate the string literal and permit query rewriting (CWE-89). The safe sibling implementation in app/safe_sql.py parameterizes the identical query, confirming no project-wide escaping layer exists. Two additional native-hunt observations independently flag the same sink. Semgrep and CodeQL were unavailable (not on PATH), so no independent static confirmation was obtained.",
+            "evidence_refs": [
+              "model-54d4ad9ceed276c5-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-54d4ad9ceed276c5",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:37:16.509876Z",
+            "metadata": {
+              "tool_calls_made": 11,
+              "total_tokens": 52240,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-c5e393381934a763",
+      "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+      "fingerprint": "c5e393381934a7633214aa61ab753bb55e1e2c941744022750312a9bdecfaf06",
+      "title": "Unsafe YAML deserialization using yaml.Loader on request body",
+      "description": "yaml.load with the full yaml.Loader constructor resolves arbitrary Python object tags (e.g. !!python/object/apply:os.system), so attacker-supplied YAML in the request body leads to code execution. yaml.safe_load is the correct call here.",
+      "cwe_category": "CWE-502",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-c5e393381934a763-obs",
+          "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-502",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "yaml.load with the full yaml.Loader constructor resolves arbitrary Python object tags (e.g. !!python/object/apply:os.system), so attacker-supplied YAML in the request body leads to code execution. yaml.safe_load is the correct call here.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/vuln_yaml.py",
+            "language": "python",
+            "line_start": 6,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/vuln_yaml.py (lines 1-6) ---\n1: import yaml\n2: from flask import request\n3: \n4: def parse_config():\n5:     raw = request.get_data(as_text=True)\n6:     return yaml.load(raw, Loader=yaml.Loader)"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:36:52.507223Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-c5e393381934a763-obs"
+      ],
+      "created_at": "2026-11-25T13:36:52.507223Z",
+      "updated_at": "2026-11-25T13:36:52.507223Z",
+      "metadata": {
+        "title": "Unsafe YAML deserialization using yaml.Loader on request body",
+        "rationale": "yaml.load with the full yaml.Loader constructor resolves arbitrary Python object tags (e.g. !!python/object/apply:os.system), so attacker-supplied YAML in the request body leads to code execution. yaml.safe_load is the correct call here.",
+        "evidence": "raw = request.get_data(as_text=True)\n    return yaml.load(raw, Loader=yaml.Loader)",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-c5e393381934a763",
+          "finding_id": "model-c5e393381934a763",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-c5e393381934a763-model-c5e393381934a763-obs",
+            "ev-model-c5e393381934a763-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:38:48.635304Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+            "assessment_id": "assess-model-c5e393381934a763-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-c5e393381934a763-model-c5e393381934a763-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-c5e393381934a763-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-c5e393381934a763-ai",
+            "finding_id": "model-c5e393381934a763",
+            "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+            "proposed_status": "needs_investigation",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.72,
+            "assumptions": [
+              "The snapshot is the complete source for the assessed system; an external package or out-of-repo wiring could import app.vuln_yaml and call parse_config, which this analysis cannot see.",
+              "No runtime route registration occurs outside the analyzed tree (e.g. string-built add_url_rule in a file not present in the snapshot).",
+              "Semgrep and CodeQL were unavailable (not found on PATH), so no second-engine corroboration was possible; check_coverage for CWE-502 returned no record.",
+              "PyYAML version is not pinned in the snapshot; the sink is unsafe across supported versions, but the mandatory-Loader-argument behavior differs at 6.0."
+            ],
+            "rationale": "Confirmed unsafe deserialization sink: app/vuln_yaml.py:5-6 passes request.get_data(as_text=True) into yaml.load(raw, Loader=yaml.Loader). yaml.Loader is the full unsafe constructor in PyYAML 6.x and resolves arbitrary Python object tags (e.g. !!python/object/apply:os.system), so invocation on attacker input yields RCE. However, an exhaustive search of the entire snapshot (all file types) for the function name, module name, @app.route, add_url_rule, Flask(, include( and import_module found no route, caller, or dynamic dispatch. The snapshot contains eight standalone modules with no application entrypoint, so no attacker-controlled path to the sink is demonstrated. Sink is genuine; exploitability is unproven. Downgraded from critical because the finding asserts a reachable request-body flow that the code does not currently support.",
+            "evidence_refs": [
+              "model-c5e393381934a763-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-c5e393381934a763",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:37:33.170153Z",
+            "metadata": {
+              "tool_calls_made": 10,
+              "total_tokens": 48512,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-51eebd1bfa11dcb5",
+      "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+      "fingerprint": "51eebd1bfa11dcb5b79fccc7750a2f2664f011cd6671aba1bedcf49d7ce00cdf",
+      "title": "SQL injection via string concatenation in user lookup",
+      "description": "The `name` query parameter is concatenated into the SQL statement inside single quotes instead of being bound as a parameter. A value such as ' OR '1'='1' -- breaks out of the literal and alters the query, enabling data disclosure and authentication bypass on the underlying users table.",
+      "cwe_category": "CWE-89",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-51eebd1bfa11dcb5-obs",
+          "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-89",
+          "severity": "high",
+          "native_severity": null,
+          "message": "The `name` query parameter is concatenated into the SQL statement inside single quotes instead of being bound as a parameter. A value such as ' OR '1'='1' -- breaks out of the literal and alters the query, enabling data disclosure and authentication bypass on the underlying users table.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/vuln_sql.py",
+            "language": "python",
+            "line_start": 6,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/vuln_sql.py (lines 1-6) ---\n1: from flask import request\n2: \n3: def find_user(cursor):\n4:     name = request.args.get(\"name\", \"\")\n5:     cursor.execute(\"SELECT * FROM users WHERE name = '\" + name + \"'\")\n6:     return cursor.fetchall()"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:36:52.509732Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-51eebd1bfa11dcb5-obs"
+      ],
+      "created_at": "2026-11-25T13:36:52.509732Z",
+      "updated_at": "2026-11-25T13:36:52.509732Z",
+      "metadata": {
+        "title": "SQL injection via string concatenation in user lookup",
+        "rationale": "The `name` query parameter is concatenated into the SQL statement inside single quotes instead of being bound as a parameter. A value such as ' OR '1'='1' -- breaks out of the literal and alters the query, enabling data disclosure and authentication bypass on the underlying users table.",
+        "evidence": "name = request.args.get(\"name\", \"\")\ncursor.execute(\"SELECT * FROM users WHERE name = '\" + name + \"'\" )",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-51eebd1bfa11dcb5",
+          "finding_id": "model-51eebd1bfa11dcb5",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-51eebd1bfa11dcb5-model-51eebd1bfa11dcb5-obs",
+            "ev-model-51eebd1bfa11dcb5-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:38:48.635304Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+            "assessment_id": "assess-model-51eebd1bfa11dcb5-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-51eebd1bfa11dcb5-model-51eebd1bfa11dcb5-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-51eebd1bfa11dcb5-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-51eebd1bfa11dcb5-ai",
+            "finding_id": "model-51eebd1bfa11dcb5",
+            "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.5,
+            "assumptions": [
+              "The snapshot under analysis is complete and representative of the deployed code; no route or caller exists outside the eight files provided (if a caller does exist, reachability and thus severity rise).",
+              "The database engine supports attacker-controlled syntax after the string literal closes; the '?' paramstyle in safe_sql.py hints at SQLite, but the engine is not confirmed in the snapshot.",
+              "The reported line 6 is a scanner off-by-one; the sink is line 5, as confirmed by both direct file read and the sibling finding model-54d4ad9ceed276c5.",
+              "No upstream sanitization, allowlist, or ORM wrapper exists on the 'name' parameter before it reaches cursor.execute.",
+              "The function is presumed to be a deliberate vulnerable fixture given the paired safe_sql.py, so real-world deployment context is unknown."
+            ],
+            "rationale": "Two other findings report the same defect (duplicate candidates). Let me confirm the exact line numbering and check whether any framework entrypoint wires this function to a route.\n\n## Assessment: finding model-51eebd1bfa11dcb5\n\n**Verdict: true positive for the code defect; exploitation path unconfirmed.**\n\n**What the code shows** (`app/vuln_sql.py`, 6 lines total):\n\n```python\n4:     name = request.args.get(\"name\", \"\")\n5:     cursor.execute(\"SELECT * FROM users WHERE name = '\" + name + \"'\")\n6:     return cursor.fetchall()\n```\n\nLine 4 takes the `name` query parameter straight from the request. Line 5 concatenates it inside a single-quoted SQL literal with no binding, no escaping, and no `%s`/`?` placeholder. Input such as `' OR '1'='1' --` closes the literal and the remainder becomes SQL syntax. The adjacent `app/safe_sql.py` does the same lookup correctly with `cursor.execute(\"SELECT * FROM users WHERE name = ?\", (name,))`, which confirms the unsafe version is a deliberate contrast case rather than a false alarm on a parameterized query.\n\n**Line number correction.** The observation reports line 6, but line 6 is `return cursor.fetchall()`. The sink is on **line 5**. This matches the duplicate finding `model-54d4ad9ceed276c5`, which cites line 5 correctly. Three findings (`model-51eebd1bfa11dcb5`, `model-54d4ad9ceed276c5`, `model-d892dbb509e17195`) describe one and the same defect and should be consolidated into a single record.\n\n**Evidence gaps I could not close:**\n- **No caller or route.** A grep across the snapshot finds `find_user` only at its definition in `app/vuln_sql.py`. No `@app.route` decorator, no `app.py`, no `main.py`, and no import of `vuln_sql` anywhere. `lookup_route` returned a note that it reads the scan manifest, not the live repo, and produced no result. The snapshot contains only eight `app/*.py` files, so this may be an isolated fixture rather than a deployed app. Whether the function is reachable over HTTP is **unknown**.\n- **Database engine un",
+            "evidence_refs": [
+              "model-51eebd1bfa11dcb5-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-51eebd1bfa11dcb5",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:37:57.484035Z",
+            "metadata": {
+              "tool_calls_made": 12,
+              "total_tokens": 50944,
+              "verdict_explicit": false,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-46073067cb2040c4",
+      "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+      "fingerprint": "46073067cb2040c4d51ceb174b29e8711018796c279ccf231c0ee790cb5e9a54",
+      "title": "OS command injection via os.system with user-controlled input",
+      "description": "The vuln_cmd.py module passes untrusted input into a shell-invoking sink (os.system/subprocess with shell=True) without shlex.quote or argument-list separation, allowing arbitrary command execution. The safe counterpart app/safe_cmd.py uses shlex, which confirms the intended contrast. Exact line number not returned by the tools in this turn, so line 1 is a placeholder for the file-level finding.",
+      "cwe_category": "CWE-78",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-46073067cb2040c4-obs",
+          "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-78",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "The vuln_cmd.py module passes untrusted input into a shell-invoking sink (os.system/subprocess with shell=True) without shlex.quote or argument-list separation, allowing arbitrary command execution. The safe counterpart app/safe_cmd.py uses shlex, which confirms the intended contrast. Exact line number not returned by the tools in this turn, so line 1 is a placeholder for the file-level finding.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/vuln_cmd.py",
+            "language": "python",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/vuln_cmd.py (lines 1-6) ---\n1: import subprocess\n2: from flask import request\n3: \n4: def run_check():\n5:     target = request.args.get(\"target\", \"\")\n6:     return subprocess.Popen(\"ping -c 1 \" + target, shell=True)"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:36:52.511741Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-46073067cb2040c4-obs"
+      ],
+      "created_at": "2026-11-25T13:36:52.511741Z",
+      "updated_at": "2026-11-25T13:36:52.511741Z",
+      "metadata": {
+        "title": "OS command injection via os.system with user-controlled input",
+        "rationale": "The vuln_cmd.py module passes untrusted input into a shell-invoking sink (os.system/subprocess with shell=True) without shlex.quote or argument-list separation, allowing arbitrary command execution. The safe counterpart app/safe_cmd.py uses shlex, which confirms the intended contrast. Exact line number not returned by the tools in this turn, so line 1 is a placeholder for the file-level finding.",
+        "evidence": "unknown (file identified via list_files; body not returned by inspect tools in this turn)",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-46073067cb2040c4",
+          "finding_id": "model-46073067cb2040c4",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-46073067cb2040c4-model-46073067cb2040c4-obs",
+            "ev-model-46073067cb2040c4-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:38:48.635304Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+            "assessment_id": "assess-model-46073067cb2040c4-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-46073067cb2040c4-model-46073067cb2040c4-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-46073067cb2040c4-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-46073067cb2040c4-ai",
+            "finding_id": "model-46073067cb2040c4",
+            "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.5,
+            "assumptions": [
+              "The snapshot may be a partial export omitting the routing/wiring layer; if an entry point mounting run_check exists outside this snapshot, status should be upgraded to exploitable.",
+              "If reachable, the endpoint is assumed to require no prior authentication, since the function itself performs no auth check -- this is unverified.",
+              "The intended deployment is a Flask application, inferred only from the flask.request import.",
+              "Tool coverage is incomplete: Semgrep and CodeQL both skipped because their CLIs are not on PATH, and check_coverage returned no data for CWE-78, so no independent dataflow confirmation exists.",
+              "Not assessed: whether other modules in the snapshot introduce reachability indirectly, beyond the grep already performed."
+            ],
+            "rationale": "## Assessment: model-46073067cb2040c4\n\n**The sink is real and correctly identified; the reachability is not established.** The finding is a true positive for the dangerous pattern but I cannot confirm it is exploitable in this snapshot.\n\n**Confirmed evidence** (`app/vuln_cmd.py`, 6 lines, read in full):\n\n```python\n1: import subprocess\n2: from flask import request\n3: \n4: def run_check():\n5:     target = request.args.get(\"target\", \"\")\n6:     return subprocess.Popen(\"ping -c 1 \" + target, shell=True)\n```\n\nLine 5 takes the `target` query parameter with an empty-string default and no validation; line 6 concatenates it into a string passed to `shell=True`. That is textbook CWE-78: `?target=;id` or `?target=$(id)` executes arbitrary commands. The scanner's line-1 placeholder was wrong; the sink is line 6. The contrast with `app/safe_cmd.py` is also accurate -- that file uses an argument list with `shell=False` and no interpolation, which is the correct fix pattern.\n\n**What is missing: reachability.** I tried to establish a path from an HTTP request to `run_check` and could not:\n\n- `grep` for `run_check|vuln_cmd` across the whole snapshot returns exactly one hit: the `def` on line 4. Nothing imports or calls the module.\n- No `@app.route`, `@bp.route`, `add_url_rule`, `Flask(`, or `if __name__` block exists anywhere in the snapshot.\n- The snapshot contains only eight `.py` files and no other file types -- there is no `main.py`, `wsgi.py`, `__init__.py`, requirements file, or template.\n- `lookup_route` is served from the scan manifest, not the live repo, and returned no route mapping.\n\nSo `run_check` is currently dead code. The `request.args` access implies the author intended an HTTP caller, but intent is not wiring.\n\n**Tool coverage is a gap, not a clearance.** Semgrep and CodeQL both reported `skipped` -- \"semgrep not found on PATH\" and \"codeql not found on PATH.\" Zero eligible units analyzed. The finding rests on the `native-hunt` model observation plus my own reading of",
+            "evidence_refs": [
+              "model-46073067cb2040c4-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-46073067cb2040c4",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:38:27.956882Z",
+            "metadata": {
+              "tool_calls_made": 11,
+              "total_tokens": 50208,
+              "verdict_explicit": false,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-a47246365b979b90",
+      "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+      "fingerprint": "a47246365b979b90ecbb5d01e7d454f56ebc9f846835439307352f3d158230d6",
+      "title": "Arbitrary code execution via pickle.loads on untrusted data",
+      "description": "Deserializing attacker-controlled bytes with pickle.loads permits arbitrary code execution through __reduce__ payloads. The safe counterpart app/safe_json.py uses json, confirming the intended contrast. Exact line number not returned by the tools in this turn, so line 1 is a placeholder for the file-level finding.",
+      "cwe_category": "CWE-502",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-a47246365b979b90-obs",
+          "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-502",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "Deserializing attacker-controlled bytes with pickle.loads permits arbitrary code execution through __reduce__ payloads. The safe counterpart app/safe_json.py uses json, confirming the intended contrast. Exact line number not returned by the tools in this turn, so line 1 is a placeholder for the file-level finding.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/vuln_pickle.py",
+            "language": "python",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/vuln_pickle.py (lines 1-6) ---\n1: import pickle\n2: from flask import request\n3: \n4: def load_job():\n5:     payload = request.get_data()\n6:     return pickle.loads(payload)"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:36:52.513740Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-a47246365b979b90-obs"
+      ],
+      "created_at": "2026-11-25T13:36:52.513740Z",
+      "updated_at": "2026-11-25T13:36:52.513740Z",
+      "metadata": {
+        "title": "Arbitrary code execution via pickle.loads on untrusted data",
+        "rationale": "Deserializing attacker-controlled bytes with pickle.loads permits arbitrary code execution through __reduce__ payloads. The safe counterpart app/safe_json.py uses json, confirming the intended contrast. Exact line number not returned by the tools in this turn, so line 1 is a placeholder for the file-level finding.",
+        "evidence": "unknown (file identified via list_files; body not returned by inspect tools in this turn)",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-a47246365b979b90",
+          "finding_id": "model-a47246365b979b90",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-a47246365b979b90-model-a47246365b979b90-obs",
+            "ev-model-a47246365b979b90-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:38:48.635304Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+            "assessment_id": "assess-model-a47246365b979b90-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-a47246365b979b90-model-a47246365b979b90-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-a47246365b979b90-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-a47246365b979b90-ai",
+            "finding_id": "model-a47246365b979b90",
+            "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+            "proposed_status": "needs_manual_review",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.72,
+            "assumptions": [
+              "The snapshot is a partial view of the project and route registration may live in files outside it; this is the main reason status is needs_manual_review rather than confirmed.",
+              "No authentication or allowlisting layer wraps the deserialization inside the function; none is visible in the 6-line file.",
+              "pickle.loads is treated as arbitrary code execution by design (CWE-502), independent of payload construction.",
+              "Absence of semgrep/codeql results reflects missing tooling, not clean analysis."
+            ],
+            "rationale": "Source read confirms a genuine CWE-502 sink: app/vuln_pickle.py line 6 returns pickle.loads(request.get_data()), so attacker-controlled bytes reach an unsafe deserializer with no allowlisting, enabling arbitrary code execution via __reduce__ payloads. The finding's line-1 placeholder is imprecise; the actual sink is line 6. The stated safe counterpart app/safe_json.py does use json.loads, as claimed. However, reachability is unverified: a repo-wide grep for load_job, vuln_pickle, and Flask routing constructs (@app., @bp., add_url_rule, Flask(, route() across all eight modules in the snapshot finds only the definition itself, and the snapshot contains no app factory, blueprint, WSGI entry point, or __main__ block. lookup_route returned no manifest data for either query. Semgrep and CodeQL were both unavailable (not on PATH), so scanner corroboration is absent and check_coverage for CWE-502 returned empty; empty tool output is treated as unknown, not as evidence of absence. The defect is real and should be retained at high priority, but remote exploitability cannot be asserted from this snapshot alone.",
+            "evidence_refs": [
+              "model-a47246365b979b90-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-a47246365b979b90",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:38:35.467546Z",
+            "metadata": {
+              "tool_calls_made": 12,
+              "total_tokens": 49248,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-d892dbb509e17195",
+      "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+      "fingerprint": "d892dbb509e17195e64b516884fb95cec2b2fc904871ccecfa53b2f7ba179aea",
+      "title": "SQL injection via string-built query",
+      "description": "Query text is assembled by concatenation/interpolation of user input instead of bound parameters, allowing SQL injection. The safe counterpart app/safe_sql.py uses parameterized statements. Exact line number not returned by the tools in this turn, so line 1 is a placeholder for the file-level finding.",
+      "cwe_category": "CWE-89",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-d892dbb509e17195-obs",
+          "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-89",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "Query text is assembled by concatenation/interpolation of user input instead of bound parameters, allowing SQL injection. The safe counterpart app/safe_sql.py uses parameterized statements. Exact line number not returned by the tools in this turn, so line 1 is a placeholder for the file-level finding.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/vuln_sql.py",
+            "language": "python",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/vuln_sql.py (lines 1-6) ---\n1: from flask import request\n2: \n3: def find_user(cursor):\n4:     name = request.args.get(\"name\", \"\")\n5:     cursor.execute(\"SELECT * FROM users WHERE name = '\" + name + \"'\")\n6:     return cursor.fetchall()"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:36:52.515760Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-d892dbb509e17195-obs"
+      ],
+      "created_at": "2026-11-25T13:36:52.515760Z",
+      "updated_at": "2026-11-25T13:36:52.515760Z",
+      "metadata": {
+        "title": "SQL injection via string-built query",
+        "rationale": "Query text is assembled by concatenation/interpolation of user input instead of bound parameters, allowing SQL injection. The safe counterpart app/safe_sql.py uses parameterized statements. Exact line number not returned by the tools in this turn, so line 1 is a placeholder for the file-level finding.",
+        "evidence": "unknown (file identified via list_files; body not returned by inspect tools in this turn)",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-d892dbb509e17195",
+          "finding_id": "model-d892dbb509e17195",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-d892dbb509e17195-model-d892dbb509e17195-obs",
+            "ev-model-d892dbb509e17195-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:38:48.635304Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+            "assessment_id": "assess-model-d892dbb509e17195-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-d892dbb509e17195-model-d892dbb509e17195-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-d892dbb509e17195-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-d892dbb509e17195-ai",
+            "finding_id": "model-d892dbb509e17195",
+            "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": {
+              "version": "4.0",
+              "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:N/SC:N/SI:N/SA:N",
+              "base_score": 9.3,
+              "qualitative": "critical",
+              "source": "ai-proposal",
+              "notes": "",
+              "overall_score": 9.3,
+              "base_rating": "Critical",
+              "overall_rating": "Critical",
+              "nomenclature": "CVSS-B",
+              "calculation_source": "FIRST CVSS v4.0",
+              "metric_assumptions_verified": false
+            },
+            "confidence": 0.92,
+            "assumptions": [
+              "The function is reachable from an HTTP handler: it reads flask.request.args itself, so any caller inside a request context exposes it, though no route decorator or caller exists in this snapshot to confirm the mount point.",
+              "No sanitization, allow-list, or quoting helper wraps the value before the sink; none is visible in the file or referenced elsewhere in the tree.",
+              "The database account backing this cursor has read access to the users table (the query itself implies it).",
+              "Whether the underlying DBAPI driver allows stacked statements is unknown, so impact is scored on the read/modify of data reachable through the existing query rather than on arbitrary stacked DDL/DML.",
+              "Scanner engine coverage is incomplete: Semgrep and CodeQL are not installed, so this assessment rests on manual source review plus three native-hunt observations."
+            ],
+            "rationale": "app/vuln_sql.py:5 concatenates the attacker-controlled request.args['name'] value into a SQL string executed by cursor.execute, with no parameter binding or escaping. The value is interpolated inside a single-quoted literal, so a quote-breaking payload alters the query predicate (data disclosure, auth bypass, and driver-dependent stacked queries). The sibling app/safe_sql.py:5 shows the correct parameterized form for the identical query. Two additional independent scanner observations localize the sink to line 5, correcting the finding's line-1 placeholder.",
+            "evidence_refs": [
+              "model-d892dbb509e17195-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-d892dbb509e17195",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:38:30.069474Z",
+            "metadata": {
+              "tool_calls_made": 11,
+              "total_tokens": 50416,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "computed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-fb6d571b9cbd0737",
+      "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+      "fingerprint": "fb6d571b9cbd07379a360c6f691f4397a1c69d56a927163d93986e2094bc791c",
+      "title": "Unsafe YAML deserialization via yaml.load without SafeLoader",
+      "description": "yaml.load without SafeLoader can instantiate arbitrary Python objects from crafted documents, leading to code execution. The safe counterpart app/safe_yaml.py uses yaml.safe_load. Exact line number not returned by the tools in this turn, so line 1 is a placeholder for the file-level finding.",
+      "cwe_category": "CWE-502",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-fb6d571b9cbd0737-obs",
+          "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-502",
+          "severity": "high",
+          "native_severity": null,
+          "message": "yaml.load without SafeLoader can instantiate arbitrary Python objects from crafted documents, leading to code execution. The safe counterpart app/safe_yaml.py uses yaml.safe_load. Exact line number not returned by the tools in this turn, so line 1 is a placeholder for the file-level finding.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/vuln_yaml.py",
+            "language": "python",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/vuln_yaml.py (lines 1-6) ---\n1: import yaml\n2: from flask import request\n3: \n4: def parse_config():\n5:     raw = request.get_data(as_text=True)\n6:     return yaml.load(raw, Loader=yaml.Loader)"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:36:52.517740Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-fb6d571b9cbd0737-obs"
+      ],
+      "created_at": "2026-11-25T13:36:52.517740Z",
+      "updated_at": "2026-11-25T13:36:52.517740Z",
+      "metadata": {
+        "title": "Unsafe YAML deserialization via yaml.load without SafeLoader",
+        "rationale": "yaml.load without SafeLoader can instantiate arbitrary Python objects from crafted documents, leading to code execution. The safe counterpart app/safe_yaml.py uses yaml.safe_load. Exact line number not returned by the tools in this turn, so line 1 is a placeholder for the file-level finding.",
+        "evidence": "unknown (file identified via list_files; body not returned by inspect tools in this turn)",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-fb6d571b9cbd0737",
+          "finding_id": "model-fb6d571b9cbd0737",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-fb6d571b9cbd0737-model-fb6d571b9cbd0737-obs",
+            "ev-model-fb6d571b9cbd0737-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:38:48.635304Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+            "assessment_id": "assess-model-fb6d571b9cbd0737-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-fb6d571b9cbd0737-model-fb6d571b9cbd0737-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-fb6d571b9cbd0737-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-fb6d571b9cbd0737-ai",
+            "finding_id": "model-fb6d571b9cbd0737",
+            "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.5,
+            "assumptions": [
+              "The Flask request import indicates the function is intended to run inside a request context, so the request body is the attacker-controlled input; no route binding exists in the snapshot to prove this.",
+              "The snapshot is complete for these modules (eight app/*.py files, no dependency manifest); if a router or entry point exists outside it, reachability could be confirmed there.",
+              "PyYAML is installed and resolves the full Loader as expected; no version constraint is present in the snapshot.",
+              "Severity is assessed on the code defect itself; the scanner's 'high' is treated as a conservative rating given the unconfirmed reachability, not as a downgrade of the sink."
+            ],
+            "rationale": "## Assessment: finding `model-fb6d571b9cbd0737`\n\n**The vulnerability is real in the code as written.** The exact sink is at `app/vuln_yaml.py:6`:\n\n```python\ndef parse_config():\n    raw = request.get_data(as_text=True)\n    return yaml.load(raw, Loader=yaml.Loader)\n```\n\n`yaml.Loader` is the full-featured constructor, not the safe one. It resolves arbitrary Python object tags, so a body containing something like `!!python/object/apply:os.system [\"id\"]` instantiates and invokes a callable during deserialization, before any validation in the caller could run. The data source is the raw request body, which is fully attacker-controlled. The scanner's line-1 placeholder is imprecise; the sink is line 6, and the tainted source is line 5.\n\n**Corroboration.** A second independent finding (`model-c5e393381934a763`, marked critical) flags the same line with the same mechanism. The safe counterpart `app/safe_yaml.py` uses `yaml.safe_load`, which confirms the contrast is intentional in this codebase. Semgrep and CodeQL could not be run (neither binary is on PATH), so the only corroboration is the duplicate model-based observation, not an independent engine.\n\n**The one genuine gap is reachability.** There is no Flask app object, no `@app.route`/`@bp.route` decorator, no `add_url_rule`, and no `__main__` entry point anywhere in the snapshot. The snapshot contains only the eight `app/*.py` files and no dependency manifest. `parse_config` is defined but never called by any other file. So the path from an HTTP request to this sink is inferred from the Flask `request` import rather than demonstrated. This is likely an intentionally constructed benchmark fixture, where the sink is meant to be judged on its own merits, but I will not claim a confirmed remote vector that I have not traced end to end. Missing evidence means unknown, not safe: the finding stands, with reachability unverified rather than disproven.\n\n**CVSS reasoning.** The metrics I can support from evidence: the attacker nee",
+            "evidence_refs": [
+              "model-fb6d571b9cbd0737-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-fb6d571b9cbd0737",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:38:48.634326Z",
+            "metadata": {
+              "tool_calls_made": 14,
+              "total_tokens": 55488,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "advisory_routing": {
+    "is_advisory_only": true,
+    "affects_finding_status": false,
+    "note": "Advisory recommendations never set or change a finding status; IndependentValidator remains the sole status owner.",
+    "route_counts": {},
+    "routed": 0,
+    "unavailable": 0,
+    "payloads": []
+  }
+}

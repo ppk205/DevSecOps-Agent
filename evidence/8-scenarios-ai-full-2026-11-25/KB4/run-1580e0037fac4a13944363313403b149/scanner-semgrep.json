@@ -1,0 +1,24 @@
+{
+  "version": "0.1.0",
+  "run_id": "run-1580e0037fac4a13944363313403b149",
+  "tool": "semgrep",
+  "tool_version": "unknown",
+  "adapter_version": "0.2.0",
+  "status": "skipped",
+  "started_at": "2026-11-25T13:39:42.723461Z",
+  "finished_at": "2026-11-25T13:39:42.723461Z",
+  "observations": [],
+  "coverage_records": [],
+  "raw_output_refs": [],
+  "coverage_percent": 0.0,
+  "eligible_units": 0,
+  "analyzed_units": 0,
+  "skipped_units": 0,
+  "failed_units": 0,
+  "errors": [],
+  "warnings": [
+    "semgrep: semgrep not found on PATH"
+  ],
+  "duration_ms": null,
+  "metadata": {}
+}

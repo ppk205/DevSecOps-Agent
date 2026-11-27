@@ -1,0 +1,1484 @@
+{
+  "application_version": "0.2.0",
+  "scan_metadata": {
+    "commit": "9a25ac9c8c782420a9ac766c77872dfd9b1bb5a2",
+    "target": "local",
+    "status": "completed",
+    "gate": "failed",
+    "errors": [],
+    "configuration": {
+      "schema_version": 1,
+      "profile": "fast",
+      "fail_on": "high",
+      "output_dir": "d:\\New folder\\DevSecOps-Agent\\evidence\\8-scenarios-ai-full-2026-11-25\\KB6",
+      "timezone": "Asia/Saigon",
+      "timeout": 600,
+      "max_files": 100000,
+      "allow_dirty": true,
+      "ci": false,
+      "laya": false,
+      "laya_config_path": null,
+      "ai_review": true,
+      "provider_profile": "kojo-bench-tmp",
+      "provider_model": "empero/kojo",
+      "ai_report": true,
+      "max_ai_findings": 10,
+      "max_model_requests": null,
+      "mode": "hunt",
+      "tools": [
+        "native-hunt"
+      ]
+    }
+  },
+  "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+  "generated_at": "2026-11-25T13:52:49.016909+00:00",
+  "counts": {
+    "version": "0.1.0",
+    "total": 8,
+    "confirmed": 0,
+    "rejected": 0,
+    "unresolved": 8,
+    "unprocessed": 0
+  },
+  "coverage_summary": {
+    "owasp-dependency-check": [],
+    "semgrep": [],
+    "gitleaks": [],
+    "codeql": [],
+    "trivy": []
+  },
+  "owasp_top10": {
+    "edition": "2025",
+    "source_url": "https://top10.owasp.org/2025/",
+    "snapshot_date": "2026-11-04",
+    "classification_only": true,
+    "mapping_basis": "Exact normalized primary/secondary CWEs in OWASP category-specific mapped-CWE lists",
+    "note": "This is a CWE classification of reported findings, not a coverage or compliance assessment. An empty category means No mapped findings reported; it does not mean tested, safe or passed. Counts retain finding status; pending includes unprocessed, triaged, assessed and pending validation. A finding with multiple labels may appear in several rows/categories; do not add those row counts.",
+    "total_findings": 8,
+    "categories": [
+      {
+        "id": "A01:2025",
+        "name": "Broken Access Control",
+        "source_url": "https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/",
+        "source_sha256": "e51ca05866f4213489e82484f1f48ed4d779e1809e87f70449806b496a0320cd",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A02:2025",
+        "name": "Security Misconfiguration",
+        "source_url": "https://top10.owasp.org/2025/A02_2025-Security_Misconfiguration/",
+        "source_sha256": "532fbbd67f3db734b7ed5d47e0263dd3800fce80e22da327123a88f2947017c9",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A03:2025",
+        "name": "Software Supply Chain Failures",
+        "source_url": "https://top10.owasp.org/2025/A03_2025-Software_Supply_Chain_Failures/",
+        "source_sha256": "66090225ad8f54a836e5b9e94456243baa7d38b70176f4d720668ef36f3a793d",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A04:2025",
+        "name": "Cryptographic Failures",
+        "source_url": "https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures/",
+        "source_sha256": "5b140b4cadf334becc35334278494f98396dc9b5720df6c904688352b51dc834",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A05:2025",
+        "name": "Injection",
+        "source_url": "https://top10.owasp.org/2025/A05_2025-Injection/",
+        "source_sha256": "69d7ec591944699c49b89c544a52cb32adccbfad56c41784ca34fde837822de6",
+        "total": 6,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 6
+        },
+        "finding_ids": [
+          "model-0517a5309b100b66",
+          "model-06edaa0b0d7332b3",
+          "model-46f74f672f3ca92d",
+          "model-66c182ab5062dcae",
+          "model-a7fe4ff58de7deb3",
+          "model-dd53621b21663226"
+        ],
+        "cwes": [
+          {
+            "cwe": "CWE-78",
+            "total": 2,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 2
+            },
+            "finding_ids": [
+              "model-0517a5309b100b66",
+              "model-46f74f672f3ca92d"
+            ]
+          },
+          {
+            "cwe": "CWE-79",
+            "total": 2,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 2
+            },
+            "finding_ids": [
+              "model-66c182ab5062dcae",
+              "model-dd53621b21663226"
+            ]
+          },
+          {
+            "cwe": "CWE-89",
+            "total": 2,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 2
+            },
+            "finding_ids": [
+              "model-06edaa0b0d7332b3",
+              "model-a7fe4ff58de7deb3"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "A06:2025",
+        "name": "Insecure Design",
+        "source_url": "https://top10.owasp.org/2025/A06_2025-Insecure_Design/",
+        "source_sha256": "cf67ac90b3c088ca4566807fbc4bbd2090bccc81d61f15c0e25190032618195f",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A07:2025",
+        "name": "Authentication Failures",
+        "source_url": "https://top10.owasp.org/2025/A07_2025-Authentication_Failures/",
+        "source_sha256": "9decccf146242740ba34b1c14df7b729ef159274a3533182c6bcefc9f52c8816",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A08:2025",
+        "name": "Software or Data Integrity Failures",
+        "source_url": "https://top10.owasp.org/2025/A08_2025-Software_or_Data_Integrity_Failures/",
+        "source_sha256": "03082e5a3ce031d6d2425927653aca0ad47d474dafb4208862e86b4363d66d85",
+        "total": 2,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 2
+        },
+        "finding_ids": [
+          "model-0751364fb2aedb13",
+          "model-525828ab780cbffc"
+        ],
+        "cwes": [
+          {
+            "cwe": "CWE-502",
+            "total": 2,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 2
+            },
+            "finding_ids": [
+              "model-0751364fb2aedb13",
+              "model-525828ab780cbffc"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "A09:2025",
+        "name": "Security Logging & Alerting Failures",
+        "source_url": "https://top10.owasp.org/2025/A09_2025-Security_Logging_and_Alerting_Failures/",
+        "source_sha256": "e8f875d2db062bfd3eb00db65486b30dd64c417357f9346a395cf434b5055f31",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A10:2025",
+        "name": "Mishandling of Exceptional Conditions",
+        "source_url": "https://top10.owasp.org/2025/A10_2025-Mishandling_of_Exceptional_Conditions/",
+        "source_sha256": "492a7444a58c06ec76af06ed4f89e656804cde6b71f61ba2ed5703a9aa343864",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      }
+    ],
+    "unmapped": []
+  },
+  "findings": [
+    {
+      "version": "0.1.0",
+      "finding_id": "model-46f74f672f3ca92d",
+      "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+      "fingerprint": "46f74f672f3ca92d77c831713d710d3e11407c53027ba778e09a5c943c3d4261",
+      "title": "OS command injection via unsanitized query parameter passed to Process.Start",
+      "description": "Ping() binds an attacker-controlled value from [FromQuery] string host and concatenates it directly into the argument string handed to Process.Start(\"cmd.exe\", \"/c ping -n 1 \" + host). The value flows from an HTTP query parameter into a shell (cmd.exe /c) with no validation, quoting or escaping, so a payload such as '127.0.0.1 & whoami' or '127.0.0.1 & powershell -enc ...' is executed with the web process identity. No argument list API or allow-list is used, so this is a genuine tainted flow into a command-execution sink.",
+      "cwe_category": "CWE-78",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-46f74f672f3ca92d-obs",
+          "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-78",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "Ping() binds an attacker-controlled value from [FromQuery] string host and concatenates it directly into the argument string handed to Process.Start(\"cmd.exe\", \"/c ping -n 1 \" + host). The value flows from an HTTP query parameter into a shell (cmd.exe /c) with no validation, quoting or escaping, so a payload such as '127.0.0.1 & whoami' or '127.0.0.1 & powershell -enc ...' is executed with the web process identity. No argument list API or allow-list is used, so this is a genuine tainted flow into a command-execution sink.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/VulnCmd.cs",
+            "language": "csharp",
+            "line_start": 5,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/VulnCmd.cs (lines 1-7) ---\n1: using Microsoft.AspNetCore.Mvc;\n2: using System.Diagnostics;\n3: public class VulnCmdController : Controller {\n4:     public void Ping([FromQuery] string host) {\n5:         Process.Start(\"cmd.exe\", \"/c ping -n 1 \" + host);\n6:     }\n7: }"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:48:58.908185Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-46f74f672f3ca92d-obs"
+      ],
+      "created_at": "2026-11-25T13:48:58.908185Z",
+      "updated_at": "2026-11-25T13:48:58.908185Z",
+      "metadata": {
+        "title": "OS command injection via unsanitized query parameter passed to Process.Start",
+        "rationale": "Ping() binds an attacker-controlled value from [FromQuery] string host and concatenates it directly into the argument string handed to Process.Start(\"cmd.exe\", \"/c ping -n 1 \" + host). The value flows from an HTTP query parameter into a shell (cmd.exe /c) with no validation, quoting or escaping, so a payload such as '127.0.0.1 & whoami' or '127.0.0.1 & powershell -enc ...' is executed with the web process identity. No argument list API or allow-list is used, so this is a genuine tainted flow into a command-execution sink.",
+        "evidence": "public void Ping([FromQuery] string host) {\n        Process.Start(\"cmd.exe\", \"/c ping -n 1 \" + host);\n    }",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-46f74f672f3ca92d",
+          "finding_id": "model-46f74f672f3ca92d",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-46f74f672f3ca92d-model-46f74f672f3ca92d-obs",
+            "ev-model-46f74f672f3ca92d-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:52:26.075763Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+            "assessment_id": "assess-model-46f74f672f3ca92d-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-46f74f672f3ca92d-model-46f74f672f3ca92d-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-46f74f672f3ca92d-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-46f74f672f3ca92d-ai",
+            "finding_id": "model-46f74f672f3ca92d",
+            "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": {
+              "version": "4.0",
+              "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+              "base_score": 9.3,
+              "qualitative": "critical",
+              "source": "ai-proposal",
+              "notes": "",
+              "overall_score": 9.3,
+              "base_rating": "Critical",
+              "overall_rating": "Critical",
+              "nomenclature": "CVSS-B",
+              "calculation_source": "FIRST CVSS v4.0",
+              "metric_assumptions_verified": false
+            },
+            "confidence": 0.5,
+            "assumptions": [
+              "The application is hosted as an ASP.NET Core MVC app using conventional routing, making Ping reachable via the default controller/action URL (e.g. GET /VulnCmd/Ping?host=...). This is inferred from the Controller base class and [FromQuery] binding, not verified -- no route table or startup configuration is present in the snapshot.",
+              "No upstream gateway, WAF or authentication layer restricts access to this endpoint; unknown from available evidence.",
+              "The web process identity is non-administrative (standard IIS app pool / container user), but has read/write access to application files and configuration.",
+              "Independent static confirmation was unavailable: semgrep and codeql binaries were not on PATH, so no tool-generated dataflow trace corroborates the manual read."
+            ],
+            "rationale": "The flow is confirmed at source level. I'll check the config audit and secret scan for any hosting/auth context that would affect exposure.\n\nThat search was a misfire (I was checking for related framework context, and it returned nothing useful). The remaining open question is whether any startup/auth config exists that would change exposure, so I'll scan the repo files directly.\n\nI have the CWE confirmation. Let me check the CVSS v4.0 specification for the metric definitions I need before proposing a vector.\n\nI'll pull the exploitability and impact metric definitions to ground the vector.\n\nI have the metric definitions I need. Let me confirm the availability and subsequent-system definitions to finish the vector.\n\nThe evidence is settled. I'll do one last check for any project-level mitigation (config, middleware) that would affect exploitability.\n\nI have everything needed. Writing the assessment now.\n\n## Analysis: model-46f74f672f3ca92d\n\n**Confirmed at source level.** `app/VulnCmd.cs` is 7 lines and contains exactly the pattern described:\n\n```csharp\npublic class VulnCmdController : Controller {\n    public void Ping([FromQuery] string host) {\n        Process.Start(\"cmd.exe\", \"/c ping -n 1 \" + host);\n    }\n}\n```\n\nThe tainted flow is complete and short: `[FromQuery] string host` (model binding from the query string) → string concatenation → `Process.Start(\"cmd.exe\", ...)`. Because the argument list begins with `/c`, `cmd.exe` parses the remainder as a shell command line, so metacharacters in `host` (`&`, `|`, `^`, `>`, `` ` ``) are interpreted by the shell rather than passed as literal ping arguments. `127.0.0.1 & whoami` executes `whoami` under the IIS/ASP.NET worker identity. This matches the first CWE-78 subtype described by MITRE: a fixed program with attacker-controlled argument content, where separator characters are not neutralized.\n\n**Negative controls checked.** A grep for `Process.Start|[Authorize]|[ApiController]|Route|UseMiddleware|ValidateAntiForgery` ac",
+            "evidence_refs": [
+              "model-46f74f672f3ca92d-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-46f74f672f3ca92d",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:51:08.170377Z",
+            "metadata": {
+              "tool_calls_made": 11,
+              "total_tokens": 53904,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "computed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-525828ab780cbffc",
+      "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+      "fingerprint": "525828ab780cbffc18a6ac1c8ab782a460fd259ffacaf0ce4f12bcca2dd6a26c",
+      "title": "Insecure BinaryFormatter deserialization of untrusted stream (RCE gadget chain)",
+      "description": "Load(Stream body) passes a caller-supplied stream straight into BinaryFormatter.Deserialize with no type restriction, binder, or serialization guard. BinaryFormatter is documented by Microsoft as unsafe and removed in .NET 8+ precisely because deserializing attacker-controlled bytes enables gadget-chain remote code execution and arbitrary object instantiation. The stream has no validation, size limit or trusted-source check, and the method is public on a plain class, making it a reachable deserialization entry point.",
+      "cwe_category": "CWE-502",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-525828ab780cbffc-obs",
+          "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-502",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "Load(Stream body) passes a caller-supplied stream straight into BinaryFormatter.Deserialize with no type restriction, binder, or serialization guard. BinaryFormatter is documented by Microsoft as unsafe and removed in .NET 8+ precisely because deserializing attacker-controlled bytes enables gadget-chain remote code execution and arbitrary object instantiation. The stream has no validation, size limit or trusted-source check, and the method is public on a plain class, making it a reachable deserialization entry point.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/VulnDeser.cs",
+            "language": "csharp",
+            "line_start": 6,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/VulnDeser.cs (lines 1-8) ---\n1: using System.IO;\n2: using System.Runtime.Serialization.Formatters.Binary;\n3: public class VulnDeser {\n4:     public object Load(Stream body) {\n5:         var fmt = new BinaryFormatter();\n6:         return fmt.Deserialize(body);\n7:     }\n8: }"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:48:58.910184Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-525828ab780cbffc-obs"
+      ],
+      "created_at": "2026-11-25T13:48:58.910184Z",
+      "updated_at": "2026-11-25T13:48:58.910184Z",
+      "metadata": {
+        "title": "Insecure BinaryFormatter deserialization of untrusted stream (RCE gadget chain)",
+        "rationale": "Load(Stream body) passes a caller-supplied stream straight into BinaryFormatter.Deserialize with no type restriction, binder, or serialization guard. BinaryFormatter is documented by Microsoft as unsafe and removed in .NET 8+ precisely because deserializing attacker-controlled bytes enables gadget-chain remote code execution and arbitrary object instantiation. The stream has no validation, size limit or trusted-source check, and the method is public on a plain class, making it a reachable deserialization entry point.",
+        "evidence": "public object Load(Stream body) {\n        var fmt = new BinaryFormatter();\n        return fmt.Deserialize(body);\n    }",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-525828ab780cbffc",
+          "finding_id": "model-525828ab780cbffc",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-525828ab780cbffc-model-525828ab780cbffc-obs",
+            "ev-model-525828ab780cbffc-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:52:26.075763Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+            "assessment_id": "assess-model-525828ab780cbffc-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-525828ab780cbffc-model-525828ab780cbffc-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-525828ab780cbffc-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-525828ab780cbffc-ai",
+            "finding_id": "model-525828ab780cbffc",
+            "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": {
+              "version": "4.0",
+              "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H",
+              "base_score": 10.0,
+              "qualitative": "critical",
+              "source": "ai-proposal",
+              "notes": "",
+              "overall_score": 10.0,
+              "base_rating": "Critical",
+              "overall_rating": "Critical",
+              "nomenclature": "CVSS-B",
+              "calculation_source": "FIRST CVSS v4.0",
+              "metric_assumptions_verified": false
+            },
+            "confidence": 0.5,
+            "assumptions": [
+              "The stream contents are attacker-influenced at some call site. No caller exists anywhere in this 8-file snapshot (grep for VulnDeser, .Load(, BinaryFormatter returned only the class itself), so reachability from an HTTP or upload boundary is unproven and inferred only from the method being public.",
+              "Gadget-chain types capable of achieving code execution are present in the loaded assemblies. Not verifiable: no .csproj, package manifest, or compiled output is in the snapshot.",
+              "Target framework is unknown. If the project targets .NET 8+ with default settings, BinaryFormatter throws PlatformNotSupportedException and the flaw is latent rather than exploitable.",
+              "CVSS vector models the sink under an assumed network-reachable, unauthenticated caller; if the real caller is local or authenticated, AV/PR should be revised downward."
+            ],
+            "rationale": "# Assessment: model-525828ab780cbffc\n\n**Verdict: confirmed as a real vulnerable sink (CWE-502). Severity critical is justified for the code itself; the \"reachable entry point\" claim is not evidenced in this snapshot.**\n\n## What the code shows\n\nI read the entire file -- it is 8 lines, so this is the complete content (`app/VulnDeser.cs:1-8`):\n\n```csharp\n1: using System.IO;\n2: using System.Runtime.Serialization.Formatters.Binary;\n3: public class VulnDeser {\n4:     public object Load(Stream body) {\n5:         var fmt = new BinaryFormatter();\n6:         return fmt.Deserialize(body);\n7:     }\n8: }\n```\n\nThe sink at line 6 is exactly as described. The `Stream` is a parameter with no origin constraint; there is no `Binder`, no `SurrogateSelector`, no allow-list type check, no size limit, and no `[Serializable]`-restricting `SerializationBinder`. A `BinaryFormatter` constructed with the default constructor accepts the type names embedded in the payload, so an attacker who controls the bytes can instantiate arbitrary serializable types and, where a gadget chain is present in the loaded assemblies, drive code execution.\n\n## What I could and could not establish\n\n- **Sink present and unguarded:** confirmed by reading lines 4-7.\n- **Reachability from an attacker-controlled entry point: unverified.** The snapshot contains only eight files (`app/SafeCmd.cs`, `SafeJson.cs`, `SafeSql.cs`, `SafeView.cshtml`, `VulnCmd.cs`, `VulnDeser.cs`, `VulnSql.cs`, `VulnView.cshtml`). A grep for `VulnDeser`, `.Load(`, `BinaryFormatter`, `SerializationFormat` and `EnableUnsafeBinaryFormatter` across `*.cs` returned only the class's own declaration and its own `new BinaryFormatter()` -- no caller anywhere in the snapshot, and no project file, `Program.cs`, controller, or `Startup` wiring. `lookup_route` returned only a \"served from the scan manifest\" note with no mapping. So the observation's phrase \"making it a reachable deserialization entry point\" rests on the method being `public`, not on a traced",
+            "evidence_refs": [
+              "model-525828ab780cbffc-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-525828ab780cbffc",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:50:55.767066Z",
+            "metadata": {
+              "tool_calls_made": 10,
+              "total_tokens": 48736,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "computed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-06edaa0b0d7332b3",
+      "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+      "fingerprint": "06edaa0b0d7332b3c86b9085060455a6423dd75028b73e698f7c838d143e5078",
+      "title": "SQL injection via string concatenation into SqlCommand query",
+      "description": "Find() takes [FromQuery] string user and builds the query text by concatenation: \"SELECT * FROM Users WHERE Name = '\" + user + \"'\". No SqlParameter is added, so a value such as ' OR '1'='1' -- or a UNION payload can alter the executed statement, allowing authentication bypass and full-table data exfiltration. Contrast with SafeSql.cs, which uses the same shape but binds @u through AddWithValue and is therefore not vulnerable.",
+      "cwe_category": "CWE-89",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-06edaa0b0d7332b3-obs",
+          "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-89",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "Find() takes [FromQuery] string user and builds the query text by concatenation: \"SELECT * FROM Users WHERE Name = '\" + user + \"'\". No SqlParameter is added, so a value such as ' OR '1'='1' -- or a UNION payload can alter the executed statement, allowing authentication bypass and full-table data exfiltration. Contrast with SafeSql.cs, which uses the same shape but binds @u through AddWithValue and is therefore not vulnerable.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/VulnSql.cs",
+            "language": "csharp",
+            "line_start": 5,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/VulnSql.cs (lines 1-8) ---\n1: using Microsoft.AspNetCore.Mvc;\n2: using System.Data.SqlClient;\n3: public class VulnSqlController : Controller {\n4:     public void Find([FromQuery] string user, SqlConnection conn) {\n5:         var cmd = new SqlCommand(\"SELECT * FROM Users WHERE Name = '\" + user + \"'\", conn);\n6:         cmd.ExecuteReader();\n7:     }\n8: }"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:48:58.912184Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-06edaa0b0d7332b3-obs"
+      ],
+      "created_at": "2026-11-25T13:48:58.912184Z",
+      "updated_at": "2026-11-25T13:48:58.912184Z",
+      "metadata": {
+        "title": "SQL injection via string concatenation into SqlCommand query",
+        "rationale": "Find() takes [FromQuery] string user and builds the query text by concatenation: \"SELECT * FROM Users WHERE Name = '\" + user + \"'\". No SqlParameter is added, so a value such as ' OR '1'='1' -- or a UNION payload can alter the executed statement, allowing authentication bypass and full-table data exfiltration. Contrast with SafeSql.cs, which uses the same shape but binds @u through AddWithValue and is therefore not vulnerable.",
+        "evidence": "public void Find([FromQuery] string user, SqlConnection conn) {\n        var cmd = new SqlCommand(\"SELECT * FROM Users WHERE Name = '\" + user + \"'\", conn);\n        cmd.ExecuteReader();",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-06edaa0b0d7332b3",
+          "finding_id": "model-06edaa0b0d7332b3",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-06edaa0b0d7332b3-model-06edaa0b0d7332b3-obs",
+            "ev-model-06edaa0b0d7332b3-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:52:26.075763Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+            "assessment_id": "assess-model-06edaa0b0d7332b3-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-06edaa0b0d7332b3-model-06edaa0b0d7332b3-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-06edaa0b0d7332b3-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-06edaa0b0d7332b3-ai",
+            "finding_id": "model-06edaa0b0d7332b3",
+            "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": {
+              "version": "4.0",
+              "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:L/VA:L/SC:N/SI:N/SA:N",
+              "base_score": 8.8,
+              "qualitative": "high",
+              "source": "ai-proposal",
+              "notes": "",
+              "overall_score": 8.8,
+              "base_rating": "High",
+              "overall_rating": "High",
+              "nomenclature": "CVSS-B",
+              "calculation_source": "FIRST CVSS v4.0",
+              "metric_assumptions_verified": false
+            },
+            "confidence": 0.5,
+            "assumptions": [
+              "The controller action is reachable via HTTP routing configured outside this snapshot (no route/attribute visible in the six app/*.cs files).",
+              "user parameter values are attacker-influenced as annotated by [FromQuery].",
+              "Query results are not returned to the caller in this minimal file (ExecuteReader result is discarded), so data exfiltration is possible in principle but not demonstrated end-to-end.",
+              "Database permissions and connection identity are unknown."
+            ],
+            "rationale": "## Assessment: model-06edaa0b0d7332b3 -- SQL injection (CWE-89)\n\n**Confirmed by source reading.** `app/VulnSql.cs:4-5` (read in this turn):\n\n```csharp\npublic void Find([FromQuery] string user, SqlConnection conn) {\n    var cmd = new SqlCommand(\"SELECT * FROM Users WHERE Name = '\" + user + \"'\", conn);\n```\n\nThe taint path is direct and needs no interprocedural reasoning: `[FromQuery] string user` is attacker-controlled request input, concatenated straight into the SQL text at the sink. No `SqlParameter` is ever created in this file, so the value is parsed as SQL by the server.\n\n**Contrast verified.** `app/SafeSql.cs:5-6` builds `\"... WHERE Name = @u\"` and binds the value via `cmd.Parameters.AddWithValue(\"@u\", user)`, so the same shape there is parameterized and not injectable. This matches the finding's description.\n\n**Scanner verification: not obtained.** All independent scanner attempts in this turn failed to run, so the finding rests on manual source reading only:\n- `run_semgrep_scan` (csharp, CWE-89) -> `semgrep not found on PATH`\n- `run_codeql_scan` (csharp, CWE-89) -> `codeql not found on PATH`, skipped as opt-in\n- `run_config_audit` (bytecode/SpotBugs) -> `spotbugs not found on PATH`\n- `lookup_route(\"VulnSqlController\")` returned only a note that route lookup is served from the scan manifest, with no mapping. The file has no `[ApiController]`/`[Route]`/`[HttpGet]` attribute visible; ASP.NET Core conventional routing could still expose `Find` as an action on `VulnSqlController` depending on `Startup`/`Program` configuration, which is **not present in this snapshot** (`list_files *.cs` shows only the six `app/*.cs` files).\n- `check_coverage(cwe=CWE-89)` returned an empty object, so I cannot state what else was analyzed or skipped for this CWE.\n\n**Impact reasoning (inferred, not executed).** With the value placed inside single quotes, payloads such as `' OR '1'='1' --` or a `UNION SELECT` can change the predicate or append a result set. Data confidentiality loss i",
+            "evidence_refs": [
+              "model-06edaa0b0d7332b3-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-06edaa0b0d7332b3",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:50:52.411607Z",
+            "metadata": {
+              "tool_calls_made": 10,
+              "total_tokens": 37344,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "computed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-66c182ab5062dcae",
+      "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+      "fingerprint": "66c182ab5062dcae1309ea5751e9ec202af893bb595c5d00ef34cf352e647d54",
+      "title": "Stored/reflected XSS via @Html.Raw on unencoded model data",
+      "description": "The view renders Model.Bio with @Html.Raw, which writes the value to the response without HTML encoding. Bio is a user-profile field, so any attacker-supplied content (profile bio, comment, imported data) executes as script in every viewer's browser, enabling session theft and account takeover. SafeView.cshtml renders the same field with the default @Model.Bio encoding and is correctly protected.",
+      "cwe_category": "CWE-79",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-66c182ab5062dcae-obs",
+          "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-79",
+          "severity": "high",
+          "native_severity": null,
+          "message": "The view renders Model.Bio with @Html.Raw, which writes the value to the response without HTML encoding. Bio is a user-profile field, so any attacker-supplied content (profile bio, comment, imported data) executes as script in every viewer's browser, enabling session theft and account takeover. SafeView.cshtml renders the same field with the default @Model.Bio encoding and is correctly protected.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/VulnView.cshtml",
+            "language": "csharp",
+            "line_start": 2,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/VulnView.cshtml (lines 1-2) ---\n1: @model UserProfile\n2: <div class=\"bio\">@Html.Raw(Model.Bio)</div>"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:48:58.913697Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-66c182ab5062dcae-obs"
+      ],
+      "created_at": "2026-11-25T13:48:58.913697Z",
+      "updated_at": "2026-11-25T13:48:58.913697Z",
+      "metadata": {
+        "title": "Stored/reflected XSS via @Html.Raw on unencoded model data",
+        "rationale": "The view renders Model.Bio with @Html.Raw, which writes the value to the response without HTML encoding. Bio is a user-profile field, so any attacker-supplied content (profile bio, comment, imported data) executes as script in every viewer's browser, enabling session theft and account takeover. SafeView.cshtml renders the same field with the default @Model.Bio encoding and is correctly protected.",
+        "evidence": "@model UserProfile\n<div class=\"bio\">@Html.Raw(Model.Bio)</div>",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-66c182ab5062dcae",
+          "finding_id": "model-66c182ab5062dcae",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-66c182ab5062dcae-model-66c182ab5062dcae-obs",
+            "ev-model-66c182ab5062dcae-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:52:26.075763Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+            "assessment_id": "assess-model-66c182ab5062dcae-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-66c182ab5062dcae-model-66c182ab5062dcae-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-66c182ab5062dcae-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-66c182ab5062dcae-ai",
+            "finding_id": "model-66c182ab5062dcae",
+            "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.5,
+            "assumptions": [
+              "Model.Bio is populated from a persistence layer or request input rather than a hardcoded trusted constant; the UserProfile type and its population code are absent from the snapshot and could not be inspected.",
+              "The view is rendered by an application route in a deployed context; no controller or route mapping exists in the provided files to verify reachability.",
+              "Default Razor behavior applies: @ expressions HTML-encode and Html.Raw bypasses that encoding, as documented for ASP.NET Core MVC.",
+              "Absence of the controller, model class, and data-access code in this 8-file snapshot is treated as missing evidence, not as evidence of safety.",
+              "If the same finding is reported again under model-dd53621b21663226 for the same file and line, the two should be deduplicated rather than scored independently."
+            ],
+            "rationale": "The sink is confirmed by reading the file directly. Let me check the Semgrep rule semantics so my characterization of the rule is accurate.\n\nSearch results were off-target; I'll rely on the documented framework behavior, which is well established.\n\n## Analysis\n\n**What I verified by reading source.** `app/VulnView.cshtml` is exactly two lines, and line 2 is the sink the scanner names:\n\n```razor\n@model UserProfile\n<div class=\"bio\">@Html.Raw(Model.Bio)</div>\n```\n\n`Html.Raw` returns an `IHtmlContent` whose value Razor writes into the response without HTML-encoding it. The sibling `app/SafeView.cshtml` binds the same `Model.Bio` through the default `@` expression, which HTML-encodes. The two files are otherwise identical, so the contrast is a clean, self-contained demonstration of the defect: same data, one encoded, one not.\n\n**What the finding claims beyond what the snapshot shows.** The observation asserts `Bio` is a user-profile field reachable with attacker-controlled content. That is plausible and consistent with the model name `UserProfile`, but it is not evidenced in this snapshot. I grepped the whole tree for `Bio`, `UserProfile`, and `Html.Raw`: the only hits are the two model directives and the two render lines. There is no `UserProfile` class definition, no controller, no data-access code, and no route mapping for this view. `lookup_route` returned nothing (it is served from a scan manifest, not the live repo), and `check_coverage` returned an empty object, so I cannot establish which entry points reach the view.\n\nSo the **sink is confirmed and the source is unproven**. The finding stands as a genuine XSS-prone rendering pattern, but I cannot confirm stored vs. reflected, who can write `Bio`, or whether the view is reachable in a deployed route. I am not treating the absence of a controller as evidence of safety -- the snapshot is an 8-file excerpt of what is clearly a deliberate vulnerable/safe pairs corpus, so the surrounding application is simply out of sco",
+            "evidence_refs": [
+              "model-66c182ab5062dcae-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-66c182ab5062dcae",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:51:11.511604Z",
+            "metadata": {
+              "tool_calls_made": 11,
+              "total_tokens": 54064,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-0517a5309b100b66",
+      "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+      "fingerprint": "0517a5309b100b6633f261da887c3d853159da592d811f2c41ecec7bf912a96c",
+      "title": "OS command injection via unsanitized argument in VulnCmd",
+      "description": "The VulnCmd.cs file is the deliberately vulnerable command-handling counterpart of SafeCmd.cs. I was not able to read the file contents in this turn (only its path was listed), so the exact sink line and excerpt are unknown; a CWE-78 finding is expected at the process-start sink that passes user input into the command line.",
+      "cwe_category": "CWE-78",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-0517a5309b100b66-obs",
+          "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-78",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "The VulnCmd.cs file is the deliberately vulnerable command-handling counterpart of SafeCmd.cs. I was not able to read the file contents in this turn (only its path was listed), so the exact sink line and excerpt are unknown; a CWE-78 finding is expected at the process-start sink that passes user input into the command line.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/VulnCmd.cs",
+            "language": "csharp",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/VulnCmd.cs (lines 1-7) ---\n1: using Microsoft.AspNetCore.Mvc;\n2: using System.Diagnostics;\n3: public class VulnCmdController : Controller {\n4:     public void Ping([FromQuery] string host) {\n5:         Process.Start(\"cmd.exe\", \"/c ping -n 1 \" + host);\n6:     }\n7: }"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:48:58.915805Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-0517a5309b100b66-obs"
+      ],
+      "created_at": "2026-11-25T13:48:58.915805Z",
+      "updated_at": "2026-11-25T13:48:58.915805Z",
+      "metadata": {
+        "title": "OS command injection via unsanitized argument in VulnCmd",
+        "rationale": "The VulnCmd.cs file is the deliberately vulnerable command-handling counterpart of SafeCmd.cs. I was not able to read the file contents in this turn (only its path was listed), so the exact sink line and excerpt are unknown; a CWE-78 finding is expected at the process-start sink that passes user input into the command line.",
+        "evidence": "unknown (file content not inspected in this turn)",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-0517a5309b100b66",
+          "finding_id": "model-0517a5309b100b66",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-0517a5309b100b66-model-0517a5309b100b66-obs",
+            "ev-model-0517a5309b100b66-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:52:26.076764Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+            "assessment_id": "assess-model-0517a5309b100b66-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-0517a5309b100b66-model-0517a5309b100b66-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-0517a5309b100b66-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-0517a5309b100b66-ai",
+            "finding_id": "model-0517a5309b100b66",
+            "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": {
+              "version": "4.0",
+              "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+              "base_score": 9.3,
+              "qualitative": "critical",
+              "source": "ai-proposal",
+              "notes": "",
+              "overall_score": 9.3,
+              "base_rating": "Critical",
+              "overall_rating": "Critical",
+              "nomenclature": "CVSS-B",
+              "calculation_source": "FIRST CVSS v4.0",
+              "metric_assumptions_verified": false
+            },
+            "confidence": 0.5,
+            "assumptions": [
+              "The controller is hosted in a standard ASP.NET Core MVC application so that VulnCmdController.Ping is routable (conventionally GET /VulnCmd/Ping). No startup or routing code exists in the snapshot to confirm this; if the type is never registered or mapped, exploitability is reduced but the defect remains.",
+              "The process identity under which cmd.exe runs is unknown; no web.config, container, or deployment descriptor is present in the snapshot. This bounds the blast radius but not the injection.",
+              "Semgrep and CodeQL could not run in this environment (binaries not on PATH) and check_coverage returned no data, so no automated taint corroboration is available; the finding rests on manual source inspection of a fully visible 7-line file.",
+              "The presence of a deliberate SafeCmd.cs counterpart suggests this may be an intentional test/benchmark application; this is noted but not used to downgrade the finding."
+            ],
+            "rationale": "I have the full file and a corroborating observation. One last check: whether any host-level config constrains the process user or exposes the endpoint.\n\nThat search returned irrelevant results and I can't verify routing from this snapshot, so I'll treat endpoint exposure as an assumption rather than a fact. Here is my assessment.\n\n## Finding confirmed: CWE-78 OS command injection\n\nThe scanner was right about the file but had no excerpt, so I read it. The sink is real and on line 5:\n\n```csharp\npublic class VulnCmdController : Controller {\n    public void Ping([FromQuery] string host) {\n        Process.Start(\"cmd.exe\", \"/c ping -n 1 \" + host);\n    }\n}\n```\n\n**The flow.** `host` comes from an HTTP query parameter via `[FromQuery]`. It is concatenated into the second argument of `Process.Start`, which launches `cmd.exe` with `/c`, so the whole string is parsed by the Windows command shell. No validation, quoting, or escaping sits between source and sink. The `ping -n 1` prefix is not a guard: `&`, `&&`, `|`, and `||` all terminate the ping and start a new command, so `?host=127.0.0.1 & whoami` executes `whoami` in the app's process context. This is the classic injection pattern, and it is unconditional -- any value the client sends reaches the shell verbatim.\n\nThe sibling `SafeCmd.cs` confirms the contrast: it calls `Process.Start(\"whoami\")` with a fixed, argument-free command. The two files appear to be a deliberate vulnerable/safe pair in a test application, which is worth noting for severity calibration but does not make the sink any less real.\n\n**What I could not verify:**\n- **Reachability.** There is no `Program.cs`, `Startup.cs`, or route manifest in the snapshot, and the route lookup tool returned only a note that it reads from a scan manifest, with no data. A conventional MVC app maps this as `GET /VulnCmd/Ping`, but that is an assumption, not evidence.\n- **Taint tooling.** Semgrep and CodeQL both failed to run (neither binary is on PATH), and `check_coverage` r",
+            "evidence_refs": [
+              "model-0517a5309b100b66-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-0517a5309b100b66",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:51:40.781540Z",
+            "metadata": {
+              "tool_calls_made": 11,
+              "total_tokens": 42720,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "computed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-0751364fb2aedb13",
+      "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+      "fingerprint": "0751364fb2aedb13ad6852ff21b1971d43abb6a83d4e05284ded2c71a9a97a5b",
+      "title": "Insecure deserialization of untrusted data in VulnDeser",
+      "description": "VulnDeser.cs is the vulnerable deserialization counterpart of SafeJson.cs. File contents were not inspected in this turn, so the precise deserializer call and line are unknown; the expected flaw is deserializing attacker-controlled input with an unsafe serializer.",
+      "cwe_category": "CWE-502",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-0751364fb2aedb13-obs",
+          "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-502",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "VulnDeser.cs is the vulnerable deserialization counterpart of SafeJson.cs. File contents were not inspected in this turn, so the precise deserializer call and line are unknown; the expected flaw is deserializing attacker-controlled input with an unsafe serializer.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/VulnDeser.cs",
+            "language": "csharp",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/VulnDeser.cs (lines 1-8) ---\n1: using System.IO;\n2: using System.Runtime.Serialization.Formatters.Binary;\n3: public class VulnDeser {\n4:     public object Load(Stream body) {\n5:         var fmt = new BinaryFormatter();\n6:         return fmt.Deserialize(body);\n7:     }\n8: }"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:48:58.917703Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-0751364fb2aedb13-obs"
+      ],
+      "created_at": "2026-11-25T13:48:58.917703Z",
+      "updated_at": "2026-11-25T13:48:58.917703Z",
+      "metadata": {
+        "title": "Insecure deserialization of untrusted data in VulnDeser",
+        "rationale": "VulnDeser.cs is the vulnerable deserialization counterpart of SafeJson.cs. File contents were not inspected in this turn, so the precise deserializer call and line are unknown; the expected flaw is deserializing attacker-controlled input with an unsafe serializer.",
+        "evidence": "unknown (file content not inspected in this turn)",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-0751364fb2aedb13",
+          "finding_id": "model-0751364fb2aedb13",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-0751364fb2aedb13-model-0751364fb2aedb13-obs",
+            "ev-model-0751364fb2aedb13-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:52:26.076764Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+            "assessment_id": "assess-model-0751364fb2aedb13-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-0751364fb2aedb13-model-0751364fb2aedb13-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-0751364fb2aedb13-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-0751364fb2aedb13-ai",
+            "finding_id": "model-0751364fb2aedb13",
+            "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.5,
+            "assumptions": [
+              "The Stream parameter 'body' is intended to carry data crossing a trust boundary. The naming and the sample set's pattern (VulnCmd.cs binds [FromQuery] request data to Process.Start) support this, but no caller is present in the snapshot to prove it.",
+              "The code runs on .NET Framework, .NET Core 2.1-3.1, or .NET 5-8 with the unsafe-use switch enabled. On .NET 9+ the in-box BinaryFormatter throws, which would reduce this to a crash/DoS or a build failure rather than RCE. No project file is available to confirm the target framework.",
+              "No SerializationBinder or type allow-list is applied elsewhere, e.g. via a subclass or partial extension. Only the 8-line file exists and none is present.",
+              "Reachability is unknown, not disproven. The absence of a caller in a six-file snapshot reflects snapshot scope, not proof that the function is unreachable."
+            ],
+            "rationale": "The code-level flaw is confirmed by direct reading. The one remaining question is reachability, since no caller exists in this snapshot. Let me confirm there's no project or entry-point metadata anywhere.\n\nI have what I need. The Microsoft guidance is authoritative on the sink, and the source is unambiguous.\n\n## Assessment: confirmed vulnerable code, unconfirmed reachability\n\n**What the source shows.** `app/VulnDeser.cs` is 8 lines. `Load(Stream body)` constructs a `BinaryFormatter` and returns `fmt.Deserialize(body)` (line 6). The stream parameter is passed directly into the deserializer with no `SerializationBinder`, no type allow-list, no size limit, and no validation of any kind. Microsoft's own documentation states the method \"is never safe when used with untrusted input\" and describes a successful attack as the equivalent of \"interpreting that payload as a standalone executable and launching it.\" The .NET 9 runtime now throws on any in-box `BinaryFormatter` use.\n\nThe \"safe\" counterpart named in the finding, `SafeJson.cs`, is a separate class using `System.Text.Json` and does not mitigate anything here -- the two files are unrelated in the call graph. That part of the scanner's narrative is misleading, but the sink itself is real.\n\n**Where the evidence stops.** There is no caller of `VulnDeser.Load` anywhere in the snapshot. A repo-wide grep for `VulnDeser` and `.Load(` returns only the class declaration itself. The file set is six standalone C#/CSHTML samples with no `.csproj`, no `Program.cs`, no routing metadata, and no startup configuration. So:\n\n- The **sink** is confirmed with high confidence.\n- The **source** (attacker-controlled) is unknown. The `Stream` parameter is shaped like a request body, and the sibling `VulnCmd.cs` shows the same sample set does bind request data to dangerous sinks via `[FromQuery]`, which supports the intended-design reading -- but that is inference, not proof.\n- **AV** cannot be established. If `Load` is wired to an HTTP body,",
+            "evidence_refs": [
+              "model-0751364fb2aedb13-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-0751364fb2aedb13",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:51:37.665084Z",
+            "metadata": {
+              "tool_calls_made": 12,
+              "total_tokens": 50352,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-a7fe4ff58de7deb3",
+      "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+      "fingerprint": "a7fe4ff58de7deb3b98b70fd46838ef7f8d3cc1e711f4b0dc25ee842ad641f0a",
+      "title": "SQL injection via string-concatenated query in VulnSql",
+      "description": "VulnSql.cs is the vulnerable SQL counterpart of the parameterized SafeSql.cs. Contents were not read in this turn, so the exact concatenation line is unknown; expected flaw is user input concatenated into SQL text executed against the database.",
+      "cwe_category": "CWE-89",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-a7fe4ff58de7deb3-obs",
+          "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-89",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "VulnSql.cs is the vulnerable SQL counterpart of the parameterized SafeSql.cs. Contents were not read in this turn, so the exact concatenation line is unknown; expected flaw is user input concatenated into SQL text executed against the database.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/VulnSql.cs",
+            "language": "csharp",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/VulnSql.cs (lines 1-8) ---\n1: using Microsoft.AspNetCore.Mvc;\n2: using System.Data.SqlClient;\n3: public class VulnSqlController : Controller {\n4:     public void Find([FromQuery] string user, SqlConnection conn) {\n5:         var cmd = new SqlCommand(\"SELECT * FROM Users WHERE Name = '\" + user + \"'\", conn);\n6:         cmd.ExecuteReader();\n7:     }\n8: }"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:48:58.918799Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-a7fe4ff58de7deb3-obs"
+      ],
+      "created_at": "2026-11-25T13:48:58.918799Z",
+      "updated_at": "2026-11-25T13:48:58.918799Z",
+      "metadata": {
+        "title": "SQL injection via string-concatenated query in VulnSql",
+        "rationale": "VulnSql.cs is the vulnerable SQL counterpart of the parameterized SafeSql.cs. Contents were not read in this turn, so the exact concatenation line is unknown; expected flaw is user input concatenated into SQL text executed against the database.",
+        "evidence": "unknown (file content not inspected in this turn)",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-a7fe4ff58de7deb3",
+          "finding_id": "model-a7fe4ff58de7deb3",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-a7fe4ff58de7deb3-model-a7fe4ff58de7deb3-obs",
+            "ev-model-a7fe4ff58de7deb3-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:52:26.076764Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+            "assessment_id": "assess-model-a7fe4ff58de7deb3-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-a7fe4ff58de7deb3-model-a7fe4ff58de7deb3-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-a7fe4ff58de7deb3-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-a7fe4ff58de7deb3-ai",
+            "finding_id": "model-a7fe4ff58de7deb3",
+            "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": {
+              "version": "4.0",
+              "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+              "base_score": 9.3,
+              "qualitative": "critical",
+              "source": "ai-proposal",
+              "notes": "",
+              "overall_score": 9.3,
+              "base_rating": "Critical",
+              "overall_rating": "Critical",
+              "nomenclature": "CVSS-B",
+              "calculation_source": "FIRST CVSS v4.0",
+              "metric_assumptions_verified": false
+            },
+            "confidence": 0.9,
+            "assumptions": [
+              "VulnSqlController.Find is reachable as an HTTP endpoint; the snapshot has no Program.cs/Startup.cs/csproj and route lookup returned no manifest data, so runtime route registration was not verified.",
+              "The SqlConnection passed to the action carries a principal with read access to the Users table and potentially other tables; connection-string and DB-privilege configuration were not present to inspect.",
+              "No upstream middleware performs input validation or WAF filtering that would neutralize the payload; none is visible in the snapshot.",
+              "The controller is not a test or sample file (is_test_file is false and it sits in app/ alongside production-shaped controllers)."
+            ],
+            "rationale": "app/VulnSql.cs line 5 constructs a SqlCommand from a string literal concatenated with the attacker-controlled [FromQuery] parameter 'user' in a public controller action, and line 6 executes it via ExecuteReader() with no SqlParameter binding. A repo-wide grep shows no SqlParameter/AddWithValue/Sanitize/Escape/Replace anywhere except SafeSql.cs, confirming no sanitization layer mitigates it. SafeSql.cs implements the identical query with @u bound through AddWithValue, demonstrating the intended control was omitted. The source is read directly, so the observation's stated gap (file not read, line unknown) is closed; the sink is at line 5. Exploitation via tautology or UNION payload yields auth bypass and bulk user-record disclosure.",
+            "evidence_refs": [
+              "model-a7fe4ff58de7deb3-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-a7fe4ff58de7deb3",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:51:56.304731Z",
+            "metadata": {
+              "tool_calls_made": 12,
+              "total_tokens": 52032,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "computed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-dd53621b21663226",
+      "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+      "fingerprint": "dd53621b21663226a4896bc1aa6ab2943c5f608ff6436defd0a4574de7020276",
+      "title": "Reflected/stored XSS via unencoded output in VulnView",
+      "description": "VulnView.cshtml is the vulnerable Razor view counterpart of the encoded SafeView.cshtml. Contents were not inspected in this turn, so the exact line is unknown; expected flaw is @Html.Raw or equivalent emitting user-controlled data without encoding.",
+      "cwe_category": "CWE-79",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-dd53621b21663226-obs",
+          "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-79",
+          "severity": "high",
+          "native_severity": null,
+          "message": "VulnView.cshtml is the vulnerable Razor view counterpart of the encoded SafeView.cshtml. Contents were not inspected in this turn, so the exact line is unknown; expected flaw is @Html.Raw or equivalent emitting user-controlled data without encoding.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/VulnView.cshtml",
+            "language": "csharp",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/VulnView.cshtml (lines 1-2) ---\n1: @model UserProfile\n2: <div class=\"bio\">@Html.Raw(Model.Bio)</div>"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:48:58.919800Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-dd53621b21663226-obs"
+      ],
+      "created_at": "2026-11-25T13:48:58.919800Z",
+      "updated_at": "2026-11-25T13:48:58.919800Z",
+      "metadata": {
+        "title": "Reflected/stored XSS via unencoded output in VulnView",
+        "rationale": "VulnView.cshtml is the vulnerable Razor view counterpart of the encoded SafeView.cshtml. Contents were not inspected in this turn, so the exact line is unknown; expected flaw is @Html.Raw or equivalent emitting user-controlled data without encoding.",
+        "evidence": "unknown (file content not inspected in this turn)",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-dd53621b21663226",
+          "finding_id": "model-dd53621b21663226",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-dd53621b21663226-model-dd53621b21663226-obs",
+            "ev-model-dd53621b21663226-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:52:26.076764Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+            "assessment_id": "assess-model-dd53621b21663226-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-dd53621b21663226-model-dd53621b21663226-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-dd53621b21663226-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-dd53621b21663226-ai",
+            "finding_id": "model-dd53621b21663226",
+            "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": {
+              "version": "4.0",
+              "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:P/VC:N/VI:N/VA:N/SC:L/SI:L/SA:N",
+              "base_score": 5.1,
+              "qualitative": "medium",
+              "source": "ai-proposal",
+              "notes": "",
+              "overall_score": 5.1,
+              "base_rating": "Medium",
+              "overall_rating": "Medium",
+              "nomenclature": "CVSS-B",
+              "calculation_source": "FIRST CVSS v4.0",
+              "metric_assumptions_verified": false
+            },
+            "confidence": 0.5,
+            "assumptions": [
+              "Model.Bio is a string or string-convertible type and not IHtmlContent, which would be treated as trusted HTML by design.",
+              "The view is part of a live ASP.NET Core MVC/Razor application and not an inert demonstration artifact; this is unverified.",
+              "Bio originates from user-editable profile input, as the field name implies; no data-flow evidence exists in the snapshot to support this.",
+              "No output encoding or sanitization middleware wraps this view, and no CSP mitigates script execution; neither was observed either way."
+            ],
+            "rationale": "Let me read the controllers to see the codebase's pattern and whether any of them serves this view.\n\nI have what I need to score it. Here's my assessment.\n\n## What I verified\n\n**The sink is real and confirmed by direct source reading.** `app/VulnView.cshtml` is two lines:\n\n```razor\n@model UserProfile\n<div class=\"bio\">@Html.Raw(Model.Bio)</div>\n```\n\n`@Html.Raw(...)` writes the string into the HTML response without encoding, so markup in `Bio` reaches the browser as live HTML. The paired `app/SafeView.cshtml` renders the same field as `@Model.Bio`, which Razor HTML-encodes by default. The two files differ only in the encoding call, which makes the flaw unambiguous and clearly intentional as a vulnerable/safe demonstration pair.\n\n**The scanner's own evidence was weaker than its snippet.** The observation text says \"contents were not inspected... exact line is unknown,\" yet the attached snippet contains the exact sink at line 2. The snippet matches the file on disk, so I'm relying on the file, not the narrative. A second finding (`model-66c182ab5062dcae`) describes the same sink at line 2 and is a duplicate.\n\n## What I could not verify\n\n**No data flow, no reachability.** I grepped the whole snapshot for `UserProfile` and `Bio`: the only hits are the two view files. There is no `UserProfile` class, no `Bio` property, no controller that returns either view, and no route mapping. The three controllers present (`VulnCmdController`, `VulnSqlController`, `SafeSqlController`) are unrelated to this view. So whether `Bio` is attacker-controlled, and whether `VulnView` is even rendered, is unknown. It could be a deliberately isolated training example. That does not make it safe -- it makes exploitability unestablished.\n\n**Scanner coverage was absent, not clean.** Semgrep and CodeQL are not installed on PATH, Trivy is not installed, and `check_coverage` returned empty result sets for every engine. The finding rests entirely on model-based source review, which here is sound because",
+            "evidence_refs": [
+              "model-dd53621b21663226-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-dd53621b21663226",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:52:26.074765Z",
+            "metadata": {
+              "tool_calls_made": 15,
+              "total_tokens": 52144,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "computed"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "advisory_routing": {
+    "is_advisory_only": true,
+    "affects_finding_status": false,
+    "note": "Advisory recommendations never set or change a finding status; IndependentValidator remains the sole status owner.",
+    "route_counts": {},
+    "routed": 0,
+    "unavailable": 0,
+    "payloads": []
+  }
+}

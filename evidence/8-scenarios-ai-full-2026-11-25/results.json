@@ -1,0 +1,2251 @@
+{
+  "generated_at": "2026-11-25T14:01:58.219511Z",
+  "branch": "feat/native-workflow-notifications",
+  "model": "empero/kojo",
+  "endpoint": "https://internal.empero.org/v1",
+  "pipeline_config": {
+    "mode": "hunt",
+    "ai_review": true,
+    "ai_report": true,
+    "max_ai_findings": 10,
+    "laya": false,
+    "tools": [
+      "native-hunt"
+    ],
+    "environment_note": "Windows 11 host without semgrep/gitleaks/trivy/codeql/spotbugs binaries on PATH; full AI pipeline (Model Hunt + AI Review + CVSS v4.0 + IndependentValidator + AI Final Report) ran end-to-end with native-hunt + OSV fallback."
+  },
+  "pricing_usd_per_1m": {
+    "input_uncached": 0.175,
+    "input_cached": 0.02,
+    "output": 1.0
+  },
+  "global_wall_seconds": 2064.81,
+  "global_model_calls": 583,
+  "global_metrics_hunt": {
+    "tp": 31,
+    "tn": 29,
+    "fp": 2,
+    "fn": 0,
+    "precision_pct": 93.94,
+    "recall_pct": 100.0,
+    "specificity_pct": 93.55,
+    "fpr_pct": 6.45,
+    "accuracy_pct": 96.77,
+    "f1_pct": 96.88,
+    "youden_j_100": 93.55,
+    "mcc": 0.9374
+  },
+  "global_metrics_after_ai_review": {
+    "tp": 31,
+    "tn": 29,
+    "fp": 2,
+    "fn": 0,
+    "precision_pct": 93.94,
+    "recall_pct": 100.0,
+    "specificity_pct": 93.55,
+    "fpr_pct": 6.45,
+    "accuracy_pct": 96.77,
+    "f1_pct": 96.88,
+    "youden_j_100": 93.55,
+    "mcc": 0.9374
+  },
+  "global_cost": {
+    "input_uncached_tokens": 2895424,
+    "input_cached_tokens": 1216240,
+    "input_total_tokens": 4111664,
+    "output_tokens": 378248,
+    "total_tokens": 4489912,
+    "cache_hit_pct": 29.58,
+    "cost_usd_with_cache": 0.909272,
+    "cost_vnd_with_cache": 23095.5,
+    "cost_usd_no_cache": 1.097789,
+    "savings_pct": 17.17
+  },
+  "scenarios": [
+    {
+      "id": "KB1",
+      "name": "Java Enterprise (Servlet / Spring + JSP)",
+      "run_id": "run-7342a3cfb5ce48db93af54c4de313326",
+      "status": "completed",
+      "gate": "failed",
+      "orchestration": {
+        "mode": "ai_orchestrated",
+        "ai_invoked_tools": [
+          "owasp-dependency-check",
+          "semgrep",
+          "gitleaks"
+        ]
+      },
+      "ai_filtering": {
+        "raw_scanner_findings": 0,
+        "ai_confirmed_from_scanners": 0,
+        "ai_added_logic_findings": 12,
+        "ai_filtered_out": 0,
+        "final_findings": 12
+      },
+      "findings_total": 12,
+      "assessments_count": 10,
+      "cvss_scored_count": 3,
+      "validation_decisions_count": 10,
+      "validator_statuses": {
+        "inconclusive": 10
+      },
+      "final_report": {
+        "status": "completed",
+        "ai_written": true,
+        "model": "kojo",
+        "provider": "kojo-bench-tmp",
+        "detail": "6048 reported tokens"
+      },
+      "wall_seconds": 366.89,
+      "model_calls_count": 80,
+      "token_source": "exact_http_ledger_all_stages",
+      "cost": {
+        "input_uncached_tokens": 406416,
+        "input_cached_tokens": 176928,
+        "input_total_tokens": 583344,
+        "output_tokens": 56640,
+        "total_tokens": 639984,
+        "cache_hit_pct": 30.33,
+        "cost_usd_with_cache": 0.131301,
+        "cost_vnd_with_cache": 3335.1,
+        "cost_usd_no_cache": 0.158725,
+        "savings_pct": 17.28
+      },
+      "metrics_hunt": {
+        "tp": 4,
+        "tn": 2,
+        "fp": 2,
+        "fn": 0,
+        "precision_pct": 66.67,
+        "recall_pct": 100.0,
+        "specificity_pct": 50.0,
+        "fpr_pct": 50.0,
+        "accuracy_pct": 75.0,
+        "f1_pct": 80.0,
+        "youden_j_100": 50.0,
+        "mcc": 0.5774
+      },
+      "metrics_after_ai_review": {
+        "tp": 4,
+        "tn": 2,
+        "fp": 2,
+        "fn": 0,
+        "precision_pct": 66.67,
+        "recall_pct": 100.0,
+        "specificity_pct": 50.0,
+        "fpr_pct": 50.0,
+        "accuracy_pct": 75.0,
+        "f1_pct": 80.0,
+        "youden_j_100": 50.0,
+        "mcc": 0.5774
+      },
+      "webhook_check": null,
+      "file_outcomes": [
+        {
+          "file": "src/VulnSql.java",
+          "label": "VULN",
+          "expected_cwe": "CWE-89",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 2,
+          "findings": [
+            {
+              "finding_id": "model-7b249236a60ff666",
+              "title": "SQL injection in findUser via string-concatenated Statement query",
+              "cwe": "CWE-89",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-e3c8265bdac0ffb6",
+              "title": "Unverified: no scanner or code evidence for SQL injection in VulnSql.java",
+              "cwe": "CWE-89",
+              "severity": "medium",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.9,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "src/VulnCmd.java",
+          "label": "VULN",
+          "expected_cwe": "CWE-78",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 3,
+          "findings": [
+            {
+              "finding_id": "model-0f317fe9b851065f",
+              "title": "OS command injection via unvalidated 'host' request parameter",
+              "cwe": "CWE-78",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+              "cvss_base_score": 9.3
+            },
+            {
+              "finding_id": "model-07d4d153f4e2f708",
+              "title": "OS command injection via unvalidated 'host' request parameter in shell exec",
+              "cwe": "CWE-78",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+              "cvss_base_score": 9.3
+            },
+            {
+              "finding_id": "model-79aecfa4ff54fd8e",
+              "title": "Unverified: no scanner or code evidence for command injection in VulnCmd.java",
+              "cwe": "CWE-78",
+              "severity": "medium",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "src/VulnDeser.java",
+          "label": "VULN",
+          "expected_cwe": "CWE-502",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 3,
+          "findings": [
+            {
+              "finding_id": "model-d3288b19518e0126",
+              "title": "Unauthenticated Java deserialization of raw request body",
+              "cwe": "CWE-502",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-5a2783d79cd7fcec",
+              "title": "Unsafe Java deserialization of untrusted request body via ObjectInputStream",
+              "cwe": "CWE-502",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-6ec2502f32810dcb",
+              "title": "Unverified: no scanner or code evidence for unsafe deserialization in VulnDeser.java",
+              "cwe": "CWE-502",
+              "severity": "medium",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "src/VulnXss.jsp",
+          "label": "VULN",
+          "expected_cwe": "CWE-79",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 2,
+          "findings": [
+            {
+              "finding_id": "model-2d459b6fcd9237d8",
+              "title": "Reflected XSS in JSP via unencoded request parameter echo",
+              "cwe": "CWE-79",
+              "severity": "high",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.92,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:A/VC:N/VI:N/VA:N/SC:L/SI:L/SA:N",
+              "cvss_base_score": 5.1
+            },
+            {
+              "finding_id": "model-01ae96becc874bfc",
+              "title": "Unverified: no scanner or code evidence for reflected/stored XSS in VulnXss.jsp",
+              "cwe": "CWE-79",
+              "severity": "medium",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.88,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "src/SafeSql.java",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        },
+        {
+          "file": "src/SafeCmd.java",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "FP",
+          "outcome_after_ai_review": "FP",
+          "findings_count": 1,
+          "findings": [
+            {
+              "finding_id": "model-a5aaacbd146469d1",
+              "title": "Unverified: SafeCmd.java safety claim not confirmed by inspection",
+              "cwe": "CWE-78",
+              "severity": "medium",
+              "status": "unprocessed",
+              "provenance": "model",
+              "ai_proposed_status": null,
+              "ai_confidence": null,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "src/SafePem.java",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        },
+        {
+          "file": "src/SafeComment.java",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "FP",
+          "outcome_after_ai_review": "FP",
+          "findings_count": 1,
+          "findings": [
+            {
+              "finding_id": "model-36886ce5a6d9ce8e",
+              "title": "Unverified: SafeComment.java sanitization claim not confirmed by inspection",
+              "cwe": "CWE-79",
+              "severity": "medium",
+              "status": "unprocessed",
+              "provenance": "model",
+              "ai_proposed_status": null,
+              "ai_confidence": null,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "KB2",
+      "name": "JavaScript / TypeScript Full-Stack (Node.js + DOM)",
+      "run_id": "run-44b2c1cb6c27447c93b72d3935ff25cc",
+      "status": "completed",
+      "gate": "failed",
+      "orchestration": {
+        "mode": "ai_orchestrated",
+        "ai_invoked_tools": [
+          "owasp-dependency-check",
+          "semgrep",
+          "trivy",
+          "gitleaks",
+          "codeql"
+        ]
+      },
+      "ai_filtering": {
+        "raw_scanner_findings": 0,
+        "ai_confirmed_from_scanners": 0,
+        "ai_added_logic_findings": 4,
+        "ai_filtered_out": 0,
+        "final_findings": 4
+      },
+      "findings_total": 4,
+      "assessments_count": 4,
+      "cvss_scored_count": 0,
+      "validation_decisions_count": 4,
+      "validator_statuses": {
+        "inconclusive": 4
+      },
+      "final_report": {
+        "status": "completed",
+        "ai_written": true,
+        "model": "kojo",
+        "provider": "kojo-bench-tmp",
+        "detail": "3680 reported tokens"
+      },
+      "wall_seconds": 195.14,
+      "model_calls_count": 48,
+      "token_source": "exact_http_ledger_all_stages",
+      "cost": {
+        "input_uncached_tokens": 227536,
+        "input_cached_tokens": 101824,
+        "input_total_tokens": 329360,
+        "output_tokens": 27248,
+        "total_tokens": 356608,
+        "cache_hit_pct": 30.92,
+        "cost_usd_with_cache": 0.069103,
+        "cost_vnd_with_cache": 1755.2,
+        "cost_usd_no_cache": 0.084886,
+        "savings_pct": 18.59
+      },
+      "metrics_hunt": {
+        "tp": 4,
+        "tn": 4,
+        "fp": 0,
+        "fn": 0,
+        "precision_pct": 100.0,
+        "recall_pct": 100.0,
+        "specificity_pct": 100.0,
+        "fpr_pct": 0.0,
+        "accuracy_pct": 100.0,
+        "f1_pct": 100.0,
+        "youden_j_100": 100.0,
+        "mcc": 1.0
+      },
+      "metrics_after_ai_review": {
+        "tp": 4,
+        "tn": 4,
+        "fp": 0,
+        "fn": 0,
+        "precision_pct": 100.0,
+        "recall_pct": 100.0,
+        "specificity_pct": 100.0,
+        "fpr_pct": 0.0,
+        "accuracy_pct": 100.0,
+        "f1_pct": 100.0,
+        "youden_j_100": 100.0,
+        "mcc": 1.0
+      },
+      "webhook_check": null,
+      "file_outcomes": [
+        {
+          "file": "src/vuln_cmd.ts",
+          "label": "VULN",
+          "expected_cwe": "CWE-78",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 1,
+          "findings": [
+            {
+              "finding_id": "model-79dfa5098d7f3e9d",
+              "title": "OS command injection via exec with concatenated host",
+              "cwe": "CWE-78",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "src/vuln_eval.js",
+          "label": "VULN",
+          "expected_cwe": "CWE-95",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 1,
+          "findings": [
+            {
+              "finding_id": "model-8cbb6a02d746527a",
+              "title": "Remote code execution via eval on request body",
+              "cwe": "CWE-95",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.72,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "src/vuln_dom.js",
+          "label": "VULN",
+          "expected_cwe": "CWE-79",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 1,
+          "findings": [
+            {
+              "finding_id": "model-aa907b4b5caf7f0f",
+              "title": "Reflected XSS via unescaped innerHTML sink",
+              "cwe": "CWE-79",
+              "severity": "high",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 1.0,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "src/vuln_sql.js",
+          "label": "VULN",
+          "expected_cwe": "CWE-89",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 1,
+          "findings": [
+            {
+              "finding_id": "model-5815bd155816b9c5",
+              "title": "SQL injection via string concatenation in db.query",
+              "cwe": "CWE-89",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "src/safe_cmd.ts",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        },
+        {
+          "file": "src/safe_json.js",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        },
+        {
+          "file": "src/safe_dom.js",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        },
+        {
+          "file": "src/safe_sql.js",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        }
+      ]
+    },
+    {
+      "id": "KB3",
+      "name": "Python Backend & Data Worker",
+      "run_id": "run-478cac2a54c04fc19aea10cb3e71a08a",
+      "status": "completed",
+      "gate": "failed",
+      "orchestration": {
+        "mode": "ai_orchestrated",
+        "ai_invoked_tools": [
+          "owasp-dependency-check",
+          "gitleaks",
+          "semgrep",
+          "trivy"
+        ]
+      },
+      "ai_filtering": {
+        "raw_scanner_findings": 0,
+        "ai_confirmed_from_scanners": 0,
+        "ai_added_logic_findings": 9,
+        "ai_filtered_out": 0,
+        "final_findings": 9
+      },
+      "findings_total": 9,
+      "assessments_count": 9,
+      "cvss_scored_count": 3,
+      "validation_decisions_count": 9,
+      "validator_statuses": {
+        "inconclusive": 9
+      },
+      "final_report": {
+        "status": "completed",
+        "ai_written": true,
+        "model": "kojo",
+        "provider": "kojo-bench-tmp",
+        "detail": "5664 reported tokens"
+      },
+      "wall_seconds": 218.18,
+      "model_calls_count": 74,
+      "token_source": "exact_http_ledger_all_stages",
+      "cost": {
+        "input_uncached_tokens": 386416,
+        "input_cached_tokens": 153392,
+        "input_total_tokens": 539808,
+        "output_tokens": 52336,
+        "total_tokens": 592144,
+        "cache_hit_pct": 28.42,
+        "cost_usd_with_cache": 0.123027,
+        "cost_vnd_with_cache": 3124.9,
+        "cost_usd_no_cache": 0.146802,
+        "savings_pct": 16.2
+      },
+      "metrics_hunt": {
+        "tp": 4,
+        "tn": 4,
+        "fp": 0,
+        "fn": 0,
+        "precision_pct": 100.0,
+        "recall_pct": 100.0,
+        "specificity_pct": 100.0,
+        "fpr_pct": 0.0,
+        "accuracy_pct": 100.0,
+        "f1_pct": 100.0,
+        "youden_j_100": 100.0,
+        "mcc": 1.0
+      },
+      "metrics_after_ai_review": {
+        "tp": 4,
+        "tn": 4,
+        "fp": 0,
+        "fn": 0,
+        "precision_pct": 100.0,
+        "recall_pct": 100.0,
+        "specificity_pct": 100.0,
+        "fpr_pct": 0.0,
+        "accuracy_pct": 100.0,
+        "f1_pct": 100.0,
+        "youden_j_100": 100.0,
+        "mcc": 1.0
+      },
+      "webhook_check": null,
+      "file_outcomes": [
+        {
+          "file": "app/vuln_cmd.py",
+          "label": "VULN",
+          "expected_cwe": "CWE-78",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 2,
+          "findings": [
+            {
+              "finding_id": "model-579e2ee9320c00ff",
+              "title": "OS command injection via unsanitized request parameter in shell=True Popen",
+              "cwe": "CWE-78",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+              "cvss_base_score": 9.3
+            },
+            {
+              "finding_id": "model-46073067cb2040c4",
+              "title": "OS command injection via os.system with user-controlled input",
+              "cwe": "CWE-78",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "app/vuln_pickle.py",
+          "label": "VULN",
+          "expected_cwe": "CWE-502",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 2,
+          "findings": [
+            {
+              "finding_id": "model-1c9c9f297b2bb1a8",
+              "title": "Unsafe deserialization of raw request body with pickle.loads",
+              "cwe": "CWE-502",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H",
+              "cvss_base_score": 10.0
+            },
+            {
+              "finding_id": "model-a47246365b979b90",
+              "title": "Arbitrary code execution via pickle.loads on untrusted data",
+              "cwe": "CWE-502",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "needs_manual_review",
+              "ai_confidence": 0.72,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "app/vuln_yaml.py",
+          "label": "VULN",
+          "expected_cwe": "CWE-502",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 2,
+          "findings": [
+            {
+              "finding_id": "model-c5e393381934a763",
+              "title": "Unsafe YAML deserialization using yaml.Loader on request body",
+              "cwe": "CWE-502",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "needs_investigation",
+              "ai_confidence": 0.72,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-fb6d571b9cbd0737",
+              "title": "Unsafe YAML deserialization via yaml.load without SafeLoader",
+              "cwe": "CWE-502",
+              "severity": "high",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "app/vuln_sql.py",
+          "label": "VULN",
+          "expected_cwe": "CWE-89",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 3,
+          "findings": [
+            {
+              "finding_id": "model-54d4ad9ceed276c5",
+              "title": "SQL injection through string concatenation in cursor.execute",
+              "cwe": "CWE-89",
+              "severity": "high",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.92,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-51eebd1bfa11dcb5",
+              "title": "SQL injection via string concatenation in user lookup",
+              "cwe": "CWE-89",
+              "severity": "high",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-d892dbb509e17195",
+              "title": "SQL injection via string-built query",
+              "cwe": "CWE-89",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.92,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:N/SC:N/SI:N/SA:N",
+              "cvss_base_score": 9.3
+            }
+          ]
+        },
+        {
+          "file": "app/safe_cmd.py",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        },
+        {
+          "file": "app/safe_json.py",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        },
+        {
+          "file": "app/safe_yaml.py",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        },
+        {
+          "file": "app/safe_sql.py",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        }
+      ]
+    },
+    {
+      "id": "KB4",
+      "name": "PHP Web Application (Legacy + Modern)",
+      "run_id": "run-1580e0037fac4a13944363313403b149",
+      "status": "completed",
+      "gate": "failed",
+      "orchestration": {
+        "mode": "ai_orchestrated",
+        "ai_invoked_tools": [
+          "owasp-dependency-check",
+          "semgrep",
+          "gitleaks"
+        ]
+      },
+      "ai_filtering": {
+        "raw_scanner_findings": 0,
+        "ai_confirmed_from_scanners": 0,
+        "ai_added_logic_findings": 9,
+        "ai_filtered_out": 0,
+        "final_findings": 9
+      },
+      "findings_total": 9,
+      "assessments_count": 9,
+      "cvss_scored_count": 6,
+      "validation_decisions_count": 9,
+      "validator_statuses": {
+        "inconclusive": 9
+      },
+      "final_report": {
+        "status": "completed",
+        "ai_written": true,
+        "model": "kojo",
+        "provider": "kojo-bench-tmp",
+        "detail": "5712 reported tokens"
+      },
+      "wall_seconds": 228.13,
+      "model_calls_count": 74,
+      "token_source": "exact_http_ledger_all_stages",
+      "cost": {
+        "input_uncached_tokens": 358816,
+        "input_cached_tokens": 172816,
+        "input_total_tokens": 531632,
+        "output_tokens": 48888,
+        "total_tokens": 580520,
+        "cache_hit_pct": 32.51,
+        "cost_usd_with_cache": 0.115137,
+        "cost_vnd_with_cache": 2924.5,
+        "cost_usd_no_cache": 0.141924,
+        "savings_pct": 18.87
+      },
+      "metrics_hunt": {
+        "tp": 4,
+        "tn": 4,
+        "fp": 0,
+        "fn": 0,
+        "precision_pct": 100.0,
+        "recall_pct": 100.0,
+        "specificity_pct": 100.0,
+        "fpr_pct": 0.0,
+        "accuracy_pct": 100.0,
+        "f1_pct": 100.0,
+        "youden_j_100": 100.0,
+        "mcc": 1.0
+      },
+      "metrics_after_ai_review": {
+        "tp": 4,
+        "tn": 4,
+        "fp": 0,
+        "fn": 0,
+        "precision_pct": 100.0,
+        "recall_pct": 100.0,
+        "specificity_pct": 100.0,
+        "fpr_pct": 0.0,
+        "accuracy_pct": 100.0,
+        "f1_pct": 100.0,
+        "youden_j_100": 100.0,
+        "mcc": 1.0
+      },
+      "webhook_check": null,
+      "file_outcomes": [
+        {
+          "file": "web/vuln_sql.php",
+          "label": "VULN",
+          "expected_cwe": "CWE-89",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 2,
+          "findings": [
+            {
+              "finding_id": "model-8abfaa82d10be0db",
+              "title": "SQL injection via unsanitized GET parameter concatenated into mysqli_query",
+              "cwe": "CWE-89",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+              "cvss_base_score": 9.3
+            },
+            {
+              "finding_id": "model-a2fd9086db8a6354",
+              "title": "SQL injection via unsanitized input in database query",
+              "cwe": "CWE-89",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.85,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:N/SC:N/SI:N/SA:N",
+              "cvss_base_score": 9.3
+            }
+          ]
+        },
+        {
+          "file": "web/vuln_deser.php",
+          "label": "VULN",
+          "expected_cwe": "CWE-502",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 2,
+          "findings": [
+            {
+              "finding_id": "model-26bbeb61ecc17524",
+              "title": "PHP object injection: unserialize() on attacker-controlled cookie",
+              "cwe": "CWE-502",
+              "severity": "high",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.93,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-85029b008e0bf398",
+              "title": "Insecure deserialization of attacker-controlled data",
+              "cwe": "CWE-502",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.95,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "web/vuln_cmd.php",
+          "label": "VULN",
+          "expected_cwe": "CWE-78",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 3,
+          "findings": [
+            {
+              "finding_id": "model-8dba793fe2e803f6",
+              "title": "OS command injection via GET parameter passed to shell_exec",
+              "cwe": "CWE-78",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.95,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H",
+              "cvss_base_score": 10.0
+            },
+            {
+              "finding_id": "model-cfe59861d98f28c2",
+              "title": "OS command injection via unsanitized user input passed to shell execution",
+              "cwe": "CWE-78",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+              "cvss_base_score": 9.3
+            },
+            {
+              "finding_id": "model-7230607c40e80064",
+              "title": "Secret scan not executed; no hardcoded credential, API key, private key or JWT finding is confirmable",
+              "cwe": "CWE-798",
+              "severity": "info",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "web/vuln_xss.php",
+          "label": "VULN",
+          "expected_cwe": "CWE-79",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 2,
+          "findings": [
+            {
+              "finding_id": "model-ed0a142e6393612e",
+              "title": "Reflected XSS: raw GET parameter echoed into HTML response",
+              "cwe": "CWE-79",
+              "severity": "high",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:P/VC:L/VI:L/VA:N/SC:N/SI:N/SA:N",
+              "cvss_base_score": 5.3
+            },
+            {
+              "finding_id": "model-a48bdbb0ebc0c939",
+              "title": "Reflected cross-site scripting via unescaped output of user input",
+              "cwe": "CWE-79",
+              "severity": "high",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:A/VC:L/VI:L/VA:N/SC:L/SI:L/SA:N",
+              "cvss_base_score": 5.1
+            }
+          ]
+        },
+        {
+          "file": "web/safe_sql.php",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        },
+        {
+          "file": "web/safe_json.php",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        },
+        {
+          "file": "web/safe_cmd.php",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        },
+        {
+          "file": "web/safe_xss.php",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        }
+      ]
+    },
+    {
+      "id": "KB5",
+      "name": "Go Cloud-Native Microservice",
+      "run_id": "run-51c8112d2f4d485d92ee317d37ce2fd5",
+      "status": "completed",
+      "gate": "failed",
+      "orchestration": {
+        "mode": "ai_orchestrated",
+        "ai_invoked_tools": [
+          "owasp-dependency-check",
+          "semgrep",
+          "codeql",
+          "gitleaks",
+          "trivy"
+        ]
+      },
+      "ai_filtering": {
+        "raw_scanner_findings": 0,
+        "ai_confirmed_from_scanners": 0,
+        "ai_added_logic_findings": 8,
+        "ai_filtered_out": 0,
+        "final_findings": 8
+      },
+      "findings_total": 8,
+      "assessments_count": 8,
+      "cvss_scored_count": 2,
+      "validation_decisions_count": 8,
+      "validator_statuses": {
+        "inconclusive": 8
+      },
+      "final_report": {
+        "status": "completed",
+        "ai_written": true,
+        "model": "kojo",
+        "provider": "kojo-bench-tmp",
+        "detail": "5504 reported tokens"
+      },
+      "wall_seconds": 240.85,
+      "model_calls_count": 73,
+      "token_source": "exact_http_ledger_all_stages",
+      "cost": {
+        "input_uncached_tokens": 374656,
+        "input_cached_tokens": 147248,
+        "input_total_tokens": 521904,
+        "output_tokens": 47032,
+        "total_tokens": 568936,
+        "cache_hit_pct": 28.21,
+        "cost_usd_with_cache": 0.115542,
+        "cost_vnd_with_cache": 2934.8,
+        "cost_usd_no_cache": 0.138365,
+        "savings_pct": 16.5
+      },
+      "metrics_hunt": {
+        "tp": 4,
+        "tn": 4,
+        "fp": 0,
+        "fn": 0,
+        "precision_pct": 100.0,
+        "recall_pct": 100.0,
+        "specificity_pct": 100.0,
+        "fpr_pct": 0.0,
+        "accuracy_pct": 100.0,
+        "f1_pct": 100.0,
+        "youden_j_100": 100.0,
+        "mcc": 1.0
+      },
+      "metrics_after_ai_review": {
+        "tp": 4,
+        "tn": 4,
+        "fp": 0,
+        "fn": 0,
+        "precision_pct": 100.0,
+        "recall_pct": 100.0,
+        "specificity_pct": 100.0,
+        "fpr_pct": 0.0,
+        "accuracy_pct": 100.0,
+        "f1_pct": 100.0,
+        "youden_j_100": 100.0,
+        "mcc": 1.0
+      },
+      "webhook_check": null,
+      "file_outcomes": [
+        {
+          "file": "pkg/vuln_sql.go",
+          "label": "VULN",
+          "expected_cwe": "CWE-89",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 2,
+          "findings": [
+            {
+              "finding_id": "model-0d4a9028a16f4875",
+              "title": "SQL injection in FindUser via string-concatenated 'id' parameter",
+              "cwe": "CWE-89",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.9,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:N/VA:N/SC:N/SI:N/SA:N",
+              "cvss_base_score": 8.7
+            },
+            {
+              "finding_id": "model-8c671a93f622fe0b",
+              "title": "SQL injection via string-concatenated query",
+              "cwe": "CWE-89",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "pkg/vuln_cmd.go",
+          "label": "VULN",
+          "expected_cwe": "CWE-78",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 2,
+          "findings": [
+            {
+              "finding_id": "model-fbf3e4d0e1409477",
+              "title": "OS command injection in Ping via unsanitized 'host' query parameter",
+              "cwe": "CWE-78",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.85,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-3f9eee46eb25ec41",
+              "title": "OS command injection via unsanitized argument in command execution",
+              "cwe": "CWE-78",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "true_positive",
+              "ai_confidence": 0.92,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "pkg/vuln_ssrf.go",
+          "label": "VULN",
+          "expected_cwe": "CWE-918",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 2,
+          "findings": [
+            {
+              "finding_id": "model-6c2842ca30463621",
+              "title": "Server-side request forgery in Proxy via 'url' query parameter",
+              "cwe": "CWE-918",
+              "severity": "high",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-fdfb6598df3e153e",
+              "title": "Server-side request forgery via attacker-controlled URL",
+              "cwe": "CWE-918",
+              "severity": "high",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.95,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "pkg/vuln_path.go",
+          "label": "VULN",
+          "expected_cwe": "CWE-22",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 2,
+          "findings": [
+            {
+              "finding_id": "model-7ed6498e602fa2bd",
+              "title": "Path traversal in ReadDoc via 'file' query parameter",
+              "cwe": "CWE-22",
+              "severity": "high",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:N/VA:N/SC:N/SI:N/SA:N",
+              "cvss_base_score": 8.7
+            },
+            {
+              "finding_id": "model-bcb606f907353c3b",
+              "title": "Path traversal in file access path construction",
+              "cwe": "CWE-22",
+              "severity": "high",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "pkg/safe_sql.go",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        },
+        {
+          "file": "pkg/safe_cmd.go",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        },
+        {
+          "file": "pkg/safe_http.go",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        },
+        {
+          "file": "pkg/safe_path.go",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        }
+      ]
+    },
+    {
+      "id": "KB6",
+      "name": "C# / ASP.NET Core & Razor",
+      "run_id": "run-fa36cc01f151434fb3ecd7329e944586",
+      "status": "completed",
+      "gate": "failed",
+      "orchestration": {
+        "mode": "ai_orchestrated",
+        "ai_invoked_tools": [
+          "owasp-dependency-check",
+          "semgrep",
+          "gitleaks",
+          "codeql",
+          "trivy"
+        ]
+      },
+      "ai_filtering": {
+        "raw_scanner_findings": 0,
+        "ai_confirmed_from_scanners": 0,
+        "ai_added_logic_findings": 8,
+        "ai_filtered_out": 0,
+        "final_findings": 8
+      },
+      "findings_total": 8,
+      "assessments_count": 8,
+      "cvss_scored_count": 6,
+      "validation_decisions_count": 8,
+      "validator_statuses": {
+        "inconclusive": 8
+      },
+      "final_report": {
+        "status": "completed",
+        "ai_written": true,
+        "model": "kojo",
+        "provider": "kojo-bench-tmp",
+        "detail": "5520 reported tokens"
+      },
+      "wall_seconds": 356.52,
+      "model_calls_count": 74,
+      "token_source": "exact_http_ledger_all_stages",
+      "cost": {
+        "input_uncached_tokens": 373872,
+        "input_cached_tokens": 171024,
+        "input_total_tokens": 544896,
+        "output_tokens": 51856,
+        "total_tokens": 596752,
+        "cache_hit_pct": 31.39,
+        "cost_usd_with_cache": 0.120704,
+        "cost_vnd_with_cache": 3065.9,
+        "cost_usd_no_cache": 0.147213,
+        "savings_pct": 18.01
+      },
+      "metrics_hunt": {
+        "tp": 4,
+        "tn": 4,
+        "fp": 0,
+        "fn": 0,
+        "precision_pct": 100.0,
+        "recall_pct": 100.0,
+        "specificity_pct": 100.0,
+        "fpr_pct": 0.0,
+        "accuracy_pct": 100.0,
+        "f1_pct": 100.0,
+        "youden_j_100": 100.0,
+        "mcc": 1.0
+      },
+      "metrics_after_ai_review": {
+        "tp": 4,
+        "tn": 4,
+        "fp": 0,
+        "fn": 0,
+        "precision_pct": 100.0,
+        "recall_pct": 100.0,
+        "specificity_pct": 100.0,
+        "fpr_pct": 0.0,
+        "accuracy_pct": 100.0,
+        "f1_pct": 100.0,
+        "youden_j_100": 100.0,
+        "mcc": 1.0
+      },
+      "webhook_check": null,
+      "file_outcomes": [
+        {
+          "file": "app/VulnSql.cs",
+          "label": "VULN",
+          "expected_cwe": "CWE-89",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 2,
+          "findings": [
+            {
+              "finding_id": "model-06edaa0b0d7332b3",
+              "title": "SQL injection via string concatenation into SqlCommand query",
+              "cwe": "CWE-89",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:L/VA:L/SC:N/SI:N/SA:N",
+              "cvss_base_score": 8.8
+            },
+            {
+              "finding_id": "model-a7fe4ff58de7deb3",
+              "title": "SQL injection via string-concatenated query in VulnSql",
+              "cwe": "CWE-89",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.9,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+              "cvss_base_score": 9.3
+            }
+          ]
+        },
+        {
+          "file": "app/VulnCmd.cs",
+          "label": "VULN",
+          "expected_cwe": "CWE-78",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 2,
+          "findings": [
+            {
+              "finding_id": "model-46f74f672f3ca92d",
+              "title": "OS command injection via unsanitized query parameter passed to Process.Start",
+              "cwe": "CWE-78",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+              "cvss_base_score": 9.3
+            },
+            {
+              "finding_id": "model-0517a5309b100b66",
+              "title": "OS command injection via unsanitized argument in VulnCmd",
+              "cwe": "CWE-78",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+              "cvss_base_score": 9.3
+            }
+          ]
+        },
+        {
+          "file": "app/VulnDeser.cs",
+          "label": "VULN",
+          "expected_cwe": "CWE-502",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 2,
+          "findings": [
+            {
+              "finding_id": "model-525828ab780cbffc",
+              "title": "Insecure BinaryFormatter deserialization of untrusted stream (RCE gadget chain)",
+              "cwe": "CWE-502",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H",
+              "cvss_base_score": 10.0
+            },
+            {
+              "finding_id": "model-0751364fb2aedb13",
+              "title": "Insecure deserialization of untrusted data in VulnDeser",
+              "cwe": "CWE-502",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "app/VulnView.cshtml",
+          "label": "VULN",
+          "expected_cwe": "CWE-79",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 2,
+          "findings": [
+            {
+              "finding_id": "model-66c182ab5062dcae",
+              "title": "Stored/reflected XSS via @Html.Raw on unencoded model data",
+              "cwe": "CWE-79",
+              "severity": "high",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-dd53621b21663226",
+              "title": "Reflected/stored XSS via unencoded output in VulnView",
+              "cwe": "CWE-79",
+              "severity": "high",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:P/VC:N/VI:N/VA:N/SC:L/SI:L/SA:N",
+              "cvss_base_score": 5.1
+            }
+          ]
+        },
+        {
+          "file": "app/SafeSql.cs",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        },
+        {
+          "file": "app/SafeCmd.cs",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        },
+        {
+          "file": "app/SafeJson.cs",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        },
+        {
+          "file": "app/SafeView.cshtml",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        }
+      ]
+    },
+    {
+      "id": "KB7",
+      "name": "Ruby on Rails & ERB",
+      "run_id": "run-6306ce6343b040449b2b96a61b0ab7c1",
+      "status": "completed",
+      "gate": "failed",
+      "orchestration": {
+        "mode": "ai_orchestrated",
+        "ai_invoked_tools": [
+          "owasp-dependency-check",
+          "semgrep",
+          "gitleaks"
+        ]
+      },
+      "ai_filtering": {
+        "raw_scanner_findings": 0,
+        "ai_confirmed_from_scanners": 0,
+        "ai_added_logic_findings": 10,
+        "ai_filtered_out": 0,
+        "final_findings": 10
+      },
+      "findings_total": 10,
+      "assessments_count": 10,
+      "cvss_scored_count": 3,
+      "validation_decisions_count": 10,
+      "validator_statuses": {
+        "inconclusive": 10
+      },
+      "final_report": {
+        "status": "completed",
+        "ai_written": true,
+        "model": "kojo",
+        "provider": "kojo-bench-tmp",
+        "detail": "5536 reported tokens"
+      },
+      "wall_seconds": 193.8,
+      "model_calls_count": 80,
+      "token_source": "exact_http_ledger_all_stages",
+      "cost": {
+        "input_uncached_tokens": 437504,
+        "input_cached_tokens": 138768,
+        "input_total_tokens": 576272,
+        "output_tokens": 54344,
+        "total_tokens": 630616,
+        "cache_hit_pct": 24.08,
+        "cost_usd_with_cache": 0.133683,
+        "cost_vnd_with_cache": 3395.5,
+        "cost_usd_no_cache": 0.155192,
+        "savings_pct": 13.86
+      },
+      "metrics_hunt": {
+        "tp": 4,
+        "tn": 4,
+        "fp": 0,
+        "fn": 0,
+        "precision_pct": 100.0,
+        "recall_pct": 100.0,
+        "specificity_pct": 100.0,
+        "fpr_pct": 0.0,
+        "accuracy_pct": 100.0,
+        "f1_pct": 100.0,
+        "youden_j_100": 100.0,
+        "mcc": 1.0
+      },
+      "metrics_after_ai_review": {
+        "tp": 4,
+        "tn": 4,
+        "fp": 0,
+        "fn": 0,
+        "precision_pct": 100.0,
+        "recall_pct": 100.0,
+        "specificity_pct": 100.0,
+        "fpr_pct": 0.0,
+        "accuracy_pct": 100.0,
+        "f1_pct": 100.0,
+        "youden_j_100": 100.0,
+        "mcc": 1.0
+      },
+      "webhook_check": null,
+      "file_outcomes": [
+        {
+          "file": "app/vuln_sql.rb",
+          "label": "VULN",
+          "expected_cwe": "CWE-89",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 3,
+          "findings": [
+            {
+              "finding_id": "model-ccb26c19b27f8e36",
+              "title": "SQL injection in ActiveRecord where() string interpolation",
+              "cwe": "CWE-89",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed_vulnerable",
+              "ai_confidence": 0.95,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+              "cvss_base_score": 9.3
+            },
+            {
+              "finding_id": "model-501079420c3a0aaf",
+              "title": "Broken access control: user record lookup has no authentication or ownership scoping (IDOR)",
+              "cwe": "CWE-639",
+              "severity": "high",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-c2b6b14f556a90d7",
+              "title": "SQL injection through string interpolation in query",
+              "cwe": "CWE-89",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "app/vuln_eval.rb",
+          "label": "VULN",
+          "expected_cwe": "CWE-95",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 3,
+          "findings": [
+            {
+              "finding_id": "model-ac40b4bbf031c98f",
+              "title": "Remote code execution via eval() of request parameter",
+              "cwe": "CWE-95",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.97,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H",
+              "cvss_base_score": 10.0
+            },
+            {
+              "finding_id": "model-133c74cbc2a4d259",
+              "title": "Broken access control: arbitrary expression evaluation endpoint unauthenticated",
+              "cwe": "CWE-862",
+              "severity": "high",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-1a49f19ddea57d2b",
+              "title": "Code injection via eval on untrusted input",
+              "cwe": "CWE-95",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "app/vuln_cmd.rb",
+          "label": "VULN",
+          "expected_cwe": "CWE-78",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 3,
+          "findings": [
+            {
+              "finding_id": "model-1cb16bbe2d7e132d",
+              "title": "OS command injection via unsanitized params[:dir] in system()",
+              "cwe": "CWE-78",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.85,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-466f136d5b9cefd2",
+              "title": "Broken access control: directory listing action requires no authentication or authorization",
+              "cwe": "CWE-862",
+              "severity": "high",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "needs_review",
+              "ai_confidence": 0.4,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-1eae62911d192eb8",
+              "title": "OS command injection via user-controlled params reaching system()",
+              "cwe": "CWE-78",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.85,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "app/vuln_view.erb",
+          "label": "VULN",
+          "expected_cwe": "CWE-79",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 1,
+          "findings": [
+            {
+              "finding_id": "model-86c0885f0cec1daf",
+              "title": "Cross-site scripting via raw() on user bio in ERB template",
+              "cwe": "CWE-79",
+              "severity": "high",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:P/VC:N/VI:N/VA:N/SC:L/SI:L/SA:N",
+              "cvss_base_score": 5.1
+            }
+          ]
+        },
+        {
+          "file": "app/safe_sql.rb",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        },
+        {
+          "file": "app/safe_json.rb",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        },
+        {
+          "file": "app/safe_cmd.rb",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        },
+        {
+          "file": "app/safe_view.erb",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        }
+      ]
+    },
+    {
+      "id": "KB8",
+      "name": "DevSecOps IaC (Docker/K8s) + Secrets + Signed Webhook",
+      "run_id": "run-a45541fb73114ccb8d8177a7591d16b8",
+      "status": "completed",
+      "gate": "failed",
+      "orchestration": {
+        "mode": "ai_orchestrated",
+        "ai_invoked_tools": [
+          "owasp-dependency-check",
+          "trivy",
+          "gitleaks",
+          "semgrep",
+          "codeql"
+        ]
+      },
+      "ai_filtering": {
+        "raw_scanner_findings": 0,
+        "ai_confirmed_from_scanners": 0,
+        "ai_added_logic_findings": 17,
+        "ai_filtered_out": 0,
+        "final_findings": 17
+      },
+      "findings_total": 17,
+      "assessments_count": 10,
+      "cvss_scored_count": 2,
+      "validation_decisions_count": 10,
+      "validator_statuses": {
+        "inconclusive": 10
+      },
+      "final_report": {
+        "status": "completed",
+        "ai_written": true,
+        "model": "kojo",
+        "provider": "kojo-bench-tmp",
+        "detail": "5952 reported tokens"
+      },
+      "wall_seconds": 265.3,
+      "model_calls_count": 80,
+      "token_source": "summary_model_calls_ledger",
+      "cost": {
+        "input_uncached_tokens": 330208,
+        "input_cached_tokens": 154240,
+        "input_total_tokens": 484448,
+        "output_tokens": 39904,
+        "total_tokens": 524352,
+        "cache_hit_pct": 31.84,
+        "cost_usd_with_cache": 0.100775,
+        "cost_vnd_with_cache": 2559.7,
+        "cost_usd_no_cache": 0.124682,
+        "savings_pct": 19.17
+      },
+      "metrics_hunt": {
+        "tp": 3,
+        "tn": 3,
+        "fp": 0,
+        "fn": 0,
+        "precision_pct": 100.0,
+        "recall_pct": 100.0,
+        "specificity_pct": 100.0,
+        "fpr_pct": 0.0,
+        "accuracy_pct": 100.0,
+        "f1_pct": 100.0,
+        "youden_j_100": 100.0,
+        "mcc": 1.0
+      },
+      "metrics_after_ai_review": {
+        "tp": 3,
+        "tn": 3,
+        "fp": 0,
+        "fn": 0,
+        "precision_pct": 100.0,
+        "recall_pct": 100.0,
+        "specificity_pct": 100.0,
+        "fpr_pct": 0.0,
+        "accuracy_pct": 100.0,
+        "f1_pct": 100.0,
+        "youden_j_100": 100.0,
+        "mcc": 1.0
+      },
+      "webhook_check": {
+        "synthetic_http": true,
+        "hmac_sha256_valid": true,
+        "summary_only_no_secret_leak": true,
+        "payload_bytes": 174
+      },
+      "file_outcomes": [
+        {
+          "file": "deploy/vuln_pod.yaml",
+          "label": "VULN",
+          "expected_cwe": "CWE-250",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 8,
+          "findings": [
+            {
+              "finding_id": "model-da52a917cd61585d",
+              "title": "Privileged pod running as root",
+              "cwe": "CWE-UNCLASSIFIED",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.92,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-f427f78550d5b550",
+              "title": "Service account token automounted in privileged root pod",
+              "cwe": "CWE-UNCLASSIFIED",
+              "severity": "medium",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.85,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:H/AT:N/PR:N/UI:N/VC:L/VI:L/VA:N/SC:L/SI:L/SA:N",
+              "cvss_base_score": 6.3
+            },
+            {
+              "finding_id": "model-8c8acb05feb5dc1e",
+              "title": "Pod explicitly runs as UID 0 (root) without runAsNonRoot enforcement",
+              "cwe": "CWE-UNCLASSIFIED",
+              "severity": "high",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-b5e12cfc2239861f",
+              "title": "Unpinned mutable base image ubuntu:latest in workload manifest",
+              "cwe": "CWE-UNCLASSIFIED",
+              "severity": "medium",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-8d2763e75b3679a9",
+              "title": "Pod runs a privileged container as root with no restriction on privilege escalation",
+              "cwe": "CWE-UNCLASSIFIED",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H",
+              "cvss_base_score": 9.4
+            },
+            {
+              "finding_id": "model-bc2851331ffa2b18",
+              "title": "Container image pinned to floating ubuntu:latest tag",
+              "cwe": "CWE-UNCLASSIFIED",
+              "severity": "medium",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-3a12340615263d38",
+              "title": "Kubernetes pod runs privileged container",
+              "cwe": "CWE-UNCLASSIFIED",
+              "severity": "high",
+              "status": "unprocessed",
+              "provenance": "model",
+              "ai_proposed_status": null,
+              "ai_confidence": null,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-44d863545ff968a8",
+              "title": "Kubernetes pod mounts a host path",
+              "cwe": "CWE-UNCLASSIFIED",
+              "severity": "high",
+              "status": "unprocessed",
+              "provenance": "model",
+              "ai_proposed_status": null,
+              "ai_confidence": null,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "docker/vuln/Dockerfile",
+          "label": "VULN",
+          "expected_cwe": "CWE-250",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 7,
+          "findings": [
+            {
+              "finding_id": "model-193a6e1b4a7207d0",
+              "title": "Container runs as root with a floating 'latest' base image",
+              "cwe": "CWE-UNCLASSIFIED",
+              "severity": "high",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-5325207d51d0ee12",
+              "title": "Unpinned ubuntu:latest base image with unbounded package install in build",
+              "cwe": "CWE-UNCLASSIFIED",
+              "severity": "medium",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-a20b7eee948ed43a",
+              "title": "Dockerfile builds from unpinned base image ubuntu:latest",
+              "cwe": "CWE-UNCLASSIFIED",
+              "severity": "medium",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-8ea3d70b0681fe22",
+              "title": "Dockerfile installs packages without pinning versions or cleaning the apt cache",
+              "cwe": "CWE-1104",
+              "severity": "medium",
+              "status": "unprocessed",
+              "provenance": "model",
+              "ai_proposed_status": null,
+              "ai_confidence": null,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-929c8c665efebadc",
+              "title": "Container command hands out an interactive root shell",
+              "cwe": "CWE-489",
+              "severity": "medium",
+              "status": "unprocessed",
+              "provenance": "model",
+              "ai_proposed_status": null,
+              "ai_confidence": null,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-158337abf744790d",
+              "title": "Container image runs as root",
+              "cwe": "CWE-UNCLASSIFIED",
+              "severity": "medium",
+              "status": "unprocessed",
+              "provenance": "model",
+              "ai_proposed_status": null,
+              "ai_confidence": null,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-ec789c1ecd33430d",
+              "title": "Unpinned mutable base image tag in build",
+              "cwe": "CWE-1104",
+              "severity": "low",
+              "status": "unprocessed",
+              "provenance": "model",
+              "ai_proposed_status": null,
+              "ai_confidence": null,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "src/vuln_secret.h",
+          "label": "VULN",
+          "expected_cwe": "CWE-798",
+          "outcome_hunt": "TP",
+          "outcome_after_ai_review": "TP",
+          "findings_count": 2,
+          "findings": [
+            {
+              "finding_id": "model-f2108583c9ef724e",
+              "title": "Hardcoded GitHub Personal Access Token in C header",
+              "cwe": "CWE-798",
+              "severity": "critical",
+              "status": "unresolved",
+              "provenance": "model",
+              "ai_proposed_status": "confirmed",
+              "ai_confidence": 0.5,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            },
+            {
+              "finding_id": "model-0cd0f4bb77912512",
+              "title": "Hardcoded credential committed in source header",
+              "cwe": "CWE-798",
+              "severity": "critical",
+              "status": "unprocessed",
+              "provenance": "model",
+              "ai_proposed_status": null,
+              "ai_confidence": null,
+              "cvss_vector": null,
+              "cvss_base_score": null
+            }
+          ]
+        },
+        {
+          "file": "deploy/safe_pod.yaml",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        },
+        {
+          "file": "docker/safe/Dockerfile",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        },
+        {
+          "file": "src/safe_header.h",
+          "label": "SAFE",
+          "expected_cwe": null,
+          "outcome_hunt": "TN",
+          "outcome_after_ai_review": "TN",
+          "findings_count": 0,
+          "findings": []
+        }
+      ]
+    }
+  ]
+}
